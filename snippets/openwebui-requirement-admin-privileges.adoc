@@ -1,0 +1,1 @@
+You must have {owui} administrator privileges to access configuration screens or settings mentioned in this section. 

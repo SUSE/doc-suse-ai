@@ -1,0 +1,221 @@
+[#milvus-installing]
+= Installing {milvus}
+
+{milvus} is a scalable, high-performance vector database designed for AI applications.
+It enables efficient organization and searching of massive unstructured datasets, including text, images and multi-modal content.
+This procedure walks you through the installation of {milvus} and its dependencies.
+
+[#milvus-installing-app-details]
+== Details about the {milvus} application
+
+Before deploying {milvus}, it is important to know more about the supported configurations and documentation.
+The following command provides the corresponding details:
+
+[source,bash]
+----
+helm show values oci://dp.apps.rancher.io/charts/milvus
+----
+
+Alternatively, you can also refer to the {milvus} {helm} chart page on the {sappco} site at link:https://apps.rancher.io/applications/milvus[].
+It contains {milvus} dependencies, available versions and the link to pull the {milvus} container image.
+
+.{milvus} page in the {sappco}
+image::rancher-appco-milvus.png[{milvus} page in the {sappco},width=75%]
+
+[#milvus-installing-procedure]
+== {milvus} installation procedure
+
+include::../snippets/ai-library-requirement.adoc[]
+
+. When installed as part of {productname}, {milvus} depends on {etcd}, {minio} and Apache Kafka.
+Because the {milvus} chart uses a non-default configuration, create an override file `milvus_custom_overrides.yaml` with the following content.
++
+ifdef::deployment_standard[]
+[TIP]
+====
+As a template, you can download the {milvus} {helm} chart that includes the `values.yaml` file with the default configuration by running the following command:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm pull oci://dp.apps.rancher.io/charts/milvus --version 4.2.2
+----
+====
+endif::[]
+ifdef::deployment_airgap[]
+[TIP]
+====
+As a template, you can use the `values.yaml` file that is included in the `charts/milvus-<X.Y.Z>.tgz` TAR archive.
+====
+endif::[]
++
+[source,yaml]
+----
+global:
+  imagePullSecrets:
+  - application-collection
+  ifdef::deployment_airgap[]
+  imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+  endif::[]
+cluster:
+  enabled: True
+standalone:
+  persistence:
+    persistentVolumeClaim:
+      storageClassName: "local-path"
+etcd:
+  replicaCount: 1
+  persistence:
+    storageClassName: "local-path"
+minio:
+  mode: distributed
+  replicas: 4
+  rootUser: "admin"
+  rootPassword: "adminminio"
+  persistence:
+    storageClass: "local-path"
+  resources:
+    requests:
+      memory: 1024Mi
+kafka:
+  enabled: true
+  name: kafka
+  replicaCount: 3
+  broker:
+    enabled: true
+  cluster:
+    listeners:
+      client:
+        protocol: 'PLAINTEXT'
+      controller:
+        protocol: 'PLAINTEXT'
+  persistence:
+    enabled: true
+    annotations: {}
+    labels: {}
+    existingClaim: ""
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 8Gi
+    storageClassName: "local-path"
+extraConfigFiles: <.>
+  user.yaml: |+
+    trace:
+      exporter: jaeger
+      sampleFraction: 1
+      jaeger:
+        url: "http://opentelemetry-collector.observability.svc.cluster.local:14268/api/traces" <.>
+----
+<.> The `extraConfigFiles` section is optional, required only to receive telemetry data from {owui}.
+<.> The URL of the {otelemetry} Collector installed by the user.
++
+[TIP]
+====
+The above example uses local storage.
+For production environments, we recommend using an enterprise class storage solution such as {sstorage} in which case the `storageClassName` option must be set to `longhorn`.
+====
+. Install the {milvus} {helm} chart using the `milvus_custom_overrides.yaml` override file.
++
+ifdef::deployment_standard[]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  milvus oci://dp.apps.rancher.io/charts/milvus \
+  -n <SUSE_AI_NAMESPACE> \
+  --version 4.2.2 -f <milvus_custom_overrides.yaml>
+----
+endif::[]
+ifdef::deployment_airgap[]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  milvus charts/milvus-<X.Y.Z>.tgz \
+  -n <SUSE_AI_NAMESPACE> \
+  --version <X.Y.Z> -f <milvus_custom_overrides.yaml>
+----
+endif::[]
+
+[#milvus-kafka-limitation]
+=== Using {akafka} with {sstorage}
+
+When {milvus} is deployed in cluster mode, it uses {akafka} as a message queue.
+If {akafka} uses {sstorage} as a storage back-end, you need to create an XFS storage class and make it available for the {akafka} deployment.
+Otherwise deploying {akafka} with a storage class of an Ext4 file system fails with the following error:
+
+[source]
+----
+"Found directory /mnt/kafka/logs/lost+found, 'lost+found' is not
+  in the form of topic-partition or topic-partition.uniqueId-delete
+  (if marked for deletion)"
+----
+
+To introduce the XFS storage class, follow these steps:
+
+. Create a file named `longhorn-xfs.yaml` with the following content:
++
+[source,yaml]
+----
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-xfs
+provisioner: driver.longhorn.io
+allowVolumeExpansion: true
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+parameters:
+  numberOfReplicas: "3"
+  staleReplicaTimeout: "30"
+  fromBackup: ""
+  fsType: "xfs"
+  dataLocality: "disabled"
+  unmapMarkSnapChainRemoved: "ignored"
+----
+. Create the new storage class using the `kubectl` command.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f longhorn-xfs.yaml
+----
+. Update the {milvus} overrides YAML file to reference the {akafka} storage class, as in the following example:
++
+[source,yaml]
+----
+  [...]
+    kafka:
+    enabled: true
+    persistence:
+      storageClassName: longhorn-xfs
+----
+
+ifdef::deployment_standard[]
+[#milvus-upgrading]
+== Upgrading {milvus}
+
+The {milvus} chart receives application updates and updates of the {helm} chart templates.
+New versions may include changes that require manual steps.
+These steps are listed in the corresponding `README` file.
+All {milvus} dependencies are updated automatically during {milvus} upgrade.
+
+To upgrade {milvus}, identify the new version number and run the following command below:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  milvus oci://dp.apps.rancher.io/charts/milvus \
+  -n <SUSE_AI_NAMESPACE> \
+  --version <VERSION_NUMBER> \
+  -f <milvus_custom_overrides.yaml>
+----
+endif::[]
+
+[#milvus-uninstalling]
+== Uninstalling {milvus}
+
+To uninstall {milvus}, run the following command:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm uninstall milvus -n <SUSE_AI_NAMESPACE>
+----

@@ -1,0 +1,41 @@
+[#ai-hardware-requirements]
+= {productname} hardware requirements
+
+For successful deployment and operation, {productname} has the same hardware prerequisites as an https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/requirements/requirements.html#_suse_rancher_prime_rke2_kubernetes[{rke2} cluster].
+For requirements of individual applications, refer to xref:ai-requirements-hardware-apps[].
+
+[#ai-reqs-hw-basic]
+== Recommended hardware (basic functionality)
+
+[role="tabs"]
+RAM:: At least 32{nbsp}GB of RAM per node. This is the minimum recommendation for the control plane node. Additional resources may be needed for the worker nodes based on workload.
+CPU:: A multicore processor with a minimum of 4 cores. 8 cores or more may be necessary depending on the cluster scale and application demands.
+Disk space::
+* 50{nbsp}GB or more is recommended for control plane nodes.
+* Additional space for data storage, such as application data or log files, is required depending on the deployment scale and the workloads running on the cluster.
+* SSDs or high-speed storage are preferred for faster data access and efficient operation of containerized workloads.
+Networking::
+* A reliable and stable network connection between all nodes in the cluster.
+* Cluster nodes must have valid DNS A records following the `*.apps.<CLUSTER_DOMAIN>` pattern. The nodes must be able to communicate with each other and access external resources, such as container images or software updates.
+* Ensure that all nodes have public IP addresses or are accessible via VPN or other private network if deploying across multiple data centers.
+
+[#ai-reqs-hw-ha]
+== Recommended hardware (for {ha})
+
+[IMPORTANT]
+====
+While 32{nbsp}GB of RAM is the minimum for basic functionality, a production-grade deployment with high availability, multi-node clusters, or running resource-intensive applications like AI/ML workloads might require more.
+====
+
+[role="tabs"]
+RAM:: 64{nbsp}GB or more per node is recommended for larger clusters or to run applications with high resource demands.
+CPU:: At least 8 cores, ideally 16 or more cores, depending on the expected load.
+Disk space::
+* For larger-scale clusters or persistent storage applications, 100{nbsp}GB or more of disk space per node might be required.
+* Using high-performance SSDs is recommended, especially for workloads with high I/O requirements, such as databases or AI/ML model training.
+Networking:: Ensure a low-latency, high-throughput network for efficient communication between nodes, especially if deploying in multi-region or multi-cloud environments.
+
+[TIP]
+====
+For more detailed hardware recommendations, refer to the official {rke2} installation requirements documentation at {dsc}/cloudnative/rke2/latest/en/install/requirements.html.
+====

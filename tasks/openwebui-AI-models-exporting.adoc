@@ -1,0 +1,16 @@
+[#openwebui-ai-models-exporting]
+= Exporting existing AI models
+
+ifndef::part-of-article[]
+This procedure shows how to export an existing custom AI model using {owui}. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. In the {owui} interface, click menu:Workspace[] at the top of the left panel and select menu:Models[] . 
+. In the list of AI models, hover the mouse over the model that you want to export and click the three dots on its right. 
+. From the contextual menu, select menu:Export[] . 
+. In the file selector, specify the path where you want to save the exported JSON file. Confirm with menu:Save[] . 

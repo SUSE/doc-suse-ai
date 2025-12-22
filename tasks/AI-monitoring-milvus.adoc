@@ -1,0 +1,53 @@
+[#ai-monitoring-milvus]
+= Monitoring {milvus}
+
+{milvus} is monitored by scraping its {prometheus}-compatible metrics endpoint.
+The {sobservability} Extension uses these metrics to visualize {milvus}'s status and activity. 
+
+[#ai-monitoring-milvus-scraping-metrics]
+== Scraping the metrics (recommended)
+
+Add the following job to the `scrape_configs` section of your {otelemetry} Collector's configuration.
+It instructs the collector to scrape the `/metrics` endpoint of the {milvus} service every 15 seconds. 
+[source,yaml]
+----
+config:
+  receivers:
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: 'milvus'
+            scrape_interval: 15s
+            metrics_path: '/metrics'
+ 
+            static_configs:
+            - targets: ['milvus.SUSE_AI_NAMESPACE.svc.cluster.local:9091'] <.>
+----
+<.> Your {milvus} service metrics endpoint.
+    The example `milvus.SUSE_AI_NAMESPACE.svc.cluster.local:9091` is a common
+    default, but you should verify that it matches your installation service name and namespace.
+
+
+[#ai-monitoring-milvus-tracing]
+== Tracing (advanced)
+
+{milvus} can also export detailed tracing data. 
+
+.High data volume
+[IMPORTANT]
+====
+Enabling tracing in {milvus} can generate a large amount of data.
+We recommend configuring sampling at the collector level to avoid performance issues and high storage costs. 
+====
+
+To enable tracing, configure the following settings in your {milvus} {helm} chart values: 
+[source,yaml]
+----
+extraConfigFiles:
+  user.yaml: |+
+    trace:
+      exporter: jaeger
+      sampleFraction: 1
+      jaeger: url: "http://opentelemetry-collector.observability.svc.cluster.local:14268/api/traces" <.>
+----
+<.> The URL of the {otelemetry} Collector installed by the user.

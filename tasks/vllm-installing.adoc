@@ -1,0 +1,140 @@
+[#vllm-installing]
+= Installing {vllm}
+
+{vllm} is an open-source high-performance inference and serving engine for large language models (LLMs).
+It is designed to maximize throughput and reduce latency by using an efficient memory management system that handles dynamic batching and streaming outputs.
+In short, {vllm} makes running LLMs cheaper and faster in production.
+
+Deploying {vllm} on {k8s} is a scalable and efficient way to serve machine learning models.
+This guide walks you through deploying {vllm} using its {helm} chart, which is part of {ailibrary}.
+The {helm} chart deploys the full {vllm} production stack and enables you to run optimized LLM inference workloads on {nvidia} GPU in your {k8s} cluster.
+It consists of the following components:
+
+* *Serving Engine* runs the model inference.
+* *Router* handles OpenAI-compatible API requests.
+* *{lmcache}*  _(Optional)_ improves caching efficiency.
+* *CacheServer*  _(Optional)_ is a distributed KV cache back-end.
+
+[#vllm-installing-app-details]
+== Details about the {vllm} application
+
+Before deploying {vllm}, it is important to know more about the supported configurations and documentation.
+The following command provides the corresponding details:
+
+[source,bash]
+----
+helm show values oci://dp.apps.rancher.io/charts/vllm
+----
+
+Alternatively, you can also refer to the {vllm} {helm} chart page on the {sappco} site at link:https://apps.rancher.io/applications/vllm[].
+It contains {vllm} dependencies, available versions and the link to pull the {vllm} container image.
+
+[#vllm-installing-procedure]
+== {vllm} installation procedure
+
+include::../snippets/ai-library-requirement.adoc[]
+
+[WARNING]
+.{nvidia} GPUs required
+====
+{nvidia} GPUs must be available in your {k8s} cluster to successfully deploy and run {vllm}.
+====
+
+[IMPORTANT]
+.Limitation
+====
+The current release of {productname} {vllm} does not support Ray and LoraController.
+====
+
+. Create a `vllm_custom_overrides.yaml` file to override the default values of the {helm} chart.
+Find examples of override files in xref:vllm-helm-overrides[].
+. After saving the override file as `vllm_custom_overrides.yaml`, apply its configuration with the following command.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  vllm oci://dp.apps.rancher.io/charts/vllm \
+  -n <SUSE_AI_NAMESPACE> \
+  -f <vllm_custom_overrides.yaml>
+----
+
+[#vllm-owui-integration]
+== Integrating {vllm} with {owui}
+
+You can integrate {vllm} in {owui} either using the {owui} Web user interface, or updating {owui} override file during {owui} deployment (see xref:owui-ollama-deploy-vllm[]).
+
+.Integrating {vllm} with {owui} via the Web user interface
+--
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+--
+. In the bottom left of the {owui} window, click your avatar icon to open the user menu and select btn:[Admin Panel].
+. Click the btn:[Settings] tab and select btn:[Connections] from the left menu.
+. In the btn:[Manage OpenAI API Connections] section, add a new connection URL to the {vllm} router service, for example:
++
+[source]
+----
+http://vllm-router-service.<SUSE_AI_NAMESPACE>.svc.cluster.local:80/v1
+----
++
+Confirm with btn:[Save].
++
+.Adding a {vllm} connection to {owui}
+image::ai-vllm-integrate-owui.png[A screenshot of the {owui} user interface for adding a new connection to {vllm},width=100%]
+
+ifdef::deployment_standard[]
+[#vllm-upgrading]
+== Upgrading {vllm}
+
+The {vllm} chart receives application updates and updates of the {helm} chart templates.
+New versions may include changes that require manual steps.
+These steps are listed in the corresponding `README` file.
+All {vllm} dependencies are updated automatically during a {vllm} upgrade.
+
+To upgrade {vllm}, identify the new version number and run the following command below:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  vllm oci://dp.apps.rancher.io/charts/vllm \
+  -n <SUSE_AI_NAMESPACE> \
+  --version <VERSION_NUMBER> \
+  -f <vllm_custom_overrides.yaml>
+----
+
+[TIP]
+====
+If you omit the `--version` option, {vllm} gets upgraded to the latest available version.
+====
+
+[NOTE]
+.Rolling update
+====
+The `helm upgrade` command performs a rolling update on Deployments or StatefulSets with the following conditions:
+
+* The _old_ pod stays running until the _new_ pod passes readiness checks.
+* If the cluster is already at GPU capacity, the new pod cannot start because there is no GPU left to schedule it.
+This requires patching the deployment using the _Recreate_ update strategy.
+The following commands identify the {vllm} deployment name and patch its deployment.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get deployments -n <SUSE_AI_NAMESPACE>
+{prompt_user}kubectl patch deployment <VLLM_DEPLOYMENT_NAME> \
+  -n <SUSE_AI_NAMESPACE> \
+  -p '{"spec": {"strategy": {"type": "Recreate", "rollingUpdate": null}}}'
+----
+====
+endif::[]
+
+[#vllm-uninstalling]
+== Uninstalling {vllm}
+
+To uninstall {vllm}, run the following command:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm uninstall vllm -n <SUSE_AI_NAMESPACE>
+----

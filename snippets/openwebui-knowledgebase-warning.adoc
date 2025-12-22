@@ -1,0 +1,6 @@
+.Wait until the processing is finished
+[WARNING]
+====
+Do not leave the collection's screen while the selected files are being uploaded and processed.
+Leaving the screen may disrupt the file processing. 
+====

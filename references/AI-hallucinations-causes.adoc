@@ -1,0 +1,9 @@
+[#ai-hallucinations-causes]
+= What causes AI hallucinations?
+
+The most common causes of hallucinations are: 
+
+* *Ambiguous prompts.* Vague queries can lead to random or inaccurate answers. 
+* *Lack of clear context.* When the language model lacks context, it can fabricate answers. 
+* *Long generation length.* The longer the generated response, the higher the chance that hallucinations can happen. 
+* *No retrieval-augmented process.* LLMs without access to external sources{mdash}such as databases or search engines{mdash}can produce errors when they need to generate specific information. 

@@ -1,0 +1,74 @@
+[#ai-monitoring-gpu]
+= Monitoring GPU usage
+
+To effectively monitor the performance and utilization of your GPUs, configure the {otelemetry} Collector to scrape metrics from the {nvidia} DCGM Exporter, which is deployed as part of the {nvoperator}. 
+
+[#ai-monitoring-gpu-metrics]
+.Collect GPU metrics (recommended)
+. *Grant permissions (RBAC).* The {otelemetry} Collector requires specific permissions to discover the GPU metrics endpoint within the cluster. 
++ 
+Create a file named `otel-rbac.yaml`
+with the following content.
+It defines a `Role` with permissions to get services and endpoints, and a `RoleBinding` to grant these permissions to the {otelemetry} Collector's service account. 
++
+----
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: suse-observability-otel-scraper
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - endpoints
+    verbs:
+      - list
+      - watch
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: suse-observability-otel-scraper
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: suse-observability-otel-scraper
+subjects:
+  - kind: ServiceAccount
+    name: OPENTELEMETRY-COLLECTOR
+    namespace: OBSERVABILITY
+---
+----
++
+[IMPORTANT]
+====
+Verify that the `ServiceAccount` name and namespace in the `RoleBinding` match your {otelemetry} Collector's deployment. 
+====
++
+. Apply this configuration to the `gpu-operator` namespace. 
++
+[source,bash]
+----
+> kubectl apply -n gpu-operator -f otel-rbac.yaml 
+----
+. *Configure the {otelemetry} Collector.* Add the following Prometheus receiver configuration to your {otelemetry} Collector's values file. This tells the collector to scrape metrics from any endpoint in the `gpu-operator` namespace every 10 seconds. 
++
+[source,yaml]
+----
+config:
+  receivers:
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: 'gpu-metrics'
+            scrape_interval: 10s
+            scheme: http
+            kubernetes_sd_configs:
+              - role: endpoints
+                namespaces:
+                  names:
+                    - gpu-operator
+----

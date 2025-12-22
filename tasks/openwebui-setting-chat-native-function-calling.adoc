@@ -1,0 +1,39 @@
+[#openwebui-setting-chat-native-function-calling]
+= Enabling native function calling
+
+_Native function calling_ is a process in which a client{mdash}such as the {suseai} chatbot{mdash}instructs its LLM to query an {mcp} server directly, bypassing the {mcpo} proxy. 
+
+It involves the following steps: 
+
+. A client LLM connects to an {mcp} server. 
+. The {mcp} server exposes tools (functions) with names, argument schemas and returns. 
+. The client calls a suitable tool and its functions with appropriate arguments. 
+. The tool then returns the result of the function call to the client and the client includes the result in its response. 
+
+.LLMs with native function calling
+[NOTE]
+====
+For this to work effectively, the selected model must support native tool calling.
+Certain models may claim such support but often produce poor results.
+For the best experience, {owui} recommends using GPT-4o or another {openai} model that supports function calling natively. 
+====
+
+.Enabling native function calling for the current chat
+. In the top right of the {owui} window, click the menu:Chat controls[] icon. 
+. Unfold the menu:Advanced Params[] tab and set the menu:Function Calling[] from `Default` to `Native`. 
++
+
+.Enabling native function calling fig_owui_enabling_nfc
+
+image::owui-tools-nfc.png[A screenshot showing how to enable native function calling,scaledwidth=50%]
+. Close the menu:Chat controls[] window to apply the change. 
+
+[#owui-nfc-for-more-info]
+== For more information
+
+You may find the following information sources useful: 
+
+* https://github.com/open-webui/mcpo[{mcpo} homepage on GitHub]
+* https://docs.openwebui.com/openapi-servers/open-webui/[{owui} Integration documentation]
+* https://docs.openwebui.com/openapi-servers/mcp/[{owui} support for {mcp}]
+* https://github.com/modelcontextprotocol/servers[The {mcp} servers' GitHub repository]

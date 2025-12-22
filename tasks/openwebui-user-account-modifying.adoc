@@ -1,0 +1,25 @@
+[#openwebui-user-account-modifying]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Modifying user accounts in {owui}
+endif::[]
+
+ifndef::part-of-article[]
+This topic explains how to modify existing user accounts in {owui}. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. In the bottom left of the {owui} window, click your avatar icon to open the user menu and select menu:Admin Panel[] . 
+. On the menu:Users[] screen, scroll to the user whose account you want to modify. Use the pager at the bottom if the user is not listed on the current screen. 
+. Click the corresponding pen icon at their right to open the menu:Edit User[] dialog. 
++
+.Modifying user accounts
+image::openwebui-users-modifying.png[Modifying user accounts,scaledwidth=50%]
++
+. Modify the user's e-mail, name or password and confirm with menu:Save[] . 

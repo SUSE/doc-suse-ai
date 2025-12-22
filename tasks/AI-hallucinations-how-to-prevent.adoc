@@ -1,0 +1,110 @@
+[#ai-hallucinations-how-to-prevent]
+= How can I prevent AI from generating hallucinations?
+
+You can help the AI model generate more reliable and precise content by creating effective prompts.
+This process is called __prompt engineering__.
+This section outlines several techniques to create a good prompt with real-life examples. 
+
+[#ai-clear-expectations]
+== Set clear expectations
+
+The clearer the prompt, the less the LLM relies on assumptions or creativity.
+A well-defined prompt guides the model toward specific information, reducing the likelihood of hallucinations. 
+
+.Techniques:
+* Use *specific language* that guides the model. 
+* Focus on *known data sources* or real events. 
+* Request *summaries* or *paraphrasing* from established sources. 
+
+.Example
+* *Ambiguous prompt:* "Tell me about space."
+* *Clearer prompt:* "Give me a summary of NASA's recent Mars missions, including factual details from their official reports."
+
+.Example
+* *Ambiguous prompt:* "What is quantum computing?"
+* *Clearer prompt:* "Explain the basic principles of quantum computing, specifically how qubits work compared to classical bits."
+
+
+[#ai-break-complex]
+== Break down complex prompts
+
+
+Break down complex or broad prompts into manageable pieces.
+This keeps the language model focused on a narrower scope and reduces the chance of hallucination. 
+
+.Example
+* *Complex query:* "Explain AI and how it can change the world."
+* *Broken down prompt:* "What are the most recent advancements in AI? How are these advancements being applied in the healthcare industry?"
+
+
+[#ai-rag]
+== Use retrieval-augmented generation (RAG)
+
+
+When crafting prompts, encourage the model to retrieve relevant information instead of generating from scratch.
+Integrating a RAG system allows the LLM to query a specific database or resource. 
+
+.Techniques
+* Include context cues, for example, "Based on the following document" or "From the official Web site" to point the model toward facts. 
+* If using a tool like {milvus} or {chromadb}, structure your prompt to refer to specific collections or documents. This reduces hallucination by grounding the LLM in real data. 
+
+
+.Example
+* *Prompt without RAG:* "Tell me about the company's AI products."
+* *Prompt with RAG:* "Based on the "technical-info" collection in {milvus}, provide details about the company's AI product line."
+
+
+[#ai-contrain]
+== Constrain the output
+
+
+Limit the length or scope of the language model's response.
+Shorter, more direct answers reduce the chances of the model drifting off-topic or hallucinating extra details. 
+
+.Technique
+* Use _tokens_ or _word limits_ where possible to enforce the output length. 
+
+
+.Example
+* *Unconstrained prompt:* "Give me a detailed report on quantum mechanics."
+* *Prompt with limited output:* "In 100 words or fewer, explain the main concept of quantum entanglement."
+
+
+[#ai-prompt-verification]
+== Prompt for verification
+
+
+You can structure prompts to ask the LLM for clarification or to cite the source of its statements.
+This leads the model to produce more grounded and reliable responses. 
+
+.Examples
+* "Where did you find this information?"
+* "Verify this answer against known historical facts about the event."
+
+
+[#ai-cot]
+== Use chain-of-thought (CoT) prompting
+
+
+By guiding the model through logical steps, you can control the reasoning path and help the model arrive at accurate conclusions.
+This method is especially helpful when asking the model to explain complex processes. 
+
+.Example
+* *Step-by-step prompt:* "Explain the following concepts step by step: 1. How do neural networks learn from data? 2. How is backpropagation used in this process?"
+
+
+[#ai-prompt-template]
+== Use templates for complex tasks
+
+
+For complex tasks, for example, answering requests for proposals or technical questions, templates help provide a structure that minimizes hallucinations.
+This is achieved by making the desired format and content explicit. 
+
+.Example
+* "Based on the document provided, summarize the key technical features of the product. Format the response as: 1. Feature, 2. Benefit, 3. Use case. Use only factual information."
+
+
+[#ai-system-prompts-formoreinfo]
+== For more information
+
+* Find good examples of system prompts in {dsc}/suse-ai/1.0/html/AI-system-prompts/index.html.

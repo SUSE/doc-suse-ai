@@ -1,0 +1,367 @@
+[#pytorch-helm-values]
+= Values for the {pytorch} {helm} chart
+
+include::../snippets/helm-chart-overrides-intro.adoc[]
+
+.Available options for the {pytorch} {helm} chart
+[cols="1,1,1,2"]
+|===
+| Key | Type | Default | Description
+
+| `global.imageRegistry`
+| string
+| `""`
+| Global override for the container-image registry used by all chart images.
+
+| `global.imagePullSecrets`
+| list(string)
+| `[]`
+| Global list of image-pull secrets to attach to all pods.
+
+| `image.registry`
+| string
+| `link:http://dp.apps.rancher.io[dp.apps.rancher.io]`
+| Registry that hosts the PyTorch container image.
+
+| `image.repository`
+| string
+| `containers/pytorch`
+| Repository name (path) of the PyTorch container image.
+
+| `image.tag`
+| string
+| `"2.5.0-nvidia"`
+| Image tag to deploy (CUDA/NVIDIA build by default).
+
+| `image.pullPolicy`
+| string
+| `IfNotPresent`
+| Kubernetes pull policy for the PyTorch image.
+
+| `imagePullSecrets`
+| list(string)
+| `[]`
+| Additional pull secrets (overrides global.imagePullSecrets).
+
+| `nameOverride`
+| string
+| `""`
+| Replace the chart name in resource names.
+
+| `fullnameOverride`
+| string
+| `""`
+| Fully override the generated release name.
+
+| `gpu.enabled`
+| bool
+| `false`
+| Enable GPU scheduling and automatically add device requests/limits.
+
+| `gpu.type`
+| string
+| `"nvidia"`
+| GPU vendor: `'nvidia'` or `'amd'`.
+If set to `'amd'`, a _rocm_ image tag is inferred.
+
+| `gpu.number`
+| int
+| `1`
+| Number of full GPUs requested (ignored when MIG is used).
+
+| `gpu.nvidiaResource`
+| string
+| `link:http://nvidia.com/gpu[nvidia.com/gpu]`
+| Requested resource name; change to a MIG slice (e.g. `link:http://nvidia.com/mig-1g.10gb[nvidia.com/mig-1g.10gb]`) to schedule MIG devices.
+
+| `gpu.mig.enabled`
+| bool
+| `false`
+| Enable explicit specification of multiple MIG device types.
+
+| `gpu.mig.devices`
+| map
+| `{}`
+| Map of _MIG-slice-name_ -> _count_ pairs (e.g. `1g.10gb: 1`).
+
+| `podAnnotations`
+| map
+| `{}`
+| Custom annotations added to the PyTorch pod.
+
+| `podLabels`
+| map
+| `{}`
+| Additional labels added to the PyTorch pod.
+
+| `podSecurityContext`
+| map
+| `{}`
+| Pod-level security context (e.g. `fsGroup`).
+
+| `securityContext`
+| map
+| `{}`
+| Container-level security context (capabilities, runAsUser, etc.).
+
+| `service.enabled`
+| bool
+| `false`
+| Create a ClusterIP/NodePort/LoadBalancer service for the PyTorch container.
+
+| `service.type`
+| string
+| `ClusterIP`
+| Service type when `service.enabled` is `true`.
+
+| `service.port`
+| int
+| (unset)
+| External service port.
+
+| `service.containerPort`
+| int
+| (unset)
+| Target container port inside the pod.
+
+| `service.nodePort`
+| int/string
+| `""`
+| Fixed nodePort value (for `type: NodePort`).
+
+| `service.loadBalancerIP`
+| string
+| (unset)
+| Requested load-balancer IP.
+
+| `service.loadBalancerClass`
+| string
+| (unset)
+| Load-balancer implementation class.
+
+| `service.annotations`
+| map
+| `{}`
+| Extra annotations applied to the Service object.
+
+| `serviceAccount.create`
+| bool
+| `false`
+| Whether to create a dedicated ServiceAccount.
+
+| `serviceAccount.automount`
+| bool
+| `true`
+| Auto-mount ServiceAccount token in the pod.
+
+| `serviceAccount.annotations`
+| map
+| `{}`
+| Annotations added to the ServiceAccount.
+
+| `link:http://serviceAccount.name[serviceAccount.name]`
+| string
+| `""`
+| Explicit ServiceAccount name (otherwise auto-generated).
+
+| `ingress.enabled`
+| bool
+| `false`
+| Create an Ingress exposing the service.
+
+| `ingress.className`
+| string
+| `""`
+| Explicit `IngressClass` to use.
+
+| `ingress.annotations`
+| map
+| `{}`
+| Extra annotations for the Ingress.
+
+| `ingress.hosts`
+| list
+| `[{host: chart-example.local, paths:[{/ , ImplementationSpecific}]}]`
+| Default host and path definitions.
+
+| `ingress.tls`
+| list
+| `[]`
+| TLS blocks for the Ingress resource.
+
+| `resources.requests`
+| map
+| `{}`
+| Pod resource requests (CPU / memory / GPU).
+
+| `resources.limits`
+| map
+| `{}`
+| Pod resource limits (CPU / memory / GPU).
+
+| `livenessProbe.enabled`
+| bool
+| `false`
+| Enable liveness probe.
+
+| `livenessProbe.initialDelaySeconds`
+| int
+| `5`
+| Delay before first liveness probe.
+
+| `livenessProbe.periodSeconds`
+| int
+| `5`
+| Interval between liveness probes.
+
+| `livenessProbe.timeoutSeconds`
+| int
+| `20`
+| Probe timeout.
+
+| `livenessProbe.failureThreshold`
+| int
+| `6`
+| Consecutive failures before restart.
+
+| `livenessProbe.successThreshold`
+| int
+| `1`
+| Successes needed to mark pod healthy.
+
+| `readinessProbe.enabled`
+| bool
+| `false`
+| Enable readiness probe.
+
+| `readinessProbe.initialDelaySeconds`
+| int
+| `5`
+| Delay before first readiness probe.
+
+| `readinessProbe.periodSeconds`
+| int
+| `5`
+| Interval between readiness probes.
+
+| `readinessProbe.timeoutSeconds`
+| int
+| `20`
+| Probe timeout.
+
+| `readinessProbe.failureThreshold`
+| int
+| `6`
+| Consecutive failures before marking pod unready.
+
+| `readinessProbe.successThreshold`
+| int
+| `1`
+| Successes required to mark pod ready.
+
+| `volumes`
+| list
+| `[]`
+| Extra Kubernetes volumes attached to the deployment.
+
+| `volumeMounts`
+| list
+| `[]`
+| Extra `volumeMounts` in the container spec.
+
+| `nodeSelector`
+| map
+| `{}`
+| Node-selector labels for pod scheduling.
+
+| `tolerations`
+| list
+| `[]`
+| Tolerations added to the pod spec.
+
+| `affinity`
+| map
+| `{}`
+| Affinity/anti-affinity rules for the pod.
+
+| `entrypointscript.filename`
+| string
+| `""`
+| Name (and path) of a startup script inside the container.
+
+| `entrypointscript.arguments`
+| list(string)
+| `[]`
+| CLI arguments passed to the entry point script.
+
+| `persistence.enabled`
+| bool
+| `false`
+| Provision a PVC to persist data (e.g. checkpoints).
+
+| `persistence.accessModes`
+| list(string)
+| `["ReadWriteOnce"]`
+| Access modes for the PVC.
+
+| `persistence.annotations`
+| map
+| `{}`
+| Annotations applied to the PVC.
+
+| `persistence.existingClaim`
+| string
+| `""`
+| Use an existing PVC instead of creating a new one.
+
+| `persistence.size`
+| string
+| `30Gi`
+| Requested storage size for the PVC.
+
+| `persistence.storageClass`
+| string
+| `""`
+| StorageClass used for dynamic provisioning (`""` -> default).
+
+| `persistence.volumeMode`
+| string
+| `""`
+| Optional PV `volumeMode`.
+
+| `persistence.subPath`
+| string
+| `""`
+| Subdirectory within the PV to mount.
+
+| `persistence.volumeName`
+| string
+| `""`
+| Bind the PVC to a pre-existing PV by name.
+
+| `gitClone.enabled`
+| bool
+| `false`
+| Clone a Git repository into the container at startup.
+
+| `gitClone.repository`
+| string
+| `""`
+| Repository to clone (`link:http://github.com/org/repo[github.com/org/repo]`, no protocol).
+
+| `gitClone.revision`
+| string
+| `""`
+| Branch, tag, or commit to checkout.
+
+| `gitClone.secretName`
+| string
+| `""`
+| Name of a Secret containing Git credentials (username/password or token).
+
+| `configMapExtFiles`
+| string
+| `""`
+| Name of the ConfigMap whose files will be mounted into the container.
+
+|===

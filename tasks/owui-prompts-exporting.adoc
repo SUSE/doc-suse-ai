@@ -1,0 +1,17 @@
+[#owui-prompts-exporting]
+= Exporting existing system prompts
+
+ifndef::part-of-article[]
+This procedure shows how to export an existing system prompt. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+--
+. In the {owui} interface, click menu:Workspace[] in the upper part of the left panel and select menu:Prompts[] . 
+. Scroll to the prompt that you want to export. Use the pager at the bottom if the prompt is not listed on the current screen. 
+. Click the three dots to the right of the prompt that you want to clone and select menu:Export[] . 
+. Navigate to the path where you want to save the JSON file with the exported prompt. Confirm with menu:Save[] . 
+--

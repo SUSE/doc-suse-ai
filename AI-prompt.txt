@@ -1,0 +1,9 @@
+Convert file from DocBook XML to AsciiDoc:
+* use [#ID] for section IDs
+* use link: macro for external links
+* use xref: macro for internal references, not <<ID>>
+* leave {prompt.} attributes in place but replace their period . with underscore _
+* add subs="+attributes" to [source] heading of verbatim blocks only if it contains {prompt_} related attributes
+* if step is optional, introduce it with (Optional)
+* do not break lines inside sentences, keep each sentence on their own lines
+* do not number callouts like <1> <2>; just use period instead <.> for both callout definition and description

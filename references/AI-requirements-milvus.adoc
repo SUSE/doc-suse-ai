@@ -1,0 +1,60 @@
+[#ai-requirements-milvus]
+= {milvus} requirements
+
+This topic describes requirements for the {milvus} application.
+
+[#ai-reqs-milvus-hw]
+== Hardware requirements
+
+[#ai-reqs-milvus-hw-min]
+=== Minimum requirements
+
+The following requirements are for basic {milvus} deployment on a single node or a small scale.
+
+[role="tabs"]
+RAM:: A minimum of 32{nbsp}GB of RAM.
+CPU:: At least 8 CPU cores.
+Disk space:: At least 100{nbsp}GB of storage, preferably SSD.
+Networking:: A stable connection with 1{nbsp}Gbps network bandwidth.
+
+[#ai-reqs-milvus-hw-rec]
+=== Recommended hardware for large-scale workloads
+
+The following requirements are for multi-node {milvus} clusters or heavy workloads, such as large vector databases.
+
+[role="tabs"]
+RAM:: A minimum of 64{nbsp}GB of RAM per node.
+CPU:: 8{ndash}16 CPU cores per node or more.
+Disk space:: 500{nbsp}GB or more of high-speed storage, ideally SSD or NVMe SSD.
+Networking:: 10{nbsp}Gbps Ethernet or faster for high-performance clusters.
+
+[#cpu-instruction-set-requirements]
+=== CPU instruction set requirements
+
+The following CPU instruction sets are required for {milvus}:
+
+* SSE4.2
+* AVX
+* AVX2
+* AVX-512
+
+[#ai-reqs-milvus-sw]
+== Software requirements
+
+Running {milvus} requires specific versions of the following software:
+
+{kube}:: {suse}-supported versions of {rke2} that use {kube} 1.18 or higher.
+{helm}:: The recommended version is 3.5.0 or later.
+
+[#ai-reqs-milvus-consider]
+== Additional considerations
+
+Disk and storage::
+* *Storage type:* SSDs or NVMe SSDs are highly recommended for fast read/write access to large datasets and high-performance vector retrieval.
+* *Metadata and data storage:* For large-scale deployments, ensure that metadata and vector data are stored on fast disks (SSD or NVMe).
+Network:: For high-performance clusters, especially for large-scale deployments, ensure high-bandwidth network connectivity between nodes.
+
+[#ai-req-milvus-moreinfo]
+== For more information
+
+For more detailed hardware recommendations, refer to the official https://milvus.io/docs/prerequisite-helm.md[{milvus}] and https://milvus.io/docs/v2.1.x/prerequisite-docker.md[prerequisite Docker] documentation.

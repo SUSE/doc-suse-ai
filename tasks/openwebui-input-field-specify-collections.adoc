@@ -1,0 +1,28 @@
+[#openwebui-input-field-collections]
+= Specifying preconfigured documents, collections or external URLs from the chat input field
+
+Besides prompting preconfigured AI models, you can "talk"
+to documents or collections of documents uploaded by the administrator.
+You can also specify external URLs whose content will be processed.
+AI then responds to your prompts based on the specified information sources. 
+
+This procedure describes how to select preconfigured documents, collections of documents, or external URLs as information sources for AI answers from the chat input field. 
+
+.Requirements
+* At least one knowledge base collection needs to be preconfigured. Refer to https://documentation.suse.com/suse-ai/1.0/html/openwebui-configuring/index.html#openwebui-managing-knowledgebase[Managing a knowledge base] to learn how to create one. 
+--
+. In the chat input field, type the `#` character. 
+. From the drop-down list that appears, select one of the preconfigured documents or a collection of documents whose content you want AI to use as an information source. You can select multiple documents, one by one. 
++
+.Selecting documents and collections
+image::openwebui-chat-collections.png[Selecting documents and collections,scaledwidth=75%]
+. Instead of selecting the preconfigured documents, you can start typing `http:` followed by the full valid URL to the page that you want AI to process. After you confirm it with kbd:[Enter], AI starts processing it. 
++
+.Adding a URL source
+image::openwebui-chat-url-prompt.png[Adding a URL source,scaledwidth=65%]
+. Type your prompt and confirm with kbd:[Enter] or by clicking the "up" arrow to the right of the chat input field. 
++
+.Prompt with selected documents and collections
+image::openwebui-chat-collections-prompt.png[Prompt with selected documents and collections,scaledwidth=75%]
+. To deactivate the previously selected document from the current chat, hover over its name and click the "cross" icon to the right of its name. 
+--

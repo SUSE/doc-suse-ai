@@ -1,0 +1,20 @@
+[#owui-prompts-importing]
+= Importing exported system prompts
+
+ifndef::part-of-article[]
+This procedure shows how to import a system prompt that was previously exported. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+--
+. In the {owui} interface, click menu:Workspace[] in the upper part of the left panel and select menu:Prompts[] . 
+. Click menu:Import Prompts[] in the bottom right of the prompt list. 
+. Navigate to the JSON file with previously exported prompts and confirm with menu:Open[] . 
++
+.Unique command
+WARNING: The activating command of the imported prompts must be unique among existing prompts.
+Prompts with an existing activating command will not be imported. 
+--

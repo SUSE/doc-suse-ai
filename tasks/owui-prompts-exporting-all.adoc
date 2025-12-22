@@ -1,0 +1,16 @@
+[#owui-prompts-exporting-all]
+= Exporting all existing system prompts
+
+ifndef::part-of-article[]
+This procedure shows how to export all existing system prompts. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+--
+. In the {owui} interface, click menu:Workspace[] in the upper part of the left panel and select menu:Prompts[] . 
+. Click menu:Export Prompts[] in the bottom right of the prompt list. 
+. Enter the path to the JSON file that will contain the exported prompts and confirm with menu:Save[]. 
+--

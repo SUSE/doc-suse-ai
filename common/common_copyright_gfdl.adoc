@@ -1,0 +1,1 @@
+../adoc/common_copyright_gfdl.adoc

@@ -1,0 +1,46 @@
+include::../common/generic-attributes.adoc[]
+= Guiding the AI Model with System Prompts
+
+:doctype: article
+:experimental:
+:docinfo:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:revdate: 2025-012-02
+:page-revdate: {revdate}
+
+[abstract]
+--
+WHAT?::
+  System prompts are an important component in any AI, especially
+  LLMs. They determine the way AI models interpret and respond to
+  user prompts. System prompts ensure that the generated outputs
+  align with the intended goals.
+
+WHY?::
+  Learn to create effective system prompts to receive expected and
+  appropriate responses.
+
+EFFORT::
+  Less than 30 minutes of reading.
+--
+
+include::../references/AI-system-prompt-benefits.adoc[leveloffset=+1]
+include::../concepts/AI-system-prompt-how-works.adoc[leveloffset=+1]
+
+[appendix]
+include::../references/AI-glossary.adoc[leveloffset=+1]
+
+[appendix]
+include::../adoc/common_copyright_gfdl.adoc[]
+
+[appendix]
+include::../adoc/common_license_gfdl1.2.adoc[]

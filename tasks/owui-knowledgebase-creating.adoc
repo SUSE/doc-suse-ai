@@ -1,0 +1,26 @@
+[#owui-knowledgebase-creating]
+= Creating a knowledge base
+
+ifndef::part-of-article[]
+This topic explains how to create a new knowledge base to extend the AI model's context on a specific topic. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. In the {owui} interface, click menu:Workspace[] in the upper part of the left panel. 
+. Select menu:Knowledge[] in the top menu and click the "plus" sign in the right. 
+. Enter a title and a short description for the knowledge base. 
+. Specify whether the knowledge base is public or private and confirm with menu:Create Knowledge[] . 
++
+.Creating a new knowledge base
+image::owui-knowledge1.png[Creating a new knowledge base,scaledwidth=75%]
++
+. Add content to the knowledge base as described in xref:owui-knowledgebase-adding-content[]. 
+
+[TIP]
+====
+You can access knowledge base collections from the {owui} chat input field by pressing the `#` character as described in https://documentation.suse.com/suse-ai/1.0/html/openwebui-using/index.html#openwebui-input-field-collections[Specifying preconfigured documents, collections or external URLs from the chat input field]. 
+====

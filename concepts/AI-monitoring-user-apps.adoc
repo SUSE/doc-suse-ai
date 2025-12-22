@@ -1,0 +1,158 @@
+[#ai-monitoring-user-apps]
+= Monitoring user-managed applications
+
+To monitor other applications, you can utilize {otelemetry} SDKs or any other instrumentation provider compatible with {otelemetry}'s semantics, for example, {openlit} SDK.
+For more details, refer to xref:ai-monitoring-instrument-openlit[]. 
+
+{otelemetry} offers several instrumentation techniques for different deployment scenarios and applications.
+You can instrument applications either manually, with more detailed control, or automatically for an easier starting point. 
+
+[TIP]
+====
+One of the most straightforward ways of getting started with {otelemetry} is using the {otelemetry} Operator for {kube}, which is available in the {sappco}. Find more information in this https://docs.apps.rancher.io/reference-guides/opentelemetry-operator/[extensive
+      guide] on how to use this operator for instrumenting your applications. 
+====
+
+[#ai-monitoring-telemetry-data-capture]
+== Ensuring that the telemetry data is properly captured by the {sobservability} Extension
+
+
+For the {sobservability} Extension to acknowledge an application as a GenAI application, it needs to have a meter configured.
+It must provide at least the `RequestsTotal` metric with the following attributes: 
+
+* `TelemetrySDKLanguage`
+* `ServiceName`
+* `ServiceInstanceId`
+* `ServiceNamespace`
+* `GenAIEnvironment`
+* `GenAiApplicationName`
+* `GenAiSystem`
+* `GenAiOperationName`
+* `GenAiRequestModel`
+
+Both the meter and the tracer must contain the following resource attributes: 
+
+service.name::
+The logical name of the service.
+Defaults to 'My App'. 
+
+service.version::
+The version of the service.
+Defaults to '1.0'. 
+
+deployment.environment::
+The name of the deployment environment, such as 'production' or 'staging'.
+Defaults to 'default'. 
+
+telemetry.sdk.name::
+The value must be 'openlit'. 
+
+The following metrics are utilized in the graphs of the {sobservability} Extension: 
+
+gen_ai.client.token.usage::
+Measures the number of used input and output tokens. 
++
+*Type:* histogram 
++
+*Unit:* token 
+
+gen_ai.total.requests::
+Number of requests. 
++
+*Type:* counter 
++
+*Unit:* integer 
+
+gen_ai.usage.cost::
+The distribution of GenAI request costs. 
++
+*Type:* histogram 
++
+*Unit:* USD 
+
+gen_ai.usage.input_tokens::
+Number of prompt tokens processed. 
++
+*Type:* counter 
++
+*Unit:* integer 
+
+gen_ai.usage.output_tokens::
+Number of completion tokens processed. 
++
+*Type:* counter 
++
+*Unit:* integer 
+
+gen_ai.client.token.usage::
+Number of tokens processed. 
++
+*Type:* counter 
++
+*Unit:* integer 
+
+// TODO change this to real qanda
+[role=qanda]
+[#ai-monitoring-troubleshooting]
+== Troubleshooting
+
+No metrics received from any components. ::
++
+* Verify the {otelemetry} Collector deployment. 
+* Check if the exporter is properly set to the {sobservability} collector and with the correct API key and endpoint specified. 
+
+
+
+No metrics received from the GPU. ::
++
+* Verify if the RBAC rules were applied. 
+* Verify if the metrics receiver scraper is configured. 
+* Check the {nvidia} DCGM Exporter for errors. 
+
+
+
+No metrics received from {milvus}. ::
+
+* Verify if {milvus} chart configuration is exposing the metrics endpoint. 
+* Verify if the metrics receiver scraper is configured. 
+* For usage metrics, confirm that requests were actually made to {milvus}. 
+
+
+
+No metrics received from {vllm}. ::
+
+* Verify if the {vllm} chart configuration is exposing the metrics endpoint. 
+* Verify if the metrics receiver scraper is properly configured, in particular, the placeholders. 
+* If some metrics are present, but not usage-related ones, verify if you actually made requests to {vllm}. 
+* If {vllm} was not identified and/or {vllm} metrics have the prefix "vllm:" , check the collector configuration. You may be using {sobservability} 2.6.2, which requires additional configuration. 
+
+
+
+GPU nodes are stuck in `NotReady` status. ::
+
+* Verify if there is a driver version mismatch between the host and the version that the GPU operator expects. 
+* You may need to reinstall the {kube} stackpack. 
+
+
+
+No tracing data received from any components. ::
+
+* Verify the {otelemetry} Collector deployment. 
+* Check if the exporter is properly set to the {sobservability} collector, with the right API key and endpoint set. 
+
+
+
+No tracing data received from {owui}. ::
+
+* Verify if the {suseai} Observability Filter was installed and configured properly. 
+* Verify if chat requests actually happened. 
+
+
+
+Cost estimation is far from real values. ::
+
+Recalculate the multipliers for the `PRICING_JSON` in the {suseai} Observability Filter. 
+
+There is high demand for storage volume. ::
+
+Verify if sampling is being applied in the {otelemetry} Collector. 

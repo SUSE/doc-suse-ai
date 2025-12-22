@@ -1,0 +1,6 @@
+.Your default model
+[TIP]
+====
+To make the selected model your default one, click menu:Set as default[]
+ next to the AI model name. 
+====

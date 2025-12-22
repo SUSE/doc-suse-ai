@@ -1,0 +1,26 @@
+[#owui-prompts-creating]
+= Creating a system prompt
+
+ifndef::part-of-article[]
+This procedure shows how to create a new system prompt. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+--
+. In the {owui} interface, click menu:Workspace[] in the upper part of the left panel. 
+. Select menu:Prompts[] in the top menu and click the "plus" sign on the right. 
++
+.Creating a new system prompt
+image::owui-prompts-creating.png[Creating a new system prompt,scaledwidth=75%]
++
+. Enter the title and content of the new system prompt, and optionally, update the command that invokes the prompt from the chat input field. 
+. Confirm with menu:Save & Create[] . 
+--
+
+[TIP]
+====
+You can access preconfigured system prompts from the {owui} chat input field by pressing the `/` character as described in https://documentation.suse.com/suse-ai/1.0/html/openwebui-using/index.html#openwebui-input-field-specify-system-prompt[Selecting a preconfigured system prompt from the chat input field ]. 
+====

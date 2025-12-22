@@ -1,0 +1,30 @@
+[#ai-air-gap-stack]
+= {productname} air-gapped stack
+
+The _air-gapped stack_ is a set of scripts that ease the successful air-gap installation of certain {productname} components.
+To use them, you need to clone or download them from the stack's link:https://github.com/SUSE/suse-ai-stack/tree/SUSEAI-79/air-gapped-install[GitHub repository].
+
+[#ai-air-gap-stack-content]
+== What scripts does the stack include?
+
+The following scripts are included in the air-gapped stack:
+
+`SUSE-AI-mirror-nvidia.sh`::
+Mirrors all RPM packages from a specified Web URLs.
+`SUSE-AI-get-images.sh`::
+Downloads {docker} images of {productname} applications from {sappco}.
+`SUSE-AI-load-images.sh`::
+Loads downloaded {docker} images into a custom {docker} image registry.
+
+[#ai-air-gap-stack-usage]
+== Where do the scripts fit into the air-gap installation?
+
+The scripts are required in several places during the {productname} air-gapped installation.
+The following simplified workflow outlines the intended usage:
+
+. Use `SUSE-AI-mirror-nvidia.sh` on a _remote_ host to download the required {nvidia} RPM packages.
+Transfer the downloaded content to an air-gapped _local_ host and add it as a {zypper} repository to install {nvidia} drivers on _local_ GPU nodes.
+. Use `SUSE-AI-get-images.sh` on a _remote_ host to download {docker} images of required {productname} components.
+Transfer them to an air-gapped _local_ host.
+. Use `SUSE-AI-load-images.sh` to load the transferred {docker} images of {productname} components into a custom _local_ ${docker} image registry.
+. Install {ailibrary} components on the _local_ {kube} cluster from the _local_ custom {docker} registry.

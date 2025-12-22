@@ -1,0 +1,2 @@
+{owui} is a user-friendly web interface for interacting with Large Language Models (LLMs).
+It supports various LLM runners, including {ollama} and {vllm}.

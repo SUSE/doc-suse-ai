@@ -1,0 +1,22 @@
+[#openwebui-input-field-specify-custom-docs]
+= Adding custom data sources from the chat input field
+
+Besides prompting preconfigured AI models, you can "talk"
+to custom data sources specified in the chat input field. AI processes
+these sources so that it can respond based on their content.
+
+This procedure describes how to upload custom documents as information
+sources for AI answers from the chat input field.
+
+. Click the `+` sign to the left of the chat input field.
+. Click menu:Upload Files[] and specify the document from your
+disk to process. You can upload multiple documents at the same time.
+. Type your prompt and confirm with kbd:[Enter] or by
+clicking the "up" arrow to the right of the chat input
+field.
++
+.Prompt with uploaded documents
+image::openwebui-chat-uploaded-prompt.png[Prompt with uploaded documents,scaledwidth=75%]
+. To deactivate the previously selected document from the current chat,
+hover over its name and click the "cross" icon to the right
+of its name.

@@ -1,0 +1,56 @@
+include::../common/generic-attributes.adoc[]
+= {productname} Requirements
+
+:doctype: article
+:experimental:
+:docinfo:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:revdate: 2025-012-02
+:page-revdate: {revdate}
+
+[abstract]
+--
+WHAT?::
+  Hardware, software and networking requirements for successful deployment and operation of {productname}.
+
+WHY?::
+  To ensure efficient operation of {productname}.
+
+EFFORT::
+  Less than 30 minutes of reading and a basic knowledge of hardware and {rke2} environment.
+--
+
+[preface]
+This article describes the software, hardware and networking requirements for the cluster nodes where you plan to install {productname}.
+
+include::../references/AI-requirements-hardware.adoc[leveloffset=+1]
+include::../references/AI-requirements-hardware-gpu.adoc[leveloffset=+1]
+
+[#ai-requirements-hardware-apps]
+== Application-specific requirements
+The {productname} stack consists of multiple applications. We recommend running each application on nodes that meet or exceed the corresponding hardware requirements.
+
+include::../references/AI-requirements-rancher.adoc[leveloffset=+2]
+include::../references/AI-requirements-security.adoc[leveloffset=+2]
+include::../references/AI-requirements-observability.adoc[leveloffset=+2]
+include::../references/AI-requirements-milvus.adoc[leveloffset=+2]
+include::../references/AI-requirements-ollama.adoc[leveloffset=+2]
+include::../references/AI-requirements-openwebui.adoc[leveloffset=+2]
+
+[appendix]
+include::../references/AI-glossary.adoc[leveloffset=+1]
+
+[appendix]
+include::../common/common_copyright_gfdl.adoc[]
+
+[appendix]
+include::../common/common_license_gfdl1.2.adoc[]

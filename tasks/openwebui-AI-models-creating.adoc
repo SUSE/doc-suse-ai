@@ -1,0 +1,41 @@
+[#openwebui-ai-models-creating]
+= Creating custom AI models
+
+ifndef::part-of-article[]
+This procedure shows how to create custom AI models using {owui}. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. In the {owui} interface, click menu:Workspace[] in the upper part of the left panel. 
+. Select menu:Models[] in the top menu and click the small "plus" icon in the top-right corner of the screen. 
++
+.Managing AI models
+image::openwebui-workspace-models.png[Managing AI models,scaledwidth=50%]
++
+. Click the default logo image in the top-left corner of the form to upload an avatar image for your model. 
+. Enter the menu:Name[] of your new model and change the menu:Model ID[] if you are not happy with the provided one. 
+. Specify the base AI model on which your model will be based on. 
+. Enter a short description of your AI model. 
+. Describe the model with custom tags so that other users can identify it easily. 
+. To direct the AI model's responses, specify a menu:System Prompt[].
+  Find more details about system prompts in {dsc}/suse-ai/1.0/html/AI-system-prompts/index.html. 
++
+[TIP]
+====
+By clicking the small menu:Show[] option below the system prompt field, you can fine-tune the model's behavior by modifying its advanced settings. 
+====
++
+. Specify one or more menu:Prompt suggestions[]. They will be shown on the model's chat welcome screen. 
+. To extend the model's knowledge base, select one or more documents or collections of documents from the preconfigured list. 
+. In the menu:Tools[] , menu:Filters[] , menu:Actions[] and menu:Capabilities[] sections, activate the items that you want your model to use. 
++
+[TIP]
+====
+To view the JSON representation of your model, click the small menu:Show[] option to the right of the menu:JSON Preview[] label. 
+====
++
+. Save your changes with the menu:Save & Create[] button. 

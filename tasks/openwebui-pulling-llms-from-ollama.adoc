@@ -1,0 +1,24 @@
+[#openwebui-downloading-ai-models-from-ollama]
+= Downloading AI models from {ollama}
+
+{ollama} (https://ollama.com/) is an online repository that hosts open source AI models.
+This procedure describes how to download and use these models from the {owui} interface. 
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. In the bottom left of the {owui} window, click your avatar icon to open the user menu and select menu:Admin Panel[] . 
+. Click the menu:Settings[] tab and select menu:Models[] from the left menu. 
+. In the top-right corner of the screen, click the small "download" icon to open the menu:Manage Models[] screen. 
++
+.Downloading {ollama} AI models
+image::owui-dld-ollama-model.png[Downloading {ollama} AI models,scaledwidth=100%]
+. On the https://ollama.com/library[{ollama} library page], identify the model tag of an AI model that you want to download, for example, `gemma3:4b`. 
+. Paste the model tag in the menu:Pull a model from Ollama.com[] input field and confirm by clicking the small download button on the right. 
++
+.Entering model tag to download
+image::owui-dld-model-tag.png[Entering model tag to download,scaledwidth=75%]
++
+The model download starts and, after it is finished, the model will be available as a base model for AI interaction. 

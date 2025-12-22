@@ -1,0 +1,4 @@
+[TIP]
+====
+Before the installation, you need to get user access to the {sappco}, create a {kube} namespace, and log in to the {helm} registry as described in xref:suse-ai-deploy-suse-ai[].
+====

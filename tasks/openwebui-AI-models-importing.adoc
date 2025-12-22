@@ -1,0 +1,26 @@
+[#openwebui-ai-models-importing]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Importing AI models
+endif::[]
+
+ifndef::part-of-article[]
+This procedure shows how to import AI models using {owui}. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. In the {owui} interface, click menu:Workspace[] at the top of the left panel and select menu:Models[] . 
+. Click the menu:Import Models[] button at the bottom of the screen. 
+. In the file selector, specify the path to the JSON file with the exported models' definitions. Confirm with menu:Open[] . 
++
+.Models with identical IDs
+IMPORTANT
+====
+AI models with IDs identical to existing models will not be imported. 
+====

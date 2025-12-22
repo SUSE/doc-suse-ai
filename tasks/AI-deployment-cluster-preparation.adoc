@@ -1,0 +1,20 @@
+[#suse-ai-deploy-prepare]
+= Preparing the cluster for {ailibrary}
+
+This procedure assumes that you already have the base operating system installed on cluster nodes as well as the {rke2} {kube} distribution installed and operational.
+If you are installing from scratch, refer to xref:ai-deployment-kube-installing[] first.
+
+ifdef::deployment_standard[]
+. Install xref:rancher-installation-quickstart[{ranchermanager}] on the cluster.
+endif::[]
+ifdef::deployment_airgap[]
+. Install xref:rancher-installation-airgapped[{ranchermanager}] on the cluster.
+endif::[]
+. Install the {nvoperator} on the cluster as described in xref:nvidia-operator-installation[].
+. Connect the {kube} cluster to {ranchermanager} as described in xref:rancher-register-clusters[].
+. Configure the GPU-enabled nodes so that the {productname} containers are assigned to Pods that run on nodes equipped with {nvidia} GPU hardware.
+Find more details about assigning Pods to nodes in xref:ai-gpu-nodes-assigning[].
+. _ _(Optional)__ Install {ssecurity} as described in xref:ai-security-installation[].
+Although this step is not required, we strongly encourage it to ensure data security in the production environment.
+. Install and configure {sobservability} to observe the nodes used for {productname} application.
+Refer to xref:observability-installing[] for more details.

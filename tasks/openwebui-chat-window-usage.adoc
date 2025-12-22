@@ -1,0 +1,35 @@
+[#openwebui-chat-window-usage]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Using the {owui} chat window
+endif::[]
+
+The chat window is the primary interface for interacting with the AI, allowing you to send prompts and receive responses. 
+
+This procedure describes the basic steps for interacting with an AI model using the {owui} chat window. 
+
+. At the top left of the chat window, verify that an AI model is selected. If no model is selected, select the preferred one from the drop-down list. 
++
+--
+include::../snippets/openwebui-tip-default-model.adoc[leveloffset=1]
+include::../snippets/openwebui-tip-multiple-models.adoc[leveloffset=1]
+--
+. Enter your prompt that you want AI to process in the chat input field. 
++
+.Audio prompt
+TIP: If you prefer speaking rather than writing, click the small microphone icon to the right of the chat input field.
+Then say your prompt aloud and click the small check mark when finished. 
+
+. Confirm with kbd:[Enter] or click the "up" arrow on the right of the chat input field so that the AI model can process your prompt. Wait for the response. 
+.AI answering with two models openwebui_2_responses
++
+image::openwebui-2-responses.png[AI answering with 2 models,scaledwidth=85%]
+
+. Depending on the number of selected AI models, one or multiple responses arrive. Below each response, there is a set of icons that help you perform the following tasks on the response: 
+** *Edit* the response in a Markdown format in case you want to copy it for later use. 
+** *Copy* the response to the clipboard. 
+** Let {owui} *read* the response aloud. 
+** *Mark* the response as *good* or **bad**. This way, the model learns to more effectively address the same or related subjects. 
+** *Regenerate* the response if you are not happy with its current version. You can then cycle between individual versions of responses with the small left and right arrows. 

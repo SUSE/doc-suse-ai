@@ -1,0 +1,36 @@
+[#ai-deployment-kube-installing]
+= Installing the Linux and {kube} distribution
+
+This procedure includes the steps to install the base Linux operating
+system and a {kube} distribution for users who start deploying on
+cluster nodes from scratch. If you already have a {kube} cluster
+installed and running, you can skip this procedure and continue with
+xref:suse-ai-deploy-suse-ai[].
+
+. Install and register a supported Linux operating system on each cluster
+  node. We recommend using one of the following operating systems:
++
+* {sls} {sles-ai-version} for a traditional non-transactional
+  operating system. For more information, see
+  xref:sles-installation-quickstart[].
++
+* {slm} {slmicro-ai-version} for an immutable transactional operating
+  system. For more information, see
+  link:https://documentation.suse.com/sle-micro/6.1/[{slm} {slmicro-ai-version} documentation].
++
+For a list of supported operating systems, refer to
+link:https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/[].
+
+. Install the {nvidia} GPU driver on cluster nodes with GPUs. Refer to
+  xref:ai-nvidia-gpu-driver[] for details.
+
+. Install {kube} on cluster nodes. We recommend using the supported {rke2}
+  distribution. Refer to
+ifdef::deployment_standard[]
+  xref:rke2-installation-quickstart[]
+endif::[]
+ifdef::deployment_airgap[]
+  xref:rke2-installation-airgapped[]
+endif::[]
+  for details. For a list of supported {kube} platforms, refer to
+  link:https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/[].

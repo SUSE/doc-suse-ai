@@ -1,0 +1,27 @@
+[#ai-requirements-security]
+= {ssecurity} requirements
+
+[#ai-reqs-security-hw]
+== Minimum hardware requirements
+
+Nodes for HA setup::
+The following container instances run on existing cluster nodes:
++
+--
+* 1 Manager instance
+* 3 Controller instances
+* 1 Enforcer instance on each cluster node
+* 2 Scanner & Updater instances
+--
+
+[role="tabs"]
+RAM:: A minimum of 2{nbsp}GB of RAM.
+CPU:: At least 2 CPU cores.
+Disk space:: At least 5{nbsp}GB of storage, preferably SSD.
+
+[#ai-req-security-moreinfo]
+== For more information
+
+For more detailed recommendations, refer to the following official documentation:
+
+* https://open-docs.neuvector.com/basics/requirements[{ssecurity} system requirements]

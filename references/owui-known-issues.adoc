@@ -1,0 +1,42 @@
+[#owui-known-issues]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {owui} known issues
+endif::[]
+
+This section lists the known issues with the {owui} and their solutions. 
+
+[#owui-reset-password]
+== User password reset
+
+An {owui} user can only reset their own password if they are logged in to {owui} and have an active Web browser session.
+However, if the user has lost their password and cannot log in to {owui}, the password must be reset by an {rke2} administrator using the `kubectl` command. 
+
+. Generate a new password hash using the `htpasswd` command. `htpasswd` is part of the [package]#apache2-utils# package. 
++
+[source,bash]
+----
+> htpasswd -bnBC 10 "NEW_PASSWORD"| tr -d ':\n'
+----
+. Identify the Pod where the {owui} application is running. 
++
+[source,bash]
+----
+> kubectl get pod -n SUSE_AI_NAMESPACE| grep open-webui | grep -v pipelines
+----
+. Update the password. 
++
+[source,bash]
+----
+> kubectl exec open-webui-0-n SUSE_AI_NAMESPACE – \
+  python3.11 -c 'import sqlite3; con = sqlite3.connect("/usr/lib/python3.11/site-packages/data/webui.db"); \
+  con.cursor().execute("UPDATE auth SET password=\"PASSWORD_HASH\" WHERE email=\"admin@example.org\""); con.commit()'
+----
+
+[#owui-audio-processing]
+== Audio processing stops after several minutes
+
+When the voice recorder is used as described in the section {dsc}/suse-ai/1.0/html/openwebui-using/index.html#openwebui-chat-window-usage[Chat window], {owui} tries to process the audio, but it times out without any warning and no text is generated.
+The API endpoint `/audio/api/v1/transcriptions`, which receives the audio to be processed, results in a `504 Gateway Timeout`. 

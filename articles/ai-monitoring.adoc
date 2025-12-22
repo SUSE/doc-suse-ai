@@ -1,0 +1,62 @@
+include::../common/generic-attributes.adoc[]
+= Monitoring SUSE AI with OpenTelemetry and SUSE Observability 
+
+:doctype: article
+:experimental:
+:docinfo:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:revdate: 2025-012-02
+:page-revdate: {revdate}
+
+WHAT?::
+  This document focuses on techniques for gathering telemetry data
+  from all {productname} components, including metrics, logs and traces. 
+
+WHY?::
+  To observe, analyze and maintain the behavior, performance and
+  health of your {productname} environment, and to troubleshoot issues
+  effectively. 
+
+EFFORT::
+  Setting up the recommended monitoring configurations with {sobservability} is
+  straightforward. Advanced setups for more granular control may require
+  additional time for specialized analysis and fine-tuning.
+
+GOAL::
+  To visualize the complete topology of your services and
+  operations, providing deep insights and clarity into your
+  {productname} environment.
+
+:override-title: Introduction
+include::../concepts/AI-monitoring.adoc[leveloffset=+1]
+include::../tasks/AI-monitoring-gpu.adoc[leveloffset=+1]
+include::../tasks/AI-monitoring-owui.adoc[leveloffset=+1]
+include::../tasks/AI-monitoring-milvus.adoc[leveloffset=+1]
+include::../concepts/AI-monitoring-vllm.adoc[leveloffset=+1]
+include::../concepts/AI-monitoring-user-apps.adoc[leveloffset=+1]
+
+[appendix]
+:override-title: Cost estimation
+include::../concepts/AI-monitoring-cost-estimation.adoc[leveloffset=+1]
+
+[appendix]
+:override-title: Instrument applications with {openlit} SDK
+include::../concepts/AI-monitoring-instrument-openlit.adoc[leveloffset=+1]
+
+[appendix]
+include::../references/AI-glossary.adoc[leveloffset=+1]
+
+[appendix]
+include::../common/common_copyright_gfdl.adoc[]
+
+[appendix]
+include::../common/common_license_gfdl1.2.adoc[]

@@ -1,0 +1,45 @@
+include::../common/generic-attributes.adoc[]
+= Preventing AI Hallucinations with Effective User Prompts
+
+:doctype: article
+:experimental:
+:docinfo:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:revdate: 2025-012-02
+:page-revdate: {revdate}
+
+[abstract]
+--
+WHAT?::
+  AI hallucinations occurs when an LLM generates information that
+  is not based on real-world facts or evidence. This can include
+  fictional events, incorrect data or irrelevant outputs.
+
+WHY?::
+  Learn to create effective prompts that can help AI generate
+  accurate and reliable content.
+
+EFFORT::
+  Less than 15 minutes of reading.
+--
+
+include::../references/AI-hallucinations-causes.adoc[leveloffset=+1]
+include::../tasks/AI-hallucinations-how-to-prevent.adoc[leveloffset=+1]
+
+[appendix]
+include::../references/AI-glossary.adoc[leveloffset=+1]
+
+[appendix]
+include::../common/common_copyright_gfdl.adoc[]
+
+[appendix]
+include::../common/common_license_gfdl1.2.adoc[]

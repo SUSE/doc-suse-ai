@@ -1,0 +1,12 @@
+[#ai-library-installing]
+= Installing applications from {ailibrary}
+
+{productname} is delivered as a set of components that you can combine to meet specific use cases.
+To enable the full integrated stack, you need to deploy multiple applications in sequence.
+Applications with the fewest dependencies must be installed first,
+followed by dependent applications once their required dependencies are in place within the cluster.
+
+ifdef::deployment_standard[]
+You can either install required {ailibrary} components manually using their {helm} charts,
+or use {saideployer} to include all the dependencies in one step.
+endif::[]

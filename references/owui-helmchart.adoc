@@ -1,0 +1,289 @@
+[#owui-helmchart-values]
+= Values for the {owui} {helm} chart
+
+include::../snippets/helm-chart-overrides-intro.adoc[]
+
+.Available options for the {owui} {helm} chart
+[cols="4"]
+|===
+|Key |Type |Default |Description
+
+|affinity
+|object
+|{}
+|Affinity for pod assignment
+
+|annotations
+|object
+|{}
+|
+
+|cert-manager.enabled
+|bool
+|true
+|
+
+|clusterDomain
+|string
+|"cluster.local"
+|Value of cluster domain
+
+|containerSecurityContext
+|object
+|{}
+|Configure container security context, see link:https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-containe[].
+
+|extraEnvVars
+|list
+|[{"name":"OPENAI_API_KEY", "value":"0p3n-w3bu!"}]
+|Environment variables added to the {owui} deployment.
+Most up-to-date environment variables can be found in link:https://docs.openwebui.com/getting-started/env-configuration/[].
+
+|extraEnvVars[0]
+|object
+|{"name":"OPENAI_API_KEY","value":"0p3n-w3bu!"}
+|Default API key value for Pipelines.
+It should be updated in a production deployment and changed to the required API key if not using Pipelines.
+
+|global.imagePullSecrets
+|list
+|[]
+|Global override for container image registry pull secrets
+
+|global.imageRegistry
+|string
+|""
+|Global override for container image registry
+
+|global.tls.additionalTrustedCAs
+|bool
+|false
+|
+
+|global.tls.issuerName
+|string
+|"suse-private-ai"
+|
+
+|global.tls.letsEncrypt.email
+|string
+|"none@example.com"
+|
+
+|global.tls.letsEncrypt.environment
+|string
+|"staging"
+|
+
+|global.tls.letsEncrypt.ingress.class
+|string
+|""
+|
+
+|global.tls.source
+|string
+|"suse-private-ai"
+|The source of {owui} TLS keys, see xref:owui-tls-sources[].
+
+|image.pullPolicy
+|string
+|"IfNotPresent"
+|Image pull policy to use for the {owui} container
+
+|image.registry
+|string
+|"dp.apps.rancher.io"
+|Image registry to use for the {owui} container
+
+|image.repository
+|string
+|"containers/open-webui"
+|Image repository to use for the {owui} container
+
+|image.tag
+|string
+|"0.3.32"
+|Image tag to use for the {owui} container
+
+|imagePullSecrets
+|list
+|[]
+|Configure imagePullSecrets to use private registry, see link:https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/[].
+
+|ingress.annotations
+|object
+|{"nginx.ingress.kubernetes.io/ssl-redirect":"true"}
+|Use appropriate annotations for your {ingress} controller, such as `nginx.ingress.kubernetes.io/rewrite-target: /` for NGINX.
+
+|ingress.class
+|string
+|""
+|
+
+|ingress.enabled
+|bool
+|true
+|
+
+|ingress.existingSecret
+|string
+|""
+|
+
+|ingress.host
+|string
+|""
+|
+
+|ingress.tls
+|bool
+|true
+|
+
+|nameOverride
+|string
+|""
+|
+
+|nodeSelector
+|object
+|{}
+|Node labels for pod assignment
+
+|ollama.enabled
+|bool
+|true
+|Automatically install {ollama} {helm} chart from link:https://otwld.github.io/ollama-helm/[].
+Configure the following link:https://github.com/otwld/ollama-helm/#helm-values[{helm} values].
+
+|ollama.fullnameOverride
+|string
+|"open-webui-ollama"
+|If enabling embedded {ollama}, update fullnameOverride to your desired {ollama} name value, or else it will use the default ollama.name value from the {ollama} chart.
+
+|ollamaUrls
+|list
+|[]
+|A list of {ollama} API endpoints.
+These can be added instead of automatically installing the {ollama} {helm} chart, or in addition to it.
+
+|openaiBaseApiUrl
+|string
+|""
+|OpenAI base API URL to use.
+Defaults to the Pipelines service endpoint when Pipelines are enabled, or to `https://api.openai.com/v1` if Pipelines are not enabled and this value is blank.
+
+|persistence.accessModes
+|list
+|["ReadWriteOnce"]
+|If using multiple replicas, you must update accessModes to ReadWriteMany.
+
+|persistence.annotations
+|object
+|{}
+|
+
+|persistence.enabled
+|bool
+|true
+|
+
+|persistence.existingClaim
+|string
+|""
+|Use existingClaim to reuse an existing {owui} PVC instead of creating a new one.
+
+|persistence.selector
+|object
+|{}
+|
+
+|persistence.size
+|string
+|"2Gi"
+|
+
+|persistence.storageClass
+|string
+|""
+|
+
+|pipelines.enabled
+|bool
+|false
+|Automatically install Pipelines chart to extend {owui} functionality using Pipelines, see link:https://github.com/open-webui/pipelines/[].
+
+|pipelines.extraEnvVars
+|list
+|[]
+|This section can be used to pass the required environment variables to your pipelines (such as the Langfuse host name).
+
+|podAnnotations
+|object
+|{}
+|
+
+|podSecurityContext
+|object
+|{}
+|Configure pod security context, see link:https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-containe[].
+
+|replicaCount
+|int
+|1
+|
+
+|resources
+|object
+|{}
+|
+
+|service
+|object
+|{"annotations":{},"containerPort":8080, "labels":{},"loadBalancerClass":"", "nodePort":"","port":80,"type":"ClusterIP"}
+|Service values to expose {owui} pods to cluster
+
+|tolerations
+|list
+|[]
+|Tolerations for pod assignment
+
+|topologySpreadConstraints
+|list
+|[]
+|Topology Spread Constraints for pod assignment
+|===
+
+[#owui-tls-sources]
+== TLS sources
+
+There are three recommended options where {owui} can obtain TLS certificates for secure communication.
+
+Self-Signed TLS certificate:: This is the default method.
+You need to install `cert-manager` on the cluster to issue and maintain the certificates.
+This method generates a CA and signs the {owui} certificate using the CA.
+`cert-manager` then manages the signed certificate.
+For this method, use the following {helm} chart option:
++
+[source,yaml]
+----
+global.tls.source=suse-private-ai
+----
+
+Let's Encrypt:: This method also uses `cert-manager`, but it is combined with a special issuer for Let's Encrypt that performs all actions--including request and validation--to get the Let's Encrypt certificate issued.
+This configuration uses HTTP validation (HTTP-01) and therefore the load balancer must have a public DNS record and be accessible from the Internet.
+For this method, use the following {helm} chart option:
++
+[source,yaml]
+----
+global.tls.source=letsEncrypt
+----
+
+Provide your own certificate:: This method allows you to bring your own signed certificate to secure the HTTPS traffic.
+In this case, you must upload this certificate and associated key as PEM-encoded files named `tls.crt` and `tls.key`.
+For this method, use the following {helm} chart option:
++
+[source,yaml]
+----
+global.tls.source=secret
+----

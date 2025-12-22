@@ -1,0 +1,42 @@
+[#openwebui-downloading-ai-models-from-huggingface]
+= Downloading AI models from {huggingface}
+
+{huggingface} (https://huggingface.co/models) is an online repository for AI models.
+It also supports models in the GGUF binary format optimized for quick loading and saving of models.
+This procedure describes how to download and use these GGUF models from the {owui} interface. 
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. Navigate your Web browser to https://huggingface.co/models and in the left
+menu:Libraries[] section, click menu:GGUF[] to include only GGUF models to
+choose from, for example, menu:gemma-7b[].
++
+.Finding models on {huggingface} 
+image::huggingface-selecting-model.png[Finding models on {huggingface},scaledwidth=75%]
++
+. Click the model name to open its model card and select menu:Use this model[Ollama]
++
+.{huggingface} model card
+image::huggingface-mode-card.png[{huggingface} model card,scaledwidth=100%]
++
+. From the menu:How to use[] pop-up, select the full path to the model, for example, `hf.co/google/gemma-7b`. 
++
+.{ollama} download on {huggingface}
+image::huggingface-ollama-download.png[{ollama} download on {huggingface},scaledwidth=50%]
++
+. In the bottom left of the {owui} window, click your avatar icon to open the user menu and select menu:Admin Panel[] . 
+. Click the menu:Settings[] tab and select menu:Connections[] from the left menu. 
+. In the menu:Manage Ollama API Connections[] section, click the small "download" icon on the right to open the menu:Manage Ollama[] screen. 
++
+.Downloading {ollama} models from {huggingface}
+image::owui-dld-ollama-huggingface.png[Downloading {ollama} models from {huggingface},scaledwidth=100%]
++
+. Paste the full path to the model tag from {huggingface} in the menu:Pull a model from Ollama.com[] input field and confirm by clicking the small download button on the right. 
++
+.Entering model tag to download
+image::owui-dld-ollama-huggingface-popup.png[Entering model tag to download,scaledwidth=75%]
++
+The model download starts and, after it is finished, the model will be available as a base model for AI interaction. 

@@ -1,0 +1,111 @@
+[#ai-data-integrity-maintaining]
+= Maintaining data integrity of AI applications
+
+This topic describes how to avoid compromising AI applications and keep sensitive data secure. 
+
+[#why-care-about-ai-security]
+== Why care about the security of AI applications?
+
+
+AI applications use AI-driven chatbots to interact with users.
+These chatbots are powered by large language models (LLMs) and can process external data sources (RAGs). Such applications are prone to cyber attacks as any other software solutions.
+Attackers may impersonate users and apply a series of techniques to steal data and to corrupt the responses provided by AI models. 
+
+[#ai-components-prone-to-attacks]
+== Which {productname} components are prone to attacks
+
+
+Users interact with {productname} via the {owui} user interface.
+With {owui}, you can manage users, permissions, AI models, knowledge bases, and chat interactions.
+The following {productname} components are the most susceptible to security attacks: 
+
+{owui}::
+{owui} enables you to specify external data sources to improve responses.
+On a user level, you can append documents directly to the chat input field.
+With administrator privileges, you can upload documents to create a knowledge base that enhances the AI model.
+The knowledge base acts as a domain-specific augmentation tool for the LLM.
+It prevents chatbot hallucination and improves the model's responses with accurate and up-to-date information. 
++
+
+TIP: Actions performed by users{mdash}both the administrators and guests{mdash}are recorded in an audit log.
+With the audit log, it is possible to map all actions that took the system to its current state. 
++
+
+
+{milvus}::
+It is possible to input documents directly into {milvus}{mdash}the vector database responsible for the low-level implementation of the knowledge base concept.
+Although the user interaction normally takes place via {owui}, attackers may bypass {owui} to interact with {milvus}. This can happen if no identity access management (IAM) policy is controlling database access. 
+
+{ollama}::
+{ollama} manages the interactions with several LLMs.
+It can search, download, start and manage models within a unified interface.
+{ollama} does not offer authentication and authorization by default.
+Therefore, {ollama}'s API should not be exposed without a an element providing IAM capabilities.
+In {productname}, user interacts with {ollama} via {owui}, which is able to configure and secure {ollama}. 
+
+
+[#ai-attacks-and-risks]
+== What are common attacks and security risks?
+
+
+This section lists several attacks and security risks related to AI applications. 
+
+RAG poisoning::
+A common exploit when a knowledge base{mdash}often a vector database{mdash}that provides a context for AI model responses is corrupted by the addition of misleading, false or even harmful content.
+The malicious documents tend to be crafted specifically to provide wrong answers for a set of user prompts.
+This kind of attack usually requires access to a user with privileges to configure the whole platform or the vector databases that support the platform. 
+
+Facilitated data exploits::
+RAG-powered models can search knowledge bases, summarize content and provide references.
+Attackers may use these characteristics to discover and retrieve organizational data with simple prompts instead of relying on more refined data-exploitation techniques. 
+
+Prompt leaks::
+User prompts may contain sensitive data, so chat caches and system logs need to be protected against attackers. 
+
+
+[#ai-safety-measures]
+== What safety measures should my organization follow?
+
+
+To avoid having your system corrupted, there are a few security measures that need to be properly implemented.
+{owui} and {milvus} allow high level user access configurations.
+Besides these high level configurations, provide access management with low level network configurations.
+To verify that your whole AI stack is secure, consider the following points: 
+
+Adopt strong IAM policies.::
+** At the authentication level, limit the creation of guest users. 
+** At the authorization level, never allow new users to be automatically set as system administrators. 
+** Limit the number of users with privileges for adding documents to your knowledge base. 
+** Keep in mind that the same policies set for {owui} need to be propagated in all systems composing the AI stack. 
+** Limit the exposure of internal services (such as {milvus} and {ollama}) to the Internet. 
+** Configure authentication and authorization for all components of the AI stack. 
+
+Adopt an audit log review policy.::
+Periodically check the audit logs provided in the Web interface, from both the chatbot and the vector databases.
+Look for abnormal behavior from one or more users. 
+
+Set up retention policies.::
+Avoid saving chat prompts and system logs. 
+
+Train users to avoid LLM overreliance.::
+Encourage users to approach the answers from the RAG-based models with a critical mindset.
+Make sure they are able to verify the references provided by the AI chatbot.
+Files used in the context of a user prompt are appended to the AI model's answer. 
+
+Facilitate incident reports.::
+Educate your users about how to report problems with the AI model's answers.
+Assign responsibilities for the system support. 
+
+Ensure fast action against attacks.::
+Remember that when a security breach happens, the sooner the system is restored to a trusted state, the less damage your organization takes. 
+
+Set up a secure environment for your applications.::
+Make sure that there are components enforcing authentication and authorization rules over the whole installation of the AI Stack.
+We do not recommend exposing {milvus} and {ollama} without proper network configurations. 
+
+
+[#ai-data-integrity-formoreinfo]
+== For more information
+
+* The article at https://cloudsecurityalliance.org/blog/2023/11/22/mitigating-security-risks-in-retrieval-augmented-generation-rag-llm-applications includes a comprehensive overview of security controls. 
+* Specifying external data sources to the AI model knowledge base is described in {dsc}/suse-ai/1.0/html/openwebui-using/index.html#openwebui-chat-input-field-usage[Open WebUI chat input field usage]. 

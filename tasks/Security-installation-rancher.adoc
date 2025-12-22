@@ -1,0 +1,391 @@
+[#suse-security-installation-rancher]
+= Installing and managing {ssecurity} through {ranchera} Extensions or Apps & Marketplace
+
+{ssecurity} can be deployed easily either through {ranchera} Extensions for Prime customers, or {ranchera} Apps and Marketplace.
+The default ({helm}-based) deployment deploys {ssecurity} containers into the `cattle-neuvector-system` namespace.
+
+[NOTE]
+====
+Only {ssecurity} deployments through {ranchera} Extensions ({ssecurity}) of {ranchera} version 2.7.0+, or Apps & Marketplace of {ranchera} version 2.6.5+ can be managed directly (single sign-on to the {ssecurity} console) through {ranchera}.
+If adding clusters to {ranchera} with {ssecurity} already deployed, or where {ssecurity} has been deployed directly onto the cluster, these clusters will not be enabled for SSO integration.
+====
+
+[#suse-security-installation-rancher-ui-extension]
+== {ssecurity} UI extension for {ranchera}
+
+{rancherprime} customers are able to easily deploy {ssecurity} and the {ssecurity} UI Extension for {ranchera}.
+This will enable Prime users to monitor and manage certain {ssecurity} functions and events directly through the {ranchera} UI.
+For community users, please see the Deploy {ssecurity} section below to deploy from {ranchera} Apps and Marketplace.
+
+. The first step is to enable the {ranchera} Extensions capability globally if it is not already enabled.
++
+.{ranchera} extensions
+image::ui0_extensions.png[A screenshot of {ranchera} extensions,width=75%]
++
+.Enable extensions
+image::ui1_enable.png[A screenshot of enabling extensions,width=75%]
+. Install the {ssecurity}-UI-Ext from the btn:[Available] list.
++
+.Install UI extension
+image::ui2_installext.png[A screenshot of install UI extension,width=75%]
+. Reload the extension after installation is complete.
++
+.Reload extension
+image::ui3reload.png[A screenshot of reload extension,width=75%]
+. On your selected cluster, install the {ssecurity} application from the {ssecurity} tab if the {ssecurity} app is not already installed.
+This should take you to the application installation steps.
+For more details on this installation process, see xref:suse-security-installation-rancher-deploy[].
++
+.Install {ssecurity} application
+image::ui5installnv.png[A screenshot of install {neuvector} application,width=75%]
+. The {ssecurity} dashboard should now be shown from the {ssecurity} menu for that cluster.
+From this dashboard, the security health of the cluster can be monitored.
+There are interactive elements in the dashboard, such as invoking a wizard to improve your Security Risk Score, including being able to turn on automated scanning for vulnerabilities if it is not enabled.
++
+.{ssecurity} dasboard
+image::ui6dashboard.png[A screenshot of {neuvector} dashboard,width=75%]
++
+The links in the upper right of the dashboard provide convenient single sign-on (SSO) links to the full {ssecurity} console for more detailed analysis and configuration.
+. To uninstall the extension, go back to the Extensions page.
++
+.Uninstalling extension
+image::ui7uninstall.png[A screenshot of uninstalling extension,width=75%]
++
+[NOTE]
+====
+Uninstalling the {ssecurity} UI extension does not uninstall the {ssecurity} app from each cluster.
+The {ssecurity} menu will revert to providing an SSO link into the {ssecurity} console.
+====
+
+[#suse-security-installation-rancher-deploy]
+== Deploy {ssecurity}
+
+First, find the {ssecurity} chart in {ranchera} charts, select it and review the instructions and configuration values.
+Optionally, create a project to deploy into if desired, for example, {ssecurity}.
+
+[NOTE]
+====
+If you see more than one {ssecurity} chart, do not select the one that is for upgrading legacy {ssecurity} 4.x {helm} chart deployments.
+====
+
+.{ranchera} chart
+image::rancher_chart.png[A screenshot of {ranchera} chart,width=75%]
+
+Deploy the {ssecurity} chart, first configuring appropriate values for a {ranchera} deployment, such as:
+
+* Container runtime, such as {docker} for {rkea} and {containerd} for {rke2a}, or select the K3s value if using K3s.
+* Manager service type: change to LoadBalancer if available on public cloud deployments.
+If access is only desired through {ranchera}, any allowed value will work here.
+See the Important note below about changing the default administration password in {ssecurity}.
+* Indicate whether this cluster will be a multi-cluster federated primary or remote (or select both if either option is desired).
+* Persistent volume for configuration backups
+
+.{neuvector} values
+image::rancher_chart_values.png[A screenshot of {neuvector} values,width=75%]
+
+Click btn:[Install] after you have reviewed and updated any chart values.
+
+After a successful {ssecurity} deployment, you will see a summary of the deployments, daemon sets, and cron jobs for {ssecurity}.
+You will also be able to see the services deployed in the Services Discovery menu on the left.
+
+.{neuvector} deployed
+image::nv_deployed.png[A screenshot of {neuvector} deployed,width=75%]
+
+[#suse-security-installation-rancher-manage]
+== Manage {ssecurity}
+
+You will now see a {ssecurity} menu item in the left, and selecting that will show a {ssecurity} tile/button, which when clicked will take you to the {ssecurity} console, in a new tab.
+
+.{neuvector} console access
+image::nv_access.png[A screenshot of {neuvector} console access,width=75%]
+
+When this Single Sign-On (SSO) access method is used for the first time, a corresponding user in the {ssecurity} cluster is created for the {ranchera} user login.
+The same user name as the {ranchera} logged-in user will be created in {ssecurity}, with a role of either admin or fedAdmin, and Identity provider as {ranchera}.
+
+.{neuvector} administrator users
+image::nv_admin.png[A screenshot of {neuvector} administrator users,width=75%]
+
+In the above screenshot, two {ranchera} users--`admin` and `gkosaka`--have been automatically created for SSO.
+If another user is created manually in {ssecurity}, the identity provider would be listed as {ssecurity}, as shown below.
+This local user can log in directly to the {ssecurity} console without going through {ranchera}.
+
+.Local admin
+image::local_admin.png[A screenshot of local admin,width=75%]
+
+[IMPORTANT]
+====
+It is recommended to log in directly to the {ssecurity} console as admin/admin to manually change the administrator password to a strong password.
+This will only change the {ssecurity} identity provider administrator user password (you may see another administrator user whose identify provider is {ranchera}).
+Alternatively, include a link:https://ranchermanager.docs.rancher.com/integrations-in-rancher/neuvector/configuration/configmaps#protect-sensitive-data-using-a-secret[ConfigMap as a secret] in the initial deployment from {ranchera} (see chart values for ConfigMap settings) to set the default admin password to a strong password.
+====
+
+[#suse-security-installation-rancher-sso-permissions]
+== {neuvector}/{ranchera} SSO permission resources
+
+The {ranchera} v2.9.2 UI provides for selecting {neuvector} permission resources when creating `Global/Cluster/Project/Namespaces` roles.
+When a {ranchera} user is assigned a role with a {neuvector} permission resource, the user's {neuvector} SSO session is assigned the respective {neuvector} permission accordingly.
+This is to provide SSO users with custom roles other than the reserved `admin/reader/fedAdmin/fedReader` roles.
+
+Below are the mapped permission resources used with applicable `Global/Cluster/Project/Namespaces` roles.
+
+[#suse-security-installation-rancher-sso-global-cluster]
+=== Mapped permission resources for `Global/Cluster` role
+
+[NOTE]
+====
+Users will need to manually add * (Verbs) / services/proxy (Resource) to {neuvector}-related `Global/Cluster` Roles.
+====
+
+API Groups:
+
+`permission.neuvector.com`
+
+Verbs:
+
+[source]
+----
+get    // for read-only(i.e. view)
+*      // for read/write(i.e. modify)
+----
+
+Resources:
+
+{neuvector}, Cluster Scoped
+
+[source]
+----
+AdmissionControl
+Authentication
+CI Scan
+Cluster
+Federation
+Vulnerability
+----
+
+{neuvector}, Namespaced
+
+[source]
+----
+AuditEvents
+Authorization
+Compliance
+Events
+Namespace
+RegistryScan
+RuntimePolicy
+RuntimeScan
+SecurityEvents
+SystemConfig
+----
+
+[#suse-security-installation-rancher-sso-project-namespace]
+=== Mapped permission resources for Project/Namespace role
+
+[NOTE]
+====
+You will need to manually add * (Verbs) / services/proxy (Resource) to {neuvector}-related `Project/Namespace` Roles.
+====
+
+API Groups:
+
+`permission.neuvector.com`
+
+Verbs:
+
+[source]
+----
+get    // for read-only(i.e. view)
+*      // for read/write(i.e. modify)
+----
+
+Resources:
+
+{neuvector}, Namespaced
+
+[source]
+----
+AuditEvents
+Authorization
+Compliance
+Events
+Namespace
+RegistryScan
+RuntimePolicy
+RuntimeScan
+SecurityEvents
+SystemConfig
+----
+
+[#suse-security-installation-rancher-disable-sso]
+== Disabling {ssecurity}/{ranchera} SSO
+
+To disable the ability to log in to {ssecurity} from {ranchermanager}, go to Settings -> Configuration.
+
+.{ranchera} SSO
+image::rancher_sso.png[A screenshot of {ranchera} SSO,width=75%]
+
+[#suse-security-installation-rancher-legacy-deployments]
+== {ranchera} legacy deployments
+
+The sample file will deploy one manager and 3 controllers.
+It will deploy an enforcer on every node.
+See the bottom section for specifying dedicated manager or controller nodes using node labels.
+
+[NOTE]
+====
+We do not recommend deploying or scaling more than one manager behind a load balancer due to potential session state issues.
+====
+
+[NOTE]
+====
+Deployment on {ranchera} 2.x/{kube} should follow the {kube} reference section and/or {helm}-based deployment.
+====
+
+. Deploy the catalog `docker-compose-dist.yml`.
+Controllers will be deployed on the labeled nodes; enforcers will be deployed on the rest of the nodes.
+(The sample file can be modified so that enforcers are only deployed to the specified nodes.)
+. Pick one controller for the manager to connect to.
+Modify the manager's catalog file `docker-compose-manager.yml`, set `CTRL_SERVER_IP` to the controller's IP, then deploy the manager catalog.
+
+Here are the sample compose files.
+If you wish to deploy only one or two of the components, just use that section of the file.
+
+{ranchermanager}/Controller/Enforcer Compose Sample File:
+
+[source,yaml]
+----
+manager:
+   scale: 1
+   image: neuvector/manager
+   restart: always
+   environment:
+     - CTRL_SERVER_IP=controller
+   ports:
+     - 8443:8443
+controller:
+   scale: 3
+   image: neuvector/controller
+   restart: always
+   privileged: true
+   environment:
+     - CLUSTER_JOIN_ADDR=controller
+   volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+     - /proc:/host/proc:ro
+     - /sys/fs/cgroup:/host/cgroup:ro
+     - /var/neuvector:/var/neuvector
+enforcer:
+   image: neuvector/enforcer
+   pid: host
+   restart: always
+   privileged: true
+   environment:
+     - CLUSTER_JOIN_ADDR=controller
+   volumes:
+     - /lib/modules:/lib/modules
+     - /var/run/docker.sock:/var/run/docker.sock
+     - /proc:/host/proc:ro
+     - /sys/fs/cgroup/:/host/cgroup/:ro
+   labels:
+     io.rancher.scheduler.global: true
+----
+
+[#suse-security-installation-rancher-deploy-no-privileged]
+== Deploy without privileged mode
+
+On certain systems, deployment without using privileged mode is supported.
+These systems must support the ability to add capabilities using the cap_add setting and to set the {aa} profile.
+
+Here is a sample {ranchera} compose file for deployment without privileged mode:
+
+[source,yaml]
+----
+manager:
+   scale: 1
+   image: neuvector/manager
+   restart: always
+   environment:
+     - CTRL_SERVER_IP=controller
+   ports:
+     - 8443:8443
+controller:
+   scale: 3
+   image: neuvector/controller
+   pid: host
+   restart: always
+   cap_add:
+     - SYS_ADMIN
+     - NET_ADMIN
+     - SYS_PTRACE
+   security_opt:
+     - apparmor=unconfined
+     - seccomp=unconfined
+     - label=disable
+   environment:
+     - CLUSTER_JOIN_ADDR=controller
+   volumes:
+     - /var/run/docker.sock:/var/run/docker.sock
+     - /proc:/host/proc:ro
+     - /sys/fs/cgroup:/host/cgroup:ro
+     - /var/neuvector:/var/neuvector
+enforcer:
+   image: neuvector/enforcer
+   pid: host
+   restart: always
+   cap_add:
+     - SYS_ADMIN
+     - NET_ADMIN
+     - SYS_PTRACE
+     - IPC_LOCK
+   security_opt:
+     - apparmor=unconfined
+     - seccomp=unconfined
+     - label=disable
+   environment:
+     - CLUSTER_JOIN_ADDR=controller
+   volumes:
+     - /lib/modules:/lib/modules
+     - /var/run/docker.sock:/var/run/docker.sock
+     - /proc:/host/proc:ro
+     - /sys/fs/cgroup/:/host/cgroup/:ro
+   labels:
+     io.rancher.scheduler.global: true
+----
+
+[#suse-security-installation-rancher-node-labels]
+== Using node labels for manager and controller nodes
+
+To control which nodes the Manager and Controller are deployed on, label each node.
+Pick the nodes where the controllers are to be deployed.
+Label them with 'nvcontroller=true'.
+With the current sample file, no more than one controller can run on the same node.
+
+For the manager node, label it 'nvmanager=true'.
+
+Add labels to the YAML file.
+For example, for the manager:
+
+[source,yaml]
+----
+   labels:
+     io.rancher.scheduler.global: true
+     io.rancher.scheduler.affinity:host_label: "nvmanager=true"
+----
+
+For the controller:
+
+[source,yaml]
+----
+   labels:
+     io.rancher.scheduler.global: true
+     io.rancher.scheduler.affinity:host_label: "nvcontroller=true"
+----
+
+For the enforcer, to prevent it from running on a controller node (if desired):
+
+[source,yaml]
+----
+  labels:
+     io.rancher.scheduler.global: true
+     io.rancher.scheduler.affinity:host_label_ne: "nvcontroller=true"
+----

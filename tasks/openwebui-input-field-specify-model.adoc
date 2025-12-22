@@ -1,0 +1,33 @@
+[#openwebui-chat-input]
+= The chat input field
+
+For a new chat, the chat input field is located at the center of
+the {owui} chat window. During a chat session, the chat window
+slides to the bottom. Its main purpose is to accept a user prompt
+so that the AI can process it and respond. Besides that, the chat input
+field provides extended functionality that can help you achieve
+the following tasks.
+
+[#openwebui-input-field-model]
+== Selecting an AI model from the chat input field
+
+You can specify which model you want the AI to use when responding to the prompts in your current chat.
+The selected model temporarily overrides your default model or the model you selected in the top-right corner of the chat window. 
+
+
+.Requirements
+* At least one AI model must be downloaded and available to {owui}. Refer to the section https://documentation.suse.com/suse-ai/1.0/html/openwebui-configuring/index.html#openwebui-setting-base-models[Setting base AI models ] for more details. 
+. In the chat input field, type the `@` character. 
+. From the drop-down list that appears, select one of the preconfigured AI models you want to talk to. You can only select one model at a time. 
++
+.Selecting an AI model
+image::openwebui-chat-models.png[Selecting an AI model,scaledwidth=75%]
++
+Your selection is confirmed by the menu:Talking to MODEL_NAME[]
+message right above the chat input field. 
+. Type your prompt and confirm with kbd:[Enter] or by clicking the "up" arrow to the right of the chat input field. 
++
+.Prompt for a selected model
+image::openwebui-chat-models-prompt.png[Prompt for a selected model,scaledwidth=75%]
++
+. To deactivate the previously selected model from the current chat, click the "cross" icon to the right of the model name. 

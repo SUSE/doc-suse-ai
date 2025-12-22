@@ -1,0 +1,48 @@
+[#openwebui-user-account-creating]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Creating user accounts in {owui}
+endif::[]
+
+ifndef::part-of-article[]
+This topic explains how to create a new user account with an assigned role in {owui}. It also describes how to create multiple user accounts from a CSV list. 
+endif::[]
+
+== Creating a single user account
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. In the bottom left of the {owui} window, click your avatar icon to open the user menu and select menu:Admin Panel[] . 
+. On the menu:Users[] screen, click the '+' sign at the top right. 
++
+.Creating new users
+image::openwebui-users-creating.png[Creating new users,scaledwidth=50%]
++
+. On the menu:Form[] screen, select the user role and enter the user name, e-mail and password. 
+. Confirm with menu:Save[] . 
+
+== Creating multiple user accounts from a CSV list
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. In the bottom left of the {owui} window, click your avatar icon to open the user menu and select menu:Admin Panel[] . 
+. On the menu:Users[] screen, click the '+' sign at the top right. 
+. On the menu:CSV Import[] screen, specify the path to your CSV file with the list of user accounts to be created. 
++
+[TIP]
+====
+The CSV list needs to have the four fields `Name,Email,Password,Role` per line separated by commas, for example: 
+====
++
+----
+Example User,tux@example.com,SECRET_PASSWD,user
+----
+. Confirm with menu:Save[] . 

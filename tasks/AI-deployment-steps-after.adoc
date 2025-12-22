@@ -1,0 +1,19 @@
+[#suse-ai-deploy-post]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Steps after the {productname} installation is complete
+endif::[]
+
+Once the {productname} installation is finished, follow these tasks to complete the initial setup and configuration.
+
+[.procedure]
+. Log in to {productname} {owui} using the default credentials.
+. After you have logged in, update the administrator password for {productname}.
+. From the available language models, configure the one you prefer.
+Optionally, install a custom language model.
+Refer to the section link:https://documentation.suse.com/suse-ai/1.0/html/openwebui-configuring/index.html#openwebui-setting-base-models[Setting base AI models] and link:https://documentation.suse.com/suse-ai/1.0/html/openwebui-configuring/index.html#openwebui-setting-default-models[Setting the default AI model] for more details.
+. Configure user management with _role-base access control_ (RBAC) as described in link:{dsc}/suse-ai/1.0/html/openwebui-configuring/index.html#openwebui-managing-user-roles[].
+. Integrate _single sign-on_ authentication manager{mdash}such as {okta}{mdash}with {owui} as described in link:{dsc}/suse-ai/1.0/html/openwebui-configuring/index.html#openwebui-authentication-via-okta[].
+. Configure _retrieval-augmented generation_ (RAG) to let the model process content relevant to the customer.

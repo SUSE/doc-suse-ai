@@ -1,0 +1,514 @@
+[#ollama-helmchart]
+= Values for the {ollama} {helm} chart
+
+include::../snippets/helm-chart-overrides-intro.adoc[]
+
+[IMPORTANT]
+.GPU section
+====
+{ollama} can run optimized for {nvidia} GPUs if the following conditions are fulfilled:
+
+* The {nvidia} driver and {nvoperator} are installed as described in link:https://documentation.suse.com/suse-ai/1.0/html/NVIDIA-GPU-driver-on-SLES/index.html[Installing {nvidia} GPU Drivers on {slsa}] or link:https://documentation.suse.com/suse-ai/1.0/html/NVIDIA-GPU-driver-on-SL-Micro/index.html[Installing {nvidia} GPU Drivers on {slm}].
+* The workloads are set to run on {nvidia}-enabled nodes as described in link:https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#ai-gpu-nodes-assigning[].
+
+If you do not want to use the {nvidia} GPU, remove the `gpu` section from `ollama_custom_overrides.yaml` or disable it.
+
+[source,yaml]
+----
+ ollama:
+  [...]
+  gpu:
+    enabled: false
+    type: 'nvidia'
+    number: 1
+----
+====
+
+.Basic override file with GPU and two models pulled at startup
+====
+[source,yaml]
+----
+global:
+  imagePullSecrets:
+  - application-collection
+ingress:
+  enabled: false
+defaultModel: "gemma:2b"
+runtimeClassName: nvidia
+ollama:
+  models:
+    pull:
+      - "gemma:2b"
+      - "llama3.1"
+    run:
+      - "gemma:2b"
+      - "llama3.1"
+  gpu:
+    enabled: true
+    type: 'nvidia'
+    number: 1
+    nvidiaResource: "nvidia.com/gpu"
+persistentVolume: <.>
+  enabled: true
+  storageClass: local-path <.>
+----
+<.> Without the `persistentVolume` option enabled, changes made to {ollama}--such as downloading other LLM-- are lost when the container is restarted.
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+====
+
+.Basic override file with {ingress} and no GPU
+====
+[source,yaml]
+----
+ollama:
+  models:
+    pull:
+      - llama2
+    run:
+      - llama2
+  persistentVolume:
+    enabled: true
+    storageClass: local-path <.>
+ingress:
+  enabled: true
+  hosts:
+  - host: <OLLAMA_API_URL>
+    paths:
+      - path: /
+        pathType: Prefix
+----
+<.> Use `local-path` storage (requires installing the corresponding provisioner) only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+====
+
+.Override file options for the {ollama} {helm} chart
+[cols="4"]
+|===
+|Key |Type |Default |Description
+
+|affinity
+|object
+|{}
+|Affinity for pod assignment
+
+|autoscaling.enabled
+|bool
+|false
+|Enable autoscaling
+
+|autoscaling.maxReplicas
+|int
+|100
+|Number of maximum replicas
+
+|autoscaling.minReplicas
+|int
+|1
+|Number of minimum replicas
+
+|autoscaling.targetCPUUtilizationPercentage
+|int
+|80
+|CPU usage to target replica
+
+|extraArgs
+|list
+|[]
+|Additional arguments on the output Deployment definition.
+
+|extraEnv
+|list
+|[]
+|Additional environment variables on the output Deployment definition.
+
+|fullnameOverride
+|string
+|""
+|String to fully override template
+
+|global.imagePullSecrets
+|list
+|[]
+|Global override for container image registry pull secrets
+
+|global.imageRegistry
+|string
+|""
+|Global override for container image registry
+
+|hostIPC
+|bool
+|false
+|Use the host’s IPC namespace
+
+|hostNetwork
+|bool
+|false
+|Use the host's network namespace
+
+|hostPID
+|bool
+|false
+|Use the host's PID namespace.
+
+|image.pullPolicy
+|string
+|"IfNotPresent"
+|Image pull policy to use for the {ollama} container
+
+|image.registry
+|string
+|"dp.apps.rancher.io"
+|Image registry to use for the {ollama} container
+
+|image.repository
+|string
+|"containers/ollama"
+|Image repository to use for the {ollama} container
+
+|image.tag
+|string
+|"0.3.6"
+|Image tag to use for the {ollama} container
+
+|imagePullSecrets
+|list
+|[]
+|Docker registry secret names as an array
+
+|ingress.annotations
+|object
+|{}
+|Additional annotations for the {ingress} resource
+
+|ingress.className
+|string
+|""
+|IngressClass that is used to implement the {ingress} ({kube} 1.18+)
+
+|ingress.enabled
+|bool
+|false
+|Enable {ingress} controller resource
+
+|ingress.hosts[0].host
+|string
+|"ollama.local"
+|
+
+|ingress.hosts[0].paths[0].path
+|string
+|"/"
+|
+
+|ingress.hosts[0].paths[0].pathType
+|string
+|"Prefix"
+|
+
+|ingress.tls
+|list
+|[]
+|The TLS configuration for host names to be covered with this {ingress} record
+
+|initContainers
+|list
+|[]
+|Init containers to add to the pod
+
+|knative.containerConcurrency
+|int
+|0
+|Knative service container concurrency
+
+|knative.enabled
+|bool
+|false
+|Enable Knative integration
+
+|knative.idleTimeoutSeconds
+|int
+|300
+|Knative service idle timeout seconds
+
+|knative.responseStartTimeoutSeconds
+|int
+|300
+|Knative service response start timeout seconds
+
+|knative.timeoutSeconds
+|int
+|300
+|Knative service timeout seconds
+
+|livenessProbe.enabled
+|bool
+|true
+|Enable livenessProbe
+
+|livenessProbe.failureThreshold
+|int
+|6
+|Failure threshold for livenessProbe
+
+|livenessProbe.initialDelaySeconds
+|int
+|60
+|Initial delay seconds for livenessProbe
+
+|livenessProbe.path
+|string
+|"/"
+|Request path for livenessProbe
+
+|livenessProbe.periodSeconds
+|int
+|10
+|Period seconds for livenessProbe
+
+|livenessProbe.successThreshold
+|int
+|1
+|Success threshold for livenessProbe
+
+|livenessProbe.timeoutSeconds
+|int
+|5
+|Timeout seconds for livenessProbe
+
+|nameOverride
+|string
+|""
+|String to partially override template (maintains the release name)
+
+|nodeSelector
+|object
+|{}
+|Node labels for pod assignment
+
+|ollama.gpu.enabled
+|bool
+|false
+|Enable GPU integration
+
+|ollama.gpu.number
+|int
+|1
+|Specify the number of GPUs
+
+|ollama.gpu.nvidiaResource
+|string
+|"nvidia.com/gpu"
+|Only for {nvidia} cards; change to `nvidia.com/mig-1g.10gb` to use MIG slice
+
+|ollama.gpu.type
+|string
+|"nvidia"
+|GPU type: 'nvidia' or 'amd.' If 'ollama.gpu.enabled' is enabled, the default value is 'nvidia.' If set to 'amd,' this adds the 'rocm' suffix to the image tag if 'image.tag' is not override. This is because AMD and CPU/CUDA are different images.
+
+|ollama.insecure
+|bool
+|false
+|Add insecure flag for pulling at container startup
+
+|ollama.models
+|list
+|[]
+|List of models to pull at container startup. The more you add, the longer the container takes to start if models are not present models: - llama2 - mistral
+
+|ollama.mountPath
+|string
+|""
+|Override ollama-data volume mount path, default: "/root/.ollama"
+
+|persistentVolume.accessModes
+|list
+|["ReadWriteOnce"]
+|{ollama} server data Persistent Volume access modes. Must match those of existing PV or dynamic provisioner, see link:https://kubernetes.io/docs/concepts/storage/persistent-volumes/[].
+
+|persistentVolume.annotations
+|object
+|{}
+|{ollama} server data Persistent Volume annotations
+
+|persistentVolume.enabled
+|bool
+|false
+|Enable persistence using PVC
+
+|persistentVolume.existingClaim
+|string
+|""
+|If you want to bring your own PVC for persisting {ollama} state, pass the name of the created + ready PVC here. If set, this Chart does not create the default PVC. Requires `server.persistentVolume.enabled: true`
+
+|persistentVolume.size
+|string
+|"30Gi"
+|{ollama} server data Persistent Volume size
+
+|persistentVolume.storageClass
+|string
+|""
+|If persistentVolume.storageClass is present, and is set to either a dash ('-') or empty string (''), dynamic provisioning is disabled. Otherwise, the storageClassName for persistent volume claim is set to the given value specified by persistentVolume.storageClass. If persistentVolume.storageClass is absent, the default storage class is used for dynamic provisioning whenever possible. See link:https://kubernetes.io/docs/concepts/storage/storage-classes/[] for more details.
+
+|persistentVolume.subPath
+|string
+|""
+|Subdirectory of {ollama} server data Persistent Volume to mount. Useful if the volume's root directory is not empty.
+
+|persistentVolume.volumeMode
+|string
+|""
+|{ollama} server data Persistent Volume Binding Mode. If empty (the default) or set to null, no volumeBindingMode specification is set, choosing the default mode.
+
+|persistentVolume.volumeName
+|string
+|""
+|{ollama} server Persistent Volume name. It can be used to force-attach the created PVC to a specific PV.
+
+|podAnnotations
+|object
+|{}
+|Map of annotations to add to the pods
+
+|podLabels
+|object
+|{}
+|Map of labels to add to the pods
+
+|podSecurityContext
+|object
+|{}
+|Pod Security Context
+
+|readinessProbe.enabled
+|bool
+|true
+|Enable readinessProbe
+
+|readinessProbe.failureThreshold
+|int
+|6
+|Failure threshold for readinessProbe
+
+|readinessProbe.initialDelaySeconds
+|int
+|30
+|Initial delay seconds for readinessProbe
+
+|readinessProbe.path
+|string
+|"/"
+|Request path for readinessProbe
+
+|readinessProbe.periodSeconds
+|int
+|5
+|Period seconds for readinessProbe
+
+|readinessProbe.successThreshold
+|int
+|1
+|Success threshold for readinessProbe
+
+|readinessProbe.timeoutSeconds
+|int
+|3
+|Timeout seconds for readinessProbe
+
+|replicaCount
+|int
+|1
+|Number of replicas
+
+|resources.limits
+|object
+|{}
+|Pod limit
+
+|resources.requests
+|object
+|{}
+|Pod requests
+
+|runtimeClassName
+|string
+|""
+|Specify runtime class
+
+|securityContext
+|object
+|{}
+|Container Security Context
+
+|service.annotations
+|object
+|{}
+|Annotations to add to the service
+
+|service.nodePort
+|int
+|31434
+|Service node port when service type is 'NodePort'
+
+|service.port
+|int
+|11434
+|Service port
+
+|service.type
+|string
+|"ClusterIP"
+|Service type
+
+|serviceAccount.annotations
+|object
+|{}
+|Annotations to add to the service account
+
+|serviceAccount.automount
+|bool
+|true
+|Whether to automatically mount a ServiceAccount's API credentials
+
+|serviceAccount.create
+|bool
+|true
+|Whether a service account should be created
+
+|serviceAccount.name
+|string
+|""
+|The name of the service account to use. If not set and 'create' is 'true', a name is generated using the full name template.
+
+|tolerations
+|list
+|[]
+|Tolerations for pod assignment
+
+|topologySpreadConstraints
+|object
+|{}
+|Topology Spread Constraints for pod assignment
+
+|updateStrategy
+|object
+|{"type":""}
+|How to replace existing pods.
+
+|updateStrategy.type
+|string
+|""
+|Can be 'Recreate' or 'RollingUpdate'; default is 'RollingUpdate'
+
+|volumeMounts
+|list
+|[]
+|Additional volumeMounts on the output Deployment definition
+
+|volumes
+|list
+|[]
+|Additional volumes on the output Deployment definition
+|===

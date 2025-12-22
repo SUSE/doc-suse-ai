@@ -1,0 +1,82 @@
+include::../common/generic-attributes.adoc[]
+= Using Open WebUI for Effective AI Model Interaction 
+
+:doctype: article
+:experimental:
+:docinfo:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:revdate: 2025-012-02
+:page-revdate: {revdate}
+
+[abstract]
+--
+
+WHAT?::
+  Open WebUI is a Web-based application that allows you to
+  interact with AI models. 
+
+WHY?::
+  To understand what Open WebUI is and learn how to use it
+  to effectively interact with AI models.
+
+EFFORT::
+  It takes less than an hour to understand the basics of
+  Open WebUI.
+
+REQUIREMENTS::
+  The descriptions and procedures in this article assume
+  that the following requirements are already fulfilled:
+
+  ** You have successfully deployed the SUSE AI.
+  ** You can access the Open WebUI interface in your Web browser.
+  ** Your Open WebUI user account has been created, and you have
+  received the login credentials.
+  ** You have navigated your Web browser to the URL of your
+  instance of Open WebUI and logged in with your credentials.
+--
+
+include::../concepts/openwebui-introduction.adoc[leveloffset=+1]
+
+:override-title: User interface basics
+include::../concepts/owui-user-interface.adoc[leveloffset=+1]
+
+:override-title: The chat window
+include::../tasks/openwebui-chat-window-usage.adoc[leveloffset=+1]
+
+[#openwebui-chat-input-field-usage]
+== The chat input field
+
+For a new chat, the chat input field is located at the center of the
+{owui} chat window. During a chat session, the chat window slides to
+the bottom. Its main purpose is to accept a user prompt so that the
+AI can process it and respond (see
+xref:openwebui-chat-window-usage[]). Besides that, the
+chat input field provides extended functionality that can help you
+achieve the following tasks.
+
+
+include::../tasks/openwebui-input-field-specify-model.adoc[leveloffset=+2]
+include::../tasks/openwebui-input-field-specify-collections.adoc[leveloffset=+2]
+include::../tasks/openwebui-input-field-specify-custom-docs.adoc[leveloffset=+2]
+include::../tasks/openwebui-input-field-specify-system-prompt.adoc[leveloffset=+2]
+include::../tasks/openwebui-input-field-specify-mcpo-tools.adoc[leveloffset=+2]
+include::../tasks/openwebui-setting-chat-native-function-calling.adoc[leveloffset=+2]
+
+
+[appendix]
+include::../references/AI-glossary.adoc[leveloffset=+1]
+
+[appendix]
+include::../adoc/common_copyright_gfdl.adoc[]
+
+[appendix]
+include::../adoc/common_license_gfdl1.2.adoc[]

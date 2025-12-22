@@ -1,0 +1,17 @@
+[#openwebui-ai-models-cloning]
+= Cloning existing AI models
+
+ifndef::part-of-article[]
+This procedure shows how to clone an existing custom AI model using {owui}.
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. In the {owui} interface, click menu:Workspace[] at the top of the left panel and select menu:Models[] . 
+. In the list of AI models, hover the mouse over the model that you want to clone and click the three dots on its right. 
+. From the contextual menu, select menu:Clone[] to open the same form as described in xref:openwebui-ai-models-creating[] with all settings copied from the original model. The menu:Name[] field has `(Clone)` appended. 
+. From the contextual menu, select menu:Clone[] to open the same form as described in with all settings copied from the original model. The menu:Name[] field has `(Clone)` appended. 
+. Review the settings and create the cloned AI model with menu:Save & Create[]. 

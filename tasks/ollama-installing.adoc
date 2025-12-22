@@ -1,0 +1,142 @@
+[#ollama-installing]
+= Installing {ollama}
+
+{ollama} is a tool for running and managing language models locally on your computer.
+It offers a simple interface to download, run and interact with models without relying on cloud resources.
+
+[TIP,os=suseai]
+====
+When installing {suseai}, {ollama} is installed by the {owui} installation by default.
+If you decide to install {ollama} separately, disable its installation during the installation of {owui} as outlined in xref:owui-ollama-deploy-separate[].
+====
+
+[#ollama-installing-app-details]
+== Details about the {ollama} application
+
+Before deploying {ollama}, it is important to know more about the supported configurations and documentation.
+The following command provides the corresponding details:
+
+[source,bash]
+----
+helm show values oci://dp.apps.rancher.io/charts/ollama
+----
+
+Alternatively, you can also refer to the {ollama} {helm} chart page on the {sappco} site at link:https://apps.rancher.io/applications/ollama[].
+It contains the available versions and a link to pull the {ollama} container image.
+
+[#ollama-installing-procedure]
+== {ollama} installation procedure
+
+include::../snippets/ai-library-requirement.adoc[]
+
+. Create the `ollama_custom_overrides.yaml` file to override the values of the parent {helm} chart.
+Refer to xref:ollama-helmchart[] for more details.
+. Install the {ollama} {helm} chart using the `ollama-custom-overrides.yaml` override file.
++
+ifdef::deployment_standard[]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade \
+  --install ollama oci://dp.apps.rancher.io/charts/ollama \
+  -n <SUSE_AI_NAMESPACE> \
+  -f ollama_custom_overrides.yaml
+----
+endif::[]
+ifdef::deployment_airgap[]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade \
+  --install ollama charts/ollama-<X.Y.Z>.tgz \
+  -n <SUSE_AI_NAMESPACE> \
+  -f ollama_custom_overrides.yaml
+----
++
+.Downloading AI models
+[IMPORTANT]
+====
+{ollama} normally needs to have an active Internet connection to download AI models.
+In an air-gapped environment, you must download the models manually and copy them to your local {ollama} instance, for example:
+
+[source,bash]
+----
+kubectl cp
+  <PATH_TO_LOCALLY_DOWNLOADED_MODELS>/blobs/* \
+  <OLLAMA_POD_NAME>:~/.ollama/models/blobs/
+----
+====
+endif::[]
++
+[TIP]
+.{huggingface} models
+====
+Models downloaded from {huggingface} need to be converted before they can be used by {ollama}.
+Refer to link:https://github.com/ollama/ollama/blob/main/docs/import.md[] for more details.
+====
+
+[#ollama-uninstalling]
+== Uninstalling {ollama}
+
+To uninstall {ollama}, run the following command:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm uninstall ollama -n <SUSE_AI_NAMESPACE>
+----
+
+ifdef::deployment_standard[]
+[#ollama-upgrading]
+== Upgrading {ollama}
+
+You can upgrade {ollama} to a specific version by running the following command:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade ollama oci://dp.apps.rancher.io/charts/ollama \
+  -n <SUSE_AI_NAMESPACE> \
+  --version <OLLAMA_VERSION_NUMBER> -f <ollama_custom_overrides.yaml>
+----
+
+If you omit the `--version` option, {ollama} gets upgraded to the latest available version.
+
+[#ollama-upgrading-0-to-1]
+=== Upgrading from version 0.x.x to 1.x.x
+
+The version 1.x.x introduces the ability to load models in memory at startup.
+To reflect this, change `ollama.models` to `ollama.models.pull` in the {ollama} {helm} chart to avoid errors before upgrading, for example:
+
+.{ollama} {helm} chart version 0.x.x
+====
+[source,yaml]
+----
+[...]
+ollama:
+  models:
+    - "gemma:2b"
+    - "llama3.1"
+----
+====
+
+.{ollama} {helm} chart version 1.x.x
+====
+[source,yaml]
+----
+[...]
+ollama:
+  models:
+    pull:
+      - "gemma:2b"
+      - "llama3.1"
+----
+====
+
+Without this change you may experience the following error when trying to upgrade from 0.x.x to 1.x.x.
+
+[source]
+----
+coalesce.go:286: warning: cannot overwrite table with non table for
+ollama.ollama.models (map[pull:[] run:[]])
+Error: UPGRADE FAILED: template: ollama/templates/deployment.yaml:145:27:
+executing "ollama/templates/deployment.yaml" at <.Values.ollama.models.pull>:
+can't evaluate field pull in type interface {}
+----
+endif::[]

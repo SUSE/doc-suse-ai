@@ -1,0 +1,25 @@
+[#openwebui-setting-system-model]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Setting the default system AI model
+endif::[]
+
+ifndef::part-of-article[]
+This topic explains how to set the default AI model for all users.
+The model is then used for new chats, if not overridden by specifying a model for a chat. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. In the bottom left of the {owui} window, click your avatar icon to open the user menu and select menu:Admin Panel[] . 
+. Click the menu:Settings[] tab and select menu:Models[] from the left menu. 
+. Click the little gear icon in the top right to open the menu:Settings[] screen. 
+. In the menu:Default Models[] section, select the default system AI model. Confirm with menu:Save[] . 
++
+.Default system AI model
+image::openwebui-system-model.png[Default system AI model,scaledwidth=50%]

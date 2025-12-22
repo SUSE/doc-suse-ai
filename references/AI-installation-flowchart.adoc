@@ -1,0 +1,26 @@
+[#ai-installation-flowchart]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {productname} installation flowchart
+endif::[]
+
+The following chart illustrates the installation process of {productname}.
+It outlines the following possible scenarios:
+
+* You have clean cluster nodes prepared without a supported Linux operating system installed.
+* You have a supported Linux operating system and {kube} distribution installed on cluster nodes.
+* You have {rancherprime} and all supportive components installed on the {kube} cluster and are prepared to install the required applications from the {ailibrary}.
+
+ifdef::deployment_standard[]
+[#fg-ai-installation-flowchart]
+.{productname} installation process
+image::ai-installation-flowchart.png[alt="{productname} installation process",width=100%]
+endif::[]
+
+ifdef::deployment_airgap[]
+[#fg-ai-installation-flowchart-airgapped]
+.{productname} air-gapped installation process
+image::ai-installation-flowchart-airgapped.png[alt="{productname} air-gapped installation process",width=100%]
+endif::[]

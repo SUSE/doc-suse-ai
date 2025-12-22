@@ -1,0 +1,79 @@
+[#owui-installing]
+= Installing {owui}
+
+include::../snippets/openwebui-intro.adoc[]
+
+[#owui-installing-app-details]
+== Details about the {owui} application
+
+Before deploying {owui}, it is important to know more about the supported configurations and documentation.
+The following command provides the corresponding details:
+
+[source,bash]
+----
+helm show values oci://dp.apps.rancher.io/charts/open-webui
+----
+
+Alternatively, you can also refer to the {owui} {helm} chart page on the {sappco} site at link:https://apps.rancher.io/applications/open-webui[].
+It contains available versions and the link to pull the {owui} container image.
+
+[#owui-installing-procedure]
+== {owui} installation procedure
+
+include::../snippets/ai-library-requirement.adoc[]
+
+.Requirements
+
+* An installed {certmanager}.
+If {certmanager} is not installed from previous {owui} releases, install it by following the steps in xref:cert-manager-installing[].
+--
+. Create the `owui_custom_overrides.yaml` file to override the values of the parent {helm} chart.
+The file contains URLs for {milvus} and {ollama}, and specifies whether a stand-alone {ollama} deployment is used or whether {ollama} is installed as part of the {owui} installation.
+Find more details in xref:owui-helm-overrides[].
+For a list of all installation options with examples, refer to xref:owui-helmchart-values[].
+. Install the {owui} {helm} chart using the `owui_custom_overrides.yaml` override file.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  open-webui charts/open-webui-<X.Y.Z>.tgz \
+  -n <SUSE_AI_NAMESPACE> \
+  --version <X.Y.Z> -f <owui_custom_overrides.yaml>
+----
+--
+
+ifdef::deployment_standard[]
+[#owui-upgrading]
+== Upgrading {owui}
+
+To upgrade {owui} to a specific new version, run the following command:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install open-webui \
+  oci://dp.apps.rancher.io/charts/open-webui \
+  -n <SUSE_AI_NAMESPACE> \
+  --version <VERSION_NUMBER> \
+  -f <owui_custom_overrides.yaml>
+----
+
+To upgrade {owui} to the latest version, run the following command:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install open-webui \
+  oci://dp.apps.rancher.io/charts/open-webui \
+  -n <SUSE_AI_NAMESPACE> \
+  -f <owui_custom_overrides.yaml>
+----
+endif::[]
+
+[#owui-uninstalling]
+== Uninstalling {owui}
+
+To uninstall {owui}, run the following command:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm uninstall open-webui -n <SUSE_AI_NAMESPACE>
+----

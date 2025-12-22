@@ -1,0 +1,18 @@
+MAIN="ai-deployment.adoc"
+SRC_DIR="articles"
+IMG_SRC_DIR="images"
+
+# ASCIIDoc options
+ADOC_POST=yes
+ADOC_TYPE=article
+ADOC_ATTRIBUTES=" --attribute env-daps=1"
+ADOC_ATTRIBUTES+=" --attribute deployment_standard"
+
+STYLEROOT="/usr/share/xml/docbook/stylesheet/suse2022-ns"
+FALLBACK_STYLEROOT="/usr/share/xml/docbook/stylesheet/suse-ns"
+
+# DocBook Validation
+DOCBOOK5_RNG_URI="http://docbook.org/xml/5.2/rng/docbookxi.rng"
+
+XSLTPARAM+=' --param toc.section.depth=2'
+XSLTPARAM+=' --param bubbletoc.section.depth=3 --param bubbletoc.max.depth=3'

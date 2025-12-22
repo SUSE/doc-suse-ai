@@ -1,0 +1,100 @@
+[#suse-ai-deploy-suse-ai]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Installing {ailibrary}
+endif::[]
+
+ifdef::deployment_standard[]
+This procedure includes steps to install {ailibrary} applications.
+endif::[]
+ifdef::deployment_airgap[]
+This procedure includes steps to install {ailibrary} applications in an air-gapped environments.
+endif::[]
+
+ifdef::deployment_airgap[]
+[NOTE]
+====
+If the following steps do not specify on which part of the air-gapped architecture--_local_ or _remote_--the task should be performed, assume _remote_.
+The isolated _local_ part is always be specified.
+====
+endif::[]
+
+[.procedure]
+. Purchase the {productname} entitlement.
+It is a separate entitlement from {rancherprime}.
+. Access {productname} via the {sappco} at link:https://apps.rancher.io/[] to perform the check for the {productname} entitlement.
+. If the entitlement check is successful, you are given access to the {productname}-related {helm} charts and container images, and can deploy directly from the {sappco}.
+. Visit the {sappco}, sign in and get the user access token as described in link:https://docs.apps.rancher.io/get-started/authentication/[].
+ifdef::deployment_airgap[]
+. On the _local_ cluster, create a {kube} namespace if it does not already exist.
+endif::[]
+ifdef::deployment_standard[]
+. Create a {kube} namespace if it does not already exist.
+endif::[]
+The steps in this procedure assume that all containers are deployed into the same namespace referred to as `SUSE_AI_NAMESPACE`.
+Replace its name to match your preferences.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl create namespace <SUSE_AI_NAMESPACE>
+----
+. Create the {sappco} secret.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl create secret docker-registry application-collection \
+  --docker-server=dp.apps.rancher.io \
+  --docker-username=<APPCO_USERNAME> \
+  --docker-password=<APPCO_USER_TOKEN> \
+  -n <SUSE_AI_NAMESPACE>
+----
+. Log in to the {helm} registry.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm registry login dp.apps.rancher.io/charts \
+  -u <APPCO_USERNAME> \
+  -p <APPCO_USER_TOKEN>
+----
+ifdef::deployment_airgap[]
+. On the _remote_ host, download the `SUSE-AI-get-images.sh` script from the xref:ai-air-gap-stack[air-gap stack] and run it.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}./SUSE-AI-get-images.sh
+----
++
+This script creates a subdirectory with all necessary {helm} charts plus `suse-ai-containers.tgz` and `suse-ai-containers.txt` files.
+. Create a {docker} registry on one of the _local_ hosts so that the _local_ {kube} cluster can access it.
+. Securely transfer the created subdirectory with {helm} charts plus `suse-ai-containers.tgz` and `suse-ai-containers.txt` files from the _remote_ host to a _local_ host and load all container images to the _local_ {docker} registry.
+Set `DST_REGISTRY_USERNAME` and `DST_REGISTRY_PASSWORD` environment variables if they are required to access the registry.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}./SUSE-AI-load-images.sh \
+  -d <LOCAL_DOCKER_REGISTRY_URL> \
+  -i charts/suse-ai-containers.txt \
+  -f charts/suse-ai-containers.tgz
+----
+endif::[]
+. Install {certmanager} as described in xref:cert-manager-installing[].
+. Install {ailibrary} components.
+ifdef::deployment_standard[]
+You can either install each component separately, or use the {saideployer} chart to install the components together as described in xref:ailibrary-installing-deployer[].
+endif::[]
+
+ifdef::deployment_airgap[]
+.. Install {milvus} as described in xref:milvus-installing[].
+endif::[]
+ifdef::deployment_standard[]
+.. Install an application with vector database capabilities.
+{owui} supports either xref:opensearch-installing[{opensearch}] or xref:milvus-installing[{milvus}].
+endif::[]
+..  _(Optional)_ Install {ollama} as described in xref:ollama-installing[].
+.. Install {owui} as described in xref:owui-installing[].
+ifdef::deployment_standard[]
+.. Install {vllm} as described in xref:vllm-installing[].
+.. Install {mcpo} as described in xref:mcpo-installing[].
+endif::[]

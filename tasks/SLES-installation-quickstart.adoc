@@ -1,0 +1,722 @@
+[#sles-installation-quickstart]
+= Installing {sls}
+
+Use the following procedures to install {slsa} on all supported hardware
+platforms. They assume you have successfully booted into the
+installation system. For more detailed installation instructions and
+deployment strategies, refer to
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/book-deployment.html[{sls} Deployment Guide].
+
+[#sec-sle-installquick-unified-installer]
+== The {leanos}
+
+Starting with {slsa} 15, the installation medium consists only of the
+{leanos}, a minimal system for installing, updating and registering all
+{sle} base products. During the installation, you can add functionality by
+selecting modules and extensions to be installed on top of the {leanos}.
+
+[#sec-sle-installquick-install-offline]
+== Installing offline or without registration
+
+The default installation medium {installmedia} is optimized for size and
+does not contain any modules and extensions. Therefore, the installation
+requires network access to register your product and retrieve repository
+data for the modules and extensions.
+
+For installation without registering the system, use the
+`{packagemedia}` image from
+link:https://www.suse.com/download/sles/[] and refer to
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-install.html#sec-yast-install-scc-registration-none[Installing without registration].
+
+[TIP]
+.Copying the installation media image to a removable flash disk
+====
+Use the following command to copy the contents of the installation image
+to a removable flash disk.
+
+[source,bash,subs="+attributes"]
+----
+{prompt_sudo}dd if=IMAGE of=FLASH_DISK bs=4M && sync
+----
+
+`IMAGE` needs to be replaced with the path to
+the `{installmedia}` or
+`{packagemedia}` image file.
+`FLASH_DISK` needs to be replaced with the
+flash device. To identify the device, insert it and run:
+
+[source,bash]
+----
+{prompt_root}grep -Ff <(hwinfo --disk --short) <(hwinfo --usb --short)
+disk:
+  /dev/sdc             General USB Flash Disk
+----
+
+Make sure the size of the device is sufficient for the desired image.
+You can check the size of the device with:
+
+[source]
+----
+{prompt_root}fdisk -l /dev/sdc | grep -e "^/dev"
+     /dev/sdc1  *     2048 31490047 31488000  15G 83 Linux
+----
+
+In this example, the device has a capacity of 15 GB. The command to
+use for the `{packagemedia}` would be:
+
+[source,bash,subs="+attributes"]
+----
+dd if={packagemedia} of=/dev/sdc bs=4M && sync
+----
+
+The device must not be mounted when running the `dd`
+command. Note that all data on the partition will be erased.
+====
+
+[#sec-sle-installquick-install]
+== The installation procedure
+
+To install {slsa}, boot or IPL into the installer from the {leanos} medium
+and start the installation.
+
+[#sec-sle-installquick-install-lang]
+=== Language, keyboard and product selection
+
+.Language, keyboard and product selection
+image::install_product.png[width=100%,alt="Language, keyboard and product selection screen"]
+
+The menu:Language[] and menu:Keyboard Layout[]
+settings are initialized with the language you chose on the boot screen.
+If you do not change the default, it remains English (US). Change the
+settings here, if necessary. Use the menu:Keyboard Test[]
+text box to test the layout.
+
+Select {sls} {sles-ai-version} for installation. You need to have a
+registration code for the product. Proceed with menu:Next[].
+
+[TIP]
+.Light and high-contrast themes
+====
+If you have difficulty reading the labels in the installer, you can
+change the widget colors and theme.
+
+Click the image:yast-day-night-mode.svg[width=4mm,alt="Change the widget theme"] button or press
+kbd:[Shift+F3] to
+open a theme selection dialog. Select a theme from the list and
+menu:Close[] the dialog.
+
+kbd:[Shift+F4]
+switches to the color scheme for vision-impaired users. Press the
+buttons again to switch back to the default scheme.
+====
+
+[#sec-sle-installquick-install-license]
+=== License agreement
+
+.License agreement
+image::install_license_sles.png[width=100%,alt="{slsa} License Agreement screen"]
+
+Read the License Agreement. It is presented in the language you have
+chosen on the boot screen. Translations are available via the
+menu:License Language[] drop-down list. You need to accept
+the agreement by checking menu:I Agree to the License Terms[] to install {slsa}. Proceed with menu:Next[].
+
+[#sec-sle-installquick-install-network]
+=== Network settings
+
+.Network settings
+image::install_network.png[width=100%,alt="Network Settings screen"]
+
+A system analysis is performed, where the installer probes for storage
+devices and tries to find other installed systems. If the network was
+automatically configured via DHCP during the start of the installation,
+you are presented the registration step.
+
+If the network is not yet configured, the menu:Network Settings[] dialog opens. Choose a network interface from the
+list and configure it with menu:Edit[]. Alternatively,
+menu:Add[] an interface manually. See the sections on
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-install.html#sec-yast-install-network[installer network settings] and
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-network.html#sec-network-yast[configuring a network connection with {yast}] for more information. If you
+prefer to do an installation without network access, skip this step
+without making any changes and proceed with menu:Next[].
+
+[#sec-sle-installquick-install-register]
+=== Registration
+
+.Registration
+image::install_registration_sles.png[width=100%,alt="Registration screen"]
+
+To get technical support and product updates, you need to register and
+activate {slsa} with the {scc} or a local registration server.
+Registering your product at this stage also grants you immediate access
+to the update repository. This enables you to install the system with
+the latest updates and patches available.
+
+When registering, repositories and dependencies for modules and
+extensions are loaded from the registration server.
+
+menu:Register system at scc.suse.com[]::
+To register at the {scc}, enter the menu:E-mail Address[] associated with your {scc} account and the
+menu:Registration Code[] for {slsa}. Proceed with
+menu:Next[].
+
+menu:Register system via local RMT server[]::
+If your organization provides a local registration server, you may
+alternatively register to it. Activate menu:Register System via local RMT Server[] and either choose a URL from the
+drop-down list or type in an address. Proceed with
+menu:Next[].
+
+menu:Skip registration[]::
+If you are offline or want to skip registration, activate
+menu:Skip Registration[]. Accept the warning with
+menu:OK[] and proceed with menu:Next[].
++
+[IMPORTANT]
+.Skipping the registration
+====
+Your system and extensions need to be registered to retrieve
+updates and to be eligible for support. Skipping the
+registration is only possible when installing from the
+`{packagemedia}` image.
+====
++
+If you do not register during the installation, you can do so at
+any time later from the running system. To do so, run
+menu:{yast}[Product Registration] or the command-line tool
+`SUSEConnect`.
+
+[TIP]
+.Installing product patches at installation time
+====
+After {slsa} has been successfully registered, you are asked whether
+to install the latest available online updates during the
+installation. If choosing menu:Yes[], the system will be
+installed with the most current packages without having to apply the
+updates after installation. Activating this option is recommended.
+====
+
+[NOTE]
+.Firewall settings for receiving updates
+====
+By default, the firewall on {productname} only blocks incoming
+connections. If your system is behind another firewall that blocks
+outgoing traffic, make sure to allow connections to
+`{sccurl}` and
+`https://updates.suse.com` on ports 80 and 443
+to receive updates.
+====
+
+[#sec-sle-installquick-install-modules]
+=== Extension and module selection
+
+.Extension and module selection
+image::install_extensions_sles.png[width=100%,alt="Extension and Module Selection screen"]
+
+After the system is successfully registered, the installer lists modules
+and extensions that are available for {slsa}. Modules are components
+that allow you to customize the product according to your needs. They
+are included in your {slsa} subscription. Extensions add functionality
+to your product. They must be purchased separately.
+
+The availability of certain modules or extensions depends on the product
+selected in the first step of the installation. For a description of the
+modules and their lifecycles, select a module to see the accompanying
+text. More detailed information is available in the
+link:https://documentation.suse.com/sles-15/html/SLES-all/article-modules.html[Modules and extensins quick start guide].
+
+The selection of modules indirectly affects the scope of the
+installation, because it defines which software sources (repositories)
+are available for installation and in the running system.
+
+The following modules and extensions are available for {sls}:
+
+Basesystem Module::
+This module adds a basic system on top of the {leanos}. It is
+required by all other modules and extensions. The scope of an
+installation that only contains the base system is comparable to
+the installation pattern `minimal system` of
+previous {slsa} versions. This module is selected for installation
+by default and should not be deselected.
++
+*Dependencies:* None
+
+Certifications Module::
+Contains the FIPS certification packages.
++
+*Dependencies:* Server Applications
+
+Confidential Computing Technical Preview::
+Contains packages related to confidential computing.
++
+*Dependencies:* Basesystem
+
+Containers Module::
+Contains support and tools for containers.
++
+*Dependencies:* Basesystem
+
+Desktop Applications Module::
+Adds a graphical user interface and essential desktop applications
+to the system.
++
+*Dependencies:* Basesystem
+
+Development Tools Module::
+Contains the compilers (including `gcc`) and
+libraries required for compiling and debugging applications.
+Replaces the former Software Development Kit (SDK).
++
+*Dependencies:* Basesystem, Desktop
+Applications
+
+{hpc} (HPC) Module::
+Provides specific tools commonly used for high performance,
+numerically intensive workloads.
++
+*Dependencies:* Basesystem
+
+Legacy Module::
+Helps you with migrating applications from earlier versions of
+{slsa} and other systems to {slsa} {sles-ai-version} by providing
+packages which are discontinued on {sle}. Packages in this module
+are selected based on the requirements for migration and the level
+of complexity of configuration.
++
+This module is recommended when migrating from a previous product
+version.
++
+*Dependencies:* Basesystem, Server Applications
+
+{nvidia} Compute Module::
+Contains the {nvidia} {cuda} (Compute Unified Device Architecture)
+drivers.
++
+The software in this module is provided by {nvidia} under the
+link:http://docs.nvidia.com/cuda/eula/[{cuda} End User License Agreement] and is not supported by {suse}.
++
+*Dependencies:* Basesystem
+
+Public Cloud Module::
+Contains all tools required to create images for deploying {slsa}
+in cloud environments such as Amazon Web Services (AWS), {ms}
+Azure, Google Compute Platform, or {ostack}.
++
+*Dependencies:* Basesystem, Server Applications
+
+Python 3 Module::
+This module contains the most recent versions of the selected
+Python 3 packages.
++
+*Dependencies:* Basesystem
+
+{sap} Business One Server::
+This module contains packages and system configurations specific
+to {sap} Business One Server. It is maintained and supported under
+the {sles} product subscription.
++
+*Dependencies:* Basesystem, Server
+Applications, Desktop Applications, Development Tools
+
+Server Applications Module::
+Adds server functionality by providing network services such as
+DHCP server, name server, or Web server. This
+module is selected for installation by default. Deselecting it is
+not recommended.
++
+*Dependencies:* Basesystem
+
+{sle} {hasi}::
+Adds clustering support for mission-critical setups to {slsa}.
+This extension requires a separate license key.
++
+*Dependencies:* Basesystem, Server Applications
+
+{sle} Live Patching::
+Adds support for performing critical patching without having to
+shut down the system. This extension requires a separate license
+key.
++
+*Dependencies:* Basesystem, Server Applications
+
+{slewe}::
+Extends the functionality of {slsa} with packages from {sled},
+like additional desktop applications (office suite, e-mail client,
+graphical editor, etc.) and libraries. It allows combining both
+products to create a fully featured workstation. This extension
+requires a separate license key.
++
+*Dependencies:* Basesystem, Desktop
+Applications
+
+{suse} Package Hub::
+Provides access to packages for {slsa} maintained by the
+{opensuse} community. These packages are delivered without L3
+support and do not interfere with the supportability of {slsa}.
+For more information, refer to
+link:https://packagehub.suse.com/[].
++
+*Dependencies:* Basesystem
+
+Transactional Server Module::
+Adds support for transactional updates. Updates are either applied
+to the system as a single transaction or not applied at all. This
+happens without influencing the running system. If an update
+fails, or if the successful update is deemed to be incompatible or
+otherwise incorrect, it can be discarded to immediately return the
+system to its previous functioning state.
++
+*Dependencies:* Basesystem
+
+Web and Scripting Module::
+Contains packages intended for a running Web server.
++
+*Dependencies:* Basesystem, Server Applications
+
+Certain modules depend on the installation of other modules. Therefore,
+when selecting a module, other modules may be selected automatically to
+fulfill dependencies.
+
+Depending on the product, the registration server can mark modules and
+extensions as recommended. Recommended modules and extensions are
+preselected for registration and installation. To avoid installing these
+recommendations, deselect them manually.
+
+Select the modules and extensions you want to install and proceed with
+menu:Next[]. In case you have chosen one or more extensions,
+you will be prompted to provide the respective registration codes.
+Depending on your choice, it may also be necessary to accept additional
+license agreements.
+
+[IMPORTANT]
+.Default modules for offline installation
+====
+When performing an offline installation from the {packagemedia}, only
+the menu:Basesystem Module[] is selected by default. To
+install the complete default package set of {sls}, additionally select
+the menu:Server Applications Module[] and the
+menu:Python 3 Module[].
+====
+
+[#sec-sle-installquick-install-add-on]
+=== Add-on product
+
+.Add-on product
+image::install_addon.png[width=100%,alt="Add On Product screen"]
+
+The menu:Add-On Product[] dialog allows you to add
+additional software sources (called "repositories") to
+{slsa} that are not provided by the {scc}. Add-on products may include
+third-party products and drivers as well as additional software for your
+system.
+
+[TIP]
+.Adding drivers during the installation
+====
+You can also add driver update repositories via the menu:Add-On Product[] dialog. Driver updates for {sle} are provided at
+link:https://drivers.suse.com/[]. These drivers have
+been created through the {suse} SolidDriver Program.
+====
+
+To skip this step, proceed with menu:Next[]. Otherwise,
+activate menu:I would like to install an additional Add On Product[]. Specify a media type, a local path, or a network
+resource hosting the repository and follow the on-screen instructions.
+
+Check menu:Download Repository Description Files[] to
+download the files describing the repository now. If deactivated, they
+will be downloaded after the installation has started. Proceed with
+menu:Next[] and insert a medium if required. Depending on
+the content of the product, it may be necessary to accept additional
+license agreements. Proceed with menu:Next[]. If you have
+chosen an add-on product requiring a registration key, you will be asked
+to enter it before proceeding to the next step.
+
+[#sec-sle-installquick-install-roles]
+=== System role
+
+.System role
+image::install_system_role_sles.png[width=100%,alt="System Role screen"]
+
+The availability of system roles depends on your selection of modules
+and extensions. System roles define, for example, the set of software
+patterns that are preselected for the installation. Refer to the
+description on the screen to make your choice. Select a role and proceed
+with menu:Next[]. If from the enabled modules only one role
+or no role is suitable for the respective base product, the
+menu:System Role[] dialog is omitted.
+
+[TIP]
+.Release notes
+====
+From this point on, the Release Notes can be viewed from any screen
+during the installation process by selecting menu:Release Notes[].
+====
+
+[#sec-sle-installquick-install-partitioner]
+=== Suggested partitioning
+
+.Suggested partitioning
+image::install_partitioner.png[width=100%,alt="Suggested Partitioning screen"]
+
+Review the partition setup proposed by the system. If necessary, change
+it. You have the following options:
+
+menu:Guided setup[]::
+Starts a wizard that lets you refine the partitioning proposal.
+The options available here depend on your system setup. If it
+contains more than a single hard disk, you can choose which disk
+or disks to use and where to place the root partition. If the
+disks already contain partitions, decide whether to remove or
+resize them.
++
+In subsequent steps, you may also add LVM support and disk
+encryption. You can change the file system for the root partition
+and decide whether or not to have a separate home partition.
+
+menu:Expert partitioner[]::
+Opens the menu:Expert Partitioner[]. This gives you
+full control over the partitioning setup and lets you create a
+custom setup. This option is intended for experts. For details,
+see the
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-expert-partitioner.html#sec-expert-partitioner[Expert Partitioner] chapter.
+
+[WARNING]
+.Disk space units
+====
+For partitioning purposes, disk space is measured in binary units
+rather than in decimal units. For example, if you enter sizes of
+`1GB`, `1GiB` or
+`1G`, they all signify 1 GiB (Gibibyte), as
+opposed to 1 GB (Gigabyte).
+
+Binary::
+1 GiB = 1,073,741,824 bytes.
+
+Decimal::
+1 GB = 1,000,000,000 bytes.
+
+Difference::
+1 GiB ≈ 1.07 GB.
+====
+
+To accept the proposed setup without any changes, choose
+menu:Next[] to proceed.
+
+[#sec-sle-installquick-install-time]
+=== Clock and time zone
+
+.Clock and time zone
+image::install_timezone.png[width=100%,alt="Clock and Time Zone screen"]
+
+Select the clock and time zone to use in your system. To manually adjust
+the time or to configure an NTP server for time synchronization, choose
+menu:Other Settings[]. See the section on
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-install.html#sec-yast-install-date-time[Clock and Time Zone] for detailed information. Proceed with
+menu:Next[].
+
+[#sec-sle-installquick-install-user]
+=== Local user
+
+.Local user creation
+image::install_user.png[width=100%,alt="Local User screen"]
+
+To create a local user, type the first and last name in the
+menu:User’s Full Name[] field, the login name in the
+menu:Username[] field, and the password in the
+menu:Password[] field.
+
+The password should be at least eight characters long and should contain
+both uppercase and lowercase letters and numbers. The maximum length for
+passwords is 72 characters, and passwords are case-sensitive.
+
+For security reasons, it is also strongly recommended
+*not* to enable menu:Automatic Login[].
+You should also *not* menu:Use this Password for the System Administrator[] but provide a separate {rootuser}
+password in the next installation step.
+
+If you install on a system where a previous Linux installation was
+found, you may menu:Import User Data from a Previous Installation[]. Click menu:Choose User[] for a list
+of available user accounts. Select one or more users.
+
+In an environment where users are centrally managed (for example, by NIS
+or LDAP), you can skip the creation of local users. Select menu:Skip User Creation[] in this case.
+
+Proceed with menu:Next[].
+
+[#sec-sle-installquick-install-root]
+=== Authentication for the system administrator `root`
+
+.Password for the system administrator `root`
+image::install_root.png[width=100%,alt="Authentication for the system administrator 'root' screen"]
+
+Type a password for the system administrator (called the {rootuser}
+user) or provide a public SSH key. If you want, you can use both.
+
+Because the {rootuser} user is equipped with extensive permissions, the
+password should be chosen carefully. You should never forget the
+{rootuser} password. After you entered it here, the password cannot be
+retrieved.
+
+[TIP]
+.Passwords and keyboard layout
+====
+It is recommended to use only US ASCII characters. In the event of a
+system error or when you need to start your system in rescue mode, the
+keyboard may not be localized.
+====
+
+To access the system remotely via SSH using a public key, import a key
+from removable media or an existing partition. See the section on
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-install.html#sec-yast-install-user-root[Authentication for the system administrator {rootuser}] for more information.
+
+Proceed with menu:Next[].
+
+[#sec-sle-installquick-install-inst-settings]
+=== Installation settings
+
+.Installation settings
+image::install_summary_sles.png[width=100%,alt="Installation Settings screen"]
+
+Use the menu:Installation Settings[] screen to review
+and—if necessary—change several proposed installation
+settings. The current configuration is listed for each setting. To
+change it, click the headline. Certain settings, such as firewall or
+SSH, can be changed directly by clicking the respective links.
+
+[IMPORTANT]
+.Remote access
+====
+Changes you can make here can also be made later at any time from the
+installed system. However, if you need remote access right after the
+installation, you may need to open the SSH port in the
+menu:Security[] settings.
+====
+
+menu:Software[]::
+The scope of the installation is defined by the modules and
+extensions you have chosen for this installation. However,
+depending on your selection, not all packages available in a
+module are selected for installation.
++
+Clicking menu:Software[] opens the menu:Software Selection and System Tasks[] screen, where you can change
+the software selection by selecting or deselecting patterns. Each
+pattern contains several software packages needed for specific
+functions (for example, menu:KVM Host Server[]). For a
+more detailed selection based on software packages to install,
+select menu:Details[] to switch to the {yast}
+menu:Software Manager[]. See
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-yast-software.html[Installing or removing software] for more information.
+
+menu:Booting[]::
+This section shows the boot loader configuration. Changing the
+defaults is recommended only if really needed. Refer to
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-grub2.html[The boot loader {grub}] for details.
+
+menu:Security[]::
+The menu:CPU Mitigations[] refer to kernel boot
+command-line parameters for software mitigations that have been
+deployed to prevent CPU side-channel attacks. Click the selected
+entry to choose a different option. For details, see the section
+on
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-grub2.html#vle-grub2-yast2-cpu-mitigations[CPU Mitigations].
++
+By default, the menu:Firewall[] is enabled on all
+configured network interfaces. To disable {firewalld}, click
+menu:disable[] (not recommended). Refer to the
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-security-firewall.html[Masquerading and Firewalls] chapter for configuration details.
++
+[NOTE]
+.Firewall settings for receiving updates
+====
+By default, the firewall on {productname} only blocks incoming
+connections. If your system is behind another firewall that
+blocks outgoing traffic, make sure to allow connections to
+`{sccurl}` and
+`https://updates.suse.com` on ports 80
+and 443 to receive updates.
+====
++
+The menu:SSH service[] is enabled by default, but its
+port (22) is closed in the firewall. Click menu:open[]
+to open the port or menu:disable[] to disable the
+service. If SSH is disabled, remote logins will not be possible.
+Refer to
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-ssh.html[Securing network operations with OpenSSH] for more information.
++
+The default menu:Major Linux Security Module[] is
+menu:AppArmor[]. To disable it, select
+menu:None[] as the module in the
+menu:Security[] settings.
+
+menu:Security Policies[]::
+Click to menu:enable[] the `{disa} {stiga}` security policy. If any installation settings
+are incompatible with the policy, you will be prompted to modify
+them accordingly. Certain settings can be adjusted automatically
+while others require user input.
++
+Enabling a security profile enables a full SCAP remediation on
+first boot. You can also perform a menu:scan only[] or
+menu:do nothing[] and manually remediate the system
+later with {openscap}. For more information, refer to the section
+on
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-install.html#sec-yast-install-proposal-security-profile[Security Profiles].
+
+menu:Network configuration[]::
+Displays the current network configuration. By default,
+`wicked` is used for server installations and
+{nm} for desktop workloads. Click menu:Network Configuration[] to change the settings. For details, see
+the section on
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-network.html#sec-network-yast[Configuring a network connection with {yast}].
++
+[IMPORTANT]
+.Support for {nm}
+====
+{suse} only supports {nm} for desktop workloads with {sleda} or
+the Workstation extension. All server certifications are done
+with `wicked` as the network configuration
+tool, and using {nm} may invalidate them. {nm} is not supported
+by {suse} for server workloads.
+====
+
+menu:Kdump[]::
+{kdump} saves the memory image ("core dump") to the
+file system in case the kernel crashes. This enables you to find
+the cause of the crash by debugging the dump file. {kdump} is
+preconfigured and enabled by default. See the
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-tuning-kexec.html#cha-tuning-kdump-basic[Basic {kdump} configuration] for more information.
+
+menu:Default systemd target[]::
+If you have installed the desktop applications module, the system
+boots into the menu:graphical[] target, with network,
+multi-user and display manager support. Switch to
+menu:multi-user[] if you do not need to log in via a
+display manager.
+
+menu:System[]::
+View detailed hardware information by clicking
+menu:System[]. In the resulting screen, you can also
+change menu:Kernel Settings[]—see the section on
+link:https://documentation.suse.com/sles/15-SP6/html/SLES-all/cha-install.html#sec-yast-install-proposal-system[System Information] for more information.
+
+[#sec-sle-installquick-install-confirm]
+=== Start the installation
+
+.Confirm installation
+image::install_confirm_sles.png[width=100%,alt="Installation Settings screen with Confirm Installation dialog"]
+
+After you have finalized the system configuration on the
+menu:Installation Settings[] screen, click
+menu:Install[]. Depending on your software selection, you
+may need to agree to license agreements before the installation
+confirmation screen pops up. Up to this point, no changes have been made
+to your system. After you click menu:Install[] a second
+time, the installation process starts.
+
+[#sec-sle-installquick-install-inst-process]
+=== The installation process
+
+.Performing the installation
+image::install_perform_sles.png[width=100%,alt="Performing Installation screen"]
+
+During the installation, the progress is shown. After the installation
+routine has finished, the computer is rebooted into the installed
+system.

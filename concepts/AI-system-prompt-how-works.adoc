@@ -1,0 +1,119 @@
+[#ai-system-prompt-how-works]
+= How does a system prompt work?
+
+System prompts serve as a map that guides the AI model through the complexities of natural language understanding and generation.
+Describing the task, the desired output format, and setting limits to the AI's behavior helps AI models generate accurate and relevant responses. 
+
+System prompts are processed before the user input.
+This placement ensures that the AI has access to the necessary context, instructions and guidelines before processing the user's prompt. 
+
+[#content-of-system-prompt]
+== Content of a system prompt
+
+A typical system prompt contains the following elements: 
+
+Context::
+This part sets the scene or provides the necessary information for the AI to understand the situation. 
++
+Example: "You are a travel agent recommending vacation
+destinations."
+
+Task::
+A clear instruction on what the AI should do.
+This is the core of the system prompt, directing the AI to perform a specific task. 
++
+Example: "Generate text summaries and annual reports."
+
+Guidelines::
+These are rules that the AI must follow.
+They might limit the output format, length, tone or other criteria. 
++
+Example: "The recommendations should be less than 150 words
+each, and they should appeal to adventure travelers."
+
+Format::
+If you want the response in a particular structure, the system prompt should mention that.
+It can be a list, a paragraph, a dialog or a code block. 
++
+Example: "Respond in a bullet point list."
+
+Tone::
+You can instruct the AI to generate responses with a particular tone, such as formal, casual, humorous or technical. 
++
+Example: "Write in a friendly, conversational tone."
+
+Example::
+System prompts may include examples of expected outputs to guide the AI in the right direction. 
++
+Example: "For example, 'Bali: a tropical paradise with
+beautiful beaches and rich culture. Perfect for relaxation and
+adventure."
+
+
+.A full simple system prompt
+[example]
+"You are an experienced travel guide. Suggest three vacation destinations for a family looking for sunny weather, outdoor activities and cultural experiences.
+Each suggestion should be 100-150 words, written in a friendly and conversational tone.
+Present the suggestions as a numbered list."
+
+.A complex system prompt that uses a template
+====
+Assume your task is to create a customer-facing report that follows these guidelines: 
+
+* *Direction:* Set the tone as professional and informative. 
+* *Format:* Specify output as a formal report. 
+* *Examples:* Provide a template or previous reports as examples. 
+* *Quality:* Use a checklist to ensure accuracy and relevance. 
+* *Labor:* Divide sections into executive summary, detailed findings and conclusions. 
+
+The resulting prompt that corresponds to the above guidelines may look similar to the following example.
+You can copy and paste the whole text into an AI-driven chatbot prompt. 
+
+----
+Direction:
+
+Adopt a professional and informative tone throughout the report. The
+content should be clear, concise, and tailored to a business audience.
+
+Format:
+
+The output should be in the form of a formal report, structured with headings,
+subheadings, and bullet points where necessary. Use professional language
+and adhere to business writing standards.
+
+Examples:
+
+Here is a template of the report structure to follow:
+
+Executive Summary:
+- Overview of key findings and recommendations.
+Detailed Findings:
+- Section 1: [Topic]
+- Section 2: [Topic]
+- Section 3: [Topic]
+Conclusions:
+- Summary of findings and next steps.
+
+Please refer to previous reports, such as [Report A] and [Report B] for style
+and formatting guidelines.
+
+Quality:
+
+Use the following checklist to ensure the report's accuracy and relevance:
+1. Verify all data and statistics are correct and up to date.
+2. Ensure the report is free of grammatical and typographical errors.
+3. Cross-check that all sections are consistent and logically structured.
+4. Validate that the report meets the customer's objectives and addresses
+   their concerns.
+
+Labor:
+
+Divide the report into the following sections:
+1. Executive Summary: Summarize the main findings and key recommendations in a 
+   concise manner.
+2. Detailed Findings: Provide in-depth analysis and data for each key area of
+   focus, divided into logical subsections.
+3. Conclusions: Offer a summary of the findings and suggest actionable next
+   steps for the customer.
+----
+====

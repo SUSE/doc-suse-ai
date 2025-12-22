@@ -1,0 +1,8 @@
+[#ai-requirements-openwebui]
+= {owui} requirements
+
+While {owui} has no specific hardware dependencies beyond those of the underlying platform, consider the following guidelines for optimal performance.
+
+* Because {owui} shares most dependencies with {milvus} and {ollama}, follow the hardware requirements mentioned in xref:ai-requirements-milvus[] and xref:ai-requirements-ollama[].
+* Stable network connection is essential, particularly if {owui} is integrated with other services or databases. Ensure sufficient bandwidth for Web traffic and API calls.
+* To interact with the {owui} interface, use standard Web browsers such as Google Chrome, Mozilla Firefox or Microsoft Edge.

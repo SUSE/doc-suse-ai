@@ -1,0 +1,33 @@
+.{sobservability} version 2.6.2 and above
+[WARNING]
+====
+With {sobservability} version 2.6.2, a change of the standard behavior broke the {vllm} monitoring performed by the extension.
+To fix it, update `otel-values.yaml` to include the following additions.
+No changes are required for people using {sobservability} version 2.6.1 and below. 
+
+* Add a new processor. 
++
+----
+config:
+  processors:
+    ... # same as before
+    transform:
+      metric_statements:
+        - context: metric
+          statements:
+            - replace_pattern(name, "^vllm:", "vllm_")
+----
+* Modify the metrics pipeline to perform the transformation defined above: 
++
+----
+config:
+  service:
+    pipelines:
+      ... # same as before
+      metrics:
+        receivers: [otlp, spanmetrics, prometheus]
+        processors: [transform, memory_limiter, resource, batch]
+        exporters: [debug, otlp]
+----
+
+====

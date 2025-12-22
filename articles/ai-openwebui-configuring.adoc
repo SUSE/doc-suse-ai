@@ -1,0 +1,153 @@
+include::../common/generic-attributes.adoc[]
+= Configuring {owui} for AI Interaction 
+
+:doctype: article
+:experimental:
+:docinfo:
+:part-of-article:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:revdate: 2025-012-02
+:page-revdate: {revdate}
+
+WHAT?::
+  {owui} is a Web-based application that allows you to interact with AI models.
+
+WHY?::
+  To configure {owui} according to both user and administrator requirements and preferences.
+
+EFFORT::
+  To understand how to configure selected parts of {owui} takes less than 1 hour.
+
+REQUIREMENTS:: 
+  The procedures in this article assume that the following requirements are already fulfilled:
+
+  * You have successfully deployed the {productname}.
+  * You can access the {owui} interface in your Web browser.
+  * Your {owui} user account has been created, and you have received the login credentials.
+  * You have navigated your Web browser to the URL of your instance of {owui} and logged in with your credentials.
+  * Selected tasks require the {owui} administrator privileges.
+
+:override-title: Introduction
+include::../concepts/openwebui-introduction.adoc[leveloffset=+1]
+
+:override-title: Known Issues
+include::../references/owui-known-issues.adoc[leveloffset=+2]
+
+include::../glues/owui-more-info.adoc[leveloffset=+2]
+
+[#openwebui-setting-base-models]
+== Setting base AI models
+
+{owui} needs at least one base AI model configured so that you can interact with it or create custom AI models as described in xref:openwebui-managing-models[].
+You can download models from repositories such as {ollama} or {huggingface}, or use models via OpenAI-compatible APIs. 
+
+include::../tasks/openwebui-pulling-llms-from-ollama.adoc[leveloffset=+2]
+include::../tasks/openwebui-pulling-llms-from-huggingface.adoc[leveloffset=+2]
+include::../tasks/openwebui-using-models-from-openai-providers.adoc[leveloffset=+2]
+
+[#openwebui-setting-default-prompt]
+== Setting the default system prompt
+
+In {owui}, you can set system prompts in several contexts{mdash}for the current
+chat, for the current user, or for a specific AI model. While the prompt set for
+the current chat overrides the user and model prompts, the user-specific prompt
+overrides the model prompt only.
+
+include::../tasks/openwebui-setting-chat-system-prompt.adoc[leveloffset=+2]
+:override-title: System prompt for the current user
+include::../tasks/openwebui-setting-user-system-prompt.adoc[leveloffset=+2]
+:override-title: System prompt for an AI model
+include::../tasks/openwebui-setting-model-system-prompt.adoc[leveloffset=+2]
+
+[#openwebui-setting-default-models]
+== Setting the default AI model
+
+In {owui}, you can specify an AI model for the current chat or the system
+default model. The AI model set for the current chat overrides the default
+system model.
+
+:override-title: AI model for the current chat
+include::../tasks/openwebui-setting-chat-model.adoc[leveloffset=+2]
+:override-title: Default system AI model
+include::../tasks/openwebui-setting-system-model.adoc[leveloffset=+2]
+
+[#openwebui-managing-models]
+== Managing custom AI models
+
+In {owui}, you can create custom AI models based on existing models. Later on,
+you can modify its settings, or share, clone or delete it.
+
+include::../tasks/openwebui-AI-models-creating.adoc[leveloffset=+2]
+include::../tasks/openwebui-AI-models-modifying.adoc[leveloffset=+2]
+include::../tasks/openwebui-AI-models-cloning.adoc[leveloffset=+2]
+:override-title: Importing exported models
+include::../tasks/openwebui-AI-models-importing.adoc[leveloffset=+2]
+include::../tasks/openwebui-AI-models-exporting.adoc[leveloffset=+2]
+include::../tasks/openwebui-AI-models-exporting-all.adoc[leveloffset=+2]
+include::../tasks/openwebui-AI-models-deleting.adoc[leveloffset=+2]
+
+[#openwebui-managing-user-roles]
+== Managing user accounts
+
+{owui} provides *role-based access control* (RBAC). Each user
+is assigned one of the available roles. The role defines whether the user has
+privileges to perform administration tasks.
+
+include::../references/openwebui-user-roles.adoc[leveloffset=+2]
+:override-title: Creating user accounts
+include::../tasks/openwebui-user-account-creating.adoc[leveloffset=+2]
+:override-title: Assigning roles to existing users
+include::../tasks/openwebui-user-role-assigning.adoc[leveloffset=+2]
+:override-title: Modifying existing user accounts
+include::../tasks/openwebui-user-account-modifying.adoc[leveloffset=+2]
+include::../tasks/openwebui-user-revoking-access.adoc[leveloffset=+2]
+
+[#openwebui-managing-knowledgebase]
+== Managing a knowledge base
+
+Knowledge base is a custom collection of resources on a specific topic. It can
+include documentation, tutorials, reference guides or short text snippets.
+Knowledge base collections extend the data on which the selected AI model is
+trained to make its context more specific.
+
+include::../tasks/owui-knowledgebase-creating.adoc[leveloffset=+2]
+include::../tasks/owui-knowledgebase-deleting.adoc[leveloffset=+2]
+include::../tasks/owui-knowledgebase-adding-content.adoc[leveloffset=+2]
+include::../tasks/owui-knowledgebase-removing-content.adoc[leveloffset=+2]
+
+[#openwebui-managing-prompts]
+== Managing system prompts
+
+System prompts are a powerful core component that shapes AI model behavior. They
+provide precise control over how AI models process and respond to user inputs.
+
+Find more details about system prompts in
+https://documentation.suse.com/suse-ai/1.0/html/AI-system-prompts/index.html[Guiding the AI Model with System Prompts].
+
+include::../tasks/owui-prompts-creating.adoc[leveloffset=+2]
+include::../tasks/owui-prompts-modifying.adoc[leveloffset=+2]
+include::../tasks/owui-prompts-cloning.adoc[leveloffset=+2]
+include::../tasks/owui-prompts-importing.adoc[leveloffset=+2]
+include::../tasks/owui-prompts-exporting.adoc[leveloffset=+2]
+include::../tasks/owui-prompts-exporting-all.adoc[leveloffset=+2]
+include::../tasks/owui-prompts-deleting.adoc[leveloffset=+2]
+:override-title: Authenticating via {okta}
+include::../tasks/openwebui-authentication-via-okta.adoc[leveloffset=+1]
+
+[appendix]
+include::../references/AI-glossary.adoc[leveloffset=+1]
+
+[appendix]
+include::../adoc/common_copyright_gfdl.adoc[]
+
+[appendix]
+include::../adoc/common_license_gfdl1.2.adoc[]

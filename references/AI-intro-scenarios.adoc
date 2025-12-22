@@ -1,0 +1,15 @@
+
+[#ai-intro-scenarios]
+= What are typical scenarios for using {productname}?
+
+[abstract]
+--
+Your private instance of {productname} can help you with the following tasks: 
+--
+
+* Implement AI-driven user interface to handle customer inquiries, providing continuous support and reducing the load on human agents. 
+* Build a knowledge base where users can easily interact with an AI model to ask questions about the company policies, processes and workflows. 
+* Generate reports and summaries on business performance or sales metrics with minimal manual input. 
+* Automate the generation of blog posts or social media content, ensuring consistency and saving time. 
+* Offer personalized product or content recommendations based on customer preferences. 
+* Forecast trends, customer behaviors and market shifts, enabling more informed strategic decisions. 

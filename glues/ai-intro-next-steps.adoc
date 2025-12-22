@@ -1,0 +1,11 @@
+
+[#ai-intro-next-steps]
+= Next steps
+
+[abstract]
+--
+After you understand the basics of {productnameshort}, follow these links to study hardware and software requirements and understand the installation procedure. 
+--
+
+* {dsc}/suse-ai/1.0/html/AI-requirements/index.html[{productname} installation requirements]
+* {dsc}/suse-ai/1.0/html/AI-deployment-intro/index.html[Installing {productname}]

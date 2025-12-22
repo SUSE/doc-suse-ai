@@ -1,0 +1,33 @@
+[#openwebui-ai-models-modify]
+= Modifying existing AI models
+
+ifndef::part-of-article[]
+This procedure shows how to modify an existing AI model using {owui}. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. In the {owui} interface, click menu:Workspace[] at the top of the left panel and select menu:Models[] . 
+. In the list of AI models, hover the mouse over the model that you want to modify and click the pen icon on its right. 
+. On the model editing screen, you can modify the settings that are described in xref:openwebui-ai-models-creating[]. 
+. On the model editing screen, you can modify the settings that are described in. 
+. Save your changes with the menu:Save & Update[] button. 
+
+
+[#owui-enabling-default-mcp-services]
+== Enabling the default {mcp} services
+
+To enable selected {mcp} services so that they are automatically enabled for a model, follow these steps: 
+
+.Requirements
+* At least one {mcp} server must be preconfigured. Refer to https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#mcpo-installing[Installing {mcpo}] to learn how to configure one.
+
+. In the {owui} interface, click menu:Workspace[] at the top of the left panel and select menu:Models[] . 
+. In the list of AI models, hover the mouse over the model that you want to modify and click the pen icon on its right to edit its properties. 
+. In the menu:Tools[] section, select the {mcp} tools you want to enable by default and confirm with menu:Save[] . 
++
+.Enabling the default {mcp} tools
+image::owui-tools-modify-mpc.png[A screenshot of enabling the default {mcp} tools,scaledwidth=75%]

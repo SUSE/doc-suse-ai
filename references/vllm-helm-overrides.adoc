@@ -1,0 +1,495 @@
+[#vllm-helm-overrides]
+= Examples of {vllm} {helm} chart override files
+
+include::../snippets/helm-chart-overrides-intro.adoc[]
+
+[#vllm-helm-overrides-minimal]
+.Minimal configuration
+====
+The following override file installs {vllm} using a model that is publicly available.
+
+[source,yaml]
+----
+global:
+  imagePullSecrets:
+  - application-collection
+servingEngineSpec:
+  modelSpec:
+  - name: "phi3-mini-4k"
+    registry: "dp.apps.rancher.io"
+    repository: "containers/vllm-openai"
+    tag: "0.9.1"
+    imagePullPolicy: "IfNotPresent"
+    modelURL: "microsoft/Phi-3-mini-4k-instruct"
+    replicaCount: 1
+    requestCPU: 6
+    requestMemory: "16Gi"
+    requestGPU: 1
+----
+
+.Validating the installation
+. Pulling the images can take a long time.
+You can monitor the status of the {vllm} installation by running the following command:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -n <SUSE_AI_NAMESPACE>
+  
+NAME                                           READY   STATUS    RESTARTS   AGE
+[...]
+vllm-deployment-router-7588bf995c-5jbkf        1/1     Running   0          8m9s
+vllm-phi3-mini-4k-deployment-vllm-79d6fdc-tx7  1/1     Running   0          8m9s
+----
++
+Pods for the {vllm} deployment should transition to the states `Ready` and `Running`.
+
+[.procedure]
+.Validating the stack
+. Expose the `vllm-router-service` port to the host machine:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl port-forward svc/vllm-router-service \
+  -n <SUSE_AI_NAMESPACE> 30080:80
+----
+. Query the {openai}-compatible API to list the available models:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}curl -o- http://localhost:30080/v1/models
+----
+. Send a query to the {openai} `/completion` endpoint to generate a completion for a prompt:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}curl -X POST http://localhost:30080/v1/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "microsoft/Phi-3-mini-4k-instruct",
+    "prompt": "Once upon a time,",
+    "max_tokens": 10
+  }'
+----
++
+[source,json]
+----
+# example output of generated completions
+{
+    "id": "cmpl-3dd11a3624654629a3828c37bac3edd2",
+    "object": "text_completion",
+    "created": 1757530703,
+    "model": "microsoft/Phi-3-mini-4k-instruct",
+    "choices": [
+        {
+            "index": 0,
+            "text": " in a bustling city full of concrete and",
+            "logprobs": null,
+            "finish_reason": "length",
+            "stop_reason": null,
+            "prompt_logprobs": null
+        }
+    ],
+    "usage": {
+        "prompt_tokens": 5,
+        "total_tokens": 15,
+        "completion_tokens": 10,
+        "prompt_tokens_details": null
+    },
+    "kv_transfer_params": null
+}
+----
+====
+
+[#vllm-helm-overrides-basic]
+.Basic configuration
+====
+The following {vllm} override file includes basic configuration options.
+
+.Prerequisites
+* Access to a {huggingface} token (`HF_TOKEN`).
+* The model `meta-llama/Llama-3.1-8B-Instruct` from this example is a gated model that requires you to accept the agreement to access it.
+For more information, see link:https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct[].
+* The `runtimeClassName` specified here is `nvidia`.
+* Update the `storageClass:` entry for each `modelSpec`.
+
+[source,yaml]
+----
+# vllm_custom_overrides.yaml
+global:
+  imagePullSecrets:
+  - application-collection
+servingEngineSpec:
+  runtimeClassName: "nvidia"
+  modelSpec:
+  - name: "llama3" <.>
+    registry: "dp.apps.rancher.io" <.>
+    repository: "containers/vllm-openai" <.>
+    tag: "0.9.1" <.>
+    imagePullPolicy: "IfNotPresent"
+    modelURL: "meta-llama/Llama-3.1-8B-Instruct" <.>
+    replicaCount: 1 <.>
+    requestCPU: 10 <.>
+    requestMemory: "16Gi" <.>
+    requestGPU: 1 <.>
+    storageClass: <STORAGE_CLASS>
+    pvcStorage: "50Gi" <.>
+    pvcAccessMode:
+      - ReadWriteOnce
+
+    vllmConfig:
+      enableChunkedPrefill: false <.>
+      enablePrefixCaching: false <.>
+      maxModelLen: 4096 <.>
+      dtype: "bfloat16" <.>
+      extraArgs: ["--disable-log-requests", "--gpu-memory-utilization", "0.8"] <.>
+
+    hf_token: <HF_TOKEN> <.>
+----
+<.> The unique identifier for your model deployment.
+<.> The {docker} image registry containing the model's serving engine image.
+<.> The {docker} image repository containing the model's serving engine image.
+<.> The version of the model image to use.
+<.> The URL pointing to the model on {huggingface} or another hosting service.
+<.> The number of replicas for the deployment, which allows scaling for load.
+<.> The amount of CPU resources requested per replica.
+<.> Memory allocation for the deployment.
+Sufficient memory is required to load the model.
+<.> The number of GPUs to allocate for the deployment.
+<.> The Persistent Volume Claim (PVC) size for model storage.
+<.> Optimizes performance by prefetching model chunks.
+<.> Enables caching of prompt prefixes to speed up inference for repeated prompts.
+<.> The maximum sequence length the model can handle.
+<.> The data type for model weights, such as `bfloat16` for mixed-precision inference and faster performance on modern GPUs.
+<.> Additional command-line arguments for {vllm}, such as disabling request logging or setting GPU memory utilization.
+<.> Your {huggingface} token for accessing gated models.
+Replace `HF_TOKEN` with your actual token.
+====
+
+[#vllm-helm-overrides-prefetched]
+.Loading prefetched models from persistent storage
+====
+Prefetching models to a Persistent Volume Claim (PVC) prevents repeated downloads from {huggingface} during pod startup.
+The process involves creating a PVC and a job to fetch the model.
+This PVC is mounted at `/models`, where the prefetch job stores the model weights.
+Subsequently, the {vllm} `modelURL` is set to this path, which ensures that the model is loaded locally instead of being downloaded when the pod starts.
+
+. Define a PVC for model weights using the following YAML specification.
++
+[source,yaml]
+----
+# pvc-models.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: models-pvc
+  namespace: <SUSE_AI_NAMESPACE>
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 50Gi # Adjust size based on your model
+  storageClassName: <STORAGE_CLASS>
+----
++
+Save it as `pvc-models.yaml` and apply with `kubectl apply -f pvc-models.yaml`.
+. Create a secret resource for the {huggingface} token.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl create secret -n <SUSE_AI_NAMESPACE> \
+  generic huggingface-credentials \
+  --from-literal=HUGGING_FACE_HUB_TOKEN=<HF_TOKEN>
+----
+. Create a YAML specification for prefetching the model and save it as `job-prefetch-llama3.1-8b.yaml`.
++
+[source,yaml]
+----
+# job-prefetch-llama3.1-8b.yaml
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: prefetch-llama3.1-8b
+  namespace: <SUSE_AI_NAMESPACE>
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: hf-download
+        image: python:3.10-slim
+        env:
+        - name: HF_TOKEN
+          valueFrom: { secretKeyRef: { name: huggingface-credentials, key: <HUGGING_FACE_HUB_TOKEN> } }
+        - name: HF_HUB_ENABLE_HF_TRANSFER
+          value: "1"
+        - name: HF_HUB_DOWNLOAD_TIMEOUT
+          value: "60"
+        command: ["bash","-lc"]
+        args:
+        - |
+          set -e
+          echo "Logging in..."
+          echo "Installing Hugging Face CLI..."
+          pip install "huggingface_hub[cli]"
+          pip install "hf_transfer"
+          hf auth login --token "${HF_TOKEN}"
+          echo "Downloading Llama 3.1 8B Instruct to /models/llama-3.1-8b-it ..."
+          hf download meta-llama/Llama-3.1-8B-Instruct --local-dir /models/llama-3.1-8b-it
+        volumeMounts:
+        - name: models
+          mountPath: /models
+      volumes:
+      - name: models
+        persistentVolumeClaim:
+          claimName: models-pvc
+----
++
+Apply the specification with the following commands:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f job-prefetch-llama3.1-8b.yaml
+{prompt_user}kubectl -n <SUSE_AI_NAMESPACE> \
+  wait --for=condition=complete job/prefetch-llama3.1-8b
+----
+. Update the custom {vllm} override file with support for PVC.
++
+[source,yaml]
+----
+# vllm_custom_overrides.yaml
+global:
+  imagePullSecrets:
+  - application-collection
+servingEngineSpec:
+  runtimeClassName: "nvidia"
+  modelSpec:
+  - name: "llama3"
+    registry: "dp.apps.rancher.io"
+    repository: "containers/vllm-openai"
+    tag: "0.9.1"
+    imagePullPolicy: "IfNotPresent"
+    modelURL: "/models/llama-3.1-8b-it"
+    replicaCount: 1
+
+    requestCPU: 10
+    requestMemory: "16Gi"
+    requestGPU: 1
+
+    extraVolumes:
+      - name: models-pvc
+        persistentVolumeClaim:
+          claimName: models-pvc <.>
+
+    extraVolumeMounts:
+      - name: models-pvc
+        mountPath: /models <.>
+
+    vllmConfig:
+      maxModelLen: 4096
+
+    hf_token: <HF_TOKEN>
+----
+<.> Specify your PVC name.
+<.> The mount path must match the base directory of the `servingEngineSpec.modelSpec.modeURL` value specified above.
++
+Save it as `vllm_custom_overrides.yaml` and apply with `kubectl apply -f vllm_custom_overrides.yaml`.
+. The following example lists mounted PVCs for a pod.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl exec -it vllm-llama3-deployment-vllm-858bd967bd-w26f7 \
+  -n <SUSE_AI_NAMESPACE> -- ls -l /models
+drwxr-xr-x 1 root root 608 Aug 22 16:29 llama-3.1-8b-it
+----
+====
+
+[#vllm-helm-overrides-multiple]
+.Configuration with multiple models
+====
+This example shows how to configure multiple models to run on different GPUs.
+Remember to update the entries `hf_token` and `storageClass`.
+
+[NOTE]
+.Ray is not supported
+=====
+Ray is currently not supported.
+Therefore, sharding a single large model across multiple GPUs is not supported.
+=====
+
+[source,yaml]
+----
+# vllm_custom_overrides.yaml
+global:
+  imagePullSecrets:
+  - application-collection
+servingEngineSpec:
+  modelSpec:
+  - name: "llama3"
+    registry: "dp.apps.rancher.io"
+    repository: "containers/vllm-openai"
+    tag: "0.9.1"
+    imagePullPolicy: "IfNotPresent"
+    modelURL: "meta-llama/Llama-3.1-8B-Instruct"
+    replicaCount: 1
+    requestCPU: 10
+    requestMemory: "16Gi"
+    requestGPU: 1
+    pvcStorage: "50Gi"
+    storageClass: <STORAGE_CLASS>
+    vllmConfig:
+      maxModelLen: 4096
+    hf_token: <HF_TOKEN_FOR_LLAMA_31>
+
+  - name: "mistral"
+    registry: "dp.apps.rancher.io"
+    repository: "containers/vllm-openai"
+    tag: "0.9.1"
+    imagePullPolicy: "IfNotPresent"
+    modelURL: "mistralai/Mistral-7B-Instruct-v0.2"
+    replicaCount: 1
+    requestCPU: 10
+    requestMemory: "16Gi"
+    requestGPU: 1
+    pvcStorage: "50Gi"
+    storageClass: <STORAGE_CLASS>
+    vllmConfig:
+      maxModelLen: 4096
+    hf_token: <HF_TOKEN_FOR_MISTRAL>
+----
+====
+
+[#vllm-helm-overrides-offloading]
+.CPU offloading
+====
+This example demonstrates how to enable KV cache offloading to the CPU using {lmcache} in a {vllm} deployment.
+You can enable {lmcache} and set the CPU offloading buffer size using the `lmcacheConfig` field.
+In the following example, the buffer is set to 20 GB, but you can adjust this value based on your workload.
+Remember to update the entries `hf_token` and `storageClass`.
+
+[WARNING]
+.Experimental Features
+=====
+Setting `lmcacheConfig.enabled` to `true` implicitly enables the `LMCACHE_USE_EXPERIMENTAL` flag for {lmcache}.
+These experimental features are only supported on newer GPU generations.
+It is not recommended to enable them without a compelling reason.
+=====
+
+[source,yaml]
+----
+# vllm_custom_overrides.yaml
+global:
+  imagePullSecrets:
+  - application-collection
+servingEngineSpec:
+  runtimeClassName: "nvidia"
+  modelSpec:
+  - name: "mistral"
+    registry: "dp.apps.rancher.io"
+    repository: "containers/lmcache-vllm-openai"
+    tag: "0.3.2"
+    imagePullPolicy: "IfNotPresent"
+    modelURL: "mistralai/Mistral-7B-Instruct-v0.2"
+    replicaCount: 1
+    requestCPU: 10
+    requestMemory: "40Gi"
+    requestGPU: 1
+    pvcStorage: "50Gi"
+    storageClass: <STORAGE_CLASS>
+    pvcAccessMode:
+      - ReadWriteOnce
+    vllmConfig:
+      maxModelLen: 32000
+
+    lmcacheConfig:
+      enabled: false
+      cpuOffloadingBufferSize: "20"
+
+    hf_token: <HF_TOKEN>
+----
+====
+
+[#vllm-helm-overrides-lmcache]
+.Shared remote KV cache storage with {lmcache}
+====
+This example shows how to enable remote KV cache storage using {lmcache} in a {vllm} deployment.
+The configuration defines a `cacheserverSpec` and uses two replicas.
+Remember to replace the placeholder values for `hf_token` and `storageClass` before applying the configuration.
+
+[WARNING]
+.Experimental features
+=====
+Setting `lmcacheConfig.enabled` to `true` implicitly enables the `LMCACHE_USE_EXPERIMENTAL` flag for {lmcache}.
+These experimental features are only supported on newer GPU generations.
+It is not recommended to enable them without a compelling reason.
+=====
+
+[source,yaml]
+----
+# vllm_custom_overrides.yaml
+global:
+  imagePullSecrets:
+  - application-collection
+servingEngineSpec:
+  runtimeClassName: "nvidia"
+  modelSpec:
+  - name: "mistral"
+    registry: "dp.apps.rancher.io"
+    repository: "containers/lmcache-vllm-openai"
+    tag: "0.3.2"
+    imagePullPolicy: "IfNotPresent"
+    modelURL: "mistralai/Mistral-7B-Instruct-v0.2"
+    replicaCount: 2
+    requestCPU: 10
+    requestMemory: "40Gi"
+    requestGPU: 1
+    pvcStorage: "50Gi"
+    storageClass: <STORAGE_CLASS>
+    vllmConfig:
+      enablePrefixCaching: true
+      maxModelLen: 16384
+    lmcacheConfig:
+      enabled: false
+      cpuOffloadingBufferSize: "20"
+    hf_token: <HF_TOKEN>
+    initContainer:
+      name: "wait-for-cache-server"
+      image: "dp.apps.rancher.io/containers/lmcache-vllm-openai:0.3.2"
+      command: ["/bin/sh", "-c"]
+      args:
+        - |
+          timeout 60 bash -c '
+          while true; do
+            /opt/venv/bin/python3 /workspace/LMCache/examples/kubernetes/health_probe.py $(RELEASE_NAME)-cache-server-service $(LMCACHE_SERVER_SERVICE_PORT) && exit 0
+            echo "Waiting for LMCache server..."
+            sleep 2
+          done'
+cacheserverSpec:
+  replicaCount: 1
+  containerPort: 8080
+  servicePort: 81
+  serde: "naive"
+  registry: "dp.apps.rancher.io"
+  repository: "containers/lmcache-vllm-openai"
+  tag: "0.3.2"
+  resources:
+    requests:
+      cpu: "4"
+      memory: "8G"
+    limits:
+      cpu: "4"
+      memory: "10G"
+  labels:
+    environment: "cacheserver"
+    release: "cacheserver"
+routerSpec:
+  resources:
+    requests:
+      cpu: "1"
+      memory: "2G"
+    limits:
+      cpu: "1"
+      memory: "2G"
+  routingLogic: "session"
+  sessionKey: "x-user-id"
+----
+====

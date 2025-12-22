@@ -1,0 +1,92 @@
+[#rancher-installation-airgapped-infrastructure-private-registry]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Installing {ranchermanager} in air-gapped environments: set up the infrastructure and a private registry
+endif::[]
+
+In this section, you will provision the underlying infrastructure for your {ranchera} management server in an air-gapped environment.
+You will also set up the private container image registry that must be available to your {ranchera} node(s).
+The procedures below focus on installing {ranchera} in the {rke2a} cluster.
+To install the {ranchera} management server on a high-availability {rke2} cluster, we recommend setting up the following infrastructure:
+
+* *Three Linux nodes,* typically virtual machines, in an infrastructure provider such as Amazon's EC2, Google Compute Engine or vSphere.
+* *A load balancer* to direct front-end traffic to the three nodes.
+* *A DNS record* to map a URL to the load balancer.
+This will become the {ranchera} server URL, and downstream {k8s} clusters will need to reach it.
+* *A private image registry* to distribute container images to your machines.
+
+These nodes must be in the same region or data center.
+You may place these servers in separate availability zones.
+
+[#rancher-airgap-rke-why-three-nodes]
+== Why three nodes?
+
+In an {rke2a} cluster, the {ranchera} server data is stored on {etcd}.
+This {etcd} database runs on all three nodes.
+The {etcd} database requires an odd number of nodes so that it can always elect a leader with a majority of the {etcd} cluster.
+If the {etcd} database cannot elect a leader, {etcd} can suffer from link:https://www.quora.com/What-is-split-brain-in-distributed-systems[split brain], requiring the cluster to be restored from backup.
+If one of the three {etcd} nodes fails, the two remaining nodes can elect a leader because they have the majority of the total number of {etcd} nodes.
+
+[#rancher-airgap-rke-setup-linux-nodes]
+== Set up Linux nodes
+
+These hosts will be disconnected from the Internet, but require being able to connect with your private registry.
+Make sure that your nodes fulfill the general installation requirements for link:https://rancher.com/docs/rancher/v2.x/en/installation/requirements/[OS, container runtime, hardware and networking].
+For an example of one way to set up Linux nodes, refer to this link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/k8s-tutorials/infrastructure-tutorials/nodes-in-amazon-ec2/[tutorial] for setting up nodes as instances in Amazon EC2.
+
+[#rancher-airgap-rke-setup-load-balancer]
+== Set up the load balancer
+
+You will also need to set up a load balancer to direct traffic to the {ranchera} replica on both nodes.
+That will prevent the outage of any single node from taking down communications to the {ranchera} management server.
+When {kube} gets set up in a later step, the {rke2a} tool will deploy an NGINX {ingress} controller.
+This controller will listen on ports 80 and 443 of the worker nodes, answering traffic destined for specific hostnames.
+When {ranchera} is installed (also in a later step), the {ranchera} system creates an {ingress} resource.
+That {ingress} tells the NGINX {ingress} controller to listen for traffic destined for the {ranchera} host name.
+The NGINX {ingress} controller, when receiving traffic destined for the {ranchera} host name, will forward that traffic to the running {ranchera} pods in the cluster.
+For your implementation, consider if you want or need to use a Layer-4 or Layer-7 load balancer:
+
+* *A layer-4 load balancer* is the simpler of the two choices, in which you are forwarding TCP traffic to your nodes.
+We recommend configuring your load balancer as a Layer 4 balancer, forwarding traffic on ports TCP/80 and TCP/443 to the {ranchera} management cluster nodes.
+The {ingress} controller on the cluster will redirect HTTP traffic to HTTPS and terminate SSL/TLS on port TCP/443.
+The {ingress} controller will forward traffic on port TCP/80 to the {ingress} pod in the {ranchera} deployment.
+* *A layer-7 load balancer* is a bit more complicated but can offer features that you may want.
+For instance, a layer-7 load balancer is capable of handling TLS termination at the load balancer, as opposed to {ranchera} doing TLS termination itself.
+This can be beneficial to centralize your TLS termination in your infrastructure.
+Layer-7 load balancing also allows your load balancer to make decisions based on HTTP attributes such as cookies—capabilities that a layer-4 load balancer cannot handle.
+If you decide to terminate the SSL/TLS traffic on a layer-7 load balancer, you will need to use the `--set tls=external` option when installing {ranchera} in a later step.
+For more information, refer to the link:https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/chart-options/#external-tls-termination[{ranchera} {helm} chart options].
+
+For an example showing how to set up an NGINX load balancer, refer to link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/k8s-tutorials/infrastructure-tutorials/nginx-load-balancer/[this page].
+For a how-to guide for setting up an Amazon ELB Network Load Balancer, refer to link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/k8s-tutorials/infrastructure-tutorials/amazon-elb-load-balancer/[this page].
+
+[IMPORTANT]
+====
+Do not use this load balancer (that is, the `local` cluster {ingress}) to load balance applications other than {ranchera} following installation.
+Sharing this {ingress} with other applications may result in WebSocket errors to {ranchera} following {ingress} configuration reloads for other apps.
+We recommend dedicating the `local` cluster to {ranchera} and no other applications.
+====
+
+[#rancher-airgap-rke-setup-dns-record]
+== Set up the DNS record
+
+Once you have set up your load balancer, you will need to create a DNS record to send traffic to this load balancer.
+Depending on your environment, this may be an A record pointing to the LB IP, or it may be a CNAME pointing to the load balancer host name.
+In either case, make sure this record matches the host name you want {ranchera} to respond to.
+You will need to specify this host name in a later step when you install {ranchera}, and it is not possible to change it later.
+Make sure that your decision is final.
+For a how-to guide for setting up a DNS record to route domain traffic to an Amazon ELB load balancer, refer to the link:https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-to-elb-load-balancer.html[official AWS documentation].
+
+[#rancher-airgap-rke-setup-private-image-registry]
+== Set up a private image registry
+
+{ranchera} supports air-gapped installations using a secure private registry.
+You must have your own private registry or other means of distributing container images to your machines.
+In a later step, when you set up your {rke2a} {kube} cluster, you will create a link:https://rke.docs.rancher.com/config-options/private-registries[private registries configuration file] with details from this registry.
+If you need to create a private registry, refer to the documentation pages for your respective runtime:
+
+* link:https://github.com/containerd/containerd/blob/main/docs/cri/config.md#registry-configuration[{containerd}]
+** link:https://github.com/containerd/nerdctl/blob/main/docs/registry.md[Nerdctl commands and managed registry services]
+* link:https://docs.docker.com/registry/deploying/[{docker}]

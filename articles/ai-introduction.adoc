@@ -1,0 +1,52 @@
+include::../common/generic-attributes.adoc[]
+= Introduction to {productname}
+
+:doctype: article
+:experimental:
+:docinfo:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:revdate: 2025-012-02
+:page-revdate: {revdate}
+
+WHAT?::
+  {productname} is an open generative AI solution. It offers
+  the customers the freedom to run private AI workloads both on
+  premises, in the cloud and even in air-gapped environments.
+  {productnameshort} provides secure, auditable AI capabilities
+  that ensure complete control over data and compliance with
+  regulatory requirements.
+
+WHY?::
+  To learn more about AI and the benefits of running your private
+  AI service inside your company or in the cloud.
+
+EFFORT::
+  To understand the basics and benefits of {productname} requires
+  less than 30 minutes of your time.
+
+GOAL::
+  To make you realize that {productname} is the right choice to
+  run private and secure AI workloads.
+
+include::../references/AI-intro-benefits.adoc[leveloffset=+1]
+include::../references/AI-intro-scenarios.adoc[leveloffset=+1]
+include::../concepts/AI-intro-how-works.adoc[leveloffset=+1]
+include::../glues/ai-intro-next-steps.adoc[leveloffset=+1]
+
+[appendix]
+include::../references/AI-glossary.adoc[leveloffset=+1]
+
+[appendix]
+include::../common/common_copyright_gfdl.adoc[]
+
+[appendix]
+include::../common/common_license_gfdl1.2.adoc[]

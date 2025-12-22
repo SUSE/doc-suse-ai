@@ -1,0 +1,32 @@
+[#openwebui-setting-model-syste-prompt]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Setting the default system prompt for an AI model
+endif::[]
+
+ifndef::part-of-article[]
+This topic explains how to set the default system prompt for an AI model.
+The system prompt is then used for new chats if not overridden by specifying a system prompt for a user or a chat. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. In the {owui} interface, click menu:Workspace[] in the upper part of the left panel. 
+. Select menu:Models[] in the top menu and scroll to the AI model whose system prompt you want to set. Use the pager at the bottom if the model is not listed on the current screen. 
+. Click the corresponding pen icon at its right to open the dialog for editing the model. 
+. In the menu:Model Params[] section, specify the system prompt in the menu:System prompt[] field. 
++
+.Model system prompt
+image::openwebui-workspace-models-sysprompt.png[Model system prompt,scaledwidth=50%]
++
+. Confirm with menu:Save & Update[] . 
+
+[#ai-model-sysprompt-moreinfo]
+== For more information
+
+Find more details about system prompts in {dsc}/suse-ai/1.0/html/AI-system-prompts/index.html. 

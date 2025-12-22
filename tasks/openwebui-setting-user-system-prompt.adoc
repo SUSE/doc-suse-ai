@@ -1,0 +1,21 @@
+[#openwebui-setting-user-system-prompt]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Setting the default system prompt for the current user
+endif::[]
+
+ifndef::part-of-article[]
+This topic explains how to set a system prompt for the current user. 
+endif::[]
+
+. In the bottom left of the {owui} window, click your avatar icon to open the user menu. 
+. Select menu:Settings[] to open your preferences and click the menu:General[] tab. 
+. Paste your system prompt in the menu:System Prompt[] text field. 
++
+.User-specific system prompt
+image::openwebui-user-system-prompt.png[User-specific system prompt,scaledwidth=50%]
++
+. Confirm with menu:Save[] and close the menu:Settings[] window.
+  The system prompt that you entered will affect the responses from the AI model  during the current chat session. 

@@ -1,0 +1,26 @@
+[#openwebui-using-models-from-openai-providers]
+= Using AI models from {openai}-compatible providers
+
+Instead of downloading AI models locally, you can use {openai}-compatible API to access models from model providers.
+These providers include both local instances of servers, such as https://localai.io/[LocalAI] or https://github.com/Mozilla-Ocho/llamafile[llamafile], and cloud providers, such as https://groq.com/[Groq] or https://openai.com/api/[{openai}].
+This procedure describes how to configure the Groq provider API from the {owui} interface. 
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+
+. Create a Groq cloud account at https://console.groq.com/. 
+. Create an API key at https://console.groq.com/keys. 
+. In the bottom left of the {owui} window, click your avatar icon to open the user menu and select menu:Admin Panel[] . 
+. Click the menu:Settings[] tab and select menu:Connections[] from the left menu. 
+. In the menu:Manage OpenAI API Connections[] section, click the small "plus" icon on the right to open the menu:Add connection[] screen. 
+. Enter `https://api.groq.com/openai/v1` as the base URL and the API key that you have previously created. Confirm with menu:Save[] . 
++
+.Adding the Groq API
+image::owui-add-openai-api.png[Adding the Groq API,scaledwidth=75%]
++
+{owui} now shows all the available models from Groq in the model selector drop-down list. 
++
+.List of AI modules from the Groq API
+image::owui-groq-models.png[List of AI modules from the Groq API,scaledwidth=75%]

@@ -1,0 +1,17 @@
+[#openwebui-input-field-specify-system-prompt]
+= Selecting a preconfigured system prompt from the chat input field
+
+System prompts define the mood, context or style for user interactions.
+This section details how to select a preconfigured  system prompt from the input field. 
+
+.Requirements
+* At least one system prompt must be preconfigured. Refer to https://documentation.suse.com/suse-ai/1.0/html/openwebui-configuring/index.html#openwebui-managing-prompts[Managing system prompts] to learn how to create one. 
+--
+. In the chat input field, type the `/` character. 
+. From the drop-down list that appears, select the system prompt that you want to apply for the current chat. 
++
+.Preconfigured system prompt
+image::openwebui-chat-system-prompt.png[Preconfigured system prompt,scaledwidth=75%]
++
+. The content of the selected system prompt is pasted to the chat input field. Confirm it with kbd:[Enter] or by clicking the "up" arrow to the right of the chat input field. 
+--

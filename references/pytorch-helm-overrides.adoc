@@ -1,0 +1,184 @@
+[#pytorch-helm-overrides]
+= Examples of {pytorch} {helm} chart override files
+
+include::../snippets/helm-chart-overrides-intro.adoc[]
+
+[#pytorch-chart-example-basic]
+.Basic override file with GPU enabled
+====
+[source,yaml]
+----
+# pytorch_custom_overrides.yaml
+runtimeClassName: nvidia
+global:
+  imagePullSecrets:
+    - application-collection <.>
+image:
+  registry: dp.apps.rancher.io  
+  repository: containers/pytorch
+  tag: "2.7.0-nvidia"
+  pullPolicy: IfNotPresent
+persistence:
+  enabled: true 
+  storageClass: local-path <.>
+gpu:
+  enabled: true
+  type: 'nvidia'
+  number: 1
+----
+<.> Instructs {helm} to use credentials from the {sappco}.
+For instructions on how to configure the image pull secrets for the {sappco}, refer to the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+====
+
+[#pytorch-chart-example-configmap]
+.ConfigMap-based upload
+====
+To create a ConfigMap, run the following command:
+
+[source,subs="+attributes"]
+----
+{prompt_user}kubectl describe configmap \
+  MY_CONFIG_MAP -n SUSE_AI_NAMESPACE
+----
+
+[source,yaml]
+----
+# pytorch_custom_overrides.yaml
+runtimeClassName: nvidia
+global:
+  imagePullSecrets:
+    - application-collection 
+image:
+  registry: dp.apps.rancher.io <.>
+  repository: containers/pytorch
+  tag: "2.7.0-nvidia"
+  pullPolicy: IfNotPresent
+persistence:
+  enabled: true 
+  storageClass: local-path <.>
+gpu:
+  enabled: true
+  type: 'nvidia'
+  number: 1
+
+configMapExtFiles: "my-config-files" <.>
+----
+<.> Instructs {helm} to use credentials from the {sappco}.
+For instructions on how to configure the image pull secrets for the {sappco}, refer to the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+<.> Specifies ConfigMap files.
+====
+
+[#pytorch-chart-example-hostfolder]
+.Host-folder with files baked into the chart
+====
+Move the `entrypoint.sh` file plus any helper files under the `scripts/` directory.
+
+[source,yaml]
+----
+# pytorch_custom_overrides.yaml
+runtimeClassName: nvidia
+global:
+  imagePullSecrets:
+    - application-collection <.>
+image:
+  registry: dp.apps.rancher.io  
+  repository: containers/pytorch
+  tag: "2.7.0-nvidia"
+  pullPolicy: IfNotPresent
+persistence:
+  enabled: true 
+  storageClass: local-path <.>
+gpu:
+  enabled: true
+  type: 'nvidia'
+  number: 1
+
+entrypointscript:
+  filename: "entrypoint.sh" <.>
+  arguments: [] <.>
+----
+<.> Instructs {helm} to use credentials from the {sappco}.
+For instructions on how to configure the image pull secrets for the {sappco}, refer to the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+<.> The file will be mounted and accessible at `/workspace/entrypoint.sh`.
+<.> Add custom command-line arguments if needed.
+====
+
+[#pytorch-chart-example-git-public]
+.Git repository clone: public with no authentication
+====
+[source,yaml]
+----
+# pytorch_custom_overrides.yaml
+runtimeClassName: nvidia
+global:
+  imagePullSecrets:
+    - application-collection <.>
+image:
+  registry: dp.apps.rancher.io  
+  repository: containers/pytorch
+  tag: "2.7.0-nvidia"
+  pullPolicy: IfNotPresent
+persistence:
+  enabled: true 
+  storageClass: local-path <.>
+gpu:
+  enabled: true
+  type: 'nvidia'
+  number: 1
+
+gitClone:
+  enabled: true
+  repository: "github.com/YOUR_ORGANIZATOIN/YOUR_REPO" <.>
+  revision: "main" <.>
+----
+<.> Instructs {helm} to use credentials from the {sappco}.
+For instructions on how to configure the image pull secrets for the {sappco}, refer to the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+<.> Do not specify the protocol, such as `https://`.
+<.> Specify a branch name, a tag name or a commit.
+====
+
+[#pytorch-chart-example-git-private]
+.Git repository clone: private with authentication
+====
+[source,yaml]
+----
+# pytorch_custom_overrides.yaml
+runtimeClassName: nvidia
+global:
+  imagePullSecrets:
+    - application-collection <.>
+image:
+  registry: dp.apps.rancher.io  
+  repository: containers/pytorch
+  tag: "2.7.0-nvidia"
+  pullPolicy: IfNotPresent
+persistence:
+  enabled: true 
+  storageClass: local-path <.>
+gpu:
+  enabled: true
+  type: 'nvidia'
+  number: 1
+
+gitClone:
+  enabled: true
+  repository: "github.com/YOUR_ORGANIZATOIN/YOUR_REPO" <.>
+  revision: "main" <.>
+  secretName: "MY_GIT_CREDENTIALS" <.>
+----
+<.> Instructs {helm} to use credentials from the {sappco}.
+For instructions on how to configure the image pull secrets for the {sappco}, refer to the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+<.> Do not specify the protocol, such as `https://`.
+<.> Specify a branch name, a tag name or a commit.
+<.> Specify a preconfigured secret with username and password (or token).
+====

@@ -1,0 +1,350 @@
+[#mlflow-installing]
+= Installing {mlflow}
+
+{mlflow} is an open-source platform for managing the end-to-end machine learning lifecycle.
+It provides a centralized model registry to track and manage the entire lifecycle of machine learning models.
+{mlflow} includes tools for experiment tracking, model packaging, versioning and deployment.
+This helps streamline the transition from development to production, ensuring reproducibility and collaboration among data science teams.
+
+This section describes how to deploy {mlflow} using either {docker} or {helm} on a {kube} cluster.
+
+// 2025-11-26 tbazant: commenting for now as we don't have an mlflow chart in appco
+//[#mlflow-installing-app-details]
+//== Details about the {mlflow} application
+//
+//Before deploying {mlflow}, it is important to know more about the supported configurations and documentation.
+//The following command provides the corresponding details:
+//
+//[source]
+//----
+//helm show values oci://dp.apps.rancher.io/charts/mlflow
+//----
+//
+//Alternatively, you can also refer to the {mlflow} {helm} chart page on the {sappco} site at link:https://apps.rancher.io/applications/mlflow[].
+//It contains {mlflow} dependencies, available versions and the link to pull the {mlflow} container image.
+
+[#mlflow-installing-kubernetes]
+== Installing {mlflow} using {helm} on a {kube} cluster
+
+include::../snippets/ai-library-requirement.adoc[]
+
+. Create a skeleton for a new `{mlflow}` {helm} chart.
++
+[source,subs="+attributes"]
+----
+{prompt_user}helm create mlflow
+----
+The command creates an `mlflow` directory with the basic file structure for a chart.
+. Replace `mlflow/values.yaml` with the following content.
+Replace `CONTAINER_VERSION` with the current chart version.
++
+[source,yaml]
+----
+# values.yaml
+replicaCount: 1
+image:
+  repository: dp.apps.rancher.io/containers/mlflow 
+  pullPolicy: IfNotPresent
+  tag: "CONTAINER_VERSION"
+imagePullSecrets:
+  - name: application-collection
+nameOverride: ""
+fullnameOverride: ""
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+  # fsGroup: 2000
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+service:
+  type: ClusterIP
+  port: 5000
+ingress:
+  enabled: true
+  className: ""
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: suse-mlflow
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+resources:
+   limits:
+     cpu: "2"
+     memory: "2Gi"
+   requests:
+     cpu: "1"
+     memory: "1Gi"
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 5000
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 5000
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
+# Additional volumes on the output Deployment definition.
+volumes: []
+# - name: foo
+#   secret:
+#     secretName: mysecret
+#     optional: false
+# Additional volumeMounts on the output Deployment definition.
+volumeMounts: []
+# - name: foo
+#   mountPath: "/etc/foo"
+#   readOnly: true
+nodeSelector: {}
+tolerations: []
+affinity: {}</screen>
+----
+. Replace `mlflow/template/deployment.yaml` with the following content:
++
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mlflow.fullname" . }}
+  labels:
+    {{- include "mlflow.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "mlflow.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "mlflow.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "mlflow.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /usr/bin/mlflow 
+            - server
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "5000"
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+----
+. Install {mlflow} using the following command:
++
+[source,subs="+attributes"]
+----
+{prompt_user}helm install mlflow ./mlflow \
+  -n SUSE_AI_NAMESPACE
+----
+. Validate that {ingress} is enabled for {mlflow}.
++
+[source,subs="+attributes"]
+----
+{prompt_user}kubectl get ingress --all-namespaces
+NAMESPACE        AME       CLASS HOSTS                ADDRESS     PORTS     AGE
+[...]
+suse-private-ai  mlflow     nginx suse-mlflow         10.0.3.184  80        153m
+suse-private-ai  pen-webui nginx suse-ollama-webui    10.0.3.184  80, 443   8h
+----
+
+[#mlflow-uninstalling]
+=== Uninstalling {mlflow}
+
+To uninstall {mlflow}, run the following command:
+
+[source,subs="+attributes"]
+----
+{prompt_user}helm uninstall mlflow -n SUSE_AI_NAMESPACE
+----
+
+[#mlflow-installing-docker]
+== Installing {mlflow} using {docker}
+
+There are two ways to install {mlflow} using {docker}:
+
+* By downloading and running the xref:mlflow-docker-container[{mlflow} container] directly.
+* By creating an xref:mlflow-docker-compose[{mlflow} {docker} Compose] YAML file.
+
+[#mlflow-docker-container]
+=== Installing {mlflow} using a {docker} container
+
+. Download the {mlflow} container.
+Replace `CONTAINER_VERSION` with the current container version.
+[source,subs="+attributes"]
+----
+{prompt_user}docker pull dp.apps.rancher.io/containers/mlflow:CONTAINER_VERSION
+----
+.  _(Optional)_ Verify the downloaded image.
+[source,subs="+attributes"]
+----
+{prompt_user}docker images
+REPOSITORY                           TAG    IMAGE ID     CREATED      SIZE
+dp.apps.rancher.io/containers/mlflow 3.6.0  d984124afc22 33 hours ago 715MB
+----
+. Run the {mlflow} server by starting the container at port 5000.
+Replace `CONTAINER_VERSION` with the current container version.
+[source,subs="+attributes"]
+----
+{prompt_user} docker run -p 5000:5000 \
+  dp.apps.rancher.io/containers/mlflow:CONTAINER_VERSION mlflow server \
+  --host 0.0.0.0 --port 5000
+[2025-11-27 18:34:15 +0000] [12] [INFO] Starting gunicorn 23.0.0
+[2025-11-27 18:34:15 +0000] [12] [INFO] Listening at: http://0.0.0.0:5000 (12)
+[2025-11-27 18:34:15 +0000] [12] [INFO] Using worker: sync
+[2025-11-27 18:34:15 +0000] [13] [INFO] Booting worker with pid: 13
+[2025-11-27 18:34:15 +0000] [14] [INFO] Booting worker with pid: 14
+[2025-11-27 18:34:15 +0000] [15] [INFO] Booting worker with pid: 15
+[2025-11-27 18:34:15 +0000] [16] [INFO] Booting worker with pid: 16
+----
+
+[#mlflow-docker-compose]
+=== Installing {mlflow} using a {docker} Compose YAML file
+
+. Create a `docker-compose.yaml` file with the following content:
+[source,yaml]
+----
+services:
+  mlflow:
+    image: dp.apps.rancher.io/containers/mlflow:CONTAINER_VERSION
+    container_name: mlflow
+    restart: always
+    ports:
+      - "5000:5000"
+    command:
+      - /usr/bin/mlflow
+      - server
+      - --host
+      - "0.0.0.0"
+      - --port
+      - "5000"
+----
+. Run {mlflow} using the following command:
+[source,subs="+attributes"]
+----
+{prompt_user}docker-compose up -d
+[...]
+[+] Running 2/2
+ \u2714 Network {exampleuser_plain}_default  Created                0.0s 
+ \u2714 Container mlflow      Started                         4s
+----
+.  _(Optional)_ Verify that the container is running.
+[source,subs="+attributes"]
+----
+(venv) {exampleuser_plain}@localhost:~[] docker ps
+CONTAINER ID IMAGE    ...     STATUS          PORTS                     NAMES
+1e58723cb3d  mlflow:3.6.0     Up 23 seconds   0.0.0.0:5000->5000/tcp... mlflow
+----
+.  _(Optional)_ Follow the logs to ensure that the {mlflow} server has started correctly.
+[source,subs="+attributes"]
+----
+{prompt_user}(venv) {exampleuser_plain}@localhost:~[] docker-compose logs -f
+mlflow [2025-11-01 00:56:54 +0000] [3] [INFO] Starting gunicorn 23.0.0
+mlflow [2025-11-01 00:56:54 +0000] [3] [INFO] Listening at: http://0.0.0.0:5000 (3)
+mlflow [2025-11-01 00:56:54 +0000] [3] [INFO] Using worker: sync
+mlflow [2025-11-01 00:56:54 +0000] [4] [INFO] Booting worker with pid: 4
+mlflow [2025-11-01 00:56:54 +0000] [5] [INFO] Booting worker with pid: 5
+mlflow [2025-11-01 00:56:55 +0000] [6] [INFO] Booting worker with pid: 6
+mlflow [2025-11-01 00:56:55 +0000] [7] [INFO] Booting worker with pid: 7
+----
+
+[#mlflow-accessing]
+== Accessing {mlflow} Web UI
+
+After the {mlflow} server is up and running, you can access it from a Web browser either on the local host or exposed via {ingress}.
+
+To access {mlflow} locally, point your Web browser to `\http://localhost:5000`.
+
+To access {mlflow} via {ingress}, add a corresponding line to your `/etc/hosts`, for example:
+
+[source]
+----
+10.0.3.184 suse-mflow
+----
+
+Then point your Web browser to `\http://suse-mlflow`.
+
+[#fg-mlflow-webui]
+.{mlflow} Web UI
+image::mlflow-webui.png[A screenshot showing the {mlflow} Web user interface,width=100%]
+
+[TIP]
+.For more information
+====
+Explore {mlflow} core features, model training, tracing (observability) and more by following the link:https://github.com/mlflow/mlflow?tab=readme-ov-file#-core-components[official documentation].
+====

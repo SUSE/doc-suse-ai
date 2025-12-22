@@ -1,0 +1,443 @@
+[#observability-installing]
+= Setting up {sobservability} for {productname}
+
+{sobservability} provides comprehensive monitoring and insights into your infrastructure and applications.
+It enables efficient tracking of metrics, logs and traces, helping you maintain optimal performance and troubleshoot issues effectively.
+This procedure guides you through setting up {sobservability} for the {productname} environment using the {suseai} Observability Extension.
+
+[#ai-observability-scenarios]
+== Deployment scenarios
+
+You can deploy {sobservability} and {productname} in two different ways:
+
+* *Single-Cluster setup:* Both {productname} and {sobservability} are installed in the same {kube} cluster.
+This is a simpler approach ideal for testing and proof-of-concept deployments.
+Communication between components can use internal cluster DNS.
+* *Multi-Cluster setup:* {productname} and {sobservability} are installed on separate, dedicated {kube} clusters.
+This setup is recommended for production environments because it isolates workloads.
+Communication requires exposing the {sobservability} endpoints externally, for example, via an {ingress}.
+
+This section provides instructions for both scenarios.
+
+[#ai-observability-requirements]
+== Requirements
+
+To set up {sobservability} for {productname}, you need to meet the following requirements:
+
+* Have access to {sappco}
+* Have a valid {productname} subscription
+* Have a valid license for {sobservability} in {scc}
+* Instrument your applications for telemetry data acquisition with {otelemetry}.
+
+For details on how to collect traces and metrics from {productname} components and user-developed applications, refer to link:https://documentation.suse.com/suse-ai/1.0/html/AI-monitoring/index.html[Monitoring {productname} with {otelemetry} and {sobservability}].
+It includes configurations that are essential for full observability.
+
+[IMPORTANT]
+.{sappco} not instrumented by default
+====
+Applications from the {sappco} are not instrumented by default.
+If you want to monitor your AI applications, you need to follow the instrumentation guidelines that we provide in the document link:https://documentation.suse.com/suse-ai/1.0/html/AI-monitoring/index.html[Monitoring {productname} with {otelemetry} and {sobservability}].
+====
+
+[#ai-observability-2clusters]
+== Setup process overview
+
+The following chart shows the high-level steps for the setup procedure.
+You will first set up the {sobservability} cluster, then configure the {productname} cluster, and finally instrument your applications.
+Execute the steps in each column from left to right and top to bottom.
+
+* _Blue steps_ are related to {helm} chart installations.
+* _Gray steps_ represent another type of interaction, such as coding.
+
+.High-level overview of the {sobservability} setup
+image::ai-observability-overview.png[The chart showing a high-level overview of the {sobservability} setup,width=100%]
+
+[TIP]
+.Setup clusters
+====
+You can create and configure {kube} clusters for {productname} and {sobservability} as you prefer.
+If you are using {ranchermanager}, check its link:https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup[documentation].
+For testing purposes, you can even share one cluster for both deployments.
+You can skip instructions on setting up a specific cluster if you already have one configured.
+====
+
+The diagram below shows the result of the above steps.
+There are two clusters represented, one for the {sobservability} workload and another one for {productname}.
+You may use identical setup or customize it for your environment.
+
+.Separate clusters for {productname} and {sobservability}
+image::ai-observability-2clusters.png[The chart showing setup of separate clusters for {productname} and {sobservability},width=75%]
+
+.Points to notice
+* You can install {suseai} Observability Extension alongside {sobservability}.
+It means that you can confidently use the internal {kube} DNS.
+* {sobservability} contains several components and the following two of them need to be accessible by the AI Cluster:
+** The Collector endpoint.
+Refer to link:https://documentation.suse.com/cloudnative/suse-observability/next/en/setup/install-stackstate/kubernetes_openshift/ingress.html[Exposing {sobservability} outside of the cluster] or link:https://documentation.suse.com/cloudnative/suse-observability/next/en/setup/otel/otlp-apis.html#_self_hosted_suse_observability[Self-hosted {sobservability}] for details about exposing it.
+** The {sobservability} API.
+Refer to link:https://documentation.suse.com/cloudnative/suse-observability/next/en/setup/install-stackstate/kubernetes_openshift/ingress.html[Exposing {sobservability} outside of the cluster] for details about exposing it.
+** {milvus} metrics and traces can be scraped by the {otelemetry} Collector with simple configurations, provided below.
+The same is true for GPU metrics.
+** To get information from {owui}, {ollama} or {vllm}, you must have a specific instrumentation set.
+It can be an application instrumented with the {openlit} SDK or other form of instrumentation following the same patterns.
+
+[IMPORTANT]
+====
+Remember that in multi-cluster setups, it is *critical* to properly expose your endpoints.
+Configure TLS, be careful with the configuration, and make sure to provide the right keys and tokens.
+More details are provided in the respective instructions.
+====
+
+[#ai-observability-observability-cluster]
+[.procedure]
+== Setting up the {sobservability} cluster
+
+This initial step is identical for both single-cluster and multi-cluster deployments.
+--
+. *Install {sobservability}.*
+You can follow the official
+ifdef::deployment_standard[]
+link:https://documentation.suse.com/cloudnative/suse-observability/latest/en/classic.html[{sobservability} installation documentation]
+endif::[]
+ifdef::deployment_airgap[]
+link:https://documentation.suse.com/cloudnative/suse-observability/latest/en/k8s-suse-rancher-prime-air-gapped.html[{sobservability} air-gapped installation documentation]
+endif::[]
+for all installation instructions.
+Remember to link:https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/ingress.html[expose your APIs] and collector endpoints to your {productname} cluster.
++
+[IMPORTANT]
+.Multi-cluster setup
+====
+For multi-cluster setups, you must expose the {sobservability} API and collector endpoints so that the {productname} cluster can reach them.
+Refer to the guide on link:https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/ingress.html[exposing {sobservability} outside of the cluster].
+====
+. *Install the {sobservability} extension.*
+Create a new {helm} values file named `genai_values.yaml`.
+Before creating the file, review the placeholders below.
++
+SUSE_OBSERVABILITY_API_URL:: The URL of the {sobservability} API.
+For multi-cluster deployments, this is the external URL.
+For single-cluster deployments, this can be the internal service URL.
+Example: `http://suse-observability-api.your-domain.com`
+SUSE_OBSERVABILITY_API_KEY:: The API key from the `baseConfig_values.yaml` file used during the {sobservability} installation.
+SUSE_OBSERVABILITY_API_TOKEN_TYPE:: Can be `api` for a token from the Web UI or `service` for a Service Token.
+SUSE_OBSERVABILITY_TOKEN:: The API or Service token itself.
+OBSERVED_SERVER_NAME:: The name of the cluster to observe.
+It must match the name used in the {kube} StackPack configuration.
+Example: `suse-ai-cluster`.
+
+.. Create the `genai_values.yaml` file with the following content:
++
+[source,yaml]
+----
+global:
+  imagePullSecrets:
+  - application-collection <.>
+  ifdef::deployment_airgap[]
+  imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+  endif::[]
+serverUrl: <SUSE_OBSERVABILITY_API_URL>
+apiKey: <SUSE_OBSERVABILITY_API_KEY>
+tokenType: <SUSE_OBSERVABILITY_API_TOKEN_TYPE>
+apiToken: <SUSE_OBSERVABILITY_TOKEN>
+clusterName: <OBSERVED_SERVER_NAME>
+----
+<.> Instructs {helm} to use credentials from the {sappco}.
+For instructions on how to configure the image pull secrets for the {sappco}, refer to the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
+
+.. Run the install command.
++
+ifdef::deployment_standard[]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install ai-obs \
+  oci://dp.apps.rancher.io/charts/suse-ai-observability-extension \
+  -f genai_values.yaml --namespace so-extensions --create-namespace
+----
+endif::[]
+ifdef::deployment_airgap[]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install ai-obs \
+  charts/suse-ai-observability-extension-<X.Y.Z>.tgz \
+  -f genai_values.yaml --namespace so-extensions --create-namespace
+----
+endif::[]
++
+[NOTE]
+.Self-signed certificates not supported
+====
+Self-signed certificates are not supported.
+Consider running the extension in the same cluster as {sobservability} and then use the internal {k8s} address.
+====
++
+After the installation is complete, a new menu called btn:[GenAI] is added to the Web interface and also a {kube} cron job is created that synchronizes the topology view with the components found in the {productname} cluster.
+
+. *Verify {sobservability} extension.*
+After the installation, you can verify that a new lateral menu appears:
++
+.New GenAI Observability menu item
+image::ai-observability-genai-menu.png[An image of a new left menu item GenAI Observability,width=30%]
+--
+
+[#ai-observability-ai-cluster]
+== Setting up the {productname} cluster
+
+Follow the instructions for your deployment scenario.
+
+Single-cluster deployment:: In this setup, the {productname} components are installed in the same cluster as {sobservability} and can communicate using internal service DNS.
+Multi-cluster deployment:: In this setup, the {productname} cluster is separate.
+Communication relies on externally exposed endpoints of the {sobservability} cluster.
+
+The difference between deployment scenarios affects the *OTEL Collector exporter configuration* and the *{sobservability} Agent URL* as described in the following list.
+
+SUSE_OBSERVABILITY_API_URL::
+The URL of the {sobservability} API.
++
+*Single-cluster example:* http://suse-observability-otel-collector.suse-observability.svc.cluster.local:4317
++
+*Multi-cluster example:* https://suse-observability-api.your-domain.com
+
+SUSE_OBSERVABILITY_COLLECTOR_ENDPOINT::
+The endpoint of the {sobservability} Collector.
++
+*Single-cluster example:* http://suse-observability-router.suse-observability.svc.cluster.local:8080/receiver/stsAgent
++
+*Multi-cluster example:* https://suse-observability-router.your-domain.com/receiver/stsAgent
+
+[.procedure]
+. *Install {nvoperator}.*
+Follow the instructions in link:https://documentation.suse.com/cloudnative/rke2/latest/en/advanced.html#_deploy_nvidia_operator[].
+. *Install {otelemetry} collector.*
+Create a secret with your {sobservability} API key in the namespace where you want to install the collector.
+Retrieve the API key using the Web UI or from the `baseConfig_values.yaml` file that you used during the {sobservability} installation.
+If the namespace does not exist yet, create it.
++
+[source,bash]
+----
+kubectl create namespace observability
+kubectl create secret generic open-telemetry-collector \
+  --namespace observability \
+  --from-literal=API_KEY='<SUSE_OBSERVABILITY_API_KEY>'
+----
++
+Create a new file named `otel-values.yaml` with the following content.
++
+[source,yaml]
+----
+global:
+  imagePullSecrets:
+  - application-collection
+  ifdef::deployment_airgap[]
+  repository: <LOCAL_DOCKER_REGISTRY_URL>:5043/opentelemetry-collector-k8s
+  endif::[]
+extraEnvsFrom:
+  - secretRef:
+      name: open-telemetry-collector
+mode: deployment
+ports:
+  metrics:
+    enabled: true
+presets:
+  kubernetesAttributes:
+    enabled: true
+    extractAllPodLabels: true
+config:
+  receivers:
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: 'gpu-metrics'
+            scrape_interval: 10s
+            scheme: http
+            kubernetes_sd_configs:
+              - role: endpoints
+                namespaces:
+                  names:
+                    - gpu-operator
+          - job_name: 'milvus'
+            scrape_interval: 15s
+            metrics_path: '/metrics'
+            static_configs:
+              - targets: ['<MILVUS_SERVICE_NAME>.<SUSE_AI_NAMESPACE>.svc.cluster.local:9091'] <.>
+          - job_name: 'vllm'
+            scrape_interval: 10s
+            scheme: http
+            kubernetes_sd_configs:
+              - role: service
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_namespace]
+                action: keep
+                regex: '<VLLM_NAMESPACE>' <.>
+
+              - source_labels: [__meta_kubernetes_service_name]
+                action: keep
+                regex: '.*<VLLM_RELEASE_NAME>.*' <.>
+  exporters:
+    otlp:
+      endpoint: https://<OPEN_TELEMETRY_COLLECTOR_NAME>.suse-observability.svc.cluster.local:4317 <.>
+      headers:
+        Authorization: "SUSEObservability ${env:API_KEY}"
+      tls:
+        insecure: true
+  processors:
+    tail_sampling:
+      decision_wait: 10s
+      policies:
+      - name: rate-limited-composite
+        type: composite
+        composite:
+          max_total_spans_per_second: 500
+          policy_order: [errors, slow-traces, rest]
+          composite_sub_policy:
+          - name: errors
+            type: status_code
+            status_code:
+              status_codes: [ ERROR ]
+          - name: slow-traces
+            type: latency
+            latency:
+              threshold_ms: 1000
+          - name: rest
+            type: always_sample
+          rate_allocation:
+          - policy: errors
+            percent: 33
+          - policy: slow-traces
+            percent: 33
+          - policy: rest
+            percent: 34
+    resource:
+      attributes:
+      - key: k8s.cluster.name
+        action: upsert
+        value: <CLUSTER_NAME> <.>
+      - key: service.instance.id
+        from_attribute: k8s.pod.uid
+        action: insert
+    filter/dropMissingK8sAttributes:
+      error_mode: ignore
+      traces:
+        span:
+          - resource.attributes["k8s.node.name"] == nil
+          - resource.attributes["k8s.pod.uid"] == nil
+          - resource.attributes["k8s.namespace.name"] == nil
+          - resource.attributes["k8s.pod.name"] == nil
+  connectors:
+    spanmetrics:
+      metrics_expiration: 5m
+      namespace: otel_span
+    routing/traces:
+      error_mode: ignore
+      table:
+      - statement: route()
+        pipelines: [traces/sampling, traces/spanmetrics]
+  service:
+    extensions:
+      - health_check
+    pipelines:
+      traces:
+        receivers: [otlp, jaeger]
+        processors: [filter/dropMissingK8sAttributes, memory_limiter, resource]
+        exporters: [routing/traces]
+      traces/spanmetrics:
+        receivers: [routing/traces]
+        processors: []
+        exporters: [spanmetrics]
+      traces/sampling:
+        receivers: [routing/traces]
+        processors: [tail_sampling, batch]
+        exporters: [debug, otlp]
+      metrics:
+        receivers: [otlp, spanmetrics, prometheus]
+        processors: [memory_limiter, resource, batch]
+        exporters: [debug, otlp]
+----
+<.> Configure the {milvus} service and namespace for the {prometheus} scraper.
+Because {milvus} will be installed in subsequent steps, you can return to this step and edit the endpoint if necessary.
+<.> Update to match the values in the {vllm} deployment section.
+<.> Update to match the values in the {vllm} deployment section.
+<.> Set the exporter to your exposed {sobservability} collector.
+Remember that the value can be distinct, depending on the deployment pattern.
+For production usage, we recommend using TLS communication.
+<.> Replace `<CLUSTER_NAME>` with the cluster's name.
++
+Finally, run the installation command.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install opentelemetry-collector \
+  oci://dp.apps.rancher.io/charts/opentelemetry-collector \
+  -f otel-values.yaml --namespace observability
+----
++
+Verify the installation by checking the existence of a new deployment and service in the observability namespace.
+. The GPU metrics scraper that we configure in the OTEL Collector requires custom RBAC rules.
+Create a file named `otel-rbac.yaml` with the following content:
++
+[source,yaml]
+----
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: suse-observability-otel-scraper
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - services
+      - endpoints
+    verbs:
+      - list
+      - watch
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: suse-observability-otel-scraper
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: suse-observability-otel-scraper
+subjects:
+  - kind: ServiceAccount
+    name: opentelemetry-collector
+    namespace: observability
+----
++
+Then apply the configuration by running the following command.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl apply -n gpu-operator -f otel-rbac.yaml
+----
+. *Install the {sobservability} Agent.*
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  --namespace suse-observability --create-namespace \
+  --set-string 'stackstate.apiKey'='<YOUR_API_KEY>' \ <.>
+  --set-string 'stackstate.cluster.name'='<CLUSTER_NAME>' \ <.>
+  --set-string 'stackstate.url'='http://suse-observability-router.suse-observability.svc.cluster.local:8080/receiver/stsAgent' \ <.>
+  --set 'nodeAgent.skipKubeletTLSVerify'=true suse-observability-agent \
+  suse-observability/suse-observability-agent
+----
+<.> Retrieve the API key using the Web UI or from the `baseConfig_values.yaml` file that you used during the {sobservability} installation.
+<.> Replace `<CLUSTER_NAME>` with the cluster's name.
+<.> Replace with your {sobservability} server URL.
+. *Install {productname}.*
+Refer to xref:ai-library-installing[] for the complete procedure.
+
+include::../snippets/observability-warning-262.adoc[]
+
+[#ai-observability-openlit]
+== Instrument applications
+
+Instrumentation is the act of configuring your applications for telemetry data acquisition.
+Our stack employs {otelemetry} standards as a vendor-neutral and open base for our telemetry.
+For a comprehensive guide on how to set up your instrumentation, please refer to link:https://documentation.suse.com/suse-ai/1.0/html/AI-monitoring/index.html[Monitoring {productname} with {otelemetry} and {sobservability}].
+
+By following the instructions in the document referenced above, you will be able to retrieve all relevant telemetry data from {owui}, {ollama}, {milvus} and {vllm} by simply applying specific configuration to their {helm} chart values.
+You can find links for advanced use cases (auto-instrumentation with the OTEL Operator) at the end of the document.

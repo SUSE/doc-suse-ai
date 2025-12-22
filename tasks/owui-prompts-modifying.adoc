@@ -1,0 +1,17 @@
+[#owui-prompts-modifying]
+= Modifying existing system prompts
+
+ifndef::part-of-article[]
+This procedure shows how to modify an existing system prompt. 
+endif::[]
+
+.Requirements
+* {empty}
++
+include::../snippets/openwebui-requirement-admin-privileges.adoc[]
+--
+. In the {owui} interface, click menu:Workspace[] in the upper part of the left panel and select menu:Prompts[] . 
+. Scroll to the prompt that you want to modify. Use the pager at the bottom if the prompt is not listed on the current screen. 
+. Click the corresponding pen icon on the right to open the form that enables you to edit the title and the description of the prompt. 
+. Confirm with menu:Save & Update[] . 
+--

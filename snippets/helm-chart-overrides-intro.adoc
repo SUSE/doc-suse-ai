@@ -1,0 +1,2 @@
+To override the default values during the {helm} chart installation or update, you can create an override YAML file with custom values. Then, apply these values by specifying the path to the override file with the `-f` option of the `helm` command.
+Remember to replace <SUSE_AI_NAMESPACE> with your {kube} namespace.

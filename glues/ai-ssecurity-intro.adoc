@@ -1,0 +1,7 @@
+[#ai-security-installation]
+= Installing {ssecurity}
+
+This chapter describes how to install {ssecurity} to scan {suseai} nodes for vulnerabilities and improve data protection.
+ifdef::deployment_standard[]
+You can install it either using xref:suse-security-installation-rancher[{ranchermanager}] or on any xref:suse-security-installation-kubernetes[{kube} cluster].
+endif::[]

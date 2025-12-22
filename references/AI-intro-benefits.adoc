@@ -1,0 +1,15 @@
+
+[#ai-intro-benefits]
+= What are the benefits of using {productname}?
+
+[abstract]
+--
+Running the {productname} service brings the following benefits: 
+--
+
+* Cloud AI services raise concerns about data security and accessibility. AI applications running on premises, however, increase data privacy, security and compliance with regulatory standards. 
+* {productname} provides a user-friendly interface for managing and deploying AI models. 
+* Pre-built {nvidia} drivers and operator provide increased AI performance. 
+* {productname} components are dynamically scalable, from the Web user interface to the underlying data store. 
+* {productname} cares about security{mdash}it uses TLS certificates for Web UI and API access. Data stored in a database are encrypted as well. 
+* High level of {suse} quality control on the whole software production chain used by the AI stack. 

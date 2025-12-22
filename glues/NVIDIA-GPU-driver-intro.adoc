@@ -1,0 +1,13 @@
+[#ai-nvidia-gpu-driver]
+= Installing {nvidia} GPU drivers
+
+This article demonstrates how to implement host-level {nvidia} GPU
+support via the `open-driver`. The
+`open-driver`is part of the core package
+repositories. Therefore, there is no need to compile it or
+download executable packages. This driver is built into the
+operating system rather than dynamically loaded by the {nvidia}
+GPU Operator. This configuration is desirable for customers who
+want to pre-build all artifacts required for deployment into the
+image, and where the dynamic selection of the driver version via
+{kube} is not a requirement.

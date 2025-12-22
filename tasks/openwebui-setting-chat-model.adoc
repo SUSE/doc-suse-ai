@@ -1,0 +1,27 @@
+[#openwebui-setting-chat-model]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Specifying an AI model for the current chat
+endif::[]
+
+ifndef::part-of-article[]
+This topic explains how to specify an AI model for the current chat session.
+endif::[]
+
+. In the top left of the {owui} chat window, click either the currently selected model name or the message saying that no model is specified. 
+. From the drop-down list, select your preferred AI model for the current chat session.
++
+.Chat-specific AI model
+image::openwebui-chat-model.png[Chat-specific AI model,scaledwidth=50%]
++
+--
+include::../snippets/openwebui-tip-default-model.adoc[leveloffset=1]
+--
++
+--
+include::../snippets/openwebui-tip-multiple-models.adoc[leveloffset=1]
+--
+
+. Your prompts will now be processed by the selected AI model.

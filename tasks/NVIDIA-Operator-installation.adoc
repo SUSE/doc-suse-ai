@@ -1,0 +1,187 @@
+[#nvidia-operator-installation]
+= Installing the {nvoperator} on the {rke2} cluster
+
+The {nvidia} operator allows administrators of {k8s} clusters to manage GPUs just like CPUs.
+It includes everything needed for pods to be able to operate GPUs.
+
+[#nvidia-operator-host-requirements]
+== Host OS requirements
+
+To expose the GPU to the pod correctly, the {nvidia} kernel drivers and the `libnvidia-ml` library must be correctly installed in the host OS.
+The {nvidia} Operator can automatically install drivers and libraries on specific operating systems.
+Check the {nvidia} documentation for information on link:https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html#supported-operating-systems-and-kubernetes-platforms[supported operating system releases].
+Installation of the {nvidia} components on your host OS is out of the scope of this document.
+Refer to the {nvidia} documentation for instructions.
+
+The following three commands should return a correct output if the kernel driver is correctly installed.
+
+. `lsmod | grep nvidia` returns a list of {nvidia} kernel modules.
+For example:
++
+[source]
+----
+nvidia_uvm           2129920  0
+nvidia_drm            131072  0
+nvidia_modeset       1572864  1 nvidia_drm
+video                  77824  1 nvidia_modeset
+nvidia               9965568  2 nvidia_uvm,nvidia_modeset
+ecc                    45056  1 nvidia
+----
+. `cat /proc/driver/nvidia/version` returns the NVRM and GCC versions of the driver.
+For example:
++
+[source]
+----
+NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  555.42.06
+  Release Build  (abuild@host)  Thu Jul 11 12:00:00 UTC 2024
+  GCC version:  gcc version 7.5.0 (SUSE Linux)
+----
+. `find /usr/ -iname libnvidia-ml.so` returns a path to the `libnvidia-ml.so` library.
+For example:
++
+[source]
+----
+/usr/lib64/libnvidia-ml.so
+----
++
+This library is used by {kube} components to interact with the kernel driver.
+
+[#nvidia-operator-installation-procedure]
+== Operator installation
+
+Once the OS is ready and {rke2a} is running, adjust the {rke2a} nodes:
+
+. On the agent nodes of {rke2a}, run the following command:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_root}echo PATH=$PATH:/usr/local/nvidia/toolkit >> /etc/default/rke2-agent
+----
+. On the server nodes of {rke2a}, run the following command:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_root}echo PATH=$PATH:/usr/local/nvidia/toolkit >> /etc/default/rke2-server
+----
+
+Then, install the {nvoperator} using the following YAML manifest.
+
+[source,yaml]
+----
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: gpu-operator
+  namespace: kube-system
+spec:
+  repo: https://helm.ngc.nvidia.com/nvidia
+  chart: gpu-operator
+  targetNamespace: gpu-operator
+  createNamespace: true
+  valuesContent: |-
+    toolkit:
+      env:
+      - name: CONTAINERD_SOCKET
+        value: /run/k3s/containerd/containerd.sock
+----
+
+[WARNING]
+====
+The {nvidia} operator restarts {containerd} with a hangup call, which restarts {rke2a}.
+====
+
+After approximately one minute, you can make the following checks to verify that everything works as expected.
+
+. Assuming the drivers and `libnvidia-ml.so` library are installed, check if the operator detects them correctly.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get node <NODENAME> \
+  -o jsonpath='{.metadata.labels}' | grep "nvidia.com/gpu.deploy.driver"
+----
++
+You should see the value `pre-installed`.
+If you see `true`, the drivers are not installed correctly.
+If the requirements in xref:nvidia-operator-host-requirements[] are met, you may have forgotten to reboot the node after installing all packages.
++
+You can also check other driver labels:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get node <NODENAME> \
+  -o jsonpath='{.metadata.labels}' | jq | grep "nvidia.com"
+----
++
+You should see labels specifying driver and GPU, for example, `nvidia.com/gpu.machine` or `nvidia.com/cuda.driver.major`.
+. Check if the GPU was added by `nvidia-device-plugin-daemonset` as an allocatable resource in the node.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get node <NODENAME> \
+  -o jsonpath='{.status.allocatable}' | jq
+----
++
+You should see `"nvidia.com/gpu":` followed by the number of GPUs in the node.
+. Check that the container runtime binary was installed by the operator (in particular, by the `nvidia-container-toolkit-daemonset`):
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}ls /usr/local/nvidia/toolkit/nvidia-container-runtime
+----
+. Verify whether the {containerd} configuration was updated to include the {nvidia} container runtime.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}grep nvidia /var/lib/rancher/rke2/agent/etc/containerd/config.toml
+----
+. Run a pod to verify that the GPU resource can successfully be scheduled on a pod and the pod can detect it.
++
+[source,yaml]
+----
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nbody-gpu-benchmark
+  namespace: default
+spec:
+  restartPolicy: OnFailure
+  runtimeClassName: nvidia
+  containers:
+  - name: cuda-container
+    image: nvcr.io/nvidia/k8s/cuda-sample:nbody
+    args: ["nbody", "-gpu", "-benchmark"]
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+    env:
+    - name: NVIDIA_VISIBLE_DEVICES
+      value: all
+    - name: NVIDIA_DRIVER_CAPABILITIES
+      value: compute,utility
+----
+
+[NOTE]
+.Version gate
+====
+Available as of October 2024 releases: v1.28.15+rke2r1, v1.29.10+rke2r1, v1.30.6+rke2r1, v1.31.2+rke2r1.
+====
+
+{rke2a} will now use `PATH` to find alternative container runtimes, in addition to checking the default paths used by the container runtime packages.
+To use this feature, you must modify the {rke2a} service's `PATH` environment variable to add the directories containing the container runtime binaries.
+
+We recommend modifying one of these two environment files:
+
+* `/etc/default/rke2-server` # or rke2-agent
+* `/etc/sysconfig/rke2-server` # or rke2-agent
+
+This example adds the `PATH` in `/etc/default/rke2-server`:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}echo PATH=$PATH >> /etc/default/rke2-server
+----
+
+[WARNING]
+====
+`PATH` changes should be done with care to avoid placing untrusted binaries in the path of services that run as root.
+====

@@ -1,0 +1,97 @@
+[#openwebui-ui]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {owui} user interface
+endif::[]
+
+The {owui} interface consists of three main parts. 
+
+Top panel::
+Contains controls to manage tasks related to the current chat, such as: 
+** Maximizing the chat window 
+** Selecting an AI model for the current chat 
+** Viewing and managing advanced settings for the current chat 
+** Changing settings related to the current user 
+** Viewing archived chats of the current user 
+** Accessing the menu:Admin Panel[]
+
+Left sidebar::
+
+Contains links to perform the following tasks: 
+** Start a new chat 
+** Access the administrator's menu:Workspace[]
+** Search the content of the current chat 
+** Browse through the history of your chats 
+
+Main chat window::
+Displays your recent queries and corresponding answers provided by the AI.
+By using the prompt field at the bottom, you can accomplish the following tasks related to the current chat: 
+** Enter the query that you want the AI to answer 
+** Upload custom documents that you want the AI to process and use as a source of information when answering 
+** Select a document, collection of documents, or URL to extend the AI model's knowledge base 
+** Select a preconfigured AI model for the current chat 
+** Interrupt the chatbot from answering if you are already satisfied with the provided information 
+
+
+.{owui} user interface [#fig-openwebui-ui]
+
+image::openwebui-intro.png[{owui} user interface,scaledwidth=75%]
+
+
+[#owui-workspace]
+== Workspace
+
+[IMPORTANT]
+====
+include::../snippets/openwebui-requirement-admin-privileges.adoc[leveloffset=2]
+
+====
+
+
+The menu:Workspace[]
+ area of the {owui} is a place where you can manage important parts of the AI stack.
+To access it, click menu:Workspace[]
+ at the top of the left panel. menu:Workspace[]
+ consists of the following parts: 
+
+Models::
+Manage existing AI modules or add your custom AI module based on an existing one.
+Refer to {dsc}/suse-ai/1.0/html/openwebui-configuring/index.html#openwebui-managing-models for more details and related procedures. 
+
+Knowledge::
+Manage information sources{mdash}such as custom documents{mdash}that the users can use to enhance the current AI model's knowledge base.
+This helps making the model's responses more contextual.
+Refer to {dsc}/suse-ai/1.0/html/openwebui-configuring/index.html#openwebui-managing-knowledgebase for more details and related procedures. 
+
+Prompts::
+Define the system prompts that guide the AI model to respond accurately in the style and format that you prefer.
+Refer to {dsc}/suse-ai/1.0/html/openwebui-configuring/index.html#openwebui-managing-prompts for more details and related procedures. 
+
+Tools::
+menu:Tools[]
+include a collection of Python snippets that enhance interaction and expand functionality for working with AI models.
+Tools can, for example, integrate additional data sources into the model knowledge base, such as databases. 
+
+
+[#owui-admin-panel]
+== Admin Panel
+
+[IMPORTANT]
+====
+include::../snippets/openwebui-requirement-admin-privileges.adoc[leveloffset=2]
+
+====
+
+
+The menu:Admin Panel[]
+ is a centralized control interface for administrators to manage system settings, user accounts and overall application functionality. 
+
+To access the menu:Admin Panel[]
+, click your avatar button at the top right of the {owui} screen and select menu:Admin Panel[]
+. 
+
+.Admin Panel [#fig-openwebui-admin-panel]
+
+image::openwebui-admin-panel.png[Admin Panel,scaledwidth=75%]

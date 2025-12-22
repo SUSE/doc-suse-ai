@@ -1,0 +1,47 @@
+[#ai-monitoring-instrument-openlit]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Instrumenting applications with {openlit} SDK
+endif::[]
+
+{openlit} has a Python and a Typescript SDK available. The following procedures describe examples of instrumentation, one for each language.
+
+[TIP]
+====
+For the full list of configuration options for {openlit} SDKs, check https://docs.openlit.io/latest/sdk-configuration[the upstream documentation].
+====
+
+== Instrumenting using Python {openlit} SDK
+
+. Open terminal and add a {openlit} dependency.
++
+[source,bash]
+----
+> pip install openlit
+----
+
+. Import {openlit} and initialize it in your code, usually in the main entrypoint. Remember to adjust the {otelemetry} Protocol (OTLP) endpoint.
++
+[source,python]
+----
+import openlit
+
+openlit.init(otlp_endpoint="http://otel-collector.observability.svc.cluster.local:4318")
+----
+
+. With this code in place, you will start receiving telemetry data from the libraries currently supported by {openlit}. You can test it with {ollama} by following this example:
++
+[source,python]
+----
+import ollama
+import openlit
+
+openlit.init()
+
+response = ollama.chat(model='gemma:2b', messages=[
+  {'role': 'user', 'content': 'Why is the sky blue?'},
+])
+----
+

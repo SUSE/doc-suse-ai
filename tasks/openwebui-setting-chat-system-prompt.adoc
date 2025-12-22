@@ -1,0 +1,15 @@
+[#openwebui-setting-chat-system-prompt]
+= Setting a system prompt for the current chat
+
+ifndef::part-of-article[]
+This topic explains how to set a system prompt for the current chat session. 
+endif::[]
+
+. In the top right of the {owui} window, click the menu:Chat controls[] icon. 
+. Unfold the menu:System Prompt[] tab and paste your system prompt into the empty input text field. 
++
+.Chat-specific system prompt
+image::openwebui-chat-system-prompt1.png[Chat-specific system prompt,scaledwidth=50%]
++
+. Close the menu:Chat controls[] window to apply the change.
+  The system prompt that you entered will affect the responses from the AI model during the current chat session. 

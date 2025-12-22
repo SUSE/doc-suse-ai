@@ -1,0 +1,18 @@
+[#ai-requirements-observability]
+= {sobservability} requirements
+
+[#ai-reqs-observability-hw]
+== Minimum hardware requirements
+
+[role="tabs"]
+Nodes for HA setup:: At least 3 nodes.
+RAM:: A minimum of 32{nbsp}GB of RAM.
+CPU:: At least 16 CPU cores.
+Disk space:: At least 5{nbsp}GB of storage, preferably SSD.
+
+[#ai-req-observability-moreinfo]
+== For more information
+
+For more detailed recommendations, refer to the following official documentation:
+
+* https://docs.stackstate.com/get-started/k8s-suse-rancher-prime#requirements[{sobservability} requirements for {rancherprime}]
