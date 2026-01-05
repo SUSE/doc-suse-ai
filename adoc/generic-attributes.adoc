@@ -14,8 +14,10 @@
 :sccurl:                     https://scc.suse.com/
 :ndash:                      &#x02013;
 
-// PRODUCT-SPECIFIC ENTITIES
+// PRODUCT-SPECIFIC ATTRIBUTES
 include::product-attributes.adoc[]
+// NETWORK ATTRIBUTES
+include::network-attributes.adoc[]
 
 // Formatting in GitLab
 :toc:
