@@ -4,7 +4,7 @@
 // PRODUCT NAME AND VERSIONS
 :productname:       SUSE AI
 :productnameshort:  SUSE AI
-:productnumber:     1.0
+// :productnumber:     1.0
 
 :sles-ai-version:   15 SP6
 :slmicro-ai-version: 6.1
