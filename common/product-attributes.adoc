@@ -1,1 +1,27 @@
-../adoc/product-attributes.adoc
+// This file originates from the project https://github.com/openSUSE/doc-kit
+// This file can be edited downstream
+
+// PRODUCT NAME AND VERSIONS
+:productname:       SUSE AI
+:productnameshort:  SUSE AI
+// :productnumber:     1.0
+
+:sles-ai-version:   15 SP6
+:slmicro-ai-version: 6.1
+
+// PROJECT REPOSITORY URL
+:repo-url:          https://github.com/SUSE/doc-suse-ai
+:repo-readme:       {repo-url}/blob/main/README.adoc
+
+// DOCUMENTATION.SUSE.COM PRODUCT URL
+:doc-url: {dsc}/suse-ai/1.0
+
+// RELEASE NOTES URL
+:rn-url: {sc-rn}/x86_64/suse-ai/1.0
+
+// START YEAR OF COPYRIGHT
+:copyrightstart:  2023
+:copyrightholder: SUSE LLC
+
+:installmedia:      {sles-ai-version}-Online-ARCH-GM-media1.iso
+:packagemedia:      {sles-ai-version}-Full-ARCH-GM-media1.iso
