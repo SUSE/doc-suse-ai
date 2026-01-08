@@ -1,6 +1,5 @@
-<revhistory xml:id="rh-ai-preventing-hallucination">
-  <revision><date>2024-09-16</date>
-  <revision><date>2026-01-08</date>
+<revhistory xml:id="rh-ai-system-prompts">
+  <revision><date>2024-10-17</date>
     <revdescription>
       <para>
         Initial release
@@ -11,20 +10,20 @@
 <!-- add author's e-mail -->
 <meta name="maintainer" content="tbazant@suse.com" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
 <!-- ISO date of last update as YYYY-MM-DD -->
-<meta name="updated" content="2026-01-07" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
+<meta name="updated" content="2026-01-08" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
 <meta name="architecture"><phrase>{x86-64}</phrase><phrase>{power}</phrase>
 </meta>
 <!-- enter one or more product names and version -->
 <meta name="productname" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"><productname version="1.0">{productname}</productname>
 </meta>
-<meta name="title" its:translate="yes" xmlns:its="http://www.w3.org/2005/11/its">Preventing AI hallucinations with prompt engineering</meta>
-<meta name="description" its:translate="yes" xmlns:its="http://www.w3.org/2005/11/its">Providing well-crafted system prompts enables AI to generate more accurate responses without hallucinations</meta>
-<meta name="social-descr" its:translate="yes" xmlns:its="http://www.w3.org/2005/11/its">Effective system prompts prevent AI from hallucinating</meta>
+<meta name="title" its:translate="yes" xmlns:its="http://www.w3.org/2005/11/its">Guiding the AI model with system prompts</meta>
+<meta name="description" its:translate="yes" xmlns:its="http://www.w3.org/2005/11/its">Good system prompts guide the AI model to provide more relevant and accurate responses</meta>
+<meta name="social-descr" its:translate="yes" xmlns:its="http://www.w3.org/2005/11/its">Using AI system prompts helps AI to respond accurately</meta>
 <!-- suitable categories -->
 <meta name="category"><phrase>Systems Management</phrase>
 </meta>
 <!-- Determines "filter by task" filter value -->
-<meta name="task"><phrase>Installation</phrase><phrase>Artificial Intelligence</phrase>
+<meta name="task"><phrase>Artificial Intelligence</phrase>
 </meta>
 <meta name="series">Products &amp; Solutions</meta>
 <dm:docmanager xmlns:dm="urn:x-suse:ns:docmanager">
