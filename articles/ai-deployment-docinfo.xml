@@ -1,0 +1,104 @@
+<revhistory xml:id="rh-deployment-intro">
+        <revision><date>2025-11-21</date>
+          <revdescription>
+            <para>
+              Added section about {mlflow} installation
+            </para>
+          </revdescription>
+        </revision>
+        <revision><date>2025-11-12</date>
+          <revdescription>
+            <para>
+              Added a section about {opensearch} installation
+            </para>
+          </revdescription>
+        </revision>
+        <revision><date>2025-11-08</date>
+          <revdescription>
+            <para>
+              Added section about {pytorch} installation
+            </para>
+          </revdescription>
+        </revision>
+        <revision><date>2025-11-01</date>
+          <revdescription>
+            <para>
+              Added {mcpo} installation.
+            </para>
+          </revdescription>
+        </revision>
+        <revision><date>2025-10-24</date>
+          <revdescription>
+            <para>
+              Included {ssecurity} installation in the main deployment procedure
+            </para>
+          </revdescription>
+        </revision>
+        <revision><date>2025-10-22</date>
+          <revdescription>
+            <para>
+              Included {nvoperator} installation in the main deployment
+              procedure
+            </para>
+          </revdescription>
+        </revision>
+        <revision><date>2025-10-20</date>
+          <revdescription>
+            <para>
+              Included {ranchermanager} installation quickstart in the main
+              deployment procedure.
+            </para>
+          </revdescription>
+        </revision>
+        <revision><date>2025-10-10</date>
+          <revdescription>
+            <para>
+              Included {slsa} installation quickstart in the main deployment
+              procedure.
+            </para>
+          </revdescription>
+        </revision>
+        <revision><date>2025-10-08</date>
+          <revdescription>
+            <para>
+              Included {nvidia} driver installation in the main deployment
+              procedure.
+            </para>
+          </revdescription>
+        </revision>
+        <revision><date>2025-08-04</date>
+          <revdescription>
+            <para>
+              Initial release
+            </para>
+          </revdescription>
+        </revision>
+      </revhistory>
+<!-- add author's e-mail -->
+      <meta name="maintainer" content="tbazant@suse.com" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
+<!-- ISO date of last update as YYYY-MM-DD -->
+      <meta name="updated" content="2026-01-070" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
+      <meta name="architecture"><phrase>{x86-64}</phrase><phrase>{power}</phrase>
+      </meta>
+<!-- enter one or more product names and version -->
+      <meta name="productname" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"><productname version="1.0">{productname}</productname>
+      </meta>
+      <meta name="title" its:translate="yes" xmlns:its="http://www.w3.org/2005/11/its">Introduction to {productname} deployment</meta>
+      <meta name="description" its:translate="yes" xmlns:its="http://www.w3.org/2005/11/its">Seamlessly deploy and install {productname} with this comprehensive, step-by-step guide</meta>
+      <meta name="social-descr" its:translate="yes" xmlns:its="http://www.w3.org/2005/11/its">Introduction to {productname} deployment</meta>
+<!-- suitable categories -->
+      <meta name="category"><phrase>Systems Management</phrase>
+      </meta>
+<!-- Determines "filter by task" filter value -->
+      <meta name="task"><phrase>Installation</phrase><phrase>Artificial Intelligence</phrase>
+      </meta>
+      <meta name="series">Products &amp; Solutions</meta>
+      <dm:docmanager xmlns:dm="urn:x-suse:ns:docmanager">
+        <dm:bugtracker>
+          <dm:url>https://bugzilla.suse.com/enter_bug.cgi</dm:url>
+          <dm:component>documentation</dm:component>
+          <dm:product>SUSE AI Application Containers</dm:product>
+          <dm:assignee>tbazant@suse.com</dm:assignee>
+        </dm:bugtracker>
+        <dm:translation>yes</dm:translation>
+      </dm:docmanager>
