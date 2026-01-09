@@ -14,9 +14,8 @@
 :sccurl:                     https://scc.suse.com/
 :ndash:                      &#x02013;
 
-// PRODUCT-SPECIFIC ATTRIBUTES
+// PRODUCT-SPECIFIC ENTITIES
 include::../common/product-attributes.adoc[]
-// NETWORK ATTRIBUTES
 include::../common/network-attributes.adoc[]
 
 // Formatting in GitLab
@@ -34,6 +33,7 @@ include::../common/network-attributes.adoc[]
 :nbsp:  
 :nbzwsp: ﻿
 :zwsp: ​
+:thrdmrk: *
 
 // For support tables: +supported/-unsupported character
 :sup: &#43;
