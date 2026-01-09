@@ -110,7 +110,7 @@ image::ai-observability-filter-pipeline.png["Screenshot showing the detailed con
 [#ai-monitoring-owui-default-metrics]
 == Configuring default {owui} metrics and traces (advanced)
 
-{owui} also offers certain built-in {otelemetry} integration for traces and metrics. These signals are related to the API consumption but do not provide details about the GenAI monitoring. That is why we need to configure the {productname} filter as described in xref:ai-monitoring-owui-pipelines-cmdline[].
+{owui} also offers certain built-in {otelemetry} integration for traces and metrics. These signals are related to the API consumption but do not provide details about the GenAI monitoring. That is, why we need to configure the {productname} filter as described in xref:ai-monitoring-owui-pipelines-cmdline[].
 
 . Append the following environment variables to your `extraEnvVars` section in the `owui_custom_overrides.yaml` file mentioned in xref:ai-monitoring-owui-pipelines-cmdline[].
 +
