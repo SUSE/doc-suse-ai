@@ -36,6 +36,7 @@ The root-level `extraEnvVars` is fed into {owui} to configure the communication 
 The `extraEnvVars` inside the configuration are injected into the container that acts as a runtime for the `pipelines`. 
 ====
 +
+--
 <.> `longhorn` or `local-path`.
 <.> The environment variables that you are making available to the pipeline's runtime container.
 <.> A list of pipeline URLs to be downloaded and installed by default.
@@ -56,7 +57,7 @@ instance.
 +
 <.> The value for the API key between {owui} and {owui} Pipelines.
     The default value is `0p3n-w3bu!`.
-
+--
 ---
 . After you fill the override file with correct values, install or update {owui}. 
 +

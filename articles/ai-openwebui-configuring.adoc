@@ -147,7 +147,7 @@ include::../tasks/openwebui-authentication-via-okta.adoc[leveloffset=+1]
 include::../references/AI-glossary.adoc[leveloffset=+1]
 
 [appendix]
-include::../adoc/common_copyright_gfdl.adoc[]
+include::../common/common_copyright_gfdl.adoc[]
 
 [appendix]
-include::../adoc/common_license_gfdl1.2.adoc[]
+include::../common/common_license_gfdl1.2.adoc[]
