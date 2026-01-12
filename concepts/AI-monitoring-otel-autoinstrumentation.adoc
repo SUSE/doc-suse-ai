@@ -1,0 +1,530 @@
+[#ai-monitoring-otel-operator]
+= Monitoring with the {otelemetry} Operator
+
+This section describes how to instrument Kubernetes applications using the {otelemetry} Operator for Kubernetes.
+It also explains how to forward telemetry (metrics and traces) to {sobservability}.
+The Operator simplifies deployment of {otelemetry} components.
+It also enables automatic instrumentation without modifying application code.
+
+The guidance is presented in two paths:
+
+* *Path A:* You already have an {otelemetry} Collector deployed and configured.
+* *Path B:* You prefer to have the Operator manage the Collector using an `OpenTelemetryCollector` custom resource.
+
+[#ai-monitoring-otel-operator-prereqs]
+== Prerequisites
+
+Ensure the following are in place before proceeding:
+
+* A Kubernetes cluster managed with Rancher.
+* `cert-manager` installed (required for the Operator’s admission webhooks).
+* {sobservability} installed and reachable from the cluster with a valid service token or API key.
+
+[#ai-monitoring-otel-operator-install]
+== Installing the {otelemetry} Operator
+
+Install the {otelemetry} Operator into your cluster using the Rancher Application Collection Helm chart.
+The Operator supports managing {otelemetry} Collector instances.
+It also supports automatic instrumentation of workloads.
+
+[IMPORTANT]
+====
+Pin the chart version explicitly to avoid unexpected changes during upgrades.
+====
+
+. Install the Operator into the namespace where you run your {sobservability} resources.
++
+[source,bash]
+----
+helm install opentelemetry-operator oci://dp.apps.rancher.io/charts/opentelemetry-operator \
+  --namespace <SUSE_OBSERVABILITY_NAMESPACE> \
+  --version <chart-version> \
+  --set manager.autoInstrumentation.go.enabled=true \
+  --set global.imagePullSecrets={application-collection}
+----
++
+[NOTE]
+====
+If the previous command fails with your Helm version, use the following alternative.
+====
++
+[source,bash]
+----
+helm install opentelemetry-operator oci://dp.apps.rancher.io/charts/opentelemetry-operator \
+  --namespace <SUSE_OBSERVABILITY_NAMESPACE> \
+  --version <chart-version> \
+  --set manager.autoInstrumentation.go.enabled=true \
+  --set global.imagePullSecrets[0].name=application-collection
+----
+
+The Helm chart deploys the Operator controller.
+It manages the following custom resources (CRs):
+
+* `OpenTelemetryCollector`: Defines and deploys {otelemetry} Collector instances managed by the Operator.
+* `TargetAllocator`: Distributes Prometheus scrape targets across Collector replicas.
+* `OpAMPBridge`: Optional component that reports and manages Collector state via the OpAMP protocol.
+* `Instrumentation`: Defines automatic instrumentation settings and exporter configuration for workloads.
+
+. Verify that the CRDs are installed.
++
+[source,bash]
+----
+kubectl api-resources --api-group=opentelemetry.io
+----
+
+[#ai-monitoring-otel-operator-path-a]
+== Path A: Use an existing Collector
+
+If you already have an {otelemetry} Collector deployed (for example, installed via Helm and exporting telemetry to {sobservability}), follow these steps.
+This enables auto-instrumentation without replacing the Collector.
+
+[#ai-monitoring-otel-operator-path-a-otlp]
+=== Enable OTLP reception on the Collector
+
+Ensure your Collector is configured to receive OTLP telemetry from instrumented workloads.
+Enable at least one OTLP protocol (gRPC or HTTP).
+
+The following snippet shows a {suseai} example `otel-values.yaml`:
+
+[source,yaml]
+----
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+service:
+  pipelines:
+    traces:
+      receivers: [otlp, jaeger]
+    metrics:
+      receivers: [otlp, prometheus, spanmetrics]
+----
+
+. After adding the protocols, update the Collector.
++
+[source,bash]
+----
+helm upgrade --install opentelemetry-collector \
+  oci://dp.apps.rancher.io/charts/opentelemetry-collector \
+  -n <SUSE_OBSERVABILITY_NAMESPACE> \
+  --version <CHART_VERSION> \
+  -f otel-values.yaml
+----
+
+[#ai-monitoring-otel-operator-instrumentation]
+=== Create an Instrumentation resource
+
+Create an `Instrumentation` custom resource that defines automatic instrumentation behavior and the OTLP export destination.
+
+[IMPORTANT]
+====
+Namespace rule:
+The `Instrumentation` resource must exist before the pod is created.
+The Operator resolves it either from the same namespace as the pod, or from another namespace when referenced as `<namespace>/<name>` in the annotation.
+====
+
+. Create a file named `instrumentation.yaml` with the following content.
++
+[source,yaml]
+----
+apiVersion: opentelemetry.io/v1alpha1
+kind: Instrumentation
+metadata:
+  name: otel-instrumentation
+spec:
+  exporter:
+    endpoint: http://opentelemetry-collector.observability.svc.cluster.local:4317
+  propagators:
+    - tracecontext
+    - baggage
+  defaults:
+    useLabelsForResourceAttributes: true
+  python:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://opentelemetry-collector.observability.svc.cluster.local:4318
+  go:
+    env:
+      - name: OTEL_EXPORTER_OTLP_ENDPOINT
+        value: http://opentelemetry-collector.observability.svc.cluster.local:4318
+  sampler:
+    type: parentbased_traceidratio
+    argument: "1"
+----
+
+[NOTE]
+====
+Most auto-instrumentation SDKs (Python, Go, NodeJS) default to OTLP/HTTP (port `4318`).
+If your Collector only exposes OTLP/gRPC (`4317`), explicitly configure the SDK endpoint.
+====
+
+. Apply the resource.
++
+[source,bash]
+----
+kubectl apply --namespace <SUSE_OBSERVABILITY_NAMESPACE> -f instrumentation.yaml
+----
+
+[#ai-monitoring-otel-operator-auto-instrumentation]
+=== Enable auto-instrumentation for workloads
+
+To instruct the Operator to auto-instrument application pods, add an annotation to the pod template.
+Use the annotation matching your workload language.
+
+* Java: `instrumentation.opentelemetry.io/inject-java: <namespace>/otel-instrumentation`
+* NodeJS: `instrumentation.opentelemetry.io/inject-nodejs: <namespace>/otel-instrumentation`
+* Python: `instrumentation.opentelemetry.io/inject-python: <namespace>/otel-instrumentation`
+* Go: `instrumentation.opentelemetry.io/inject-go: <namespace>/otel-instrumentation`
+
+For Go workloads, an additional annotation is required:
+
+* `instrumentation.opentelemetry.io/otel-go-auto-target-exe: <path-to-binary>`
+
+You can also enable injection at the namespace level:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: <app-namespace>
+  annotations:
+    instrumentation.opentelemetry.io/inject-python: "true"
+----
+
+Or per Deployment:
+
+[source,yaml]
+----
+spec:
+  template:
+    metadata:
+      annotations:
+        instrumentation.opentelemetry.io/inject-python: "true"
+----
+
+Annotation values may be:
+
+* `"true"` to use an `Instrumentation` resource in the same namespace.
+* `"my-instrumentation"` to use a named resource in the same namespace.
+* `"other-namespace/my-instrumentation"` for a cross-namespace reference.
+* `"false"` to disable injection.
+
+When a pod with injection annotations is created, the Operator mutates it via an admission webhook:
+
+* An init container is injected to copy auto-instrumentation binaries.
+* The application container is modified to preload the instrumentation.
+* Environment variables are added to configure the SDK.
+
+[#ai-monitoring-otel-operator-suse-ai-stack-example]
+=== Example: enable auto-instrumentation in {suseai}
+
+The following procedure shows how to inject instrumentation into the `open-webui-mcpo` workload.
+
+. Edit the deployment.
++
+[source,bash]
+----
+kubectl edit deployment open-webui-mcpo -n suse-private-ai
+----
+. Add an injection annotation to `spec.template.metadata.annotations`.
++
+[source,yaml]
+----
+spec:
+  template:
+    metadata:
+      annotations:
+        instrumentation.opentelemetry.io/inject-python: <namespace>/otel-instrumentation
+----
++
+[NOTE]
+====
+For Go workloads, the binary being instrumented must provide the `.gopclntab` section.
+Binaries stripped of this section during or after compilation are not compatible.
+To check if your `ollama` binary has symbols, run `nm /bin/ollama`.
+If it returns `no symbols`, auto-instrumentation will not work with that build.
+====
+. Roll out the updated deployment.
++
+[source,bash]
+----
+kubectl rollout restart deployment open-webui-mcpo -n suse-private-ai
+----
+
+[#ai-monitoring-otel-operator-verify-workflow]
+=== Verify the telemetry workflow
+
+After injecting instrumentation, verify that an init container was injected automatically.
+
+[source,bash]
+----
+kubectl -n suse-private-ai get pod <OPENWEBUI_MCPO_POD> \
+  -o jsonpath="{.spec.initContainers[*]['name','image']}"
+----
+
+Example output:
+
+[source,text]
+----
+opentelemetry-auto-instrumentation-python \
+ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-python:0.59b0
+----
+
+[#ai-monitoring-otel-operator-verify-ui]
+=== Verify {sobservability} UI
+
+In the {sobservability} UI, verify that application traces and metrics are visible in the appropriate dashboards.
+For example, check the OpenTelemetry Services and Traces views.
+
+After completing the instrumentation steps, allow a short period of time for data to be collected.
+Ensure that the instrumented pods are receiving traffic.
+Once data is available, the application appears under its service name (for example, `open-webui-mcpo`) in OpenTelemetry Services and Service Instances.
+
+Application traces are visible in the Trace Explorer.
+They are also visible in the Trace perspective for both the service and service instance components.
+Span metrics and language-specific metrics (when available) appear in the Metrics perspective for the corresponding components.
+
+If the Kubernetes StackPack is installed, traces for the instrumented pods are also available directly in the Traces perspective.
+
+From OpenTelemetry services:
+[#fig-ai-monitoring-otel-autoinstrumentation-observability-services-view]
+.Verifying {otelemetry} service view in {sobservability} UI
+image::ai-observability-monitoring-open-webui-service-view.png["Screenshot showing the `open-webui-mcpo` service in {sobservability} UI",width=100%]
+
+From the traces perspective:
+[#fig-ai-monitoring-otel-autoinstrumentation-observability-traces-view]
+.Verifying traces view on {sobservability} UI
+image::ai-observability-monitoring-traces-view.png["Screenshot showing the traces view in {sobservability} UI with `open-webui-mcpo` traces",width=100%]
+
+[#ai-monitoring-otel-operator-path-b]
+== Path B: Use an Operator-managed Collector
+
+If you prefer the Operator to manage the Collector deployment and configuration, use the `OpenTelemetryCollector` custom resource.
+
+[#ai-monitoring-otel-operator-path-b-imagepull]
+=== Configure image pulls from Application Collection
+
+To pull the Collector image from Application Collection, create a ServiceAccount with `imagePullSecrets`.
+Then attach it to the Collector CR via the `spec.serviceAccount` attribute.
+
+[source,bash]
+----
+kubectl -n <SUSE_OBSERVABILITY_NAMESPACE> create serviceaccount image-puller
+kubectl -n <SUSE_OBSERVABILITY_NAMESPACE> patch serviceaccount image-puller \
+  --patch '{"imagePullSecrets":[{"name":"application-collection"}]}'
+----
+
+[#ai-monitoring-otel-operator-path-b-collector-cr]
+=== Create an OpenTelemetryCollector resource
+
+An `OpenTelemetryCollector` resource encapsulates the desired Collector configuration.
+This includes receivers, processors, exporters, and routing logic.
+
+. Create a file named `opentelemetry-collector.yaml` with the following content.
++
+[source,yaml]
+----
+apiVersion: opentelemetry.io/v1beta1
+kind: OpenTelemetryCollector
+metadata:
+  name: opentelemetry
+spec:
+  serviceAccount: image-puller
+  mode: deployment
+  envFrom:
+    - secretRef:
+        name: open-telemetry-collector
+  config:
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: opentelemetry-collector
+              scrape_interval: 10s
+              static_configs:
+                - targets:
+                    - 0.0.0.0:8888
+
+    exporters:
+      debug: {}
+      nop: {}
+      otlp:
+        endpoint: http://suse-observability-otel-collector.suse-observability.svc.cluster.local:4317
+        headers:
+          Authorization: "SUSEObservability ${env:API_KEY}"
+        tls:
+          insecure: true
+
+    processors:
+      tail_sampling:
+        decision_wait: 10s
+        policies:
+          - name: rate-limited-composite
+            type: composite
+            composite:
+              max_total_spans_per_second: 500
+              policy_order: [errors, slow-traces, rest]
+              composite_sub_policy:
+                - name: errors
+                  type: status_code
+                  status_code:
+                    status_codes: [ERROR]
+                - name: slow-traces
+                  type: latency
+                  latency:
+                    threshold_ms: 1000
+                - name: rest
+                  type: always_sample
+            rate_allocation:
+              - policy: errors
+                percent: 33
+              - policy: slow-traces
+                percent: 33
+              - policy: rest
+                percent: 34
+
+      resource:
+        attributes:
+          - key: k8s.cluster.name
+            action: upsert
+            value: local
+          - key: service.instance.id
+            from_attribute: k8s.pod.uid
+            action: insert
+
+    filter/dropMissingK8sAttributes:
+      error_mode: ignore
+      traces:
+        span:
+          - resource.attributes["k8s.node.name"] == nil
+          - resource.attributes["k8s.pod.uid"] == nil
+          - resource.attributes["k8s.namespace.name"] == nil
+          - resource.attributes["k8s.pod.name"] == nil
+
+    connectors:
+      spanmetrics:
+        metrics_expiration: 5m
+        namespace: otel_span
+
+    routing/traces:
+      error_mode: ignore
+      table:
+        - statement: route()
+          pipelines: [traces/sampling, traces/spanmetrics]
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [filter/dropMissingK8sAttributes, resource]
+          exporters: [routing/traces]
+
+        traces/spanmetrics:
+          receivers: [routing/traces]
+          processors: []
+          exporters: [spanmetrics]
+
+        traces/sampling:
+          receivers: [routing/traces]
+          processors: [tail_sampling]
+          exporters: [debug, otlp]
+
+        metrics:
+          receivers: [otlp, spanmetrics, prometheus]
+          processors: [resource]
+          exporters: [debug, otlp]
+----
+
+. Customize the configuration to include any scrape jobs, processors, or routing logic required.
+. Apply the resource.
++
+[source,bash]
+----
+kubectl apply --namespace <SUSE_OBSERVABILITY_NAMESPACE> -f opentelemetry-collector.yaml
+----
+
+[#ai-monitoring-otel-operator-path-b-followup]
+=== Configure Instrumentation, annotation, and verification
+
+These steps are the same as for xref:ai-monitoring-otel-operator-path-a[].
+Follow xref:ai-monitoring-otel-operator-instrumentation[] through xref:ai-monitoring-otel-operator-verify-ui[].
+
+[#ai-monitoring-otel-operator-validation]
+== Common validation steps
+
+After either path:
+
+* Collector readiness: Ensure the Collector is running and listening on the configured OTLP endpoint.
+* Instrumentation injection: Pod annotations should result in injected init containers or sidecars.
+* Telemetry export: In {sobservability}, confirm that traces and metrics from your applications appear alongside other monitored data.
+* Resource enrichment: Kubernetes attributes (for example, `k8s.pod.name` and `k8s.namespace.name`) help {sobservability} correlate telemetry with topology.
+
+[#ai-monitoring-otel-operator-troubleshooting]
+== Troubleshooting
+
+[#ai-monitoring-otel-operator-troubleshooting-common]
+=== Common issues and fixes
+
+Go auto-instrumentation silent or failing::
+Cause::
+Go auto-instrumentation (eBPF-based) may require kernel support, `shareProcessNamespace: true`, and (depending on the Operator version) privileged containers.
+Fix::
+Verify Operator version requirements and feature gates.
+Ensure pod security settings allow eBPF.
+If this is not possible, use manual SDK instrumentation.
+
+No init container or injection not happening::
+Cause::
+A typo in the annotation, the wrong language annotation (for example, `inject-java` vs `inject-python`), or the `Instrumentation` resource not being present in the namespace at pod startup.
+Fix::
+Confirm the annotation matches the intended language.
+Ensure the `Instrumentation` resource exists in the pod namespace before pods are created.
+If pods are already running, redeploy them after creating `Instrumentation`.
+
+Telemetry not reaching the Collector (exporter pointing to localhost)::
+Symptom::
+Instrumentation defaults to `http://localhost:4317` if `spec.exporter.endpoint` is omitted.
+Telemetry is dropped or sent to a pod-local endpoint.
+Fix::
+Set `spec.exporter.endpoint` to the Collector Service FQDN (for example, `http://<collector-name>.<namespace>.svc.cluster.local:4318`).
+Verify `OTEL_EXPORTER_OTLP_ENDPOINT` in the pod environment.
+
+Webhook or admission failed (TLS or cert errors)::
+Symptom::
+The Operator webhook rejects resources.
+You can see error events for webhook certificates.
+Fix::
+Ensure `cert-manager` is installed.
+Ensure the chart values enable certificates (for example, `admissionWebhooks.certManager.enabled: true`), or enable auto-generated certificates per chart values.
+Check `kubectl get validatingwebhookconfigurations` and review the Operator logs.
+
+Image pull or permission issues::
+Symptom::
+The init container fails to start due to image pull errors.
+Fix::
+Run `kubectl describe pod` and look for `ImagePullBackOff`.
+Fix the image pull secrets and registry access.
+
+Late annotations (Operator did not inject)::
+Cause::
+The pod started before the `Instrumentation` resource existed.
+Fix::
+Delete and recreate the pod after the `Instrumentation` resource exists.
+Alternatively, add automation around re-initialization during rollout.
+
+TLS to the Collector (secure OTLP)::
+Cause::
+Your environment requires `Instrumentation.spec.exporter.tls` (mTLS or a custom CA).
+Fix::
+Create a ConfigMap containing the CA bundle.
+Reference it from `Instrumentation.spec.exporter.tls.configMapName`.
