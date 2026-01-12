@@ -43,6 +43,7 @@ include::../tasks/AI-monitoring-owui.adoc[leveloffset=+1]
 include::../tasks/AI-monitoring-milvus.adoc[leveloffset=+1]
 include::../concepts/AI-monitoring-vllm.adoc[leveloffset=+1]
 include::../concepts/AI-monitoring-user-apps.adoc[leveloffset=+1]
+include::../concepts/AI-monitoring-otel-autoinstrumentation.adoc[leveloffset=+1]
 
 [appendix]
 :override-title: Cost estimation
