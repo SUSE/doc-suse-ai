@@ -54,6 +54,7 @@ include::../tasks/NVIDIA-GPU-driver-installation-SLES.adoc[leveloffset=+3]
 include::../tasks/NVIDIA-GPU-driver-installation-SLMicro.adoc[leveloffset=+3]
 include::../tasks/RKE2-installation-quickstart.adoc[leveloffset=+2]
 // Kube cluster preparation
+include::../concepts/ai-ansible-installer.adoc[leveloffset=+1]
 include::../tasks/AI-deployment-cluster-preparation.adoc[leveloffset=+1]
 include::../tasks/Rancher-installation-quickstart.adoc[leveloffset=+2]
 include::../tasks/NVIDIA-Operator-installation.adoc[leveloffset=+2]

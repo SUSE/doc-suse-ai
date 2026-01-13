@@ -1,0 +1,38 @@
+// check if the document is part of an article or solo topic (book)
+ifndef::doctytpe[]
+:doctype: book
+endif::[]
+// include common & product entities
+include::../common/generic-attributes.adoc[]
+
+[#ai-ansible-installer]
+// check if the topic's title was overridden from the main article file
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {ansible} {productname} node installer
+endif::[]
+
+The {ansible} {productname} node installer automates the setup of a high-availability {rke2a} cluster with {ranchera} on SUSE-based systems. It creates a reliable foundation for deploying {productname} applications. The installation is streamlined through containerized {ansible} playbooks. Additionally, the installer can be configured to add GPU support which installs the {nvoperator}.
+
+Note: The initial implementation is designed to work with the default configuration options for both {rke2a} and {ranchera}.
+
+[#concept-example-what-is]
+== What is foo bar?
+
+A paragraph of text, answering the question above and explaining the aim/function of foo bar.
+
+[#concept-example-how-it-works]
+== How does foo bar work?
+
+A paragraph of text, answering the question above and explaining the mechanism behind foo bar.
+
+[#fg-one]
+.A figure
+image::example.png[alt="Figure showing an example",width=85%]
+
+[#concept-example-benefits]
+== Benefits of foo bar
+
+A paragraph of text, pointing out the benefits of foo bar.
