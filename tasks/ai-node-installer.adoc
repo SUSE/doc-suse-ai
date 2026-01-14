@@ -1,0 +1,26 @@
+include::../common/generic-attributes.adoc[]
+[#deploying-with-ai-node-installer]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Deploying nodes using {sainodeinstaller}
+endif::[]
+
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The {sainodeinstaller} is an automation toolkit based on {ansible} to prepare and configure {suse}-driven servers for AI workloads.
+endif::[]
+
+:override-title!:
+:override-abstract!:
+
+[#ai-node-installer-use-cases]
+== Use cases that {sainodeinstaller} covers
+
+* You already have OS provisioned on the servers and you want to deploy a {rke2a} cluster with {ranchera} management server.
+* You already have OS provisioned on the servers and you want to deploy a {rke2a} cluster to serve as the execution environment for {productname} workloads.
+  This cluster can later be imported into {ranchera} instance.
+* You already operate a {ranchera} instance with a downstream cluster under management, and you want to configure that downstream cluster to serve as the execution environment for {productname} workloads.

@@ -54,7 +54,6 @@ include::../tasks/NVIDIA-GPU-driver-installation-SLES.adoc[leveloffset=+3]
 include::../tasks/NVIDIA-GPU-driver-installation-SLMicro.adoc[leveloffset=+3]
 include::../tasks/RKE2-installation-quickstart.adoc[leveloffset=+2]
 // Kube cluster preparation
-include::../concepts/ai-ansible-installer.adoc[leveloffset=+1]
 include::../tasks/AI-deployment-cluster-preparation.adoc[leveloffset=+1]
 include::../tasks/Rancher-installation-quickstart.adoc[leveloffset=+2]
 include::../tasks/NVIDIA-Operator-installation.adoc[leveloffset=+2]
@@ -65,6 +64,23 @@ include::../glues/ai-ssecurity-intro.adoc[leveloffset=+2]
 include::../tasks/Security-installation-rancher.adoc[leveloffset=+3]
 include::../tasks/Security-installation-kubernetes.adoc[leveloffset=+3]
 include::../tasks/observability-settingup-ai.adoc[leveloffset=+2]
+// automated installations
+[#ai-automated-deployments]
+== Automated deployments
+
+Selected parts of {productname} deployment can be automated to simplify the installation process.
+This includes the following steps:
+
+* Preparing and configuring {suse}-based servers for AI workloads.
+  This includes deployment of {rke2a}, {ranchera} or {rancherprime}, and {nvidia} GPU driver and {nvoperator} using xref:ai-node-installer[{sainodeinstaller}].
+* Deploying {productname} workloads using xref:ailibrary-installing-deployer[{saideployer}].
+
+:override-title: Node installer
+include::../concepts/ai-node-installer.adoc[leveloffset=+2]
+:override-abstract: {empty}
+include::../tasks/ai-node-installer.adoc[leveloffset=+3]
+:override-title: {ailibrary} deployer
+include::../tasks/ai-deployment-ailibrary-deployer.adoc[leveloffset=+2]
 // AI library
 include::../glues/ai-library-intro.adoc[leveloffset=+1]
 :override-title: Installation procedure
@@ -84,7 +100,6 @@ include::../tasks/pytorch-installing.adoc[leveloffset=+2]
 include::../references/pytorch-helm-overrides.adoc[leveloffset=+3]
 include::../references/pytorch-helmchart.adoc[leveloffset=+3]
 include::../tasks/mlflow-installing.adoc[leveloffset=+2]
-include::../tasks/ai-deployment-ailibrary-deployer.adoc[leveloffset=+2]
 // steps after deployment
 :override-title: Steps after the installation is complete
 include::../tasks/AI-deployment-steps-after.adoc[leveloffset=+1]

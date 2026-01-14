@@ -1,3 +1,4 @@
+include::../common/generic-attributes.adoc[]
 [#ai-installation-flowchart]
 ifdef::override-title[]
 = {override-title}
@@ -8,7 +9,11 @@ endif::[]
 :override-title!:
 
 The following chart illustrates the installation process of {productname}.
-It outlines the following possible scenarios:
+ifdef::deployment_standard[]
+It lists all the steps you have to perform if you prefer the *manual* installation of each component.
+If you prefer automating the installation of selected steps, refer to xref:ai-automated-deployments[] for more details.
+endif::[]
+The chart outlines the following possible scenarios:
 
 * You have clean cluster nodes prepared without a supported Linux operating system installed.
 * You have a supported Linux operating system and {kube} distribution installed on cluster nodes.

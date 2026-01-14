@@ -1,0 +1,42 @@
+include::../common/generic-attributes.adoc[]
+[#ai-node-installer]
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {sainodeinstaller}
+endif::[]
+:override-title!: 
+
+The {sainodeinstaller} is an automation toolkit based on {ansible}.
+It provides a fully automated, repeatable method to prepare and configure {suse}-driven servers for AI workloads.
+This approach simplifies and streamlines the installation of selected cluster components.
+
+[IMPORTANT]
+.{sainodeinstaller} does *not* install OS
+====
+{sainodeinstaller} is not an OS provisioning tool.
+You need to install a supported OS first on the affected nodes before using {sainodeinstaller}.
+Refer to xref:sles-installation-quickstart[] or link:https://documentation.suse.com/sle-micro/[{slm} documentation] for steps to install one of the recommended OS.
+====
+
+[#ai-node-installer-architecture]
+== How does {sainodeinstaller} work?
+
+{sainodeinstaller} uses {ansible} playbooks to install and configure selected cluster components on a specified group of servers.
+All playbooks run inside a containerized execution environment, ensuring portability, consistency and ease of use across developer and production environments.
+
+The installer deploys:
+
+* *{rke2a}* - {suse}}'s CNCF-certified {kube} distribution
+* _(Optional)_ *{ranchera}* / *{rancherprime}* - centralized multi-cluster management
+* _(Optional)_ {nvidia} GPU support - {nvidia} drivers and {nvoperator}
+
+[#ai-node-installer-capabilities]
+== Key capabilities
+
+Repeatable cluster bootstrap:: Supports single-node and HA {rke2a} deployments.
+Portable execution:: Playbooks run from a container image ensuring consistent {ansible} versions and dependencies.
+GPU-ready automation:: Seamless installation of {nvidia} drivers and GPU Operator when supported hardware is present.
+Production-aligned choices:: Supports {ranchera} or {rancherprime} deployments, plus idempotent {ansible} design enabling safe re-runs.
+Flexible environment support:: Works on bare metal, virtual machines or cloud instances.
