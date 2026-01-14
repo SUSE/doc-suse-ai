@@ -1,6 +1,7 @@
 [#ai-installation-flowchart]
 ifdef::override-title[]
 = {override-title}
+:override-title!:
 endif::[]
 ifndef::override-title[]
 = {productname} installation flowchart

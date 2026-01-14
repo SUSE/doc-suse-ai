@@ -1,14 +1,7 @@
-// check if the document is part of an article or solo topic (book)
-ifndef::doctytpe[]
-:doctype: book
-endif::[]
-// include common & product entities
-include::../common/generic-attributes.adoc[]
-
 [#ai-ansible-installer]
-// check if the topic's title was overridden from the main article file
 ifdef::override-title[]
 = {override-title}
+:override-title!: 
 endif::[]
 ifndef::override-title[]
 = {ansible} {productname} node installer
