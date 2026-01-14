@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: collect and publish images to your private registry
 endif::[]
+:override-title!:
 
 This section describes how to set up your private registry so that when you install {ranchera}, it will pull all the required images from this registry.
 By default, all images used to link:https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/[provision {k8s} clusters] or launch any tools in {ranchera}, e.g., monitoring, pipelines or alerts, are pulled from {dhub}.

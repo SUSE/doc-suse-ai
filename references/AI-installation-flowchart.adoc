@@ -1,11 +1,11 @@
 [#ai-installation-flowchart]
 ifdef::override-title[]
 = {override-title}
-:override-title!:
 endif::[]
 ifndef::override-title[]
 = {productname} installation flowchart
 endif::[]
+:override-title!:
 
 The following chart illustrates the installation process of {productname}.
 It outlines the following possible scenarios:

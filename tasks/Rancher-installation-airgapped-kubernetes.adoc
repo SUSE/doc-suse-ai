@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: install {kube}
 endif::[]
+:override-title!:
 
 
 This section describes how to install a {k8s} cluster according to our best practices for the {ranchera} server environment.
