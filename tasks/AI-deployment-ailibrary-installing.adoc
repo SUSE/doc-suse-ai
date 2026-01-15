@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Installing {ailibrary}
 endif::[]
+:override-title!:
 
 ifdef::deployment_standard[]
 This procedure includes steps to install {ailibrary} applications.

@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Setting the default system AI model
 endif::[]
+:override-title!:
 
 ifndef::part-of-article[]
 This topic explains how to set the default AI model for all users.

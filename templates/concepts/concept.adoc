@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Concept
 endif::[]
+:override-title!:
 
 Introductory text
 

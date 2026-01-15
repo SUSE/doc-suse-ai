@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Steps after the {productname} installation is complete
 endif::[]
+:override-title!:
 
 Once the {productname} installation is finished, follow these tasks to complete the initial setup and configuration.
 
