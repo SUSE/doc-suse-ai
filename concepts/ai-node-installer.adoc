@@ -24,7 +24,8 @@ Refer to xref:sles-installation-quickstart[] or link:https://documentation.suse.
 == How does {sainodeinstaller} work?
 
 {sainodeinstaller} uses {ansible} playbooks to install and configure selected cluster components on a specified group of servers.
-All playbooks run inside a containerized execution environment, ensuring portability, consistency and ease of use across developer and production environments.
+All playbooks run inside a containerized execution environment, ensuring portability, consistency and ease of use across developer and production environments. Since the setup is done via the {ansible} playbooks, the process is idempotent — rerunning it will not produce conflicts.
+It simply ensures that the system matches the intended configuration.
 
 The installer deploys:
 

@@ -17,10 +17,192 @@ endif::[]
 :override-title!:
 :override-abstract!:
 
-[#ai-node-installer-use-cases]
-== Use cases that {sainodeinstaller} covers
+{sainodeinstaller} covers the following use cases:
 
 * You already have OS provisioned on the servers and you want to deploy a {rke2a} cluster with {ranchera} management server.
 * You already have OS provisioned on the servers and you want to deploy a {rke2a} cluster to serve as the execution environment for {productname} workloads.
   This cluster can later be imported into {ranchera} instance.
 * You already operate a {ranchera} instance with a downstream cluster under management, and you want to configure that downstream cluster to serve as the execution environment for {productname} workloads.
+
+.Prerequisites before running the {sainodeinstaller}
+Organizational readiness::
+  * Define the set of nodes to prepare for the {rke2a} cluster.
+  * A valid registration key for the {sle} distribution, which can be obtained with your {suse} subscription.
+  * Ensure IP addresses, host names and networking are functional.
+Target Host Requirements::
+  * Supported Linux distribution - {sle}, {slm} or {leap} variants recommended.
+  * Sufficient CPU, memory and storage resources for the intended AI workload.
+    Refer to link:https://documentation.suse.com/suse-ai/1.0/html/AI-requirements/index.html[{productname} Requirements] for general requirements.
+  * _(Optional)_ {nvidia} GPUs if you plan to run GPU-accelerated workloads.
+  * Fulfill prerequisites at link:https://docs.rke2.io/install/quickstart#prerequisites[{rke2a} Prerequisites].
+  * Target hosts include python 3.11+ version.
+    Verify that Python 3 points to version 3.11 or higher by running `python3 --version`.
+  * Confirm that {sudo} permissions are configured correctly.
+Access Requirements::
+  * A management workstation to run {sainodeinstaller} with Git, and {docker} or {podman} installed.
+  * Network connectivity and SSH access to each target node
+
+.Installation and setup
+. On your management workstation, clone the {sainodeinstaller} repository.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}git clone https://github.com/SUSE/suse-ai-node-ansible.git
+{prompt_user}cd suse-ai-node-ansible
+----
+. Build the {docker} image from the source.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}docker build \
+  -t suse-ai-node-ansible-runner 
+  -f Dockerfile.local .
+----
++
+Or, if you prefer the newer `buildx`:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}docker buildx build \
+  -t suse-ai-node-ansible-runner 
+  -f Dockerfile.local --load .
+----
+. For each {rke2a} cluster, create the `inventory.ini` file.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}cp inventory.ini.example inventory.ini
+----
+. For each {rke2a} cluster, create the `extra_vars.yml` file and align its entries with your use case.
+  Refer to xref:ai-node-installer-use-cases[] for examples of `extra_vars.yml` tailored to a specific use case.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}cp extra_vars.yml.example extra_vars.yml
+----
+. Run the site.yml playbook.
+  At a high level, the playbook automates the node setup by performing the following steps:
++
+  * Verifies that the target hosts are supported systems.
+  * Registers hosts with the {scc} if they are not already registered.
+  * Installs required packages and optionally {nvidia} G06 drivers for compatible GPUs (Turing or newer).
+  * Reboots the target hosts and runs checks after the reboot.
+  * Installs {rke2a} servers, {rke2a} agents, {ranchera} and the GPU Operator.
+
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}docker run --rm \
+  -v ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro \
+  -v ./inventory.ini:/workspace/inventory.ini \
+  -v ./extra_vars.yml:/workspace/extra_vars.yml \
+  suse-ai-node-ansible-runner \
+  ansible-playbook -i inventory.ini playbooks/site.yml -e "@extra_vars.yml"
+----
++
+If your target `ansible_host` is  `localhost``:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}docker run --rm \
+  --network host \
+  -v ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro \
+  -v ./inventory.ini:/workspace/inventory.ini \
+  -v ./extra_vars.yml:/workspace/extra_vars.yml \
+  suse-ai-node-ansible-runner \
+  ansible-playbook -i inventory.ini playbooks/stage1.yml -e "@extra_vars.yml"
+
+{prompt_user}docker run --rm \
+  -v ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro \
+  -v ./inventory.ini:/workspace/inventory.ini \
+  -v ./extra_vars.yml:/workspace/extra_vars.yml \
+  suse-ai-node-ansible-runner \
+  ansible-playbook -i inventory.ini playbooks/stage2.yml -e "@extra_vars.yml"
+----
+
++
+[NOTE]
+====
+{nvidia} drivers are not installed when localhost is the target.
+Recommended for localhost is to manually install the drivers.
+====
+
+[#ai-node-installer-use-cases]
+== `extra_vars.yml` examples tailored to specific use cases
+
+.You already have OS provisioned on the servers and you want to deploy an {rke2a} cluster with {ranchera} management server.
+====
+Note that `rancher_enabled` is set to `true`.
+[source,yaml]
+----
+# SCC
+scc_registration:
+  server: "https://scc.suse.com"
+  email: "" #Leave empty if nodes are already registered with SCC
+  sles_code: "" #Leave empty if nodes are already registered with SCC
+  sle_micro_code: "" #Leave empty if nodes are already registered with SCC
+
+# Nvidia
+nvidia:
+  driver_install: false # Set to true if nvidia drivers need to be installed on nodes with GPU
+  gpu_operator_deploy: false # Set to true if you want to deploy nvidia gpu-operator
+
+# RKE2
+rke2:
+  version: v1.34.3-rc2+rke2r1
+  token: suse-rke2-rancher-token
+  lb_address: "" # Set this to the address of an existing load balancer.
+                 # If blank, the playbooks default to using the IP of the first RKE2 server as the server URL for all other nodes.
+
+# Rancher
+rancher:
+  enabled: true
+  version: 2.13.0 #version should be compatible with rke2.version
+  replicas: 1
+  hostname: suse-rancher.example.com
+  bootstrap_password: rancher
+----
+====
+
+.You already have OS provisioned on the servers and you want to deploy a {rke2a} cluster to serve as the execution environment for {productname} workloads.
+====
+This cluster can later be imported into {ranchera} instance.
+
+Note that `rancher_enabled` is set to `false` but {nvidia} driver and GPU operator installation is enabled.
+[source,yaml]
+----
+# SCC
+scc_registration:
+  server: "https://scc.suse.com"
+  email: "" #Leave empty if nodes are already registered with SCC
+  sles_code: "" #Leave empty if nodes are already registered with SCC
+  sle_micro_code: "" #Leave empty if nodes are already registered with SCC
+
+# Nvidia
+nvidia:
+  driver_install: true # Set to true if nvidia drivers need to be installed on nodes with GPU
+  gpu_operator_deploy: true # Set to true if you want to deploy nvidia gpu-operator
+
+# RKE2
+rke2:
+  version: v1.34.3-rc2+rke2r1
+  token: suse-rke2-rancher-token
+  lb_address: "" # Set this to the address of an existing load balancer.
+                 # If blank, the playbooks default to using the IP of the first RKE2 server as the server URL for all other nodes.
+
+# Rancher
+rancher:
+  enabled: false
+  version: 2.13.0 #version should be compatible with rke2.version
+  replicas: 1
+  hostname: suse-rancher.example.com
+  bootstrap_password: rancher
+----
+[TIP]
+=====
+Use the same `extra_vars.yml` if you already operate a {ranchera} instance with a downstream cluster under management, and you want to configure it to serve as the execution environment for {productname} workloads.
+=====
+====
+
+After {sainodeinstaller} completes successfully, the nodes are fully prepared for {productname} workloads deployment.
+You can choose whether to deploy them manually as described in xref:ai-library-installing[], or by means of {saideployer} as described in xref:ailibrary-installing-deployer[].
