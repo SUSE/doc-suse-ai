@@ -4,7 +4,7 @@
 [#ai-reqs-observability-hw]
 == Minimum hardware requirements
 
-[role="tabs"]
+
 Nodes for HA setup:: At least 3 nodes.
 RAM:: A minimum of 32{nbsp}GB of RAM.
 CPU:: At least 16 CPU cores.

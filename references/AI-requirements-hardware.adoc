@@ -7,7 +7,7 @@ For requirements of individual applications, refer to xref:ai-requirements-hardw
 [#ai-reqs-hw-basic]
 == Recommended hardware (basic functionality)
 
-[role="tabs"]
+
 RAM:: At least 32{nbsp}GB of RAM per node. This is the minimum recommendation for the control plane node. Additional resources may be needed for the worker nodes based on workload.
 CPU:: A multicore processor with a minimum of 4 cores. 8 cores or more may be necessary depending on the cluster scale and application demands.
 Disk space::
@@ -27,7 +27,7 @@ Networking::
 While 32{nbsp}GB of RAM is the minimum for basic functionality, a production-grade deployment with high availability, multi-node clusters, or running resource-intensive applications like AI/ML workloads might require more.
 ====
 
-[role="tabs"]
+
 RAM:: 64{nbsp}GB or more per node is recommended for larger clusters or to run applications with high resource demands.
 CPU:: At least 8 cores, ideally 16 or more cores, depending on the expected load.
 Disk space::

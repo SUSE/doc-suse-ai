@@ -52,9 +52,9 @@ ifdef::deployment_airgap[]
   (see xref:ai-air-gap-stack[]) to download all required
   {nvidia} RPM packages to a local directory, for example:
 +
-[source,bash]
+[source,bash,subs="+attributes"]
 ----
-$ SUSE-AI-mirror-nvidia.sh \
+{prompt_user}SUSE-AI-mirror-nvidia.sh \
   -p _/LOCAL_MIRROR_DIRECTORY_ \
   -l https://nvidia.github.io/libnvidia-container/stable/rpm/x86_64 \
   https://developer.download.nvidia.com/compute/cuda/repos/sles15/x86_64/
@@ -91,22 +91,22 @@ endif::[]
 
 . Install the Open Kernel driver KMP and detect the driver version.
 +
-[source,bash]
+[source,bash,subs="+attributes"]
 ----
 {prompt_root}zypper install -y --auto-agree-with-licenses \
   nv-prefer-signed-open-driver
-{prompt_root}version=$(rpm -qa --queryformat '%{VERSION}\n' \
+{prompt_root}version=$(rpm -qa --queryformat '%\{VERSION}\n' \
   nv-prefer-signed-open-driver | cut -d "_" -f1 | sort -u | tail -n 1)
 ----
 
 . You can then install the appropriate packages for additional utilities
   that are useful for testing purposes.
 +
-[source,bash]
+[source,bash,subs="+attributes"]
 ----
 {prompt_root}zypper install -y --auto-agree-with-licenses \
-nvidia-compute-utils-G06=${version} \
-nvidia-persistenced=${version}
+nvidia-compute-utils-G06=$\{version} \
+nvidia-persistenced=$\{version}
 ----
 
 . Reboot the host to make the changes effective.
@@ -128,7 +128,7 @@ nvidia-persistenced=${version}
 The output of this command should show you something similar to the
 following output. In the example below, the system has one GPU.
 +
-[source,subs="+attributes"]
+[source,bash,subs="+attributes"]
 ----
 Fri Aug  1 15:32:10 2025
 +------------------------------------------------------------------------------+

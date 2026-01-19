@@ -196,7 +196,7 @@ modification to the host OS by installing
 
 . Open another transactional-update shell.
 +
-[source,bash]
+[source,bash,subs="+attributes"]
 ----
 {prompt_root} {tr-up-shell}
 ----

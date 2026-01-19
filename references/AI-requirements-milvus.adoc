@@ -11,7 +11,7 @@ This topic describes requirements for the {milvus} application.
 
 The following requirements are for basic {milvus} deployment on a single node or a small scale.
 
-[role="tabs"]
+
 RAM:: A minimum of 32{nbsp}GB of RAM.
 CPU:: At least 8 CPU cores.
 Disk space:: At least 100{nbsp}GB of storage, preferably SSD.
@@ -22,7 +22,7 @@ Networking:: A stable connection with 1{nbsp}Gbps network bandwidth.
 
 The following requirements are for multi-node {milvus} clusters or heavy workloads, such as large vector databases.
 
-[role="tabs"]
+
 RAM:: A minimum of 64{nbsp}GB of RAM per node.
 CPU:: 8{ndash}16 CPU cores per node or more.
 Disk space:: 500{nbsp}GB or more of high-speed storage, ideally SSD or NVMe SSD.
@@ -37,6 +37,13 @@ The following CPU instruction sets are required for {milvus}:
 * AVX
 * AVX2
 * AVX-512
+
+You can list the supported CPU sets on your host by running the following command:
+
+[source,bash,,subs="+attributes"]
+----
+{prompt_user}grep -m1 '^flags' /proc/cpuinfo
+----
 
 [#ai-reqs-milvus-sw]
 == Software requirements

@@ -14,7 +14,7 @@ The following container instances run on existing cluster nodes:
 * 2 Scanner & Updater instances
 --
 
-[role="tabs"]
+
 RAM:: A minimum of 2{nbsp}GB of RAM.
 CPU:: At least 2 CPU cores.
 Disk space:: At least 5{nbsp}GB of storage, preferably SSD.
