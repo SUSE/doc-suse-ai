@@ -16,14 +16,14 @@ The guidance is presented in two paths:
 
 Ensure the following are in place before proceeding:
 
-* A Kubernetes cluster managed with Rancher.
-* `cert-manager` installed (required for the Operator’s admission webhooks).
+* A {kube} cluster managed with {ranchera}.
+* {certmanager} installed (required for the Operator’s admission webhooks).
 * {sobservability} installed and reachable from the cluster with a valid service token or API key.
 
 [#ai-monitoring-otel-operator-install]
 == Installing the {otelemetry} Operator
 
-Install the {otelemetry} Operator into your cluster using the Rancher Application Collection Helm chart.
+Install the {otelemetry} Operator into your cluster using the {sappco} {helm} chart.
 The Operator supports managing {otelemetry} Collector instances.
 It also supports automatic instrumentation of workloads.
 
@@ -36,7 +36,7 @@ Pin the chart version explicitly to avoid unexpected changes during upgrades.
 +
 [source,bash]
 ----
-helm install opentelemetry-operator oci://dp.apps.rancher.io/charts/opentelemetry-operator \
+{prompt_user}helm install opentelemetry-operator oci://dp.apps.rancher.io/charts/opentelemetry-operator \
   --namespace <SUSE_OBSERVABILITY_NAMESPACE> \
   --version <chart-version> \
   --set manager.autoInstrumentation.go.enabled=true \
@@ -322,7 +322,7 @@ kubectl -n <SUSE_OBSERVABILITY_NAMESPACE> patch serviceaccount image-puller \
 === Create an OpenTelemetryCollector resource
 
 An `OpenTelemetryCollector` resource encapsulates the desired Collector configuration.
-This includes receivers, processors, exporters, and routing logic.
+This includes receivers, processors, exporters and routing logic.
 
 . Create a file named `opentelemetry-collector.yaml` with the following content.
 +
@@ -448,9 +448,11 @@ spec:
 . Customize the configuration to include any scrape jobs, processors, or routing logic required.
 . Apply the resource.
 +
-[source,bash]
+[source,bash,subs="+attributes"]
 ----
-kubectl apply --namespace <SUSE_OBSERVABILITY_NAMESPACE> -f opentelemetry-collector.yaml
+{prompt_user}kubectl apply \
+--namespace <SUSE_OBSERVABILITY_NAMESPACE> \
+-f opentelemetry-collector.yaml
 ----
 
 [#ai-monitoring-otel-operator-path-b-followup]
@@ -462,69 +464,68 @@ Follow xref:ai-monitoring-otel-operator-instrumentation[] through xref:ai-monito
 [#ai-monitoring-otel-operator-validation]
 == Common validation steps
 
-After either path:
-
 * Collector readiness: Ensure the Collector is running and listening on the configured OTLP endpoint.
 * Instrumentation injection: Pod annotations should result in injected init containers or sidecars.
 * Telemetry export: In {sobservability}, confirm that traces and metrics from your applications appear alongside other monitored data.
-* Resource enrichment: Kubernetes attributes (for example, `k8s.pod.name` and `k8s.namespace.name`) help {sobservability} correlate telemetry with topology.
+* Resource enrichment: {kube} attributes (for example, `k8s.pod.name` and `k8s.namespace.name`) help {sobservability} correlate telemetry with topology.
 
+[role=qanda]
 [#ai-monitoring-otel-operator-troubleshooting]
 == Troubleshooting
 
-[#ai-monitoring-otel-operator-troubleshooting-common]
-=== Common issues and fixes
+Go auto-instrumentation silent or failing. ::
++
+* Go auto-instrumentation (eBPF-based) may require kernel support, `shareProcessNamespace: true`, and (depending on the Operator version) privileged containers.
+* Verify Operator version requirements and feature gates.
+* Ensure pod security settings allow eBPF.
+* If this is not possible, use manual SDK instrumentation.
 
-Go auto-instrumentation silent or failing::
-Cause::
-Go auto-instrumentation (eBPF-based) may require kernel support, `shareProcessNamespace: true`, and (depending on the Operator version) privileged containers.
-Fix::
-Verify Operator version requirements and feature gates.
-Ensure pod security settings allow eBPF.
-If this is not possible, use manual SDK instrumentation.
 
-No init container or injection not happening::
-Cause::
-A typo in the annotation, the wrong language annotation (for example, `inject-java` vs `inject-python`), or the `Instrumentation` resource not being present in the namespace at pod startup.
-Fix::
-Confirm the annotation matches the intended language.
-Ensure the `Instrumentation` resource exists in the pod namespace before pods are created.
-If pods are already running, redeploy them after creating `Instrumentation`.
 
-Telemetry not reaching the Collector (exporter pointing to localhost)::
-Symptom::
-Instrumentation defaults to `http://localhost:4317` if `spec.exporter.endpoint` is omitted.
-Telemetry is dropped or sent to a pod-local endpoint.
-Fix::
-Set `spec.exporter.endpoint` to the Collector Service FQDN (for example, `http://<collector-name>.<namespace>.svc.cluster.local:4318`).
-Verify `OTEL_EXPORTER_OTLP_ENDPOINT` in the pod environment.
+No init container or injection not happening. ::
++
+* This may be caused by a typo in the annotation, the wrong language annotation (for example, `inject-java` vs `inject-python`), or the `Instrumentation` resource not being present in the namespace at pod startup.
+* Confirm the annotation matches the intended language.
+* Ensure the `Instrumentation` resource exists in the pod namespace before pods are created.
+* If pods are already running, redeploy them after creating `Instrumentation`.
 
-Webhook or admission failed (TLS or cert errors)::
-Symptom::
-The Operator webhook rejects resources.
-You can see error events for webhook certificates.
-Fix::
-Ensure `cert-manager` is installed.
-Ensure the chart values enable certificates (for example, `admissionWebhooks.certManager.enabled: true`), or enable auto-generated certificates per chart values.
-Check `kubectl get validatingwebhookconfigurations` and review the Operator logs.
 
-Image pull or permission issues::
-Symptom::
-The init container fails to start due to image pull errors.
-Fix::
-Run `kubectl describe pod` and look for `ImagePullBackOff`.
-Fix the image pull secrets and registry access.
 
-Late annotations (Operator did not inject)::
-Cause::
-The pod started before the `Instrumentation` resource existed.
-Fix::
-Delete and recreate the pod after the `Instrumentation` resource exists.
-Alternatively, add automation around re-initialization during rollout.
+Telemetry not reaching the Collector (exporter pointing to localhost). ::
++
+* Instrumentation defaults to `http://localhost:4317` if `spec.exporter.endpoint` is omitted. Telemetry is dropped or sent to a pod-local endpoint.
+* Set `spec.exporter.endpoint` to the Collector Service FQDN (for example, `http://<collector-name>.<namespace>.svc.cluster.local:4318`).
+* Verify `OTEL_EXPORTER_OTLP_ENDPOINT` in the pod environment.
 
-TLS to the Collector (secure OTLP)::
-Cause::
-Your environment requires `Instrumentation.spec.exporter.tls` (mTLS or a custom CA).
-Fix::
-Create a ConfigMap containing the CA bundle.
-Reference it from `Instrumentation.spec.exporter.tls.configMapName`.
+
+
+Webhook or admission failed (TLS or cert errors). ::
++
+* The Operator webhook rejects resources. You can see error events for webhook certificates.
+* Ensure `cert-manager` is installed.
+* Ensure the chart values enable certificates (for example, `admissionWebhooks.certManager.enabled: true`), or enable auto-generated certificates per chart values.
+* Check `kubectl get validatingwebhookconfigurations` and review the Operator logs.
+
+
+
+Image pull or permission issues. ::
++
+* The init container fails to start due to image pull errors.
+* Run `kubectl describe pod` and look for `ImagePullBackOff`.
+* Fix the image pull secrets and registry access.
+
+
+
+Late annotations (Operator did not inject). ::
++
+* The pod started before the `Instrumentation` resource existed.
+* Delete and recreate the pod after the `Instrumentation` resource exists.
+* Alternatively, add automation around re-initialization during rollout.
+
+
+
+TLS to the Collector (secure OTLP). ::
+
+* Your environment requires `Instrumentation.spec.exporter.tls` (mTLS or a custom CA).
+* Create a ConfigMap containing the CA bundle.
+* Reference it from `Instrumentation.spec.exporter.tls.configMapName`.
