@@ -40,8 +40,8 @@ Centralized, role-based control::
   This approach offers greater security and governance without giving everyone {helm} access.
 {ranchera} UI–driven workflows::
   Installed and used entirely from the {ranchera} Dashboard.
-  Application deployment becomes guided and opinionated.
-Opinionated setup for AI workloads::
+  Application deployment becomes guided and predictable.
+Curated setup for AI workloads::
   Encodes best practices for AI applications, it assumes:
   * private registries
   * controlled deployment paths
