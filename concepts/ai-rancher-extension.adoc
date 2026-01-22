@@ -13,6 +13,7 @@ ifdef::override-abstract[]
 endif::[]
 ifndef::override-abstract[]
 The {productname} Extension adds capabilities to {ranchera} for deploying and managing AI-powered applications.
+Its usage and administration depends on which user role is being used.
 endif::[]
 
 // erase the flag for future overrides
@@ -30,3 +31,23 @@ Administrator::
   * creates ClusterRepo repositories.
 User::
   * Deploys AI applications using the {sairancherextension}.
+
+[#ai-rancher-extension-benefits]
+== Benefits compared to manual deployment
+
+Centralized, role-based control::
+  Permissions are enforced inside {ranchera} and split into roles.
+  This approach offers greater security and governance without giving everyone {helm} access.
+{ranchera} UI–driven workflows::
+  Installed and used entirely from the {ranchera} Dashboard.
+  Application deployment becomes guided and opinionated.
+Opinionated setup for AI workloads::
+  Encodes best practices for AI applications, it assumes:
+  * private registries
+  * controlled deployment paths
+  * abstracts complexity away from end users
+Secure handling of private registries::
+  Uses ClusterRepo objects where repositories are:
+  * centrally configured
+  * authenticated once
+  * reused across clusters
