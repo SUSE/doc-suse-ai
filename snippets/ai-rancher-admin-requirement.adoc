@@ -1,0 +1,4 @@
+[IMPORTANT]
+====
+You need to have {ranchera} Administrator privileges to perform this task.
+====

@@ -1,0 +1,43 @@
+[#ai-rancher-extension-clusterrepo-creating]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+=  Creating a ClusterRepo repository for AI applications
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The {productname} Extension adds capabilities to {ranchera} for deploying and managing AI-powered applications.
+Its usage and administration depends on which user role is being used.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+{helm} charts of AI applications are hosted in a private registry.
+Therefore, {sairancherextension} requires a *ClusterRepo* repository as the source for AI application charts.
+The ClusterRepo name will be used by the extension to identify and select the charts' source.
+
+You must create the ClusterRepo in both the {ranchera} Server cluster and all downstream clusters.
+
+include::../snippets/ai-rancher-admin-requirement.adoc[]
+
+. In {ranchera}, navigate to menu:Cluster[Apps > Repositories].
+. Click btn:[Create] and provide the following details:
+  * name
+  * repository URL
+  * authentication credentials that are required by the private registry
+. Wait until the repository status changes to `Active`.
+
+[NOTE]
+.Same repository name across clusters
+====
+We strongly recommended using the same repository name across all clusters.
+This ensures consistency and allows the {sairancherextension} to easily reference the repository.
+====

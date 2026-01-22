@@ -1,0 +1,5 @@
+[TIP]
+.User workflow
+====
+After the administrator has installed the {sairancherextension} and created the ClusterRepo repository, the users with `Rancher Admin` and `Cluster Owner` roles can deploy AI applications.
+====

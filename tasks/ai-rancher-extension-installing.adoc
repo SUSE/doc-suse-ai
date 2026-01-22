@@ -1,0 +1,38 @@
+[#ai-rancher-extension-installing]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Installing {sairancherextension}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The {productname} Extension adds capabilities to {ranchera} for deploying and managing AI-powered applications.
+Its usage and administration depends on which user role is being used.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+include::../snippets/ai-rancher-admin-requirement.adoc[]
+
+. In {ranchera}, navigate to menu:Extensions[Manage Extensions Catalog]
+. Import the extension catalog from GitHub.
+  Enter `ghcr.io/suse/suse-ai-rancher-ext:<VERSION>` in the btn:[Catalog Image Reference] input filed.
+  Replace `<VERSION>` with a tag published in GitHub Container Registry.
+  Confirm with btn:[Load].
+. On the `Manage Repositories` page, verify if the {sairancherextension} repository has the `Active`` state.
+  If not, refresh the connection.
+. Go back to the `Extensions` page and start the installation by clicking the btn[{sairancherextension}] button.
+
+[NOTE]
+====
+Newly published catalogs are not always available immediately.
+If the catalog does not show up after publishing, navigate to menu:Extensions[Manage Repositories] and manually refresh the repository to force a re-sync.
+====

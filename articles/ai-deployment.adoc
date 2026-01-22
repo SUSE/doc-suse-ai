@@ -104,7 +104,16 @@ include::../tasks/ai-node-installer.adoc[leveloffset=+3]
 include::../tasks/ai-deployment-ailibrary-deployer.adoc[leveloffset=+2]
 :override-title: {ranchera} Extension
 include::../concepts/ai-rancher-extension.adoc[leveloffset=+2]
-
+:override-title: Installation
+:override-abstract: {empty}
+include::../tasks/ai-rancher-extension-installing.adoc[leveloffset=+3]
+:override-title: User roles
+:override-abstract: {empty}
+include::../references/ai-rancher-extension-user-roles.adoc[leveloffset=+3]
+:override-title: ClusterRepo repository
+:override-abstract: {empty}
+include::../tasks/ai-rancher-extension-clusterrepo-creating.adoc[leveloffset=+3]
+include::../glues/ai-rancher-extension-user.adoc[]
 
 // steps after deployment
 :override-title: Steps after the installation is complete
