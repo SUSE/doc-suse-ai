@@ -1,0 +1,32 @@
+[#ai-rancher-extension]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {productname} {ranchera} Extension
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The {productname} Extension adds capabilities to {ranchera} for deploying and managing AI-powered applications.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+[#ai-rancher-extension-roles]
+== Workflows and responsibilities
+
+The workflow is defined by a user role and is different for a user and an administrator.
+
+Administrator::
+  * Installs {sairancherextension}.
+  * Manages users and user roles.
+  * creates ClusterRepo repositories.
+User::
+  * Deploys AI applications using the {sairancherextension}.

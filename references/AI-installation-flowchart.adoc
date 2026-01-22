@@ -1,19 +1,32 @@
-include::../common/generic-attributes.adoc[]
 [#ai-installation-flowchart]
+include::../common/generic-attributes.adoc[]
+// overridden title?
 ifdef::override-title[]
 = {override-title}
 endif::[]
 ifndef::override-title[]
 = {productname} installation flowchart
 endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+This chart illustrates important steps involved in the installation process of {productname}.
+endif::[]
+// erase the flag for future overrides
+
+:override-abstract!:
 :override-title!:
 
-The following chart illustrates the installation process of {productname}.
 ifdef::deployment_standard[]
-It lists all the steps you have to perform if you prefer the *manual* installation of each component.
-If you prefer automating the installation of selected steps, refer to xref:ai-automated-deployments[] for more details.
+The presented steps mainly relate to *manual* command-line installation.
+
+However, there are alternative installation methods that can ease parts of the installation process.
+Refer to xref:ai-alternative-deployments[] for their list and explanatory description.
 endif::[]
-The chart outlines the following possible scenarios:
+
+The chart focuses on the following possible scenarios:
 
 * You have clean cluster nodes prepared without a supported Linux operating system installed.
 * You have a supported Linux operating system and {kube} distribution installed on cluster nodes.
