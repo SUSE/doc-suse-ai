@@ -1,18 +1,19 @@
-[#ai-rancher-extension]
+[#ai-lifecycle-manager]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
 endif::[]
 ifndef::override-title[]
-= {sairancherextension}
+= {sailifecyclemanager}
 endif::[]
 // overridden abstract?
 ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-The {productname} Extension adds capabilities to {ranchera} for deploying and managing AI-powered applications.
+{sailifecyclemanager} is a {ranchera} UI Extension for managing {productname} components across {kube} clusters.
+This extension provides a unified interface for installing, managing and monitoring AI workloads in {ranchera}-managed clusters.
 Its usage and administration depends on which user role is being used.
 endif::[]
 
@@ -20,19 +21,21 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-[#ai-rancher-extension-roles]
+[#ai-lifecycle-manager-roles]
 == Workflows and responsibilities
 
 The workflow is defined by a user role and is different for a user and an administrator.
 
 Administrator::
-  * Installs {sairancherextension}.
+  * Installs {sailifecyclemanager}.
+  * Discovers, deploys and manages AI applications from {suse} trusted registries such as {sappco} and {sregistry}.
   * Manages users and user roles.
   * creates ClusterRepo repositories.
 User::
-  * Deploys AI applications using the {sairancherextension}.
+  * Installs AI applications using the {sailifecyclemanager}.
+  * Manages application instances
 
-[#ai-rancher-extension-benefits]
+[#ai-lifecycle-manager-benefits]
 == Benefits compared to manual deployment
 
 Centralized, role-based control::

@@ -1,18 +1,18 @@
-[#ai-rancher-extension-installing]
+[#ai-lifecycle-manager-installing]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
 endif::[]
 ifndef::override-title[]
-= Installing {sairancherextension}
+= Installing {sailifecyclemanager}
 endif::[]
 // overridden abstract?
 ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-The {productname} Extension adds capabilities to {ranchera} for deploying and managing AI-powered applications.
+The {sailifecyclemanager} adds capabilities to {ranchera} for deploying and managing AI-powered applications.
 Its usage and administration depends on which user role is being used.
 endif::[]
 
@@ -24,12 +24,12 @@ include::../snippets/ai-rancher-admin-requirement.adoc[]
 
 . In {ranchera}, navigate to menu:Extensions[Manage Extensions Catalog]
 . Import the extension catalog from GitHub.
-  Enter `ghcr.io/suse/suse-ai-rancher-ext:<VERSION>` in the btn:[Catalog Image Reference] input filed.
+  Enter `ghcr.io/suse/suse-ai-lifecycle-manager:<VERSION>` in the btn:[Catalog Image Reference] input filed.
   Replace `<VERSION>` with a tag published in GitHub Container Registry.
   Confirm with btn:[Load].
-. On the `Manage Repositories` page, verify if the {sairancherextension} repository has the `Active`` state.
+. From the `Manage Repositories` page, verify if the {sailifecyclemanager} repository has the `Active`` state.
   If not, refresh the connection.
-. Go back to the `Extensions` page and start the installation by clicking the btn[{sairancherextension}] button.
+. Go back to the `Extensions` page and start the installation by clicking btn:[{sailifecyclemanager}].
 
 [NOTE]
 ====

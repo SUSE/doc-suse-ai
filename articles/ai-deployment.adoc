@@ -94,7 +94,7 @@ This includes the following methods:
 * Preparing and configuring {suse}-based servers for AI workloads.
   This includes deployment of {rke2a}, {ranchera} or {rancherprime}, and {nvidia} GPU driver and {nvoperator} using xref:ai-node-installer[{sainodeinstaller}].
 * Deploying {productname} workloads using xref:ailibrary-installing-deployer[{saideployer}].
-* Deploying {productname} workloads using xref:ai-rancher-extension[{sairancherextension}].
+* Deploying {productname} workloads using xref:ai-lifecycle-manager[{sailifecyclemanager}].
 
 :override-title: Node installer
 include::../concepts/ai-node-installer.adoc[leveloffset=+2]
@@ -102,18 +102,18 @@ include::../concepts/ai-node-installer.adoc[leveloffset=+2]
 include::../tasks/ai-node-installer.adoc[leveloffset=+3]
 :override-title: {ailibrary} deployer
 include::../tasks/ai-deployment-ailibrary-deployer.adoc[leveloffset=+2]
-:override-title: {ranchera} Extension
-include::../concepts/ai-rancher-extension.adoc[leveloffset=+2]
+:override-title: Lifecycle manager
+include::../concepts/ai-lifecycle-manager.adoc[leveloffset=+2]
 :override-title: Installation
 :override-abstract: {empty}
-include::../tasks/ai-rancher-extension-installing.adoc[leveloffset=+3]
+include::../tasks/ai-lifecycle-manager-installing.adoc[leveloffset=+3]
 :override-title: User roles
 :override-abstract: {empty}
-include::../references/ai-rancher-extension-user-roles.adoc[leveloffset=+3]
+include::../references/ai-lifecycle-manager-user-roles.adoc[leveloffset=+3]
 :override-title: ClusterRepo repository
 :override-abstract: {empty}
-include::../tasks/ai-rancher-extension-clusterrepo-creating.adoc[leveloffset=+3]
-include::../glues/ai-rancher-extension-user.adoc[]
+include::../tasks/ai-lifecycle-manager-clusterrepo-creating.adoc[leveloffset=+3]
+include::../glues/ai-lifecycle-manager-user.adoc[]
 
 // steps after deployment
 :override-title: Steps after the installation is complete

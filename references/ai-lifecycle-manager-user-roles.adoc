@@ -1,0 +1,34 @@
+[#ai-lifecycle-manager-user-roles-managing]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Managing user roles in {sailifecyclemanager}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The {sailifecyclemanager} adds capabilities to {ranchera} for deploying and managing AI-powered applications.
+Its usage and administration depends on which user role is being used.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+To allow users to access and use the {sailifecyclemanager}, you must assign specific _user roles_ in {ranchera}.
+
+include::../snippets/ai-rancher-admin-requirement.adoc[]
+
+{sailifecyclemanager} recognizes the following user roles:
+
+{ranchera} Admin::
+  Has full {ranchera} access and can install extensions, manage clusters and install applications using the {sailifecyclemanager}.
+Cluster Owner::
+  Has full management rights for a specific cluster including installation of application using the {sailifecyclemanager}.
+Cluster Member::
+  Does not have access rights to install applications using the {sailifecyclemanager}.
