@@ -52,10 +52,10 @@ include::../snippets/ai-rancher-admin-requirement.adoc[]
 . Refer to the document link:https://documentation.suse.com/container/all/single-html/Container-guide/#container-ltss-images[Using container images from the {sregistry}] to get the user name and the access token (password) for {sregistry}.
   The access code is the same as the registration code of your {productname} subscription, which you can find on your {scca} account at link:https://scc.suse.com/[] by following these steps:
 [loweralpha]
-  * Log in to https://scc.suse.com/.
-  * Select your organization under `MY ORGANIZATIONS`.
-  * In your organization dashboard, click `Subscriptions`.
-  * If your organization purchased {productname} subscription, you can find the {productname} subscription and its registration key in the subscriptions list.
+.. Log in to https://scc.suse.com/.
+.. Select your organization under `MY ORGANIZATIONS`.
+.. In your organization dashboard, click `Subscriptions`.
+.. If your organization purchased {productname} subscription, you can find the {productname} subscription and its registration key in the subscriptions list.
 . In {ranchera}, navigate to menu:Cluster[Apps > Repositories].
 . Click btn:[Create] and provide the following details:
   * *Name:* `suse-ai-registry`

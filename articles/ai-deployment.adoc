@@ -113,7 +113,10 @@ include::../references/ai-lifecycle-manager-user-roles.adoc[leveloffset=+3]
 :override-title: ClusterRepo repository
 :override-abstract: {empty}
 include::../tasks/ai-lifecycle-manager-clusterrepo-creating.adoc[leveloffset=+3]
-include::../glues/ai-lifecycle-manager-user.adoc[]
+:override-title: Installing and managing applications
+:override-abstract: {empty}
+include::../tasks/ai-lifecycle-manager-installing-applications.adoc[leveloffset=+3]
+
 
 // steps after deployment
 :override-title: Steps after the installation is complete

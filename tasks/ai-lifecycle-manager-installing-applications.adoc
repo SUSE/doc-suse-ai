@@ -1,0 +1,51 @@
+[#ai-lifecycle-manager-installing-applications]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+=  Installing and managing applications in {sailifecyclemanager}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The {sailifecyclemanager} adds capabilities to {ranchera} for deploying and managing AI-powered applications.
+Its usage and administration depends on which user role is being used.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+After the administrator has installed the {sailifecyclemanager} extension and added the ClusterRepos repository, the users with `Rancher Admin` and `Cluster Owner` roles can deploy and manage AI applications.
+
+[#ai-lifecycle-manager-apps-installing]
+[.procedure]
+.Installing applications
+. Click the application's tile to navigate to its instances page.
+. Click btn:[Install] to start the installation wizard.
+. Provide basic information required for the {helm} installation such as the release name, namespace and version.
+  Repository is automatically selected.
+  Click btn:[Next] to navigate to the `Target Cluster` page to select the cluster(s).
+. On the `Target Cluster` page, choose one or more clusters that meet the application's resource requirements and click btn:[Next] to go to the `Configuration` page.
+. On the `Configuration` page, customize the installation using the UI form for key settings or the YAML file for advanced options, and click btn:[Next] to go to the `Review` page.
+. Review the installation summary on the `Review` page and confirm by clicking btn:[Install] to install the application.
+  To navigate to previous steps to adjust the settings instead, click btn:[Previous] button.
+
+[#ai-lifecycle-manager-apps-managing]
+[.procedure]
+.Managing application instances
+. Click the application's tile to navigate to its instances page.
+. Click btn:[Manage] for the application to start its `Manage` wizard.
+. Update the application's details on the wizard screens.
+. On the `Review` page, click btn:[Save] to apply the changes.
+
+[#ai-lifecycle-manager-apps-deleting]
+[.procedure]
+.Deleting application instances
+. Click the application's tile to navigate to its instances page.
+. Click btn:[Delete] for the instance you want to delete.
+. In the pop-up window, confirm the deletion.
