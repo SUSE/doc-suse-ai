@@ -30,7 +30,7 @@ It simply ensures that the system matches the intended configuration.
 
 The installer deploys:
 
-* *{rke2a}* - {suse}}'s CNCF-certified {kube} distribution
+* *{rke2a}* - {suse}'s CNCF-certified {kube} distribution
 * _(Optional)_ *{ranchera}* / *{rancherprime}* - centralized multi-cluster management
 * _(Optional)_ {nvidia} GPU support - {nvidia} drivers and {nvoperator}
 
