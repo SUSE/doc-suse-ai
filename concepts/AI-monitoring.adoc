@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Monitoring {productname}
 endif::[]
+
 :override-title!:
 
 This document focuses on techniques for gathering telemetry data from all {productname} components. 

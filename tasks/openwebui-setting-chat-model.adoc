@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Specifying an AI model for the current chat
 endif::[]
+
 :override-title!:
 
 ifndef::part-of-article[]

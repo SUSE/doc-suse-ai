@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Setting the default system prompt for the current user
 endif::[]
+
 :override-title!:
 
 ifndef::part-of-article[]

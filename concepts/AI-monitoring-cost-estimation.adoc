@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Monitoring {suseai}: cost estimation
 endif::[]
+
 :override-title!:
 
 The cost estimation is calculated for every chat interaction between the

@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Authenticating {owui} via {okta}
 endif::[]
+
 :override-title!:
 
 {okta} is an identity management service that allows you to manage users and user access to applications.

@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: collect and publish images to your private registry
 endif::[]
+
 :override-title!:
 
 This section describes how to set up your private registry so that when you install {ranchera}, it will pull all the required images from this registry.

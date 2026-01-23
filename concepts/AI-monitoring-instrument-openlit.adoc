@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Instrumenting applications with {openlit} SDK
 endif::[]
+
 :override-title!:
 
 {openlit} has a Python and a Typescript SDK available. The following procedures describe examples of instrumentation, one for each language.

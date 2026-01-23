@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: install {kube}
 endif::[]
+
 :override-title!:
 
 

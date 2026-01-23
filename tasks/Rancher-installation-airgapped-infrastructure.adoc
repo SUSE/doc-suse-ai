@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: set up the infrastructure and a private registry
 endif::[]
+
 :override-title!:
 
 In this section, you will provision the underlying infrastructure for your {ranchera} management server in an air-gapped environment.
