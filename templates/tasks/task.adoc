@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Executing task X (with tool Y)
 endif::[]
+:override-title!:
 
 Introductory text
 

@@ -6,6 +6,8 @@ ifndef::override-title[]
 = Setting the default system prompt for an AI model
 endif::[]
 
+:override-title!:
+
 ifndef::part-of-article[]
 This topic explains how to set the default system prompt for an AI model.
 The system prompt is then used for new chats if not overridden by specifying a system prompt for a user or a chat. 

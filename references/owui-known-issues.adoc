@@ -6,6 +6,8 @@ ifndef::override-title[]
 = {owui} known issues
 endif::[]
 
+:override-title!:
+
 This section lists the known issues with the {owui} and their solutions. 
 
 [#owui-reset-password]

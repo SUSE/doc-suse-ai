@@ -6,6 +6,8 @@ ifndef::override-title[]
 = Setting the default system AI model
 endif::[]
 
+:override-title!:
+
 ifndef::part-of-article[]
 This topic explains how to set the default AI model for all users.
 The model is then used for new chats, if not overridden by specifying a model for a chat. 

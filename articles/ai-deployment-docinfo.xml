@@ -1,8 +1,22 @@
 <revhistory xml:id="rh-deployment">
+        <revision><date>2026-01-15</date>
+          <revdescription>
+            <para>
+              Added a section about node installation using {sainodeinstaller}.
+            </para>
+          </revdescription>
+        </revision>
+        <revision><date>2026-01-22</date>
+          <revdescription>
+            <para>
+              Added a section about AI {ranchera} extension.
+            </para>
+          </revdescription>
+        </revision>
         <revision><date>2025-11-21</date>
           <revdescription>
             <para>
-              Added section about {mlflow} installation
+              Added a section about {mlflow} installation
             </para>
           </revdescription>
         </revision>

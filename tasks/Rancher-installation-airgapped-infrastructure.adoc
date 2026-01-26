@@ -6,6 +6,8 @@ ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: set up the infrastructure and a private registry
 endif::[]
 
+:override-title!:
+
 In this section, you will provision the underlying infrastructure for your {ranchera} management server in an air-gapped environment.
 You will also set up the private container image registry that must be available to your {ranchera} node(s).
 The procedures below focus on installing {ranchera} in the {rke2a} cluster.

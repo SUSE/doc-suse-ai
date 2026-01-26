@@ -6,6 +6,8 @@ ifndef::override-title[]
 = Importing AI models
 endif::[]
 
+:override-title!:
+
 ifndef::part-of-article[]
 This procedure shows how to import AI models using {owui}. 
 endif::[]

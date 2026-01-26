@@ -14,7 +14,7 @@ endif::[]
 . Connect the {kube} cluster to {ranchermanager} as described in xref:rancher-register-clusters[].
 . Configure the GPU-enabled nodes so that the {productname} containers are assigned to Pods that run on nodes equipped with {nvidia} GPU hardware.
 Find more details about assigning Pods to nodes in xref:ai-gpu-nodes-assigning[].
-. _ _(Optional)__ Install {ssecurity} as described in xref:ai-security-installation[].
+. _(Optional)_ Install {ssecurity} as described in xref:ai-security-installation[].
 Although this step is not required, we strongly encourage it to ensure data security in the production environment.
 . Install and configure {sobservability} to observe the nodes used for {productname} application.
 Refer to xref:observability-installing[] for more details.

@@ -14,20 +14,20 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2025-12-02
+:revdate: 2026-01-15
 :page-revdate: {revdate}
 
 WHAT?::
-  This document provides a comprehensive, step-by-step guide for the {productname} deployment.
+  {productname} is a multi-layered enterprise AI solution that consists of several software components and dependencies.
 
 WHY?::
-  To help users successfully complete the deployment process.
+  Use this guide to deploy and install {productname} and its dependencies in a consistent and supported manner.
 
 EFFORT::
-  Less than one hour of reading and an advanced knowledge of Linux deployment.
+  It takes less than one hour of reading time and requires advanced knowledge of Linux deployment.
 
 GOAL::
-  To learn enough information to deploy {productname} in both testing and production environments.
+  By the end of this guide, you will have {productname} and all required dependencies installed and ready for use.
 
 {productname} is a versatile product consisting of multiple software
 layers and components. This document outlines the complete workflow
@@ -64,6 +64,7 @@ include::../glues/ai-ssecurity-intro.adoc[leveloffset=+2]
 include::../tasks/Security-installation-rancher.adoc[leveloffset=+3]
 include::../tasks/Security-installation-kubernetes.adoc[leveloffset=+3]
 include::../tasks/observability-settingup-ai.adoc[leveloffset=+2]
+
 // AI library
 include::../glues/ai-library-intro.adoc[leveloffset=+1]
 :override-title: Installation procedure
@@ -83,10 +84,43 @@ include::../tasks/pytorch-installing.adoc[leveloffset=+2]
 include::../references/pytorch-helm-overrides.adoc[leveloffset=+3]
 include::../references/pytorch-helmchart.adoc[leveloffset=+3]
 include::../tasks/mlflow-installing.adoc[leveloffset=+2]
+// automated installations
+[#ai-alternative-deployments]
+== Alternative deployments
+
+Selected parts of {productname} deployment can be automated or performed in a Web UI environment instead of the command line.
+This includes the following methods:
+
+* Preparing and configuring {suse}-based servers for AI workloads.
+  This includes deployment of {rke2a}, {ranchera} or {rancherprime}, and {nvidia} GPU driver and {nvoperator} using xref:ai-node-installer[{sainodeinstaller}].
+* Deploying {productname} workloads using xref:ailibrary-installing-deployer[{saideployer}].
+* Deploying {productname} workloads using xref:ai-lifecycle-manager[{sailifecyclemanager}].
+
+:override-title: Node installer
+include::../concepts/ai-node-installer.adoc[leveloffset=+2]
+:override-abstract: {empty}
+include::../tasks/ai-node-installer.adoc[leveloffset=+3]
+:override-title: {ailibrary} deployer
 include::../tasks/ai-deployment-ailibrary-deployer.adoc[leveloffset=+2]
+:override-title: Lifecycle manager
+include::../concepts/ai-lifecycle-manager.adoc[leveloffset=+2]
+:override-title: Installation
+:override-abstract: {empty}
+include::../tasks/ai-lifecycle-manager-installing.adoc[leveloffset=+3]
+//:override-title: User roles
+//:override-abstract: {empty}
+//include::../references/ai-lifecycle-manager-user-roles.adoc[leveloffset=+3]
+:override-title: ClusterRepo repository
+:override-abstract: {empty}
+include::../tasks/ai-lifecycle-manager-clusterrepo-creating.adoc[leveloffset=+3]
+:override-title: Installing and managing applications
+:override-abstract: {empty}
+include::../tasks/ai-lifecycle-manager-installing-applications.adoc[leveloffset=+3]
+
+
 // steps after deployment
-:override-title: Steps after the installation is complete
-include::../tasks/AI-deployment-steps-after.adoc[leveloffset=+1]
+//:override-title: Steps after the installation is complete
+//include::../tasks/AI-deployment-steps-after.adoc[leveloffset=+1]
 
 [appendix]
 include::../references/AI-glossary.adoc[leveloffset=+1]

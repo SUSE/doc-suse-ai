@@ -1,0 +1,50 @@
+[#ai-lifecycle-manager]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {sailifecyclemanager}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{sailifecyclemanager} is a {ranchera} UI Extension for managing {productname} components across {kube} clusters.
+This extension provides a unified interface for installing, managing and monitoring AI workloads in {ranchera}-managed clusters.
+Its usage and administration depend on which user role is being used.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+[#ai-lifecycle-manager-roles]
+== Workflows and responsibilities
+
+The workflow is defined by a user role and is different for a user and an administrator.
+
+  * *Admin Users* install and configure the extension.
+  * *Cluster Owners* and *{ranchera} Admin Users* discover, deploy and manage AI applications from {suse} trusted registries such as xref:ai-lifecycle-manager-clusterrepo-sappco[{sappco}] and xref:ai-lifecycle-manager-clusterrepo-sregistry[{sregistry}].
+
+[#ai-lifecycle-manager-benefits]
+== Benefits compared to manual deployment
+
+Centralized, role-based control::
+  Permissions are enforced inside {ranchera} and split into roles.
+  This approach offers greater security and governance without giving everyone {helm} access.
+{ranchera} UI–driven workflows::
+  Installed and used entirely from the {ranchera} Dashboard.
+  Application deployment becomes guided and predictable.
+Curated setup for AI workloads::
+  Encodes best practices for AI applications. It assumes:
+  * private registries
+  * controlled deployment paths
+  * abstracts complexity away from end users
+Secure handling of private registries::
+  Uses ClusterRepo objects where repositories are:
+  * centrally configured
+  * authenticated once
+  * reused across clusters

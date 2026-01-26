@@ -6,6 +6,8 @@ ifndef::override-title[]
 = Assigning roles to existing users in {owui}
 endif::[]
 
+:override-title!:
+
 This topic explains how to assign one of the available roles to an existing user account.
 To assign the role when creating a new user account, refer to xref:openwebui-user-account-creating[].
 

@@ -6,6 +6,8 @@ ifndef::override-title[]
 = Installing {ailibrary}
 endif::[]
 
+:override-title!:
+
 ifdef::deployment_standard[]
 This procedure includes steps to install {ailibrary} applications.
 endif::[]
@@ -97,4 +99,6 @@ endif::[]
 ifdef::deployment_standard[]
 .. Install {vllm} as described in xref:vllm-installing[].
 .. Install {mcpo} as described in xref:mcpo-installing[].
+.. Install {pytorch} as described in xref:pytorch-installing[].
+.. Install {mlflow} as described in xref:mlflow-installing[].
 endif::[]

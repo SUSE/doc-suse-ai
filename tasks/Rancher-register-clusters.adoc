@@ -6,6 +6,8 @@ ifndef::override-title[]
 = {ranchera}: registering existing clusters
 endif::[]
 
+:override-title!:
+
 In this section, you will learn how to register existing {rke2a} clusters in {ranchermanager} ({ranchera}).
 
 The cluster registration feature replaced the feature for importing clusters.

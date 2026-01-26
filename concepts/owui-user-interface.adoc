@@ -6,6 +6,8 @@ ifndef::override-title[]
 = {owui} user interface
 endif::[]
 
+:override-title!:
+
 The {owui} interface consists of three main parts. 
 
 Top panel::
