@@ -107,9 +107,9 @@ include::../concepts/ai-lifecycle-manager.adoc[leveloffset=+2]
 :override-title: Installation
 :override-abstract: {empty}
 include::../tasks/ai-lifecycle-manager-installing.adoc[leveloffset=+3]
-:override-title: User roles
-:override-abstract: {empty}
-include::../references/ai-lifecycle-manager-user-roles.adoc[leveloffset=+3]
+//:override-title: User roles
+//:override-abstract: {empty}
+//include::../references/ai-lifecycle-manager-user-roles.adoc[leveloffset=+3]
 :override-title: ClusterRepo repository
 :override-abstract: {empty}
 include::../tasks/ai-lifecycle-manager-clusterrepo-creating.adoc[leveloffset=+3]
@@ -119,8 +119,8 @@ include::../tasks/ai-lifecycle-manager-installing-applications.adoc[leveloffset=
 
 
 // steps after deployment
-:override-title: Steps after the installation is complete
-include::../tasks/AI-deployment-steps-after.adoc[leveloffset=+1]
+//:override-title: Steps after the installation is complete
+//include::../tasks/AI-deployment-steps-after.adoc[leveloffset=+1]
 
 [appendix]
 include::../references/AI-glossary.adoc[leveloffset=+1]

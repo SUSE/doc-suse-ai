@@ -26,14 +26,8 @@ endif::[]
 
 The workflow is defined by a user role and is different for a user and an administrator.
 
-Administrator::
-  * Installs {sailifecyclemanager}.
-  * Discovers, deploys and manages AI applications from {suse} trusted registries such as {sappco} and {sregistry}.
-  * Manages users and user roles.
-  * creates ClusterRepo repositories.
-User::
-  * Installs AI applications using the {sailifecyclemanager}.
-  * Manages application instances
+  * *Admin Users* install and configure the extension.
+  * *Cluster Owners* and *{ranchera} Admin Users* discover, deploy and manage AI applications from {suse} trusted registries such as xref:ai-lifecycle-manager-clusterrepo-sappco[{sappco}] and xref:ai-lifecycle-manager-clusterrepo-sregistry[{sregistry}].
 
 [#ai-lifecycle-manager-benefits]
 == Benefits compared to manual deployment

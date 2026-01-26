@@ -95,8 +95,8 @@ include::../references/owui-helmchart.adoc[leveloffset=+3]
 // include::../tasks/mlflow-installing.adoc[leveloffset=+2]
 // include::../tasks/ai-deployment-ailibrary-deployer.adoc[leveloffset=+2]
 // steps after deployment
-:override-title: Steps after the installation is complete
-include::../tasks/AI-deployment-steps-after.adoc[leveloffset=+1]
+// :override-title: Steps after the installation is complete
+// include::../tasks/AI-deployment-steps-after.adoc[leveloffset=+1]
 
 [appendix]
 include::../references/AI-glossary.adoc[leveloffset=+1]
