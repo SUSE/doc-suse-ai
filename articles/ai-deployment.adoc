@@ -18,16 +18,16 @@ endif::[]
 :page-revdate: {revdate}
 
 WHAT?::
-  This document provides a comprehensive, step-by-step guide for the {productname} deployment.
+  {productname} is a multi-layered enterprise AI solution that consists of several software components and dependencies.
 
 WHY?::
-  To help users successfully complete the deployment process.
+  Use this guide to deploy and install {productname} and its dependencies in a consistent and supported manner.
 
 EFFORT::
-  Less than one hour of reading and an advanced knowledge of Linux deployment.
+  It takes less than one hour of reading time and requires advanced knowledge of Linux deployment.
 
 GOAL::
-  To learn enough information to deploy {productname} in both testing and production environments.
+  By the end of this guide, you will have {productname} and all required dependencies installed and ready for use.
 
 {productname} is a versatile product consisting of multiple software
 layers and components. This document outlines the complete workflow

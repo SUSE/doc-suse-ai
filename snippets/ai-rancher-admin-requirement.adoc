@@ -1,4 +1,4 @@
 [IMPORTANT]
 ====
-You need to have {ranchera} Administrator privileges to perform this task.
+You must have {ranchera} Administrator privileges to perform this task.
 ====

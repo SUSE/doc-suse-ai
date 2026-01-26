@@ -20,7 +20,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-{helm} charts of AI applications are hosted in a private {suse} trusted registries {sappco} and {sregistry}.
+{helm} charts of AI applications are hosted in the private {suse}-trusted registries: {sappco} and {sregistry}.
 Therefore, {sailifecyclemanager} requires a *ClusterRepo* repository as the source for AI application charts.
 The ClusterRepo name will be used by the extension to identify and select the charts' source.
 
@@ -34,14 +34,14 @@ include::../snippets/ai-rancher-admin-requirement.adoc[]
 [#ai-lifecycle-manager-clusterrepo-sappco]
 [.procedure]
 .Creating ClusterRepo for the {sappco} repository
-. Refer to the document link:https://docs.apps.rancher.io/get-started/authentication[{ranchera} Authentication] to create the username and access token (password) for {sappco}.
+. Refer to the document link:https://docs.apps.rancher.io/get-started/authentication[{ranchera} Authentication] to create the user name and access token (password) for {sappco}.
 . In {ranchera}, navigate to menu:Cluster[Apps > Repositories].
 . Click btn:[Create] and provide the following details:
   * *Name:* `application-collection`
   * *Description:* Leave this empty.
   * *Target:* `OCI repository`
   * *OCI Repository Host URL:* `oci://dp.apps.rancher.io/charts`
-  * *Authentication:* `Create a HTTP Basic Auth Secret`
+  * *Authentication:* `Create an HTTP Basic Auth Secret`
   * *Username:* The Application Collection user account or service account user name.
   * *Password:* The Application Collection access token or service account secret.
 . Wait until the repository status changes to `Active`.
@@ -55,14 +55,14 @@ include::../snippets/ai-rancher-admin-requirement.adoc[]
 .. Log in to https://scc.suse.com/.
 .. Select your organization under `MY ORGANIZATIONS`.
 .. In your organization dashboard, click `Subscriptions`.
-.. If your organization purchased {productname} subscription, you can find the {productname} subscription and its registration key in the subscriptions list.
+.. If your organization has purchased a {productname} subscription, you can find the {productname} subscription and its registration key in the subscriptions list.
 . In {ranchera}, navigate to menu:Cluster[Apps > Repositories].
 . Click btn:[Create] and provide the following details:
   * *Name:* `suse-ai-registry`
   * *Description:* Leave this empty.
   * *Target:* `OCI repository`
   * *OCI Repository Host URL:* `oci://registry.suse.com/ai/charts`
-  * *Authentication:* `Create a HTTP Basic Auth Secret`
+  * *Authentication:* `Create an HTTP Basic Auth Secret`
   * *Username:* The user name is 'regcode' for everyone.
   * *Password:* The password is the same as your {productname} subscription code.
 . Wait until the repository status changes to `Active`.
@@ -70,7 +70,7 @@ include::../snippets/ai-rancher-admin-requirement.adoc[]
 [NOTE]
 .Same repository name across clusters
 ====
-We strongly recommended using the *same repository name across all clusters*.
+We strongly recommend using the *same repository name across all clusters*.
 This ensures consistency and allows the {sailifecyclemanager} to easily reference the repository.
 For example, `application-collection` for the {sappco}, and `suse-ai-registry` for the {sregistry}.
 ====

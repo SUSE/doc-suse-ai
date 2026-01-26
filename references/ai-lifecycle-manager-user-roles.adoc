@@ -29,6 +29,6 @@ include::../snippets/ai-rancher-admin-requirement.adoc[]
 {ranchera} Admin::
   Has full {ranchera} access and can install extensions, manage clusters and install applications using the {sailifecyclemanager}.
 Cluster Owner::
-  Has full management rights for a specific cluster including installation of application using the {sailifecyclemanager}.
+  Has full management rights for a specific cluster, including the installation of applications using the {sailifecyclemanager}.
 Cluster Member::
   Does not have access rights to install applications using the {sailifecyclemanager}.
