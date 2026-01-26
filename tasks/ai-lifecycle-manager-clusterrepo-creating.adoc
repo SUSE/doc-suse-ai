@@ -31,7 +31,7 @@ You must create both the {sappco} and {sregistry} ClusterRepos in both the {ranc
 
 include::../snippets/ai-rancher-admin-requirement.adoc[]
 
-[#]
+[#ai-lifecycle-manager-clusterrepo-sappco]
 [.procedure]
 .Creating ClusterRepo for the {sappco} repository
 . Refer to the document link:https://docs.apps.rancher.io/get-started/authentication[{ranchera} Authentication] to create the user name and access token (password) for {sappco}.
