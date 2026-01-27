@@ -1,4 +1,11 @@
 <revhistory xml:id="rh-ai-deployment-airgapped">
+  <revision><date>2026-01-27</date>
+    <revdescription>
+      <para>
+        Removed a section about validating NVIDIA driver installation.
+      </para>
+    </revdescription>
+  </revision>
   <revision><date>2025-10-24</date>
     <revdescription>
       <para>
