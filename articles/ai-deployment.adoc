@@ -58,7 +58,7 @@ include::../tasks/RKE2-installation-quickstart.adoc[leveloffset=+2]
 include::../tasks/AI-deployment-cluster-preparation.adoc[leveloffset=+1]
 // https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/installation-and-upgrade/install-rancher.adoc
 include::../tasks/Rancher-installation-quickstart.adoc[leveloffset=+2]
-// https://github.com/rancher/rke2-product-docs/edit/main/versions/latest/modules/en/pages/advanced.adoc
+// https://github.com/rancher/rke2-product-docs/edit/main/versions/latest/modules/en/pages/add-ons/gpu_operators.adoc
 include::../tasks/NVIDIA-Operator-installation.adoc[leveloffset=+2]
 // https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/cluster-deployment/register-existing-clusters.adoc
 :override-title: Registering existing clusters

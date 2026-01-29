@@ -1,4 +1,4 @@
-// source: https://github.com/rancher/rke2-product-docs/edit/main/versions/latest/modules/en/pages/advanced.adoc
+// source: https://github.com/rancher/rke2-product-docs/edit/main/versions/latest/modules/en/pages/add-ons/gpu_operators.adoc
 // base URL: https://documentation.suse.com/cloudnative/rke2/latest/en/
 // product name: {rke2}
 [#nvidia-operator-installation]
@@ -22,16 +22,14 @@ endif::[]
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
-
-The https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html[NVIDIA operator] allows administrators of Kubernetes clusters to manage GPUs just like CPUs. It includes everything needed for pods to be able to operate GPUs.
-
+[#_host_os_requirements]
 == Host OS requirements
 
-To expose the GPU to the pod correctly, the NVIDIA kernel drivers and the `libnvidia-ml` library must be correctly installed in the host OS. The NVIDIA Operator can automatically install drivers and libraries on some operating systems; check the NVIDIA documentation for information on https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html#supported-operating-systems-and-kubernetes-platforms[supported operating system releases]. Installation of the NVIDIA components on your host OS is out of the scope of this document; reference the NVIDIA documentation for instructions.
+To expose the GPU to the pod correctly, the NVIDIA kernel drivers and the `libnvidia-ml` library must be correctly installed in the host OS. The NVIDIA Operator can automatically install drivers and libraries on some operating systems. Refer to the NVIDIA documentation for information on https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html#supported-operating-systems-and-kubernetes-platforms[supported operating system releases]. The installation of the NVIDIA components on your host OS is out of the scope of this documentation, refer to the NVIDIA documentation for instructions.
 
-The following three commands should return a correct output if the kernel driver is correctly installed.
+The following three commands should return a correct output if the kernel driver was correctly installed:
 
-. `lsmod | grep nvidia` returns a list of Nvidia kernel modules. For example:
+* `lsmod | grep nvidia` returns a list of nvidia kernel modules. For example:
 +
 [,sh]
 ----
@@ -43,7 +41,7 @@ nvidia               9965568  2 nvidia_uvm,nvidia_modeset
 ecc                    45056  1 nvidia
 ----
 
-. `cat /proc/driver/nvidia/version` returns the NVRM and GCC version of the driver. For example:
+* `cat /proc/driver/nvidia/version` returns the NVRM and GCC version of the driver. For example:
 +
 [,sh]
 ----
@@ -51,7 +49,7 @@ NVRM version: NVIDIA UNIX Open Kernel Module for x86_64  555.42.06  Release Buil
 GCC version:  gcc version 7.5.0 (SUSE Linux)
 ----
 
-. `find /usr/ -iname libnvidia-ml.so` returns a path to the `libnvidia-ml.so` library. For example:
+* `find /usr/ -iname libnvidia-ml.so` returns a path to the `libnvidia-ml.so` library. For example:
 +
 [,sh]
 ----
@@ -64,6 +62,16 @@ This library is used by Kubernetes components to interact with the kernel driver
 
 Once the OS is ready and RKE2 is running, install the GPU Operator with the following yaml manifest.
 
+[CAUTION]
+==
+The NVIDIA operator restarts containerd with a hangup call which restarts RKE2.
+==
+
+[IMPORTANT]
+==
+The envvars `ACCEPT_NVIDIA_VISIBLE_DEVICES_ENVVAR_WHEN_UNPRIVILEGED`, `ACCEPT_NVIDIA_VISIBLE_DEVICES_AS_VOLUME_MOUNTS` and `DEVICE_LIST_STRATEGY` are required to properly isolate GPU resources as explained in https://docs.google.com/document/d/1zy0key-EL6JH50MZgwg96RPYxxXXnVUdxLZwGiyqLd8/edit?tab=t.0[Preventing unprivileged access to GPUs in Kubernetes].
+==
+
 [,yaml]
 ----
 apiVersion: helm.cattle.io/v1
@@ -74,6 +82,7 @@ metadata:
 spec:
   repo: https://helm.ngc.nvidia.com/nvidia
   chart: gpu-operator
+  version: v25.3.4
   targetNamespace: gpu-operator
   createNamespace: true
   valuesContent: |-
@@ -81,41 +90,44 @@ spec:
       env:
       - name: CONTAINERD_SOCKET
         value: /run/k3s/containerd/containerd.sock
+      - name: ACCEPT_NVIDIA_VISIBLE_DEVICES_ENVVAR_WHEN_UNPRIVILEGED
+        value: "false"
+      - name: ACCEPT_NVIDIA_VISIBLE_DEVICES_AS_VOLUME_MOUNTS
+        value: "true"
+    devicePlugin:
+      env:
+      - name: DEVICE_LIST_STRATEGY
+        value: volume-mounts
 ----
 
-[WARNING]
-===
-The NVIDIA operator restarts containerd with a hangup call which restarts RKE2.
-===
+After one minute approximately, you can perform the following checks to verify that everything is working as expected:
 
-After one minute approximately, you can make the following checks to verify that everything works as expected.
-
-. Assuming the drivers and `libnvidia-ml.so` library are installed, check if the operator detects them correctly.
+. Assuming the drivers and `libnvidia-ml.so` library were previously installed, check if the operator detects them correctly:
 +
 [,sh]
 ----
 kubectl get node $NODENAME -o jsonpath='{.metadata.labels}' | grep "nvidia.com/gpu.deploy.driver"
 ----
 +
-You should see the value `pre-installed`. If you see `true`, the drivers are not correctly installed. If the <<Host OS requirements, pre-requirements>> are correct, it is possible that you forgot to reboot the node after installing all packages.
+You should see the value `pre-installed`. If you see `true`, the drivers were not correctly installed. If the <<_host_os_requirements,pre-requirements>> were correct, it is possible that you forgot to reboot the node after installing all packages.
 +
 You can also check other driver labels with:
 +
 [,sh]
 ----
-kubectl get node $NODENAME -o jsonpath='{.metadata.labels}' | jq | grep "nvidia.com"
+kubectl get node $NODENAME -o jsonpath='{.metadata.labels}' |  grep "nvidia.com"
 ----
 +
 You should see labels specifying driver and GPU (e.g. `nvidia.com/gpu.machine` or `nvidia.com/cuda.driver.major`).
 
-. Check if the gpu was added (by nvidia-device-plugin-daemonset) as an allocatable resource in the node.
+. Check if the GPU was added by `nvidia-device-plugin-daemonset` as an allocatable resource in the node:
 +
 [,sh]
 ----
-kubectl get node $NODENAME -o jsonpath='{.status.allocatable}' | jq
+kubectl get node $NODENAME -o jsonpath='{.status.allocatable}'
 ----
 +
-You should see `"nvidia.com/gpu":` followed by the number of gpus in the node.
+You should see `"nvidia.com/gpu":` followed by the number of GPUs in the node.
 
 . Check that the container runtime binary was installed by the operator (in particular by the `nvidia-container-toolkit-daemonset`):
 +
@@ -124,14 +136,14 @@ You should see `"nvidia.com/gpu":` followed by the number of gpus in the node.
 ls /usr/local/nvidia/toolkit/nvidia-container-runtime
 ----
 
-. Verify if containerd config was updated to include the nvidia container runtime.
+. Verify if containerd config was updated to include the NVIDIA container runtime:
 +
 [,sh]
 ----
 grep nvidia /var/lib/rancher/rke2/agent/etc/containerd/config.toml
 ----
 
-. Run a pod to verify that the GPU resource can successfully be scheduled on a pod and the pod can detect it.
+. Run a pod to verify that the GPU resource can successfully be scheduled on a pod and the pod can detect it
 +
 [,yaml]
 ----
@@ -144,40 +156,35 @@ spec:
   restartPolicy: OnFailure
   runtimeClassName: nvidia
   containers:
-  - name: cuda-container
-    image: nvcr.io/nvidia/k8s/cuda-sample:nbody
-    args: ["nbody", "-gpu", "-benchmark"]
-    resources:
-      limits:
-        nvidia.com/gpu: 1
-    env:
-    - name: NVIDIA_VISIBLE_DEVICES
-      value: all
-    - name: NVIDIA_DRIVER_CAPABILITIES
-      value: compute,utility
+** name: cuda-container
+image: nvcr.io/nvidia/k8s/cuda-sample:nbody
+args: ["nbody", "-gpu", "-benchmark"]
+resources:
+limits:
+  nvidia.com/gpu: 1
 ----
 
-[NOTE]
+[IMPORTANT]
 .Version Gate
-===
+==
 Available as of October 2024 releases: v1.28.15+rke2r1, v1.29.10+rke2r1, v1.30.6+rke2r1, v1.31.2+rke2r1.
-===
+==
 
 RKE2 will now use `PATH` to find alternative container runtimes, in addition to checking the default paths used by the container runtime packages. In order to use this feature, you must modify the RKE2 service's PATH environment variable to add the directories containing the container runtime binaries.
 
 It's recommended that you modify one of this two environment files:
 
-* /etc/default/rke2-server # or rke2-agent
-* /etc/sysconfig/rke2-server # or rke2-agent
+* `/etc/default/rke2-server` # or rke2-agent
+* `/etc/sysconfig/rke2-server` # or rke2-agent
 
-This example adds the `PATH` in `/etc/default/rke2-server`:
+This example will add the `PATH` in `/etc/default/rke2-server`:
 
-[,sh]
+[CAUTION]
+==
+`PATH` changes should be done with care to avoid placing untrusted binaries in the path of services that run as root.
+==
+
+[,bash]
 ----
 echo PATH=$PATH >> /etc/default/rke2-server
 ----
-
-[WARNING]
-===
-`PATH` changes should be done with care to avoid placing untrusted binaries in the path of services that run as root.
-===
