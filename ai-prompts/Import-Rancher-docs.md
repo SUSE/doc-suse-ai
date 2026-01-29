@@ -18,4 +18,8 @@ Convert `xref:` calls that point to a relative path into external `link:` calls.
 
 ### Product Entity Replacement
 
-Replace the generic `{product-name}` entity with the specific product entity mentioned in the comment at the top of the file (e.g., `{rke2}` or `{ranchermanager}`).
+*   Replace the generic `{product-name}` entity with the specific product entity mentioned in the comment at the top of the file (e.g., `{rke2}` or `{ranchermanager}`).
+*   Replace the following attributes with equivalents:
+    - {rke2-product-name} -> {rke2}
+    - {k3s-product-name} -> {k3s}
+*   Match cross references that start with underline such as '_features_for_all_registered_clusters' with the right section by its name and prepend the section with corresponding ID such as [#_features_for_all_registered_clusters]
