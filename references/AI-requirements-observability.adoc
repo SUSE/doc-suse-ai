@@ -1,5 +1,7 @@
 [#ai-requirements-observability]
 = {sobservability} requirements
+:revdate: 2026-01-19
+:page-revdate: {revdate}
 
 [#ai-reqs-observability-hw]
 == Minimum hardware requirements

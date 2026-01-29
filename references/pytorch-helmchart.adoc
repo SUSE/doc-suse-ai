@@ -1,5 +1,7 @@
 [#pytorch-helm-values]
 = Values for the {pytorch} {helm} chart
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 

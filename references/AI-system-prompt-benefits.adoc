@@ -1,5 +1,7 @@
 [#ai-system-prompt-benefits]
 = Benefits of using system prompts
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 System prompts enhance the performance and user experience of AI models.
 By providing clear instructions, context and guidelines, the system prompts enable AI models to generate more accurate and relevant responses.

@@ -1,6 +1,8 @@
 
 [#ai-intro-how-works]
 = {productname} architecture
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 
 [abstract]
 --

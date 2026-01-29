@@ -1,5 +1,7 @@
 [#rke2-installation-airgapped]
 = Installing {rke2} in air-gapped environments
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 This guide will help you quickly launch a cluster with default options.
 

@@ -1,5 +1,7 @@
 [#suse-ai-deploy-prepare]
 = Preparing the cluster for {ailibrary}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 
 This procedure assumes that you already have the base operating system installed on cluster nodes as well as the {rke2} {kube} distribution installed and operational.
 If you are installing from scratch, refer to xref:ai-deployment-kube-installing[] first.

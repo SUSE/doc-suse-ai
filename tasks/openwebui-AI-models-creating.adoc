@@ -1,5 +1,7 @@
 [#openwebui-ai-models-creating]
 = Creating custom AI models
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This procedure shows how to create custom AI models using {owui}. 

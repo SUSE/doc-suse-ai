@@ -1,5 +1,7 @@
 [#nvidia-gpu-driver-installation-sles]
 = Installing {nvidia} GPU drivers on {sles}
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 
 [#nvidia-gpu-requirements-sles]
 == Requirements

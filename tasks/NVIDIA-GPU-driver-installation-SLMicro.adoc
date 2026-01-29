@@ -1,5 +1,7 @@
 [#nvidia-gpu-driver-installation-slmicro]
 = Installing {nvidia} GPU drivers on {slem}
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 
 [#nvidia-gpu-requirements-slmicro]
 == Requirements

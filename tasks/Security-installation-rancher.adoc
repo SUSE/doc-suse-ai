@@ -1,5 +1,7 @@
 [#suse-security-installation-rancher]
 = Installing and managing {ssecurity} through {ranchera} Extensions or Apps & Marketplace
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {ssecurity} can be deployed easily either through {ranchera} Extensions for Prime customers, or {ranchera} Apps and Marketplace.
 The default ({helm}-based) deployment deploys {ssecurity} containers into the `cattle-neuvector-system` namespace.

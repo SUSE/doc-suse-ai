@@ -1,5 +1,7 @@
 [#owui-helmchart-values]
 = Values for the {owui} {helm} chart
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 

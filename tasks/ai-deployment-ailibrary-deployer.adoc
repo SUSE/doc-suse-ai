@@ -2,6 +2,8 @@ include::../common/generic-attributes.adoc[]
 [#ailibrary-installing-deployer]
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Installing {ailibrary} components using {saideployer}

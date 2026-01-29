@@ -1,6 +1,8 @@
 [#suse-ai-deploy-post]
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Steps after the {productname} installation is complete

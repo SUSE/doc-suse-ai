@@ -1,5 +1,7 @@
 [#openwebui-ai-models-modify]
 = Modifying existing AI models
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This procedure shows how to modify an existing AI model using {owui}. 

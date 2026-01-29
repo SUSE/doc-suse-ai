@@ -1,5 +1,7 @@
 [#suse-security-installation-kubernetes]
 = Installing {ssecurity} using {kube}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 You can use {kube} to deploy separate manager, controller and enforcer containers and make sure that all new nodes have an enforcer deployed.
 {ssecurity} requires and supports {kube} network plug-ins such as flannel, weave and calico.

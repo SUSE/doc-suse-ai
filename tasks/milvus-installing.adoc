@@ -1,5 +1,7 @@
 [#milvus-installing]
 = Installing {milvus}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {milvus} is a scalable, high-performance vector database designed for AI applications.
 It enables efficient organization and searching of massive unstructured datasets, including text, images and multi-modal content.

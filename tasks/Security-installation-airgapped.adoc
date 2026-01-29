@@ -1,5 +1,7 @@
 [#suse-security-installation-airgapped]
 = Installing {ssecurity} in air-gapped environments
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 Follow the information in this section to perform an air-gapped deployment of {ssecurity}.
 

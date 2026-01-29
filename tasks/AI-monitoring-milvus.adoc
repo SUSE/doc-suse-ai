@@ -1,5 +1,7 @@
 [#ai-monitoring-milvus]
 = Monitoring {milvus}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {milvus} is monitored by scraping its {prometheus}-compatible metrics endpoint.
 The {sobservability} Extension uses these metrics to visualize {milvus}'s status and activity. 

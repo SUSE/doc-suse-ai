@@ -1,5 +1,7 @@
 [#mlflow-installing]
 = Installing {mlflow}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {mlflow} is an open-source platform for managing the end-to-end machine learning lifecycle.
 It provides a centralized model registry to track and manage the entire lifecycle of machine learning models.

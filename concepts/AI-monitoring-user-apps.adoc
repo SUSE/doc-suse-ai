@@ -1,5 +1,7 @@
 [#ai-monitoring-user-apps]
 = Monitoring user-managed applications
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 To monitor other applications, you can utilize {otelemetry} SDKs or any other instrumentation provider compatible with {otelemetry}'s semantics, for example, {openlit} SDK.
 For more details, refer to xref:ai-monitoring-instrument-openlit[]. 

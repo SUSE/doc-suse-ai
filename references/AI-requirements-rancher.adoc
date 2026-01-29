@@ -1,5 +1,7 @@
 [#ai-requirements-rancher]
 = {ranchermanager} requirements
+:revdate: 2026-01-19
+:page-revdate: {revdate}
 
 [#ai-reqs-rancher-hw]
 == Minimum hardware requirements

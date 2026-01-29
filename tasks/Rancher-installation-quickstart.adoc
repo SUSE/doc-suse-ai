@@ -1,5 +1,7 @@
 [#rancher-installation-quickstart]
 = Installing {ranchermanager} on a {kube} cluster
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 In this section, you will learn how to deploy {ranchermanager} on a {k8s} cluster using the {helm} CLI.
 

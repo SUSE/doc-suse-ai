@@ -1,5 +1,7 @@
 [#openwebui-user-roles]
 = User roles in {owui}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {owui} offers three user roles: 'pending,' 'user' and 'admin.'
  The following  sections provide a detailed description of each role. 

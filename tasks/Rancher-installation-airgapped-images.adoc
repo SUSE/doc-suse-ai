@@ -1,6 +1,8 @@
 [#rancher-installation-airgapped-images]
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: collect and publish images to your private registry

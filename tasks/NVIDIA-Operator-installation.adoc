@@ -1,5 +1,7 @@
 [#nvidia-operator-installation]
 = Installing the {nvoperator} on the {rke2} cluster
+:revdate: 2026-01-09
+:page-revdate: {revdate}
 
 The {nvidia} operator allows administrators of {k8s} clusters to manage GPUs just like CPUs.
 It includes everything needed for pods to be able to operate GPUs.

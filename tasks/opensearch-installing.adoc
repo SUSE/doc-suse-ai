@@ -1,5 +1,7 @@
 [#opensearch-installing]
 = Installing {opensearch}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {opensearch} is a community-driven, open source search and analytics suite.
 It is used to search, visualize and analyze data.

@@ -1,5 +1,7 @@
 [#ai-requirements-ollama]
 = {ollama} requirements
+:revdate: 2026-01-19
+:page-revdate: {revdate}
 
 The version of {ollama} provided with {productname} is optimized for {nvidia} GPU hardware. This section guides you through the steps for configuring {ollama} on an {nvidia}-enabled system, including necessary configurations for both the hardware and software.
 

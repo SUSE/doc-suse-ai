@@ -1,5 +1,7 @@
 [#ai-air-gap-stack]
 = {productname} air-gapped stack
+:revdate: 2026-01-22
+:page-revdate: {revdate}
 
 The _air-gapped stack_ is a set of scripts that ease the successful air-gap installation of certain {productname} components.
 To use them, you need to clone or download them from the stack's link:https://github.com/SUSE/suse-ai-stack/tree/main/air-gapped-install[GitHub repository].
