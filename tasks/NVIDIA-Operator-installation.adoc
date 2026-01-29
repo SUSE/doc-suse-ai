@@ -1,8 +1,27 @@
+// source: https://github.com/rancher/rke2-product-docs/edit/main/versions/latest/modules/en/pages/advanced.adoc
+// base URL: https://documentation.suse.com/cloudnative/rke2/latest/en/
+// product name: {rke2}
 [#nvidia-operator-installation]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Installing the {nvoperator} on the {rke2} cluster
-
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
 The {nvidia} operator allows administrators of {k8s} clusters to manage GPUs just like CPUs.
 It includes everything needed for pods to be able to operate GPUs.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
 
 [#nvidia-operator-host-requirements]
 == Host OS requirements
