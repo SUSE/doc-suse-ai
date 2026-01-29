@@ -1,5 +1,5 @@
 include::../common/generic-attributes.adoc[]
-= Monitoring SUSE AI with OpenTelemetry and SUSE Observability 
+= Monitoring SUSE AI with OpenTelemetry and SUSE Observability
 
 :doctype: article
 :experimental:
@@ -19,12 +19,12 @@ endif::[]
 
 WHAT?::
   This document focuses on techniques for gathering telemetry data
-  from all {productname} components, including metrics, logs and traces. 
+  from all {productname} components, including metrics, logs and traces.
 
 WHY?::
   To observe, analyze and maintain the behavior, performance and
   health of your {productname} environment, and to troubleshoot issues
-  effectively. 
+  effectively.
 
 EFFORT::
   Setting up the recommended monitoring configurations with {sobservability} is
@@ -43,6 +43,7 @@ include::../tasks/AI-monitoring-owui.adoc[leveloffset=+1]
 include::../tasks/AI-monitoring-milvus.adoc[leveloffset=+1]
 include::../concepts/AI-monitoring-vllm.adoc[leveloffset=+1]
 include::../concepts/AI-monitoring-user-apps.adoc[leveloffset=+1]
+include::../tasks/AI-monitoring-otel-autoinstrumentation.adoc[leveloffset=+1]
 
 [appendix]
 :override-title: Cost estimation
