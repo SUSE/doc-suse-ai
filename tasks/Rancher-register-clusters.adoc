@@ -1,4 +1,9 @@
+// source: https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/cluster-deployment/register-existing-clusters.adoc
+// base URL: https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/
+// product name: {ranchera}
 [#rancher-register-clusters]
+include::../common/generic-attributes.adoc[]
+// overridden title?
 ifdef::override-title[]
 = {override-title}
 :revdate: 2026-01-26
@@ -7,291 +12,349 @@ endif::[]
 ifndef::override-title[]
 = {ranchera}: registering existing clusters
 endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+In this section, you will learn how to register existing {rke2a} clusters in {ranchermanager} ({ranchera}).
+endif::[]
 
+// erase the flag for future overrides
+:override-abstract!:
 :override-title!:
 
-In this section, you will learn how to register existing {rke2a} clusters in {ranchermanager} ({ranchera}).
+The cluster registration feature replaced the feature to import clusters.
 
-The cluster registration feature replaced the feature for importing clusters.
+The control that Rancher has to manage a registered cluster depends on the type of cluster. For details, see <<_management_capabilities_for_registered_clusters,Management Capabilities for Registered Clusters.>>
 
-The control that {ranchera} has to manage a registered cluster depends on the type of cluster.
-For details, see xref:rancher-register-management-capabilities[].
-
-[#rancher-register-prerequisites]
 == Prerequisites
 
-[#rancher-register-node-roles]
-=== {kube} node roles
+=== Kubernetes Node Roles
 
-Registered {rkea} {kube} clusters must have all three node roles: `etcd`, `controlplane` and `worker`.
-A cluster with only `controlplane` components cannot be registered in {ranchera}.
+Registered RKE Kubernetes clusters must have all three node roles - etcd, controlplane and worker. A cluster with only controlplane components cannot be registered in Rancher.
 
-For more information on {rkea} node roles, see the link:https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements/production-checklist#cluster-architecture[best practices].
+For more information on RKE node roles, see the link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/production-checklist/production-checklist.html#_cluster_architecture[best practices.]
 
-[#rancher-register-permissions]
 === Permissions
 
-To register a cluster in {ranchera}, you must have `cluster-admin` privileges within that cluster.
-If you do not, grant these privileges to your user by running:
+To register a cluster in Rancher, you must have `cluster-admin` privileges within that cluster. If you don't, grant these privileges to your user by running:
 
-[source,bash,subs="+attributes"]
+[,plain]
 ----
-{prompt_user}kubectl create clusterrolebinding cluster-admin-binding \
+kubectl create clusterrolebinding cluster-admin-binding \
   --clusterrole cluster-admin \
-  --user <USER_ACCOUNT>
+  --user [USER_ACCOUNT]
 ----
 
-[#rancher-register-cluster]
-[.procedure]
-== Registering a cluster
+ifeval::["{build-type}" != "srfa"]
+Since, by default, Google Kubernetes Engine (GKE) doesn't grant the `cluster-admin` role, you must run these commands on GKE clusters before you can register them. To learn more about role-based access control for GKE, please see https://cloud.google.com/kubernetes-engine/docs/how-to/role-based-access-control[the official Google documentation].
 
-. Click btn:[☰] > btn:[Cluster Management].
-. On the btn:[Clusters] page, click btn:[Import Existing].
+=== Elastic Kubernetes Service (EKS), Azure Kubernetes Service (AKS), and Google Kubernetes Engine (GKE)
+
+To successfully import or provision EKS, AKS, and GKE clusters from Rancher, the cluster must have at least one managed node group.
+
+AKS clusters can be imported only if local accounts are enabled. If a cluster is configured to use Microsoft Entra ID for authentication, then Rancher will not be able to import it and report an error.
+
+EKS Anywhere clusters can be imported/registered into Rancher with an API address and credentials, as with any downstream cluster. EKS Anywhere clusters are treated as imported clusters and do not have full lifecycle support from Rancher.
+
+GKE Autopilot clusters aren't supported. See https://cloud.google.com/kubernetes-engine/docs/resources/autopilot-standard-feature-comparison[Compare GKE Autopilot and Standard] for more information about the differences between GKE modes.
+
+== Registering a Cluster
+endif::[]
+
+ifeval::["{build-type}" == "srfa"]
+=== Elastic Kubernetes Service (EKS)
+
+To successfully import or provision EKS clusters from Rancher, the cluster must have at least one managed node group.
+
+EKS Anywhere clusters can be imported/registered into Rancher with an API address and credentials, as with any downstream cluster. EKS Anywhere clusters are treated as imported clusters and do not have full lifecycle support from Rancher.
+
+== Registering a Cluster
+endif::[]
+
+. Click *☰ > Cluster Management*.
+. On the *Clusters* page, *Import Existing*.
 . Choose the type of cluster.
-. Use btn:[Member Roles] to configure user authorization for the cluster.
-Click btn:[Add Member] to add users who can access the cluster.
-Use the btn:[Role] drop-down list to set permissions for each user.
-. If you are importing a generic {kube} cluster in {ranchera}, perform the following steps for setup:
-.. Click btn:[Agent Environment Variables] under btn:[Cluster Options] to set environment variables for the link:https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/advanced-options/about-rancher-agents[{ranchera} cluster agent].
-The environment variables can be set using key-value pairs.
-If the {ranchera} agent requires the use of a proxy to communicate with the {ranchera} server, `HTTP_PROXY`, `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables can be set using agent environment variables.
-.. Enable btn:[Project Network Isolation] to ensure the cluster supports {kube} `NetworkPolicy` resources.
-Users can select the btn:[Project Network Isolation] option under the btn:[Advanced Options] drop-down list to do so.
-.. xref:rancher-register-configure-version-management[Configure the version management feature for imported {rke2a} and K3s clusters.]
-. Click btn:[Create].
-. The requirements for `cluster-admin` privileges are shown (see xref:rancher-register-prerequisites[]), including an example command to fulfill them.
-. Copy the `kubectl` command to your clipboard and run it on a node where `kubeconfig` is configured to point to the cluster you want to import.
-If you are unsure it is configured correctly, run `kubectl get nodes` to verify before running the command shown in {ranchera}.
-. If you are using self-signed certificates, you will receive the message `certificate signed by unknown authority`.
-To work around this validation, copy the command starting with `curl` displayed in {ranchera} to your clipboard.
-Then run the command on a node where `kubeconfig` is configured to point to the cluster you want to import.
-. After you finish running the command(s) on your node, click btn:[Done].
+. Use *Member Roles* to configure user authorization for the cluster. Click *Add Member* to add users that can access the cluster. Use the *Role* drop-down to set permissions for each user.
+. If you are importing a generic Kubernetes cluster in Rancher, perform the following steps for setup:
+.. Click **Agent Environment Variables** under **Cluster Options** to set environment variables for link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/about-rancher-agents.html[rancher cluster agent]. The environment variables can be set using key value pairs. If rancher agent requires use of proxy to communicate with Rancher server, `HTTP_PROXY`, `HTTPS_PROXY` and `NO_PROXY` environment variables can be set using agent environment variables.
+.. Enable Project Network Isolation to ensure the cluster supports Kubernetes `NetworkPolicy` resources. Users can select the **Project Network Isolation** option under the **Advanced Options** dropdown to do so.
+.. <<_configuring_version_management_for_suse_rancher_prime_rke2_and_suse_rancher_prime_k3s_clusters,Configure the version management feature for imported RKE2 and K3s clusters>>.
+. Click *Create*.
+. The prerequisite for `cluster-admin` privileges is shown (see *Prerequisites* above), including an example command to fulfil the prerequisite.
+. Copy the `kubectl` command to your clipboard and run it on a node where kubeconfig is configured to point to the cluster you want to import. If you are unsure it is configured correctly, run `kubectl get nodes` to verify before running the command shown in Rancher.
+. If you are using self-signed certificates, you will receive the message `certificate signed by unknown authority`. To work around this validation, copy the command starting with `curl` displayed in Rancher to your clipboard. Then run the command on a node where kubeconfig is configured to point to the cluster you want to import.
+. When you finish running the command(s) on your node, click *Done*.
 
-[IMPORTANT]
+[CAUTION]
 ====
-The `NO_PROXY` environment variable is not standardized, and the accepted format of the value can differ between applications.
-When configuring the `NO_PROXY` variable for {ranchera}, the value must adhere to the format expected by Golang.
+The `NO_PROXY` environment variable is not standardized, and the accepted format of the value can differ between applications. When configuring the `NO_PROXY` variable for Rancher, the value must adhere to the format expected by Golang. 
 
-Specifically, the value should be a comma-delimited string that contains only IP addresses, CIDR notation, domain names or special DNS labels (such as `*`).
-For a full description of the expected value format, refer to the link:https://pkg.go.dev/golang.org/x/net/http/httpproxy#Config[upstream Golang documentation].
+Specifically, the value should be a comma-delimited string which only contains IP addresses, CIDR notation, domain names, or special DNS labels (e.g. `*`). For a full description of the expected value format, refer to the https://pkg.go.dev/golang.org/x/net/http/httpproxy#Config[**upstream Golang documentation**].
 ====
 
-[NOTE]
-.Expected results
-====
-* Your cluster is registered and assigned a state of `Pending`.
-{ranchera} is deploying resources to manage your cluster.
-* You can access your cluster after its state is updated to `Active`.
-* `Active` clusters are assigned two projects: `Default` (containing the namespace `default`) and `System` (containing the namespaces `cattle-system`, `ingress-nginx`, `kube-public` and `kube-system`, if present).
-====
+*Result:*
+
+* Your cluster is registered and assigned a state of *Pending*. Rancher is deploying resources to manage your cluster.
+* You can access your cluster after its state is updated to *Active*.
+* *Active* clusters are assigned two Projects: `Default` (containing the namespace `default`) and `System` (containing the namespaces `cattle-system`, `ingress-nginx`, `kube-public` and `kube-system`, if present).
 
 [NOTE]
 ====
-You cannot re-register a cluster that is currently active in a {ranchera} setup.
+
+You can not re-register a cluster that is currently active in a Rancher setup.
 ====
 
-[#rancher-register-management-capabilities]
-== Management capabilities for registered clusters
 
-The control that {ranchera} has to manage a registered cluster depends on the type of cluster.
+ifeval::["{build-type}" != "srfa"]
+=== Configuring an Imported EKS, AKS or GKE Cluster with Terraform
 
-* xref:rancher-register-features-all[Features for all registered clusters]
-* xref:rancher-register-features-rke2-k3s[Additional features for registered {rke2a} and {k3s} clusters]
+You should define *only* the minimum fields that Rancher requires when importing an EKS, AKS or GKE cluster with Terraform. This is important as Rancher will overwrite what was in the cluster configuration with any configuration that the user has provided.
+endif::[]
+ifeval::["{build-type}" == "srfa"]
+=== Configuring an Imported EKS Cluster with Terraform
 
-[#rancher-register-features-all]
-=== Features for all registered clusters
+You should define *only* the minimum fields that Rancher requires when importing an EKS cluster with Terraform. This is important as Rancher will overwrite what was in the cluster configuration with any configuration that the user has provided.
+endif::[]
+
+[CAUTION]
+====
+
+Even a small difference between the current cluster and a user-provided configuration could have unexpected results.
+====
+
+
+The minimum configuration fields required by Rancher to import EKS clusters with Terraform using `eks_config_v2` are as follows:
+
+* cloud_credential_id
+* name
+* region
+* imported (this field should always be set to `true` for imported clusters)
+
+Example YAML configuration for imported EKS clusters:
+
+----
+resource "rancher2_cluster" "my-eks-to-import" {
+  name        = "my-eks-to-import"
+  description = "Terraform EKS Cluster"
+  eks_config_v2 {
+    cloud_credential_id = rancher2_cloud_credential.aws.id
+    name                = var.aws_eks_name
+    region              = var.aws_region
+    imported            = true
+  }
+}
+----
+
+You can find additional examples for other cloud providers in the https://registry.terraform.io/providers/rancher/rancher2/latest/docs/resources/cluster[Rancher2 Terraform Provider documentation].
+
+[#_management_capabilities_for_registered_clusters]
+== Management Capabilities for Registered Clusters
+
+The control that Rancher has to manage a registered cluster depends on the type of cluster.
+
+* <<_features_for_all_registered_clusters,Features for All Registered Clusters>>
+* <<_additional_features_for_registered_rke2_and_k3s_clusters,Additional Features for Registered RKE2 and K3s Clusters>>
+ifeval::["{build-type}" != "srfa"]
+* <<_additional_features_for_registered_eks_aks_and_gke_clusters,Additional Features for Registered EKS, AKS and GKE Clusters>>
+endif::[]
+ifeval::["{build-type}" == "srfa"]
+* <<_additional_features_for_registered_eks_clusters,Additional Features for Registered EKS Clusters>>
+endif::[]
+
+[#_features_for_all_registered_clusters]
+=== Features for All Registered Clusters
 
 After registering a cluster, the cluster owner can:
 
-* link:https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/authentication-permissions-and-global-configuration/manage-role-based-access-control-rbac/cluster-and-project-roles[Manage cluster access] through role-based access control
-* Enable link:https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/monitoring-alerting-and-logging/rancher-ui-monitoring[monitoring, alerts and notifiers]
-* Enable link:https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/monitoring-alerting-and-logging/logging[logging]
-* Enable link:https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/istio-setup-guide[Istio]
+* link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/rancher-admin/users/authn-and-authz/manage-role-based-access-control-rbac/cluster-and-project-roles.html[Manage cluster access] through role-based access control
+* Enable link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/observability/monitoring-and-dashboards/monitoring-and-dashboards.html[monitoring, alerts and notifiers]
+* Enable link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/observability/logging/logging.html[logging]
+* Enable link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/observability/istio/istio.html[Istio]
 * Manage projects and workloads
 
-[#rancher-register-features-rke2-k3s]
-=== Additional features for registered {rke2a} and {k3s} clusters
+[#_additional_features_for_registered_rke2_and_k3s_clusters]
+=== Additional Features for Registered {rke2} and {k3s} Clusters
 
-link:https://documentation.suse.com/cloudnative/k3s/latest/en/introduction.html[{k3s}] is a lightweight, fully compliant {kube} distribution for edge installations.
+https://documentation.suse.com/cloudnative/k3s/latest/en/introduction.html[K3s] is a lightweight, fully compliant Kubernetes distribution for edge installations.
 
-link:https://documentation.suse.com/cloudnative/rke2/latest/en/introduction.html[{rke2a}] is {ranchera}'s next-generation {kube} distribution for data center and cloud installations.
+https://documentation.suse.com/cloudnative/rke2/latest/en/introduction.html[RKE2] is Rancher's next-generation Kubernetes distribution for datacenter and cloud installations.
 
-When an {rke2a} or {k3s} cluster is registered in {ranchera}, {ranchera} will recognize it.
-The {ranchera} UI will expose features available to xref:rancher-register-features-all[all registered clusters], along with the following options for editing and upgrading the cluster:
+When an RKE2 or K3s cluster is registered in Rancher, Rancher will recognize it.
+The Rancher UI will expose features available to <<_features_for_all_registered_clusters,all registered clusters>>, along with the following options for editing and upgrading the cluster:
 
-* Enable or disable xref:rancher-register-configure-version-management[version management].
-* link:https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/back-up-restore-and-disaster-recovery/back-up-rancher-launched-kubernetes-clusters[Upgrade the {kube} version] when version management is enabled.
-* Configure the xref:rancher-register-configure-upgrades[upgrade strategy].
-* View a read-only version of the cluster’s configuration arguments and environment variables used to launch each node.
+* Enable or disable <<_configuring_version_management_for_suse_rancher_prime_rke2_and_suse_rancher_prime_k3s_clusters,version management>>
+* link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/cluster-admin/backups-and-restore/backups-and-restore.html[Upgrade the Kubernetes version] when version management is enabled
+* Configure the <<_configuring_suse_rancher_prime_rke2_and_suse_rancher_prime_k3s_cluster_upgrades,upgrade strategy>> when version management is enabled
+* View a read-only version of the cluster’s configuration arguments and environment variables used to launch each node
 
-[#rancher-register-configure-version-management]
-== Configuring version management for {rke2a} and {k3s} clusters
+ifeval::["{build-type}" != "srfa"]
+[#_additional_features_for_registered_eks_aks_and_gke_clusters]
+=== Additional Features for Registered EKS, AKS, and GKE Clusters
+
+Rancher handles registered EKS, AKS, or GKE clusters similarly to clusters created in Rancher. However, Rancher doesn't destroy registered clusters when you delete them through the Rancher UI.
+
+When you create an EKS, AKS, or GKE cluster in Rancher, then delete it, Rancher destroys the cluster. When you delete a registered cluster through Rancher, the Rancher server _disconnects_ from the cluster. The cluster remains live, although it's no longer in Rancher. You can still access the deregistered cluster in the same way you did before you registered it.
+
+endif::[]
+ifeval::["{build-type}" == "srfa"]
+[#_additional_features_for_registered_eks_clusters]
+=== Additional Features for Registered EKS Clusters
+
+Rancher handles registered EKS clusters similarly to clusters created in Rancher. However, Rancher doesn't destroy registered clusters when you delete them through the Rancher UI.
+
+When you create an EKS cluster in Rancher and then delete it, Rancher destroys the cluster. When you delete a registered cluster through Rancher, the Rancher server _disconnects_ from the cluster. The cluster remains live, although it's no longer in Rancher. You can still access the deregistered cluster in the same way you did before you registered it.
+endif::[]
+
+See link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/cluster-deployment/cluster-deployment.html[Cluster Management Capabilities by Cluster Type] for more information about what features are available for managing registered clusters.
+
+[#_configuring_version_management_for_suse_rancher_prime_rke2_and_suse_rancher_prime_k3s_clusters]
+== Configuring Version Management for {rke2} and {k3s} Clusters
 
 [WARNING]
 ====
-When version management is enabled for an imported cluster, upgrading it outside of {ranchera} may lead to unexpected consequences.
+When version management is enabled for an imported cluster, upgrading it outside of Rancher may lead to unexpected consequences.
 ====
 
-The version management feature for imported {rke2a} and {k3s} clusters can be configured using one of the following options:
+The version management feature for imported RKE2 and K3s clusters can be configured using one of the following options:
 
-* *Global default* (default): Inherits behavior from the global `imported-cluster-version-management` setting.
-* *True*: Enables version management, allowing users to control the {kube} version and upgrade strategy of the cluster through {ranchera}.
-* *False*: Disables version management, enabling users to manage the cluster’s {kube} version independently, outside of {ranchera}.
+* **Global default** (default): Inherits behavior from the global **imported-cluster-version-management** setting.
+* **True**: Enables version management, allowing users to control the Kubernetes version and upgrade strategy of the cluster through Rancher.
+* **False**: Disables version management, enabling users to manage the cluster’s Kubernetes version independently, outside of Rancher.
 
-You can define the default behavior for newly created clusters or existing ones set to 'Global default' by modifying the `imported-cluster-version-management` setting.
+You can define the default behavior for newly created clusters or existing ones set to "Global default" by modifying the **imported-cluster-version-management** setting.
 
-Changes to the global `imported-cluster-version-management` setting take effect during the cluster’s next reconciliation cycle.
+Changes to the global **imported-cluster-version-management** setting take effect during the cluster’s next reconciliation cycle.
 
 [NOTE]
 ====
-If version management is enabled for a cluster, {ranchera} will deploy the `system-upgrade-controller` app, along with the associated plans and other required {kube} resources, to the cluster.
-If version management is disabled, {ranchera} will remove these components from the cluster.
+If version management is enabled for a cluster, Rancher will deploy the `system-upgrade-controller` app, along with the associated Plans and other required Kubernetes resources, to the cluster.
+If version management is disabled, Rancher will remove these components from the cluster.
 ====
 
-[#rancher-register-configure-upgrades]
-== Configuring {rke2a} and {k3s} cluster upgrades
+[#_configuring_suse_rancher_prime_rke2_and_suse_rancher_prime_k3s_cluster_upgrades]
+== Configuring {rke2} and {k3s} Cluster Upgrades
 
 [TIP]
 ====
-It is a {kube} best practice to back up the cluster before upgrading.
-When upgrading a high-availability {k3s} cluster with an external database, back up the database in whichever way is recommended by the relational database provider.
+
+It is a Kubernetes best practice to back up the cluster before upgrading. When upgrading a high-availability K3s cluster with an external database, back up the database in whichever way is recommended by the relational database provider.
 ====
 
-The *concurrency* is the maximum number of nodes that are permitted to be unavailable during an upgrade.
-If the number of unavailable nodes is larger than the *concurrency*, the upgrade will fail.
-If an upgrade fails, you may need to repair or remove failed nodes before the upgrade can succeed.
 
-* *Control plane concurrency:* the maximum number of server nodes to upgrade at a single time; also the maximum unavailable server nodes
-* *Worker concurrency:* the maximum number of worker nodes to upgrade at the same time; also the maximum unavailable worker nodes
+The *concurrency* is the maximum number of nodes that are permitted to be unavailable during an upgrade. If number of unavailable nodes is larger than the *concurrency,* the upgrade will fail. If an upgrade fails, you may need to repair or remove failed nodes before the upgrade can succeed.
 
-In the {rke2a} and {k3s} documentation, control plane nodes are called server nodes.
-These nodes run the {kube} master, which maintains the desired state of the cluster.
-By default, these control plane nodes can have workloads scheduled to them by default.
+* *Controlplane concurrency:* The maximum number of server nodes to upgrade at a single time; also the maximum unavailable server nodes
+* *Worker concurrency:* The maximum number worker nodes to upgrade at the same time; also the maximum unavailable worker nodes
 
-Also in the {rke2a} and {k3s} documentation, nodes with the worker role are called agent nodes.
-Any workloads or pods that are deployed in the cluster can be scheduled to these nodes by default.
+In the RKE2 and K3s documentation, controlplane nodes are called server nodes. These nodes run the Kubernetes master, which maintains the desired state of the cluster. By default, these controlplane nodes have the capability to have workloads scheduled to them by default.
 
-[#rancher-register-debug-troubleshooting]
-== Debug logging and troubleshooting for registered {rke2a} and {k3s} clusters
+Also in the RKE2 and K3s documentation, nodes with the worker role are called agent nodes. Any workloads or pods that are deployed in the cluster can be scheduled to these nodes by default.
 
-Nodes are upgraded by the system upgrade controller running in the downstream cluster.
-Based on the cluster configuration, {ranchera} deploys two link:https://github.com/rancher/system-upgrade-controller#example-upgrade-plan[plans] to upgrade nodes: one for control plane nodes and one for workers.
-The system upgrade controller follows the plans and upgrades the nodes.
+== Debug Logging and Troubleshooting for Registered {rke2} and {k3s} Clusters
 
-To enable debug logging on the system upgrade controller deployment, edit the link:https://github.com/rancher/system-upgrade-controller/blob/50a4c8975543d75f1d76a8290001d87dc298bdb4/manifests/system-upgrade-controller.yaml#L32[configmap] to set the debug environment variable to true.
-Then restart the `system-upgrade-controller` pod.
+Nodes are upgraded by the system upgrade controller running in the downstream cluster. Based on the cluster configuration, Rancher deploys two https://github.com/rancher/system-upgrade-controller#example-upgrade-plan[plans] to upgrade nodes: one for controlplane nodes and one for workers. The system upgrade controller follows the plans and upgrades the nodes.
+
+To enable debug logging on the system upgrade controller deployment, edit the https://github.com/rancher/system-upgrade-controller/blob/50a4c8975543d75f1d76a8290001d87dc298bdb4/manifests/system-upgrade-controller.yaml#L32[configmap] to set the debug environment variable to true. Then restart the `system-upgrade-controller` pod.
 
 Logs created by the `system-upgrade-controller` can be viewed by running this command:
 
-[source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl logs -n cattle-system system-upgrade-controller
+kubectl logs -n cattle-system system-upgrade-controller
 ----
 
 The current status of the plans can be viewed with this command:
 
-[source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl get plans -A -o yaml
+kubectl get plans -A -o yaml
 ----
 
 [TIP]
 ====
-If the cluster becomes stuck during upgrading, restart the `system-upgrade-controller`.
+If the cluster becomes stuck in upgrading, restart the `system-upgrade-controller`.
 ====
 
-To prevent issues when upgrading, the link:https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/[{kube} upgrade best practices] should be followed.
+To prevent issues when upgrading, the https://kubernetes.io/docs/tasks/administer-cluster/kubeadm/kubeadm-upgrade/[Kubernetes upgrade best practices] should be followed.
 
-[#rancher-register-ace-support]
-== Authorized cluster endpoint support for {rke2a} and {k3s} clusters
+== Authorized Cluster Endpoint Support for {rke2} and {k3s} Clusters
 
-{ranchera} supports Authorized Cluster Endpoints (ACE) for registered {rke2a} and {k3s} clusters.
-This support includes manual steps you will perform on the downstream cluster to enable the ACE.
-For additional information on the authorized cluster endpoint, refer to link:https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/access-clusters/authorized-cluster-endpoint[How the Authorized Cluster Endpoint Works].
+Rancher supports Authorized Cluster Endpoints (ACE) for registered RKE2 and K3s clusters. This support includes manual steps you will perform on the downstream cluster to enable the ACE. For additional information on the authorized cluster endpoint, click xref:cluster-admin/manage-clusters/access-clusters/authorized-cluster-endpoint.adoc[here].
 
 [NOTE]
-.Notes
-====
-* These steps only need to be performed on the control plane nodes of the downstream cluster.
-You must configure each control plane node individually.
-* The following steps will work on both {rke2a} and {k3s} clusters registered in v2.6.x as well as those registered (or imported) from a previous version of {ranchera} with an upgrade to v2.6.x.
-* These steps will alter the configuration of the downstream {rke2a} and {k3s} clusters and deploy the `kube-api-authn-webhook`.
-If a future implementation of the ACE requires an update to the `kube-api-authn-webhook`, then this would also have to be done manually.
-For more information on this webhook, see link:https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/manage-clusters/access-clusters/authorized-cluster-endpoint#about-the-kube-api-auth-authentication-webhook[Authentication webhook documentation].
+.Notes:
 ====
 
-.Manual steps to be taken on the control plane of each downstream cluster to enable ACE
+* These steps only need to be performed on the control plane nodes of the downstream cluster. You must configure each control plane node individually.
+* The following steps will work on both RKE2 and K3s clusters registered in v2.6.x as well as those registered (or imported) from a previous version of Rancher with an upgrade to v2.6.x.
+* These steps will alter the configuration of the downstream RKE2 and K3s clusters and deploy the `kube-api-authn-webhook`. If a future implementation of the ACE requires an update to the `kube-api-authn-webhook`, then this would also have to be done manually. For more information on this webhook, click xref:cluster-admin/manage-clusters/access-clusters/authorized-cluster-endpoint.adoc#_about_the_kube_api_auth_authentication_webhook[here].
+====
+
+=== *Manual steps to be taken on the control plane of each downstream cluster to enable ACE:*
+
 . Create a file at `/var/lib/rancher/{rke2,k3s}/kube-api-authn-webhook.yaml` with the following contents:
 +
-[source,yaml]
+[,yaml]
 ----
-apiVersion: v1
-kind: Config
-clusters:
-- name: Default
-  cluster:
-    insecure-skip-tls-verify: true
-    server: http://127.0.0.1:6440/v1/authenticate
-users:
-- name: Default
-  user:
-    insecure-skip-tls-verify: true
-current-context: webhook
-contexts:
-- name: webhook
-  context:
-    user: Default
-    cluster: Default
+ apiVersion: v1
+ kind: Config
+ clusters:
+ ** name: Default
+cluster:
+  insecure-skip-tls-verify: true
+  server: http://127.0.0.1:6440/v1/authenticate
+ users:
+ ** name: Default
+user:
+  insecure-skip-tls-verify: true
+ current-context: webhook
+ contexts:
+ ** name: webhook
+context:
+  user: Default
+  cluster: Default
 ----
-. Add the following to the configuration file (or create one if it does not exist).
-Note that the default location is `/etc/rancher/{rke2,k3s}/config.yaml`:
+
+. Add the following to the configuration file (or create one if it doesn't exist); note that the default location is `/etc/rancher/{rke2,k3s}/config.yaml`:
 +
-[source,yaml]
+[,yaml]
 ----
-kube-apiserver-arg:
-  - authentication-token-webhook-config-file=/var/lib/rancher/{rke2,k3s}/kube-api-authn-webhook.yaml
+ kube-apiserver-arg:
+     - authentication-token-webhook-config-file=/var/lib/rancher/{rke2,k3s}/kube-api-authn-webhook.yaml
 ----
+
 . Run the following commands:
-+
-[source,bash,subs="+attributes"]
-----
-{prompt_sudo}systemctl stop {rke2,k3s}-server
-{prompt_sudo}systemctl start {rke2,k3s}-server
-----
-. Finally, you *must* go back to the {ranchera} UI and edit the imported cluster there to complete the ACE enablement.
-Click on btn:[⋮] > btn:[Edit Config], then click the btn:[Networking] tab under btn:[Cluster Configuration].
-Finally, click the btn:[Enabled] button for btn:[Authorized Endpoint].
-Once the ACE is enabled, you then have the option of entering a fully qualified domain name (FQDN) and certificate information.
+
+  sudo systemctl stop {rke2,k3s}-server
+  sudo systemctl start {rke2,k3s}-server
+
+. Finally, you *must* go back to the Rancher UI and edit the imported cluster there to complete the ACE enablement. Click on *⋮ > Edit Config*, then click the *Networking* tab under Cluster Configuration. Finally, click the *Enabled* button for *Authorized Endpoint*. Once the ACE is enabled, you then have the option of entering a fully qualified domain name (FQDN) and certificate information.
 
 [NOTE]
 ====
-The btn:[FQDN] field is optional, and if one is entered, it should point to the downstream cluster.
-Certificate information is only needed if there is a load balancer in front of the downstream cluster that is using an untrusted certificate.
-If you have a valid certificate, then nothing needs to be added to the btn:[CA Certificates] field.
+
+The *FQDN* field is optional, and if one is entered, it should point to the downstream cluster. Certificate information is only needed if there is a load balancer in front of the downstream cluster that is using an untrusted certificate. If you have a valid certificate, then nothing needs to be added to the *CA Certificates* field.
 ====
 
-[#rancher-register-annotating-clusters]
-== Annotating registered clusters
 
-For all types of registered {kube} clusters except for {rke2a} and {k3s} {kube} clusters, {ranchera} does not have any information about how the cluster is provisioned or configured.
+== Annotating Registered Clusters
 
-Therefore, when {ranchera} registers a cluster, it assumes that several capabilities are disabled by default.
-{ranchera} assumes this to avoid exposing UI options to the user even when the capabilities are not enabled in the registered cluster.
+For all types of registered Kubernetes clusters except for RKE2 and K3s Kubernetes clusters, Rancher doesn't have any information about how the cluster is provisioned or configured.
 
-However, if the cluster has a certain capability, a user of that cluster might still want to select the capability for the cluster in the {ranchera} UI.
-To do that, the user will need to manually indicate to {ranchera} that certain capabilities are enabled for the cluster.
+Therefore, when Rancher registers a cluster, it assumes that several capabilities are disabled by default. Rancher assumes this in order to avoid exposing UI options to the user even when the capabilities are not enabled in the registered cluster.
 
-By annotating a registered cluster, it is possible to indicate to {ranchera} that a cluster was given additional capabilities outside of {ranchera}.
+However, if the cluster has a certain capability, a user of that cluster might still want to select the capability for the cluster in the Rancher UI. In order to do that, the user will need to manually indicate to Rancher that certain capabilities are enabled for the cluster.
 
-The following annotation indicates {ingress} capabilities.
-Note that the values of non-primitive objects need to be JSON-encoded, with quotations escaped.
+By annotating a registered cluster, it is possible to indicate to Rancher that a cluster was given additional capabilities outside of Rancher.
 
-[source,json]
+The following annotation indicates Ingress capabilities. Note that the values of non-primitive objects need to be JSON encoded, with quotations escaped.
+
+[,json]
 ----
 "capabilities.cattle.io/ingressCapabilities": "[
   {
-    \"customDefaultBackend\":true,
-    \"ingressProvider\":\"asdf\"
+    "customDefaultBackend":true,
+    "ingressProvider":"asdf"
   }
 ]"
 ----
@@ -304,19 +367,36 @@ These capabilities can be annotated for the cluster:
 * `nodePortRange`
 * `taintSupport`
 
-All the capabilities and their type definitions can be viewed in the {ranchera} API view, at `<RANCHER_SERVER_URL>/v3/schemas/capabilities`.
+All the capabilities and their type definitions can be viewed in the Rancher API view, at `[Rancher Server URL]/v3/schemas/capabilities`.
 
 To annotate a registered cluster,
 
-. Click btn:[☰] > btn:[Cluster Management].
-. On the btn:[Clusters] page, go to the custom cluster you want to annotate and click btn:[⋮] > btn:[Edit Config].
-. Expand the btn:[Labels & Annotations] section.
-. Click btn:[Add Annotation].
-. Add an annotation to the cluster with the format `capabilities/<capability>: <value>` where `value` is the cluster capability that will be overridden by the annotation.
-In this scenario, {ranchera} is not aware of any capabilities of the cluster until you add the annotation.
-. Click btn:[Save].
+. Click *☰ > Cluster Management*.
+. On the *Clusters* page, go to the custom cluster you want to annotate and click *⋮ > Edit Config*.
+. Expand the *Labels & Annotations* section.
+. Click *Add Annotation*.
+. Add an annotation to the cluster with the format `capabilities/<capability>: <value>` where `value` is the cluster capability that will be overridden by the annotation. In this scenario, Rancher is not aware of any capabilities of the cluster until you add the annotation.
+. Click *Save*.
 
-[TIP]
-====
-The annotation does not give the capabilities to the cluster, but it does indicate to {ranchera} that the cluster has those capabilities.
-====
+*Result:* The annotation does not give the capabilities to the cluster, but it does indicate to Rancher that the cluster has those capabilities.
+
+ifeval::["{build-type}" != "srfa"]
+== Troubleshooting
+
+This section lists some of the most common errors that may occur when importing a cluster and provides steps to troubleshoot them.
+
+=== AKS
+
+The following error may occur if local accounts are disabled in your cluster:
+
+[,shell]
+----
+Error: Getting static credential is not allowed because this cluster is set to disable local accounts. 
+----
+
+To resolve this issue, enable local accounts before attempting to register a cluster:
+
+[,shell]
+----
+az aks update --resource-group <resource-group> --name <cluster-name> --enable-local-accounts
+----
