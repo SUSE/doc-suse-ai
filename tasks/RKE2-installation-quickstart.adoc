@@ -6,8 +6,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-01-29
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 =  Installing {rke2}
@@ -19,6 +17,9 @@ endif::[]
 ifndef::override-abstract[]
 This guide will help you quickly launch a cluster with default options.
 endif::[]
+
+:revdate: 2026-01-29
+:page-revdate: {revdate}
 
 // erase the flag for future overrides
 :override-abstract!:

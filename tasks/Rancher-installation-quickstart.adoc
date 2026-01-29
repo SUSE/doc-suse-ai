@@ -6,8 +6,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-01-29
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} on a {kube} cluster
@@ -24,6 +22,8 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 == Prerequisites
 
