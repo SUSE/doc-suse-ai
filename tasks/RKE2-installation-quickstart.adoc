@@ -15,13 +15,14 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
+This guide will help you quickly launch a cluster with default options.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
-This guide will help you quickly launch a cluster with default options.
+
 ____
 New to Kubernetes? The official Kubernetes docs already have some great tutorials outlining the basics https://kubernetes.io/docs/tutorials/kubernetes-basics/[here].
 ____

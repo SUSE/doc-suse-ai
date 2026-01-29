@@ -56,6 +56,7 @@ include::../tasks/NVIDIA-GPU-driver-installation-SLMicro.adoc[leveloffset=+3]
 include::../tasks/RKE2-installation-quickstart.adoc[leveloffset=+2]
 // Kube cluster preparation
 include::../tasks/AI-deployment-cluster-preparation.adoc[leveloffset=+1]
+// https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/installation-and-upgrade/install-rancher.adoc
 include::../tasks/Rancher-installation-quickstart.adoc[leveloffset=+2]
 include::../tasks/NVIDIA-Operator-installation.adoc[leveloffset=+2]
 :override-title: Registering existing clusters
