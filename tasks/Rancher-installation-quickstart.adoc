@@ -18,12 +18,12 @@ ifndef::override-abstract[]
 In this section, you'll learn how to deploy Rancher on a Kubernetes cluster using the Helm CLI.
 endif::[]
 
+:revdate: 2025-12-22
+:page-revdate: {revdate}
+
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
-
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 == Prerequisites
 

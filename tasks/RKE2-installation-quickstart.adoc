@@ -24,6 +24,7 @@ endif::[]
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
+
 ____
 New to Kubernetes? The official Kubernetes docs already have some great tutorials outlining the basics https://kubernetes.io/docs/tutorials/kubernetes-basics/[here].
 ____
