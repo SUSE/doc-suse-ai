@@ -1,6 +1,8 @@
 [#openwebui-authentication-via-okta]
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Authenticating {owui} via {okta}

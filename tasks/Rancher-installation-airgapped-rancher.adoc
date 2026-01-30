@@ -1,15 +1,29 @@
+// source: https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/installation-and-upgrade/other-installation-methods/air-gapped/install-rancher-ha.adoc
+// base URL: https://documentation.suse.com/cloudnative/rancher-manager/latest/en/
+// product name: {ranchera}
 [#rancher-installation-airgapped-rancher]
+include::../common/generic-attributes.adoc[]
+// overridden title?
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: install {rancherprime}
 endif::[]
-
-:override-title!:
-
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
 This section describes how to install a {k8s} cluster according to our best practices for the {ranchera} server environment.
-This cluster should be dedicated to run only the {ranchera} server.
+This cluster should be dedicated to running only the {ranchera} server.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
 
 [#rancher-airgap-privileged-access]
 == Privileged access for rancher
@@ -285,7 +299,7 @@ The installation is complete.
 
 These resources could be helpful when installing {ranchera}:
 
-* link:https://rancher.com/docs/rancher/v2.x/en/extensions/#importing-and-installing-extensions-in-an-air-gapped-environment[Importing and installing extensions in an air-gapped environment]
-* link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/chart-options/[{ranchera} {helm} chart options]
-* link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/tls-secrets/[Adding TLS secrets]
-* link:https://rancher.com/docs/rancher/v2.x/en/installation/troubleshooting/[Troubleshooting {ranchera} {kube} Installations]
+* link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/integrations/rancher-extensions.html#_importing_and_installing_extensions_in_an_air_gapped_environment[Importing and installing extensions in an air-gapped environment]
+* link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/references/helm-chart-options.html[{ranchera} {helm} chart options]
+* link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/resources/tls-secrets.html[Adding TLS secrets]
+* link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/troubleshooting/troubleshooting.html[Troubleshooting {ranchera} {kube} Installations]

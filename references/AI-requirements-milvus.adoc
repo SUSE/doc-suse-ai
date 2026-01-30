@@ -1,5 +1,7 @@
 [#ai-requirements-milvus]
 = {milvus} requirements
+:revdate: 2026-01-19
+:page-revdate: {revdate}
 
 This topic describes requirements for the {milvus} application.
 

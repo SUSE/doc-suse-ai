@@ -1,5 +1,7 @@
 [#air-gapped-environments]
 = Air-gapped environments
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 An air-gapped environment is a security measure where a single host or the whole network is isolated from all other networks, such as the public Internet.
 This "air gap" acts as a physical or logical barrier, preventing any direct connection that could be exploited by cyber threats.

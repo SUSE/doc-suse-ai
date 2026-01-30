@@ -1,5 +1,7 @@
 [#owui-knowledgebase-adding-content]
 = Adding content to a knowledge base
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This topic explains how to add new content to an existing knowledge base. 

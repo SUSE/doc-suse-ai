@@ -1,5 +1,7 @@
 [#pytorch-installing]
 = Installing {pytorch}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {pytorch} is a widely used open-source deep-learning framework that supports both CPU and GPU acceleration.
 When deployed with the {suseaia} stack, the {pytorch} {helm} chart lets you inject your own training or inference code into the container and run it on {nvidia} GPUs available in your cluster.

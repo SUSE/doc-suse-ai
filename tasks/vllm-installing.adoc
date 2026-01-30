@@ -1,5 +1,7 @@
 [#vllm-installing]
 = Installing {vllm}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {vllm} is an open-source high-performance inference and serving engine for large language models (LLMs).
 It is designed to maximize throughput and reduce latency by using an efficient memory management system that handles dynamic batching and streaming outputs.

@@ -1,5 +1,7 @@
 [#ai-requirements-security]
 = {ssecurity} requirements
+:revdate: 2026-01-19
+:page-revdate: {revdate}
 
 [#ai-reqs-security-hw]
 == Minimum hardware requirements

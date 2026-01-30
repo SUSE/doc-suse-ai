@@ -1,5 +1,7 @@
 [#openwebui-using-models-from-openai-providers]
 = Using AI models from {openai}-compatible providers
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 
 Instead of downloading AI models locally, you can use {openai}-compatible API to access models from model providers.
 These providers include both local instances of servers, such as https://localai.io/[LocalAI] or https://github.com/Mozilla-Ocho/llamafile[llamafile], and cloud providers, such as https://groq.com/[Groq] or https://openai.com/api/[{openai}].

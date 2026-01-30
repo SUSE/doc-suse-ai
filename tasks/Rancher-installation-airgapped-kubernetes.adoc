@@ -1,16 +1,29 @@
+// source: https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/installation-and-upgrade/other-installation-methods/air-gapped/install-kubernetes.adoc
+// base URL: https://documentation.suse.com/cloudnative/rancher-manager/latest/en/
+// product name: {ranchera}
 [#rancher-installation-airgapped-kubernetes]
+include::../common/generic-attributes.adoc[]
+// overridden title?
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: install {kube}
 endif::[]
-
-:override-title!:
-
-
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
 This section describes how to install a {k8s} cluster according to our best practices for the {ranchera} server environment.
 This cluster should be dedicated to running only the {ranchera} server.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
 
 [NOTE]
 ====

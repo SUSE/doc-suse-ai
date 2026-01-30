@@ -1,7 +1,28 @@
+// source: https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/installation-and-upgrade/other-installation-methods/air-gapped/air-gapped.adoc
+// base URL: https://documentation.suse.com/cloudnative/rancher-manager/latest/en/
+// product name: {rke2}
 [#rancher-installation-airgapped]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
 = Installing {ranchermanager} on a {kube} cluster in air-gapped environments
-
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
 This section is about using the {helm} CLI to install the {ranchera} server in an air-gapped environment.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
 
 [#rancher-airgap-installation-outline]
 == Installation outline

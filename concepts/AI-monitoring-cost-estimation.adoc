@@ -1,6 +1,8 @@
 [#ai-monitoring-cost-estimation]
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Monitoring {suseai}: cost estimation

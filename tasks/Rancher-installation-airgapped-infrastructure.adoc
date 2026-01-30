@@ -1,11 +1,27 @@
+// source: https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/installation-and-upgrade/other-installation-methods/air-gapped/infrastructure-private-registry.adoc
+// base URL: https://documentation.suse.com/cloudnative/rancher-manager/latest/en/
+// product name: {ranchera}
 [#rancher-installation-airgapped-infrastructure-private-registry]
+include::../common/generic-attributes.adoc[]
+// overridden title?
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: set up the infrastructure and a private registry
 endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+In this section, you will provision the underlying infrastructure for your Rancher management server in an air gapped environment. You will also set up the private container image registry that must be available to your Rancher node(s).
+endif::[]
 
+// erase the flag for future overrides
+:override-abstract!:
 :override-title!:
 
 In this section, you will provision the underlying infrastructure for your {ranchera} management server in an air-gapped environment.

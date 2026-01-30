@@ -1,5 +1,7 @@
 [#openwebui-setting-chat-native-function-calling]
 = Enabling native function calling
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 
 _Native function calling_ is a process in which a client{mdash}such as the {suseai} chatbot{mdash}instructs its LLM to query an {mcp} server directly, bypassing the {mcpo} proxy. 
 

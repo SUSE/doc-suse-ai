@@ -1,5 +1,7 @@
 [#ai-hardware-requirements]
 = {productname} hardware requirements
+:revdate: 2026-01-19
+:page-revdate: {revdate}
 
 For successful deployment and operation, {productname} has the same hardware prerequisites as an https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/requirements/requirements.html#_suse_rancher_prime_rke2_kubernetes[{rke2} cluster].
 For requirements of individual applications, refer to xref:ai-requirements-hardware-apps[].

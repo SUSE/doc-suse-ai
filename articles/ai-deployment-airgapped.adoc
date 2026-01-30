@@ -54,20 +54,29 @@ include::../tasks/SLES-installation-quickstart.adoc[leveloffset=+2]
 include::../glues/NVIDIA-GPU-driver-intro.adoc[leveloffset=+2]
 include::../tasks/NVIDIA-GPU-driver-installation-SLES.adoc[leveloffset=+3]
 include::../tasks/NVIDIA-GPU-driver-installation-SLMicro.adoc[leveloffset=+3]
+// https://github.com/rancher/rke2-product-docs/edit/main/versions/latest/modules/en/pages/install/airgap.adoc
 include::../tasks/RKE2-installation-airgapped.adoc[leveloffset=+2]
+// https://github.com/rancher/rke2-product-docs/edit/main/versions/latest/modules/en/pages/install/quickstart.adoc
 include::../tasks/RKE2-installation-quickstart.adoc[leveloffset=+2]
 // Kube cluster preparation
 include::../tasks/AI-deployment-cluster-preparation.adoc[leveloffset=+1]
+// https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/installation-and-upgrade/other-installation-methods/air-gapped/air-gapped.adoc
 include::../tasks/Rancher-installation-airgapped.adoc[leveloffset=+2]
+// https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/other-installation-methods/air-gapped/infrastructure-private-registry.html
 :override-title: Set up the infrastructure and a private registry
 include::../tasks/Rancher-installation-airgapped-infrastructure.adoc[leveloffset=+3]
+// https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/installation-and-upgrade/other-installation-methods/air-gapped/publish-images.adoc
 :override-title: Collect and publish images to your private registry
 include::../tasks/Rancher-installation-airgapped-images.adoc[leveloffset=+3]
+// https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/installation-and-upgrade/other-installation-methods/air-gapped/install-kubernetes.adoc
 :override-title: Install {kube}
 include::../tasks/Rancher-installation-airgapped-kubernetes.adoc[leveloffset=+3]
+// https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/installation-and-upgrade/other-installation-methods/air-gapped/install-rancher-ha.adoc
 :override-title: Install {ranchermanager}
 include::../tasks/Rancher-installation-airgapped-rancher.adoc[leveloffset=+3]
+// https://github.com/rancher/rke2-product-docs/edit/main/versions/latest/modules/en/pages/add-ons/gpu_operators.adoc
 include::../tasks/NVIDIA-Operator-installation.adoc[leveloffset=+2]
+// https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/cluster-deployment/register-existing-clusters.adoc
 :override-title: Registering existing clusters
 include::../tasks/Rancher-register-clusters.adoc[leveloffset=+2]
 include::../tasks/AI-gpu-nodes-assigning.adoc[leveloffset=+2]

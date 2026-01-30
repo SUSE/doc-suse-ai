@@ -2,6 +2,8 @@ include::../common/generic-attributes.adoc[]
 [#deploying-with-ai-node-installer]
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Deploying nodes using {sainodeinstaller}

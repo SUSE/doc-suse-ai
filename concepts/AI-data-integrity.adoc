@@ -1,5 +1,7 @@
 [#ai-data-integrity-maintaining]
 = Maintaining data integrity of AI applications
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 This topic describes how to avoid compromising AI applications and keep sensitive data secure. 
 

@@ -1,5 +1,7 @@
 [#sles-installation-quickstart]
 = Installing {sls}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 Use the following procedures to install {slsa} on all supported hardware
 platforms. They assume you have successfully booted into the

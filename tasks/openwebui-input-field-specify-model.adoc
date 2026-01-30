@@ -1,5 +1,7 @@
 [#openwebui-chat-input]
 = The chat input field
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 For a new chat, the chat input field is located at the center of
 the {owui} chat window. During a chat session, the chat window

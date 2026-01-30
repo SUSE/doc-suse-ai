@@ -1,29 +1,45 @@
+// source: https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/installation-and-upgrade/other-installation-methods/air-gapped/publish-images.adoc
+// base URL: https://documentation.suse.com/cloudnative/rancher-manager/latest/en/
+// product name: {ranchermanager}
 [#rancher-installation-airgapped-images]
+include::../common/generic-attributes.adoc[]
+// overridden title?
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: collect and publish images to your private registry
 endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+This section describes how to set up your private registry so that when you install Rancher, Rancher will pull all the required images from this registry.
+endif::[]
 
+// erase the flag for future overrides
+:override-abstract!:
 :override-title!:
 
-This section describes how to set up your private registry so that when you install {ranchera}, it will pull all the required images from this registry.
-By default, all images used to link:https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/[provision {k8s} clusters] or launch any tools in {ranchera}, e.g., monitoring, pipelines or alerts, are pulled from {dhub}.
-In an air-gapped installation of {ranchera}, you will need a private registry that is located somewhere accessible by your {ranchera} server.
+This section describes how to set up your private registry so that when you install {ranchermanager}, it will pull all the required images from this registry.
+By default, all images used to link:https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/[provision {k8s} clusters] or launch any tools in {ranchermanager}, e.g., monitoring, pipelines or alerts, are pulled from {dhub}.
+In an air-gapped installation of {ranchermanager}, you will need a private registry that is located somewhere accessible by your {ranchermanager} server.
 You will then load every image into the registry.
-Populating the private registry with images is the same process for installing {ranchera} with {docker} and for installing {ranchera} on a {kube} cluster.
+Populating the private registry with images is the same process for installing {ranchermanager} with {docker} and for installing {ranchermanager} on a {kube} cluster.
 
 [#rancher-airgap-images-prerequisites]
 .Prerequisites
 
 * You must have a link:https://docs.docker.com/registry/deploying/#run-an-externally-accessible-registry[private registry] available to use.
 * If the registry has certs, follow link:https://rancher.com/docs/k3s/latest/en/installation/private-registry/[this K3s documentation] about adding a private registry.
-The certs and registry configuration files need to be mounted into the {ranchera} container.
+The certs and registry configuration files need to be mounted into the {ranchermanager} container.
 
 The following steps populate your private registry.
 
-. xref:rancher-airgap-linux-find-assets[Find the required assets for your {ranchera} version]
+. xref:rancher-airgap-linux-find-assets[Find the required assets for your {ranchermanager} version]
 . xref:rancher-airgap-linux-collect-cert-manager[Collect the {certmanager} image] (unless you are bringing your own certificates or terminating TLS on a load balancer)
 . xref:rancher-airgap-linux-save-images[Save the images to your workstation]
 . xref:rancher-airgap-linux-populate-registry[Populate the private registry]
@@ -36,18 +52,18 @@ The following steps populate your private registry.
 As of April 2020, Amazon Elastic Container Registry does not support manifests.
 
 [#rancher-airgap-linux-find-assets]
-== Find the required assets for your {ranchera} version
+== Find the required assets for your {ranchermanager} version
 
-. Go to our link:https://github.com/rancher/rancher/releases[releases page,] find the {ranchera} v2.x.x release that you want to install, and click *Assets*.
+. Go to our link:https://github.com/rancher/rancher/releases[releases page,] find the {ranchermanager} v2.x.x release that you want to install, and click *Assets*.
 Note: Do not use releases marked `rc` or `Pre-release`, as they are not stable for production environments.
-. From the release's *Assets* section, download the following files, which are required to install {ranchera} in an air-gapped environment:
+. From the release's *Assets* section, download the following files, which are required to install {ranchermanager} in an air-gapped environment:
 
 .Required assets
 |===
 |Release File |Description
 
 |`rancher-images.txt`
-|This file contains a list of images needed to install {ranchera}, provision clusters and use {ranchera} tools.
+|This file contains a list of images needed to install {ranchermanager}, provision clusters and use {ranchermanager} tools.
 
 |`rancher-save-images.sh`
 |This script pulls all the images in the `rancher-images.txt` from {dhub} and saves all the images as `rancher-images.tar.gz`.
@@ -71,7 +87,7 @@ In a {kube} Install, if you elect to use the {ranchera} default self-signed TLS 
 [NOTE]
 ====
 Recent changes to {certmanager} require an upgrade.
-If you are upgrading {ranchera} and using a version of {certmanager} older than v0.12.0, please see our link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/upgrade-cert-manager/[upgrade documentation].
+If you are upgrading {ranchermanager} and using a version of {certmanager} older than v0.12.0, please see our link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/upgrade-cert-manager/[upgrade documentation].
 ====
 +
 [source]

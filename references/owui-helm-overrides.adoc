@@ -1,5 +1,7 @@
 [#owui-helm-overrides]
 = Examples of {owui} {helm} chart override files
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 
