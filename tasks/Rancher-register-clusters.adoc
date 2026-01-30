@@ -18,7 +18,7 @@ ifndef::override-abstract[]
 In this section, you will learn how to register existing {rke2a} clusters in {ranchermanager} ({ranchera}).
 endif::[]
 
-:revdate: 2026-01-26
+:revdate: 2026-01-29
 :page-revdate: {revdate}
 
 // erase the flag for future overrides
