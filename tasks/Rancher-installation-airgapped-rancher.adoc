@@ -1,6 +1,6 @@
 // source: https://github.com/rancher/rancher-product-docs/edit/main/versions/v2.13/modules/en/pages/installation-and-upgrade/other-installation-methods/air-gapped/install-rancher-ha.adoc
 // base URL: https://documentation.suse.com/cloudnative/rancher-manager/latest/en/
-// product name: {ranchera}
+// product name: {ranchermanager}
 [#rancher-installation-airgapped-rancher]
 include::../common/generic-attributes.adoc[]
 // overridden title?
@@ -17,289 +17,304 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-This section describes how to install a {k8s} cluster according to our best practices for the {ranchera} server environment.
-This cluster should be dedicated to running only the {ranchera} server.
+This section is about how to deploy {ranchermanager} for your air gapped environment in a high-availability Kubernetes installation. An air gapped environment could be where the {ranchermanager} server will be installed offline, behind a firewall, or behind a proxy.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
-[#rancher-airgap-privileged-access]
-== Privileged access for rancher
+== Privileged Access for {ranchermanager}
 
-When the {ranchera} server is deployed in the {docker} container, a local {k8s} cluster is installed within the container for {ranchera} to use.
-Because many features of {ranchera} run as deployments, and privileged mode is required to run containers within containers, you will need to install {ranchera} with the `--privileged` option.
+When the {ranchermanager} server is deployed in the Docker container, a local Kubernetes cluster is installed within the container for {ranchermanager} to use. Because many features of {ranchermanager} run as deployments, and privileged mode is required to run containers within containers, you will need to install {ranchermanager} with the `--privileged` option.
 
-[#rancher-airgap-kubernetes-instructions]
-== {kube} instructions
+== Docker Instructions
 
-{ranchera} recommends installing {ranchera} on a {kube} cluster.
-A highly available {kube} install is comprised of three nodes running the {ranchera} server components on a {kube} cluster.
-The persistence layer ({etcd}) is also replicated on these three nodes, providing redundancy and data duplication in case one of the nodes fails.
+If you want to continue the air gapped installation using Docker commands, skip the rest of this page and follow the instructions on link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/other-installation-methods/air-gapped/install-rancher.html[this page.].
 
-[#rancher-airgap-add-helm-repo]
-=== Add the {helm} chart repository
+== Kubernetes Instructions
 
-From a system that has access to the Internet, fetch the latest {helm} chart and copy the resulting manifests to a system that has access to the {ranchera} server cluster.
+{ranchermanager} recommends installing {ranchermanager} on a Kubernetes cluster. A highly available Kubernetes install is comprised of three nodes running the {ranchermanager} server components on a Kubernetes cluster. The persistence layer (etcd) is also replicated on these three nodes, providing redundancy and data duplication in case one of the nodes fails.
 
-. If you have not already, install `helm` locally on a workstation that has Internet access.
-Refer to the link:https://rancher.com/docs/rancher/v2.x/en/installation/requirements/helm-requirements/[{helm} version requirements] to choose a version of {helm} to install {ranchera}.
-. Use the `helm repo add` command to add the {helm} chart repository that contains charts to install {ranchera} Prime.
-[source, subs="+attributes"]
-----
-{prompt_user}helm repo add rancher-prime helm-chart-repo-url
-----
-. Fetch the {ranchera} Prime chart.
-This will pull down the chart and save it in the current directory as a `.tgz` file.
-* To fetch the latest version:
+=== 1. Add the Helm Chart Repository
+
+From a system that has access to the internet, fetch the latest Helm chart and copy the resulting manifests to a system that has access to the {ranchermanager} server cluster.
+
+. If you haven't already, install `helm` locally on a workstation that has internet access. Note: Refer to the link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/requirements/helm-version-requirements.html[Helm version requirements] to choose a version of Helm to install {ranchermanager}.
+. Use the `helm repo add` command to add the Helm chart repository that contains charts to install {rancherprime}.
 +
-[source, subs="+attributes"]
+[,shell]
 ----
-{prompt_user}helm fetch rancher-prime/rancher
+helm repo add rancher-prime <helm-chart-repo-url>
 ----
-* To fetch a specific version:
-Check to see which version of {ranchera} Prime are available.
 +
-[source, subs="+attributes"]
+include::shared:ROOT:partial$en/helm-chart-repo-url.adoc[]
+
+. Fetch the {rancherprime} chart. This will pull down the chart and save it in the current directory as a `.tgz` file.
+** To fetch the latest version:
++
+include::shared:ROOT:partial$en/rancher-chart-rename.adoc[]
++
+[,shell]
 ----
-{prompt_user}helm search repo --versions rancher-prime
+helm fetch rancher-prime/rancher
 ----
+** To fetch a specific version:
++
+Check to see which version of {rancherprime} are available.
++
+[,shell]
+----
+helm search repo --versions rancher-prime
+----
++
 Fetch a specific version by specifying the `--version` parameter:
 +
-[source, subs="+attributes"]
-----
-{prompt_user}helm fetch rancher-prime/rancher --version=version
-----
-
-[#rancher-airgap-ssl-config]
-=== Choose your SSL configuration
-
-{ranchera} server is designed to be secure by default and requires SSL/TLS configuration.
-When {ranchera} is installed on an air-gapped {kube} cluster, there are two recommended options for the source of the certificate.
-
-[NOTE]
-====
-To terminate SSL/TLS externally, see link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/chart-options/#external-tls-termination[TLS termination on an External Load Balancer].
-====
-
-.SSL configuration options
-[cols="4"]
-|===
-|Configuration |Chart option |Description |Requires {certmanager}
-
-|{ranchera} Generated Self-Signed Certificates
-|`ingress.tls.source=rancher`
-|Use certificates issued by {ranchera}'s generated CA (self signed).
-This is the *default* and does not need to be added when rendering the {helm} template.
-|yes
-
-|Certificates from Files
-|`ingress.tls.source=secret`
-|Use your own certificate files by creating {kube} secret(s).
-This option must be passed when rendering the {ranchera} {helm} template.
-|no
-|===
-
-[#rancher-airgap-helm-options]
-=== {helm} chart options for air-gapped installations
-
-When setting up the {ranchera} {helm} template, there are several options in the {helm} chart that are designed specifically for air-gapped installations.
-
-.Air-gapped Helm chart options
-[cols="3"]
-|===
-|Chart option |Chart value |Description
-
-|`certmanager.version`
-|`version`
-|Configure proper {ranchera} TLS issuer depending of running {certmanager} version.
-
-|`systemDefaultRegistry`
-|`REGISTRY.YOURDOMAIN.COM:PORT`
-|Configure {ranchera} server to always pull from your private registry when provisioning clusters.
-
-|`useBundledSystemChart`
-|`true`
-|Configure {ranchera} server to use the packaged copy of {helm} system charts.
-The link:https://github.com/rancher/system-charts[system charts] repository contains all the catalog items required for features such as monitoring, logging, alerting and global DNS.
-These link:https://github.com/rancher/system-charts[{helm} charts] are located in GitHub, but since you are in an air-gapped environment, using the charts that are bundled within {ranchera} is much easier than setting up a Git mirror.
-|===
-
-[#rancher-airgap-fetch-cert-manager]
-=== Fetch the {certmanager} chart
-
-Based on the choice your made in xref:rancher-airgap-ssl-config[], complete one of the procedures below.
-
-[#rancher-airgap-self-signed-cert]
-==== Option A: default self-signed certificate
-
-By default, {ranchera} generates a CA and uses {certmanager} to issue the certificate for access to the {ranchera} server interface.
-
-[NOTE]
-====
-Recent changes to {certmanager} require an upgrade.
-If you are upgrading {ranchera} and using a version of {certmanager} older than v0.11.0, please see our link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/upgrade-cert-manager/[upgrade {certmanager} documentation].
-====
-
-. From a system connected to the internet, add the {certmanager} repo to {helm}:
+include::shared:ROOT:partial$en/rancher-chart-rename.adoc[]
 +
-[source, subs="+attributes"]
+[,shell]
 ----
-{prompt_user}helm repo add jetstack https://charts.jetstack.io
+helm fetch rancher-prime/rancher --version=<version>
+----
+
+=== 2. Choose your SSL Configuration
+[[_2_choose_your_ssl_configuration]]
+
+The {ranchermanager} server is designed to be secure by default and requires SSL/TLS configuration.
+
+When {ranchermanager} is installed on an air gapped Kubernetes cluster, there are two recommended options for the source of the certificate.
+
+[NOTE]
+====
+
+If you want terminate SSL/TLS externally, see link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/references/helm-chart-options.html#_external_tls_termination[TLS termination on an External Load Balancer].
+====
+
+
+|===
+| Configuration | Chart option | Description | Requires cert-manager
+
+| Rancher Generated Self-Signed Certificates
+| `ingress.tls.source=rancher`
+| Use certificates issued by Rancher's generated CA (self signed) +
+This is the *default* and does not need to be added when rendering the Helm template.
+| yes
+
+| Certificates from Files
+| `ingress.tls.source=secret`
+| Use your own certificate files by creating Kubernetes Secret(s). +
+This option must be passed when rendering the Rancher Helm template.
+| no
+|===
+
+=== Helm Chart Options for Air Gap Installations
+
+When setting up the Rancher Helm template, there are several options in the Helm chart that are designed specifically for air gap installations.
+
+|===
+| Chart Option | Chart Value | Description
+
+| `certmanager.version`
+| `<version>`
+| Configure proper {ranchermanager} TLS issuer depending of running cert-manager version.
+
+| `systemDefaultRegistry`
+| `<REGISTRY.YOURDOMAIN.COM:PORT>`
+| Configure {ranchermanager} server to always pull from your private registry when provisioning clusters.
+
+| `useBundledSystemChart`
+| `true`
+| Configure {ranchermanager} server to use the packaged copy of Helm system charts. The https://github.com/rancher/system-charts[system charts] repository contains all the catalog items required for features such as monitoring, logging, alerting and global DNS. These https://github.com/rancher/system-charts[Helm charts] are located in GitHub, but since you are in an air gapped environment, using the charts that are bundled within {ranchermanager} is much easier than setting up a Git mirror.
+|===
+
+=== 3. Fetch the Cert-Manager Chart
+
+Based on the choice your made in <<_2_choose_your_ssl_configuration,2. Choose your SSL Configuration>>, complete one of the procedures below.
+
+==== Option A: Default Self-Signed Certificate
+
+By default, {ranchermanager} generates a CA and uses cert-manager to issue the certificate for access to the {ranchermanager} server interface.
+
+[NOTE]
+====
+
+Recent changes to cert-manager require an upgrade. If you are upgrading {ranchermanager} and using a version of cert-manager older than v0.11.0, please see our link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/resources/upgrade-cert-manager.html[upgrade cert-manager documentation].
+====
+
+
+===== 1. Add the cert-manager Repo
+
+From a system connected to the internet, add the cert-manager repo to Helm:
+
+[,plain]
+----
+helm repo add jetstack https://charts.jetstack.io
 helm repo update
 ----
-. Fetch the latest {certmanager} chart available from the link:https://artifacthub.io/packages/helm/cert-manager/cert-manager[{helm} chart repository].
-+
-[source, subs="+attributes"]
+
+===== 2. Fetch the cert-manager Chart
+
+Fetch the latest cert-manager chart available from the https://artifacthub.io/packages/helm/cert-manager/cert-manager[Helm chart repository].
+
+[,plain]
 ----
-{prompt_user}helm fetch jetstack/cert-manager --version v1.11.0
-----
-. Download the required CRD file for {certmanager}:
-+
-[source, subs="+attributes"]
-----
-{prompt_user}curl -L -o cert-manager-crd.yaml https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.crds.yaml
+helm fetch jetstack/cert-manager --version v1.11.0
 ----
 
-[#rancher-airgap-install-rancher]
-=== Install rancher
+===== 3. Retrieve the cert-manager CRDs
 
-Copy the fetched charts to a system that has access to the {ranchera} server cluster to complete installation.
+Download the required CRD file for cert-manager:
 
-[#rancher-airgap-install-cert-manager]
-==== 1. Install {certmanager}
+[,plain]
+----
+   curl -L -o cert-manager-crd.yaml https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.crds.yaml
+----
 
-Install {certmanager} with the same options you would use to install the chart.
-Remember to set the `image.repository` option to pull the image from your private registry.
+=== 4. Install {ranchermanager}
+
+Copy the fetched charts to a system that has access to the {ranchermanager} server cluster to complete installation.
+
+==== 1. Install cert-manager
+
+Install cert-manager with the same options you would use to install the chart. Remember to set the `image.repository` option to pull the image from your private registry.
 
 [NOTE]
 ====
-To see options on how to customize the {certmanager} install (including for cases where your cluster uses PodSecurityPolicies), see the link:https://artifacthub.io/packages/helm/cert-manager/cert-manager#configuration[cert-manager docs].
+
+To see options on how to customize the cert-manager install (including for cases where your cluster uses PodSecurityPolicies), see the https://artifacthub.io/packages/helm/cert-manager/cert-manager#configuration[cert-manager docs].
 ====
 
-If you are using self-signed certificates, install {certmanager}:
 
-. Create the namespace for {certmanager}.
+.Click to expand
+[%collapsible]
+======
+If you are using self-signed certificates, install cert-manager:
+
+. Create the namespace for cert-manager.
 +
-[source, subs="+attributes"]
+[,plain]
 ----
-{prompt_user}kubectl create namespace cert-manager
+ kubectl create namespace cert-manager
 ----
-. Create the {certmanager} CustomResourceDefinitions (CRDs).
+
+. Create the cert-manager CustomResourceDefinitions (CRDs).
 +
-[source, subs="+attributes"]
+[,plain]
 ----
-{prompt_user}kubectl apply -f cert-manager-crd.yaml
+ kubectl apply -f cert-manager-crd.yaml
 ----
-. Install {certmanager}.
+
+. Install cert-manager.
 +
-[source, subs="+attributes"]
+[,plain]
 ----
-{prompt_user}helm install cert-manager ./cert-manager-v1.11.0.tgz \
-  --namespace cert-manager \
-  --set image.repository=REGISTRY.YOURDOMAIN.COM:PORT/quay.io/jetstack/cert-manager-controller \
-  --set webhook.image.repository=REGISTRY.YOURDOMAIN.COM:PORT/quay.io/jetstack/cert-manager-webhook \
-  --set cainjector.image.repository=REGISTRY.YOURDOMAIN.COM:PORT/quay.io/jetstack/cert-manager-cainjector \
-  --set startupapicheck.image.repository=REGISTRY.YOURDOMAIN.COM:PORT/quay.io/jetstack/cert-manager-ctl
+ helm install cert-manager ./cert-manager-v1.11.0.tgz \
+     --namespace cert-manager \
+     --set image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/quay.io/jetstack/cert-manager-controller \
+     --set webhook.image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/quay.io/jetstack/cert-manager-webhook \
+     --set cainjector.image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/quay.io/jetstack/cert-manager-cainjector \
+     --set startupapicheck.image.repository=<REGISTRY.YOURDOMAIN.COM:PORT>/quay.io/jetstack/cert-manager-ctl
+----
++
+======
+
+==== 2. Install Rancher
+
+First, refer to link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/resources/tls-secrets.html[Adding TLS Secrets] to publish the certificate files so {ranchermanager} and the ingress controller can use them.
+
+Then, create the namespace for {ranchermanager} using kubectl:
+
+[,plain]
+----
+kubectl create namespace cattle-system
 ----
 
-[#rancher-airgap-install-rancher-server]
-==== Install {ranchermanager}
+Next, install {ranchermanager}, declaring your chosen options. Use the reference table below to replace each placeholder. {ranchermanager} needs to be configured to use the private registry in order to provision any {ranchermanager} launched Kubernetes clusters or {ranchermanager} tools.
 
-Refer to link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/tls-secrets/[Adding TLS Secrets] to publish the certificate files so {ranchera} and the {ingress} controller can use them.
-Create the namespace for {ranchera} using `kubectl`:
-
-[source, subs="+attributes"]
-----
-{prompt_user}kubectl create namespace cattle-system
-----
-
-Install {ranchera}, declaring your chosen options.
-Use the reference table below to replace each placeholder.
-{ranchera} needs to be configured to use the private registry to provision any {ranchera} launched {kube} clusters or {ranchera} tools.
-
-.Placeholder descriptions
 |===
-|Placeholder |Description
+| Placeholder | Description
 
-|`VERSION`
-|The version number of the output tarball.
+| `<VERSION>`
+| The version number of the output tarball.
 
-|`RANCHER.YOURDOMAIN.COM`
-|The DNS name you pointed at your load balancer.
+| `<RANCHER.YOURDOMAIN.COM>`
+| The DNS name you pointed at your load balancer.
 
-|`REGISTRY.YOURDOMAIN.COM:PORT`
-|The DNS name for your private registry.
+| `<REGISTRY.YOURDOMAIN.COM:PORT>`
+| The DNS name for your private registry.
 
-|`CERTMANAGER_VERSION`
-|{certmanager} version running on k8s cluster.
+| `<CERTMANAGER_VERSION>`
+| Cert-manager version running on k8s cluster.
 |===
 
-[source, subs="+attributes"]
+[,plain]
 ----
-{prompt_user}helm install rancher ./rancher-VERSION.tgz \
-  --namespace cattle-system \
-  --set hostname=RANCHER.YOURDOMAIN.COM \
-  --set certmanager.version=CERTMANAGER_VERSION \
-  --set rancherImage=REGISTRY.YOURDOMAIN.COM:PORT/rancher/rancher \
-  --set systemDefaultRegistry=REGISTRY.YOURDOMAIN.COM:PORT \ # Set a default private registry to be used in {ranchera}
-  --set useBundledSystemChart=true # Use the packaged {ranchera} system charts
+   helm install rancher ./rancher-<VERSION>.tgz \
+    --namespace cattle-system \
+    --set hostname=<RANCHER.YOURDOMAIN.COM> \
+    --set certmanager.version=<CERTMANAGER_VERSION> \
+    --set rancherImage=<REGISTRY.YOURDOMAIN.COM:PORT>/rancher/rancher \
+    --set systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \ # Set a default private registry to be used in Rancher
+    --set useBundledSystemChart=true # Use the packaged Rancher system charts
 ----
 
-* _(Optional)_*: to install a specific {ranchera} version, set the `rancherImageTag` value, for example: `--set rancherImageTag=v2.5.8`
+*Optional*: To install a specific {ranchermanager} version, set the `rancherImageTag` value, example: `--set rancherImageTag=v2.5.8`
 
-[#rancher-airgap-certs-from-files]
-==== Option B: certificates from files using {k8s} secrets
+==== Option B: Certificates From Files Using Kubernetes Secrets
 
-. Create {kube} secrets from your own certificates for {ranchera} to use.
-The common name for the cert will need to match the `hostname` option in the command below, or the {ingress} controller will fail to provision the site for {ranchera}.
-. Install {ranchermanager}, declaring your chosen options.
-Use the reference table below to replace each placeholder.
-{ranchera} needs to be configured to use the private registry to provision any {ranchera} launched {kube} clusters or {ranchera} tools.
-.Placeholder descriptions
+===== 1. Create Secrets
+
+Create Kubernetes secrets from your own certificates for {ranchermanager} to use. The common name for the cert will need to match the `host name` option in the command below, or the ingress controller will fail to provision the site for {ranchermanager}.
+
+===== 2. Install Rancher
+
+Install {ranchermanager}, declaring your chosen options. Use the reference table below to replace each placeholder. {ranchermanager} needs to be configured to use the private registry in order to provision any {ranchermanager} launched Kubernetes clusters or {ranchermanager} tools.
+
 |===
-|Placeholder |Description
+| Placeholder | Description
 
-|`VERSION`
-|The version number of the output tarball.
+| `<VERSION>`
+| The version number of the output tarball.
 
-|`RANCHER.YOURDOMAIN.COM`
-|The DNS name you pointed at your load balancer.
+| `<RANCHER.YOURDOMAIN.COM>`
+| The DNS name you pointed at your load balancer.
 
-|`REGISTRY.YOURDOMAIN.COM:PORT`
-|The DNS name for your private registry.
+| `<REGISTRY.YOURDOMAIN.COM:PORT>`
+| The DNS name for your private registry.
 |===
-[source, subs="+attributes"]
+
+[,plain]
 ----
-{prompt_user}helm install rancher ./rancher-VERSION.tgz \
-  --namespace cattle-system \
-  --set hostname=RANCHER.YOURDOMAIN.COM \
-  --set rancherImage=REGISTRY.YOURDOMAIN.COM:PORT/rancher/rancher \
-  --set ingress.tls.source=secret \
-  --set systemDefaultRegistry=REGISTRY.YOURDOMAIN.COM:PORT \ # Set a default private registry to be used in {ranchera}
-  --set useBundledSystemChart=true # Use the packaged {ranchera} system charts
+   helm install rancher ./rancher-<VERSION>.tgz \
+    --namespace cattle-system \
+    --set hostname=<RANCHER.YOURDOMAIN.COM> \
+    --set rancherImage=<REGISTRY.YOURDOMAIN.COM:PORT>/rancher/rancher \
+    --set ingress.tls.source=secret \
+    --set systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \ # Set a default private registry to be used in Rancher
+    --set useBundledSystemChart=true # Use the packaged Rancher system charts
 ----
+
 If you are using a Private CA signed cert, add `--set privateCA=true` following `--set ingress.tls.source=secret`:
-[source, subs="+attributes"]
+
+[,plain]
 ----
-{prompt_user}helm install rancher ./rancher-VERSION.tgz \
-  --namespace cattle-system \
-  --set hostname=RANCHER.YOURDOMAIN.COM \
-  --set rancherImage=REGISTRY.YOURDOMAIN.COM:PORT/rancher/rancher \
-  --set ingress.tls.source=secret \
-  --set privateCA=true \
-  --set systemDefaultRegistry=REGISTRY.YOURDOMAIN.COM:PORT \ # Set a default private registry to be used in {ranchera}
-  --set useBundledSystemChart=true # Use the packaged {ranchera} system charts
+   helm install rancher ./rancher-<VERSION>.tgz \
+    --namespace cattle-system \
+    --set hostname=<RANCHER.YOURDOMAIN.COM> \
+    --set rancherImage=<REGISTRY.YOURDOMAIN.COM:PORT>/rancher/rancher \
+    --set ingress.tls.source=secret \
+    --set privateCA=true \
+    --set systemDefaultRegistry=<REGISTRY.YOURDOMAIN.COM:PORT> \ # Set a default private registry to be used in Rancher
+    --set useBundledSystemChart=true # Use the packaged Rancher system charts
 ----
+
 The installation is complete.
 
-[#rancher-airgap-additional-resources]
-== Additional resources
+== Additional Resources
 
-These resources could be helpful when installing {ranchera}:
+These resources could be helpful when installing {ranchermanager}:
 
 * link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/integrations/rancher-extensions.html#_importing_and_installing_extensions_in_an_air_gapped_environment[Importing and installing extensions in an air-gapped environment]
-* link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/references/helm-chart-options.html[{ranchera} {helm} chart options]
+* link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/references/helm-chart-options.html[{ranchermanager} Helm chart options]
 * link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/resources/tls-secrets.html[Adding TLS secrets]
-* link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/troubleshooting/troubleshooting.html[Troubleshooting {ranchera} {kube} Installations]
+* link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/troubleshooting/troubleshooting.html[Troubleshooting {ranchermanager} Kubernetes Installations]
