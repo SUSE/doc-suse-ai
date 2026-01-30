@@ -118,7 +118,7 @@ image::local_admin.png[A screenshot of local admin,width=75%]
 ====
 It is recommended to log in directly to the {ssecurity} console as admin/admin to manually change the administrator password to a strong password.
 This will only change the {ssecurity} identity provider administrator user password (you may see another administrator user whose identify provider is {ranchera}).
-Alternatively, include a link:https://ranchermanager.docs.rancher.com/integrations-in-rancher/neuvector/configuration/configmaps#protect-sensitive-data-using-a-secret[ConfigMap as a secret] in the initial deployment from {ranchera} (see chart values for ConfigMap settings) to set the default admin password to a strong password.
+Alternatively, include a link:https://ranchermanager.docs.rancher.com/integrations-in-rancher/neuvector/configuration/configmaps#protect-sensitive-data-using-a-secret[ConfigMap as a secret][ConfigMap as a secret] in the initial deployment from {ranchera} (see chart values for ConfigMap settings) to set the default admin password to a strong password.
 ====
 
 [#suse-security-installation-rancher-sso-permissions]
