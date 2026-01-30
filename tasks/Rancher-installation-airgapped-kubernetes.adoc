@@ -37,7 +37,7 @@ The steps to set up an air-gapped Kubernetes cluster on RKE, RKE2, or K3s are sh
 --
 In this guide, we are assuming you have created your nodes in your air-gapped environment and have a secure Docker private registry on your bastion server.
 
-[#_1_create_rke2_configuration]]
+[#_1_create_rke2_configuration]
 == 1. Create RKE2 configuration
 
 Create the `config.yaml` file at `/etc/rancher/rke2/config.yaml`. This will contain all the configuration options necessary to create a highly available RKE2 cluster.
