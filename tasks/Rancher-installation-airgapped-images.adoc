@@ -25,7 +25,7 @@ endif::[]
 :override-title!:
 
 This section describes how to set up your private registry so that when you install {ranchermanager}, it will pull all the required images from this registry.
-By default, all images used to link:https://rancher.com/docs/rancher/v2.x/en/cluster-provisioning/[provision {k8s} clusters] or launch any tools in {ranchermanager}, e.g., monitoring, pipelines or alerts, are pulled from {dhub}.
+By default, all images used to link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/cluster-deployment/cluster-deployment.html[provision {k8s} clusters] or launch any tools in {ranchermanager}, e.g., monitoring, pipelines or alerts, are pulled from {dhub}.
 In an air-gapped installation of {ranchermanager}, you will need a private registry that is located somewhere accessible by your {ranchermanager} server.
 You will then load every image into the registry.
 Populating the private registry with images is the same process for installing {ranchermanager} with {docker} and for installing {ranchermanager} on a {kube} cluster.
@@ -47,8 +47,9 @@ The following steps populate your private registry.
 [#rancher-airgap-linux-prerequisites]
 .Prerequisites
 
-* These steps expect you to use a Linux workstation that has Internet access, access to your private registry, and at least 20 GB of disk space.
-* If you use ARM64 hosts, the registry must support manifests.
+These steps expect you to use a Linux workstation that has Internet access, access to your private registry, and at least 20 GB of disk space.
+
+If you use ARM64 hosts, the registry must support manifests.
 As of April 2020, Amazon Elastic Container Registry does not support manifests.
 
 [#rancher-airgap-linux-find-assets]
@@ -87,7 +88,7 @@ In a {kube} Install, if you elect to use the {ranchera} default self-signed TLS 
 [NOTE]
 ====
 Recent changes to {certmanager} require an upgrade.
-If you are upgrading {ranchermanager} and using a version of {certmanager} older than v0.12.0, please see our link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/upgrade-cert-manager/[upgrade documentation].
+If you are upgrading {ranchermanager} and using a version of {certmanager} older than v0.12.0, please see our link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/installation-and-upgrade/resources/upgrade-cert-manager.html[upgrade documentation].
 ====
 +
 [source]

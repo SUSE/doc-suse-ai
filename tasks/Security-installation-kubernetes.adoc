@@ -15,7 +15,7 @@ Refer to xref:suse-security-installation-kubernetes-node-labels[] for specifying
 [NOTE]
 ====
 It is not recommended to deploy (scale) more than one manager behind a load balancer due to potential session state issues.
-If you plan to use a PersistentVolume claim to store the backup of {ssecurity} configuration files, please see the general Backup/Persistent Data section in the link:https://ranchermanager.docs.rancher.com/integrations-in-rancher/neuvector/production-deployment-considerations#backups-and-persistent-data[Deploying {ssecurity}] overview.
+If you plan to use a PersistentVolume claim to store the backup of {ssecurity} configuration files, please see the general Backup/Persistent Data section in the link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/integrations/neuvector/overview.html[Deploying {ssecurity}] overview.
 ====
 
 If your deployment supports an integrated load balancer, change type `NodePort` to `LoadBalancer` for the console in the YAML file below.

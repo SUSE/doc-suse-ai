@@ -58,7 +58,7 @@ image::ai-observability-overview.png[The chart showing a high-level overview of 
 .Setup clusters
 ====
 You can create and configure {kube} clusters for {productname} and {sobservability} as you prefer.
-If you are using {ranchermanager}, check its link:https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup[documentation].
+If you are using {ranchermanager}, check its link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/cluster-deployment/cluster-deployment.html[documentation].
 For testing purposes, you can even share one cluster for both deployments.
 You can skip instructions on setting up a specific cluster if you already have one configured.
 ====

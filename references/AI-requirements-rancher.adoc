@@ -6,7 +6,6 @@
 [#ai-reqs-rancher-hw]
 == Minimum hardware requirements
 
-
 Nodes for HA setup:: At least 3 nodes.
 RAM:: A minimum of 32{nbsp}GB of RAM.
 CPU:: At least 8 CPU cores.
@@ -17,5 +16,6 @@ Disk space:: At least 200{nbsp}GB of storage, preferably SSD.
 
 For more detailed recommendations, refer to the following official documentation:
 
-* https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements[{ranchermanager} installation requirements]
-* https://ranchermanager.docs.rancher.com/getting-started/installation-and-upgrade/installation-requirements[{ranchermanager} architecture recommendations]
+
+* https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/installation-and-upgrade/requirements/requirements.html[{ranchermanager} installation requirements]
+* https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/about-rancher/architecture/recommendations.html[{ranchermanager} architecture recommendations]

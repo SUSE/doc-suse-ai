@@ -51,8 +51,8 @@ If one of the three {etcd} nodes fails, the two remaining nodes can elect a lead
 == Set up Linux nodes
 
 These hosts will be disconnected from the Internet, but require being able to connect with your private registry.
-Make sure that your nodes fulfill the general installation requirements for link:https://rancher.com/docs/rancher/v2.x/en/installation/requirements/[OS, container runtime, hardware and networking].
-For an example of one way to set up Linux nodes, refer to this link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/k8s-tutorials/infrastructure-tutorials/nodes-in-amazon-ec2/[tutorial] for setting up nodes as instances in Amazon EC2.
+Make sure that your nodes fulfill the general installation requirements for link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/installation-and-upgrade/requirements/requirements.html[OS, container runtime, hardware and networking].
+For an example of one way to set up Linux nodes, refer to this link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/installation-and-upgrade/infrastructure-setup/nodes-in-amazon-ec2.html[tutorial] for setting up nodes as instances in Amazon EC2.
 
 [#rancher-airgap-rke-setup-load-balancer]
 == Set up the load balancer
@@ -75,10 +75,10 @@ For instance, a layer-7 load balancer is capable of handling TLS termination at 
 This can be beneficial to centralize your TLS termination in your infrastructure.
 Layer-7 load balancing also allows your load balancer to make decisions based on HTTP attributes such as cookies—capabilities that a layer-4 load balancer cannot handle.
 If you decide to terminate the SSL/TLS traffic on a layer-7 load balancer, you will need to use the `--set tls=external` option when installing {ranchera} in a later step.
-For more information, refer to the link:https://rancher.com/docs/rancher/v2.x/en/installation/install-rancher-on-k8s/chart-options/#external-tls-termination[{ranchera} {helm} chart options].
+For more information, refer to the link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/installation-and-upgrade/references/helm-chart-options.html#_external_tls_termination[{ranchera} {helm} chart options].
 
-For an example showing how to set up an NGINX load balancer, refer to link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/k8s-tutorials/infrastructure-tutorials/nginx-load-balancer/[this page].
-For a how-to guide for setting up an Amazon ELB Network Load Balancer, refer to link:https://rancher.com/docs/rancher/v2.x/en/installation/resources/k8s-tutorials/infrastructure-tutorials/amazon-elb-load-balancer/[this page].
+For an example showing how to set up an NGINX load balancer, refer to link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/installation-and-upgrade/infrastructure-setup/nginx-load-balancer.html[this page].
+For a how-to guide for setting up an Amazon ELB Network Load Balancer, refer to link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/installation-and-upgrade/infrastructure-setup/amazon-elb-load-balancer.html[this page].
 
 [IMPORTANT]
 ====
