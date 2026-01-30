@@ -552,7 +552,7 @@ spec:
 == {kube} deployment YAML for v5.4.2 onwards
 
 The following sample YAML is for versions 5.4.2 and onwards where we need to mount the internal certificates on Controller, Enforcer and Scanner pods since we do not support hardcoded certificates anymore.
-Create the internal-certificate secret from the given link before deploying: link:https://ranchermanager.docs.rancher.com/integrations-in-rancher/neuvector/custom-certs#replacing-internal-certificates[Replacing Internal Certificates].
+Create the internal-certificate secret from the given link before deploying: link:https://documentation.suse.com/cloudnative/security/5.4/en/internal.html[Replacing Internal Certificates].
 
 [source,yaml]
 ----
