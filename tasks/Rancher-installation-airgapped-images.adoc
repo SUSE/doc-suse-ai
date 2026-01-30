@@ -25,8 +25,11 @@ endif::[]
 :override-title!:
 
 This section describes how to set up your private registry so that when you install {ranchermanager}, it will pull all the required images from this registry.
+
 By default, all images used to link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/cluster-deployment/cluster-deployment.html[provision {k8s} clusters] or launch any tools in {ranchermanager}, e.g., monitoring, pipelines or alerts, are pulled from {dhub}.
+
 In an air-gapped installation of {ranchermanager}, you will need a private registry that is located somewhere accessible by your {ranchermanager} server.
+
 You will then load every image into the registry.
 Populating the private registry with images is the same process for installing {ranchermanager} with {docker} and for installing {ranchermanager} on a {kube} cluster.
 
