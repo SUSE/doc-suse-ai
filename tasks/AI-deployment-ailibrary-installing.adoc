@@ -39,6 +39,7 @@ ifdef::deployment_standard[]
 endif::[]
 The steps in this procedure assume that all containers are deployed into the same namespace referred to as `SUSE_AI_NAMESPACE`.
 Replace its name to match your preferences.
+{helm} charts of AI applications are hosted in the private {suse}-trusted registries: {sappco} and {sregistry}.
 +
 [source,bash,subs="+attributes"]
 ----
@@ -54,13 +55,31 @@ Replace its name to match your preferences.
   --docker-password=<APPCO_USER_TOKEN> \
   -n <SUSE_AI_NAMESPACE>
 ----
-. Log in to the {helm} registry.
+. Create the {sregistry} secret.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl create secret docker-registry suse-ai-registry \
+  --docker-server=registry.suse.com \
+  --docker-username=regcode \
+  --docker-password=<SCC_REG_CODE> \
+  -n <SUSE_AI_NAMESPACE>
+----
+. Log in to the {sappco} {helm} registry.
 +
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm registry login dp.apps.rancher.io/charts \
   -u <APPCO_USERNAME> \
   -p <APPCO_USER_TOKEN>
+----
+. Log in to the {sregistry} {helm} registry. User is regcode and Password is the SCC registration code of your SUSE AI subscription.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm registry login registry.suse.com \
+  -u regcode \
+  -p <SCC_REG_CODE>
 ----
 ifdef::deployment_airgap[]
 . On the _remote_ host, download the `SUSE-AI-get-images.sh` script from the xref:ai-air-gap-stack[air-gap stack] and run it.
@@ -103,4 +122,5 @@ ifdef::deployment_standard[]
 .. Install {mcpo} as described in xref:mcpo-installing[].
 .. Install {pytorch} as described in xref:pytorch-installing[].
 .. Install {mlflow} as described in xref:mlflow-installing[].
+.. Install {qdrant} as described in xref:qdrant-installing[].
 endif::[]
