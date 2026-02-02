@@ -142,6 +142,8 @@ tokenType: <SUSE_OBSERVABILITY_API_TOKEN_TYPE>
 apiToken: <SUSE_OBSERVABILITY_TOKEN>
 clusterName: <OBSERVED_SERVER_NAME>
 ----
+<.> Instructs {helm} to use credentials from the {sappco}.
+For instructions on how to configure the image pull secrets for the {sappco}, refer to the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
 endif::[]
 ifdef::deployment_airgap[]
 [source,yaml]
@@ -156,9 +158,9 @@ tokenType: <SUSE_OBSERVABILITY_API_TOKEN_TYPE>
 apiToken: <SUSE_OBSERVABILITY_TOKEN>
 clusterName: <OBSERVED_SERVER_NAME>
 ----
-endif::[]
 <.> Instructs {helm} to use credentials from the {sappco}.
 For instructions on how to configure the image pull secrets for the {sappco}, refer to the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
+endif::[]
 
 .. Run the install command.
 +
@@ -238,7 +240,6 @@ kubectl create secret generic open-telemetry-collector \
 +
 Create a new file named `otel-values.yaml` with the following content.
 +
---
 ifdef::deployment_standard[]
 [source,yaml]
 ----
@@ -367,6 +368,14 @@ config:
         processors: [memory_limiter, resource, batch]
         exporters: [debug, otlp]
 ----
+<.> Configure the {milvus} service and namespace for the {prometheus} scraper.
+Because {milvus} will be installed in subsequent steps, you can return to this step and edit the endpoint if necessary.
+<.> Update to match the values in the {vllm} deployment section.
+<.> Update to match the values in the {vllm} deployment section.
+<.> Set the exporter to your exposed {sobservability} collector.
+Remember that the value can be distinct, depending on the deployment pattern.
+For production usage, we recommend using TLS communication.
+<.> Replace `<CLUSTER_NAME>` with the cluster's name.
 endif::[]
 ifdef::deployment_airgap[]
 [source,yaml]
@@ -497,7 +506,6 @@ config:
         processors: [memory_limiter, resource, batch]
         exporters: [debug, otlp]
 ----
-endif::[]
 <.> Configure the {milvus} service and namespace for the {prometheus} scraper.
 Because {milvus} will be installed in subsequent steps, you can return to this step and edit the endpoint if necessary.
 <.> Update to match the values in the {vllm} deployment section.
@@ -506,7 +514,7 @@ Because {milvus} will be installed in subsequent steps, you can return to this s
 Remember that the value can be distinct, depending on the deployment pattern.
 For production usage, we recommend using TLS communication.
 <.> Replace `<CLUSTER_NAME>` with the cluster's name.
---
+endif::[]
 +
 Finally, run the installation command.
 +

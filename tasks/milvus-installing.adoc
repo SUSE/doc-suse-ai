@@ -108,6 +108,8 @@ extraConfigFiles: <.>
       jaeger:
         url: "http://opentelemetry-collector.observability.svc.cluster.local:14268/api/traces" <.>
 ----
+<.> The `extraConfigFiles` section is optional, required only to receive telemetry data from {owui}.
+<.> The URL of the {otelemetry} Collector installed by the user.
 endif::[]
 ifdef::deployment_airgap[]
 [source,yaml]
@@ -167,9 +169,9 @@ extraConfigFiles: <.>
       jaeger:
         url: "http://opentelemetry-collector.observability.svc.cluster.local:14268/api/traces" <.>
 ----
-endif::[]
 <.> The `extraConfigFiles` section is optional, required only to receive telemetry data from {owui}.
 <.> The URL of the {otelemetry} Collector installed by the user.
+endif::[]
 +
 [TIP]
 ====

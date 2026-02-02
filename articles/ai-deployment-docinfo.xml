@@ -1,4 +1,12 @@
 <revhistory xml:id="rh-deployment">
+  <revision><date>2026-02-02</date>
+    <revdescription>
+      <para>
+        Added a section about verifying AI Library artifacts hosted on SUSE
+        registry and application collection.
+      </para>
+    </revdescription>
+  </revision>
   <revision><date>2026-01-27</date>
     <revdescription>
       <para>
