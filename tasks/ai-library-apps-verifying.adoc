@@ -12,8 +12,8 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{ailibrary} applications are hosted in the private {suse}}-trusted registries: {sappco} and {sregistry}.
-This section provides steps to verify the {ailibrary} artifacts using *cosign* - a tool for signing and verifying OCI containers and other artifacts.
+{ailibrary} applications are hosted in the private {suse}-trusted registries: {sappco} and {sregistry}.
+This section provides steps to verify the {ailibrary} artifacts using *cosign*--a tool for signing and verifying OCI containers and other artifacts.
 endif::[]
 
 // erase the flag for future overrides

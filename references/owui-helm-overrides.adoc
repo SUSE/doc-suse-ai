@@ -86,7 +86,7 @@ To use {sstorage}, specify `longhorn`.
 <.> Enables GPU support for {ollama}.
 The `type` must be `nvidia` because {nvidia} GPUs are the only supported devices.
 `number` must be between 1 and the number of {nvidia} GPUs present on the system.
-<.> Without the `persistentVolume` option enabled, changes made to {ollama}--such as downloading other LLM-- are lost when the container is restarted.
+<.> Without the `persistentVolume` option enabled, changes made to {ollama}--such as downloading other LLM--are lost when the container is restarted.
 <.> The environment variables that you are making available for the pipeline's runtime container.
 <.> A list of pipeline URLs to be downloaded and installed by default.
 Individual URLs are separated by a semicolon `;`.
@@ -96,8 +96,8 @@ Make sure to use the HTTP port of your collector.
 <.> A file for the model multipliers in cost estimation.
 You can customize it to match your actual infrastructure experimentally.
 <.> Specifies the default LLM for {ollama}.
-<.> Specifies the host name for the {owui} Web UI.
-<.> Installs the _natural language toolkit_ (NLTK) datasets for {ollama}.
+<.> Specifies the host name for the {owui} interface.
+<.> Installs the _Natural Language Toolkit_ (NLTK) datasets for {ollama}.
 Refer to link:https://www.nltk.org/index.html[] for licensing information.
 <.> API key value for communication between {owui} and {owui} Pipelines.
 The default value is '0p3n-w3bu!'.
