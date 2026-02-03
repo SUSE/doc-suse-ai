@@ -222,8 +222,7 @@ When a pod with injection annotations is created, the Operator mutates it via an
 * Environment variables are added to configure the SDK.
 
 [#ai-monitoring-otel-operator-suse-ai-stack-example]
-=== Example: enable auto-instrumentation in {suseai}
-
+.Enable auto-instrumentation in {productname}
 ====
 The following procedure shows how to inject instrumentation into the `open-webui-mcpo` workload.
 
