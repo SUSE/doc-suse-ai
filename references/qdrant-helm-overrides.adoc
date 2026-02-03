@@ -24,8 +24,8 @@ persistence:
   # volumeAttributesClassName: ""
 
 ----
-<.> Specifiy the secret containing the credentials for the {sregistry} in global.imagePullSecrets.
-For instructions on how to configure the image pull secrets for the {sregistry}, as described in xref:suse-ai-deploy-suse-ai[]
+<.> Specify the secret containing the credentials for the {sregistry} in global.imagePullSecrets.
+For instructions on how to configure the image pull secrets for the {sregistry}, as described in xref:suse-ai-deploy-suse-ai[].
 <.> Use `local-path` storage only for testing purposes.
 For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
 ====

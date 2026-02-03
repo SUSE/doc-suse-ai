@@ -11,7 +11,7 @@ You can use it to extract meaningful information from unstructured data.
 == Details about the {qdrant} application
 
 Before deploying {qdrant}, it is important to know more about the supported configurations and documentation.
-The following command provides the corresponding details assuming you have already executed the `helm registry login` 
+The following command provides the corresponding details, assuming you have already executed the `helm registry login` 
 command as described in xref:suse-ai-deploy-suse-ai[].
 
 [source,,subs="+attributes"]
@@ -19,7 +19,7 @@ command as described in xref:suse-ai-deploy-suse-ai[].
 {prompt_user}helm show values oci://registry.suse.com/ai/charts/qdrant
 ----
 
-To list the available chart versions from this {sregistry}, you can use tools like crane, skopeo etc.
+To list the available chart versions from this {sregistry}, you can use tools like crane, skopeo, etc.
 Here is an example of the `crane` command.
 [source,,subs="+attributes"]
 ----
@@ -49,10 +49,10 @@ Find examples of {qdrant} override files in xref:qdrant-helm-overrides[] and a l
 
 To integrate {qdrant} with {owui}, follow these steps:
 
-. Edit the override file for {owui}, `owui_custom_overrides.yaml`, and update the `extraEnvVars` section as follows.
+. Edit the override file for {owui}, `owui_custom_overrides.yaml` and update the `extraEnvVars` section as follows.
 +
 * Change the `VECTOR_DB` value to `qdrant`.
-* Add the {qdrant} related environment variables 
+* Add the {qdrant}-related environment variables: 
 +
 [source,yaml]
 ----
