@@ -40,7 +40,7 @@ Pin the chart version explicitly to avoid unexpected changes during upgrades.
   --namespace <SUSE_OBSERVABILITY_NAMESPACE> \
   --version <CHART-VERSION> \
   --set manager.autoInstrumentation.go.enabled=true \
-  --set global.imagePullSecrets={application-collection}
+  --set global.imagePullSecrets=\{application-collection}
 ----
 +
 [NOTE]
