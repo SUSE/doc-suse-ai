@@ -1,5 +1,6 @@
 [#qdrant-installing]
 = Installing {qdrant}
+
 :revdate: 2026-02-03
 :page-revdate: {revdate}
 
@@ -10,21 +11,20 @@ You can use it to extract meaningful information from unstructured data.
 == Details about the {qdrant} application
 
 Before deploying {qdrant}, it is important to know more about the supported configurations and documentation.
-The following command provides the corresponding details assuming you have already executed the helm registry login 
+The following command provides the corresponding details assuming you have already executed the `helm registry login` 
 command as described in xref:suse-ai-deploy-suse-ai[].
 
-[source]
+[source,,subs="+attributes"]
 ----
-helm show values oci://registry.suse.com/ai/charts/qdrant
+{prompt_user}helm show values oci://registry.suse.com/ai/charts/qdrant
 ----
 
 To list the available chart versions from this {sregistry}, you can use tools like crane, skopeo etc.
-Here's an example of the crane command.
-[source]
+Here is an example of the `crane` command.
+[source,,subs="+attributes"]
 ----
-crane auth login registry.suse.com -u regcode -p <SCC_REG_CODE>
-crane ls registry.suse.com/ai/charts/qdrant
-
+{prompt_user}crane auth login registry.suse.com -u regcode -p <SCC_REG_CODE>
+{prompt_user}crane ls registry.suse.com/ai/charts/qdrant
 ----
 
 [#qdrant-installing-procedure]
