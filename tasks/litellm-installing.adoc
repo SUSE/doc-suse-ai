@@ -1,0 +1,74 @@
+[#litellm-installing]
+= Installing {litellm}
+
+:revdate: 2026-02-04
+:page-revdate: {revdate}
+
+{litellm} is an open-source LLM proxy and abstraction layer that lets you interact with many different large language model providers
+through a single, OpenAI-compatible API.
+
+[#litellm-installing-app-details]
+== Details about the {litellm} application
+
+Before deploying {litellm}, it is important to know more about the supported configurations and documentation.
+The following command provides the corresponding details, assuming you have already executed the `helm registry login` 
+command as described in xref:suse-ai-deploy-suse-ai[].
+
+[source,,subs="+attributes"]
+----
+{prompt_user}helm show values oci://registry.suse.com/ai/charts/litellm
+----
+
+To list the available chart versions from this {sregistry}, you can use tools like crane, skopeo, etc.
+Here is an example of the `crane` command.
+[source,,subs="+attributes"]
+----
+{prompt_user}crane auth login registry.suse.com -u regcode -p <SCC_REG_CODE>
+{prompt_user}crane ls registry.suse.com/ai/charts/litellm
+----
+
+[#litellm-installing-procedure]
+== {litellm} installation procedure
+
+include::../snippets/ai-library-requirement.adoc[]
+
+. Create a `litellm_custom_overrides.yaml` file to override the values of the {helm} chart.
+Find examples of {litellm} override files in xref:litellm-helm-overrides[] and a list of all valid options and their values from running helm show values.
+. Install the {litellm} {helm} chart using the `litellm_custom_overrides.yaml` file using the following command.
++
+[source,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  litellm oci://registry.suse.com/ai/charts/litellm \
+  -n SUSE_AI_NAMESPACE \
+  -f litellm_custom_overrides.yaml
+----
+
+[#litellm-upgrading]
+== Upgrading {litellm}
+
+You can upgrade {litellm} to a specific version by running the following command:
+
+[source,subs="+attributes"]
+----
+{prompt_user}helm upgrade \
+  litellm oci://dp.apps.rancher.io/ai/charts/litellm \
+  -n SUSE_AI_NAMESPACE \
+  --version VERSION_NUMBER \
+  -f litellm_custom_overrides.yaml
+----
+
+[TIP]
+====
+If you omit the `--version` option, {litellm} gets upgraded to the latest available version.
+====
+
+[#litellm-uninstalling]
+== Uninstalling {litellm}
+
+To uninstall {litellm}, run the following command:
+
+[source,subs="+attributes"]
+----
+{prompt_user}helm uninstall litellm -n SUSE_AI_NAMESPACE
+----

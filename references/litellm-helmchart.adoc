@@ -1,0 +1,42 @@
+[#litellm-helmchart-values]
+= Values for the {litellm} {helm} chart
+:revdate: 2026-02-04
+:page-revdate: {revdate}
+
+include::../snippets/helm-chart-overrides-intro.adoc[]
+
+.Options for the {litellm} {helm} chart
+[cols="3"]
+|===
+
+| Name                        | Description                                                                                                                                                                                                                                   | Value
+| `global.imagePullSecrets`   | Global override for container image registry pull secrets                                                                                                                                                                                     | `[]`
+| `global.imageRegistry`      | Global override for container image registry                                                                                                                                                                                                  | `""`
+| `replicaCount`              | The number of LiteLLM Proxy pods to be deployed                                                                                                                                                                                               | `1`
+| `masterkeySecretName`       | The name of the Kubernetes Secret that contains the Master API Key for LiteLLM. If not specified, use the generated secret name.                                                                                                              | N/A
+| `masterkeySecretKey`        | The key within the Kubernetes Secret that contains the Master API Key for LiteLLM. If not specified, use `masterkey` as the key.                                                                                                              | N/A
+| `masterkey`                 | The Master API Key for LiteLLM. If not specified, a random key in the `sk-...` format is generated.                                                                                                                                           | N/A
+| `environmentSecrets`        | An optional array of Secret object names. The keys and values in these secrets will be presented to the LiteLLM proxy pod as environment variables. See below for an example Secret object.                                                   | `[]`
+| `image.registry`            | LiteLLM Proxy image registry                                                                                                                                                                                                                  | `registry.suse.com`
+| `image.repository`          | LiteLLM Proxy image repository                                                                                                                                                                                                                | `ai/containers/litellm`
+| `image.pullPolicy`          | LiteLLM Proxy image pull policy                                                                                                                                                                                                               | `IfNotPresent`
+| `image.tag`                 | Overrides the image tag whose default the latest version of LiteLLM at the time this chart was published.                                                                                                                                     | `""`
+| `imagePullSecrets`          | Registry credentials for the LiteLLM and initContainer images.                                                                                                                                                                                | `[]`
+| `serviceAccount.create`     | Whether or not to create a Kubernetes Service Account for this deployment. The default is `false` because LiteLLM has no need to access the Kubernetes API.                                                                                   | `false`
+| `service.type`              | Kubernetes Service type (e.g. `LoadBalancer`, `ClusterIP`, etc.)                                                                                                                                                                              | `ClusterIP`
+| `service.port`              | TCP port that the Kubernetes Service will listen on. Also the TCP port within the Pod that the proxy will listen on.                                                                                                                          | `4000`
+| `service.loadBalancerClass` | Optional LoadBalancer implementation class (only used when `service.type` is `LoadBalancer`)                                                                                                                                                  | `""`
+| `ingress.labels`            | Additional labels for the Ingress resource                                                                                                                                                                                                    | `{}`
+| `ingress.*`                 | See [values.yaml](./values.yaml) for example settings                                                                                                                                                                                         | N/A
+| `proxyConfigMap.create`     | When `true`, render a ConfigMap from `.Values.proxy_config` and mount it.                                                                                                                                                                     | `true`
+| `proxyConfigMap.name`       | When `create=false`, name of the existing ConfigMap to mount.                                                                                                                                                                                 | `""`
+| `proxyConfigMap.key`        | Key in the ConfigMap that contains the proxy config file.                                                                                                                                                                                     | `"config.yaml"`
+| `proxy_config.*`            | See [values.yaml](./values.yaml) for default settings. Rendered into the ConfigMap’s `config.yaml` only when `proxyConfigMap.create=true`. See [example_config_yaml](../../../litellm/proxy/example_config_yaml/) for configuration examples. | `N/A`
+| `extraContainers[]`         | An array of additional containers to be deployed as sidecars alongside the LiteLLM Proxy.                                                                                                                                                     |
+| `pdb.enabled`               | Enable a PodDisruptionBudget for the LiteLLM proxy Deployment                                                                                                                                                                                 | `false`
+| `pdb.minAvailable`          | Minimum number/percentage of pods that must be available during **voluntary** disruptions (choose **one** of minAvailable/maxUnavailable)                                                                                                     | `null`
+| `pdb.maxUnavailable`        | Maximum number/percentage of pods that can be unavailable during **voluntary** disruptions (choose **one** of minAvailable/maxUnavailable)                                                                                                    | `null`
+| `pdb.annotations`           | Extra metadata annotations to add to the PDB                                                                                                                                                                                                  | `{}`
+| `pdb.labels`                | Extra metadata labels to add to the PDB                                                                                                                                                                                                       | `{}`
+
+|===

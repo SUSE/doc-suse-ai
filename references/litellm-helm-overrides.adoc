@@ -1,0 +1,70 @@
+[#litellm-helm-overrides]
+= Examples of {litellm} {helm} chart override files
+:revdate: 2026-02-03
+:page-revdate: {revdate}
+
+include::../snippets/helm-chart-overrides-intro.adoc[]
+
+[#litellm-chart-example-basic]
+.Basic override file with postgresql deployment and master key automatically generated.
+====
+[source,yaml]
+----
+# litellm_custom_overrides.yaml
+global:
+  imagePullSecrets: 
+    - application-collection <.>
+    - suse-ai-registry <.>
+postgresql:
+  persistence:
+    storageClassName: "local-path" <.>
+----
+<.> Specify the secret containing the credentials for the {sappco} in global.imagePullSecrets.
+For instructions on how to configure the image pull secrets for the {sappco}, as described in xref:suse-ai-deploy-suse-ai[].
+<.> Specify the secret containing the credentials for the {sregistry} in global.imagePullSecrets.
+For instructions on how to configure the image pull secrets for the {sregistry}, as described in xref:suse-ai-deploy-suse-ai[].
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+====
+
+The {litellm} chart from {sregistry} makes use of subcharts such as Redis and PostgreSQL from the {sappco} registry. Therefore, both registry secrets must be configured.
+
+== Validating the installation
+
+You can monitor the status of the {litellm} installation by running the following command:
+
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user} kubectl get pods -n <SUSE_AI_NAMESPACE>
+
+NAME                         READY   STATUS    RESTARTS   AGE
+[...]
+litellm-5d8c4c864f-9v7q5      1/1     Running   1          2m33s
+litellm-postgresql-0          1/1     Running   0          2m33s
+----
+
+Pods for the {litellm} deployment should transition to the `Ready` and `Running` states.
+
+[.procedure]
+== Validation
+
+. By default, the configuration does not enable Ingress. To expose the service on localhost, run:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user} kubectl -n <SUSE_AI_NAMESPACE> port-forward service/litellm 4000:4000
+----
+
+Your LiteLLM Proxy Server is now running at http://127.0.0.1:4000.
+
+== Admin UI access
+
+. You can access Admin UI at http://127.0.0.1:4000/ui and login using admin user. 
+You can retrieve the password for the admin user from the secret resource:
+
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user} kubectl get secret litellm-masterkey -n <SUSE_AI_NAMESPACE> -o jsonpath='{.data.masterkey}' | base64 --decode
+----

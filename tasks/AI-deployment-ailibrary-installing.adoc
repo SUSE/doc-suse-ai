@@ -123,4 +123,5 @@ ifdef::deployment_standard[]
 .. Install {pytorch} as described in xref:pytorch-installing[].
 .. Install {mlflow} as described in xref:mlflow-installing[].
 .. Install {qdrant} as described in xref:qdrant-installing[].
+.. Install {litellm} as described in xref:litellm-installing[].
 endif::[]
