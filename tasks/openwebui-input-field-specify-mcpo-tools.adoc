@@ -1,5 +1,7 @@
 [#openwebui-input-field-specify-mcpo-tools]
 = Selecting {mcpo} services from the chat input field
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 
 {mcp} servers offer additional services that enhance the AI model responses and make them more specific.
 This section details how to enable individual {mcpo} services from the input field. 
@@ -21,5 +23,5 @@ image::owui-usage-mcpo-question.png[A screenshot of a response from an {mcp} ser
 
 [TIP]
 ====
-For more details about {mcpo} integration and usage with {owui}, refer to the https://https://docs.openwebui.com/openapi-servers/open-webui/[{owui} integration documentation]. 
+For more details about {mcpo} integration and usage with {owui}, refer to the https://docs.openwebui.com/features/plugin/tools/openapi-servers/mcp[{owui} integration documentation]. 
 ====

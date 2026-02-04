@@ -5,6 +5,7 @@ endif::[]
 ifndef::override-title[]
 = Reference
 endif::[]
+:override-title!:
 
 Introductory text
 

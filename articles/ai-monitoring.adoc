@@ -1,9 +1,8 @@
 include::../common/generic-attributes.adoc[]
-= Monitoring {productname} with {otelemetry} and {sobservability}
-
+= Monitoring SUSE AI with OpenTelemetry and SUSE Observability 
+:docinfo:
 :doctype: article
 :experimental:
-:docinfo:
 
 ifdef::env-github[]
 :imagesdir: ../images/

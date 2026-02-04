@@ -1,5 +1,7 @@
 [#ai-requirements-ollama]
 = {ollama} requirements
+:revdate: 2026-01-19
+:page-revdate: {revdate}
 
 The version of {ollama} provided with {productname} is optimized for {nvidia} GPU hardware. This section guides you through the steps for configuring {ollama} on an {nvidia}-enabled system, including necessary configurations for both the hardware and software.
 
@@ -15,7 +17,7 @@ Since {ollama} is GPU-optimized, using the power of {nvidia} GPUs is essential f
 [#ai-reqs-ollama-hw]
 == Hardware requirements
 
-[role="tabs"]
+
 {nvidia} GPU::
 * The recommended GPU models include Tesla, A100, V100, RTX 30 series, or other compatible {nvidia} GPUs.
 * Ensure that the CUDA Compute Capability of your GPU is compatible with the required version of {ollama}.

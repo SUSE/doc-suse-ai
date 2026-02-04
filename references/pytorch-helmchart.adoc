@@ -1,5 +1,7 @@
 [#pytorch-helm-values]
 = Values for the {pytorch} {helm} chart
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 
@@ -71,8 +73,8 @@ If set to `'amd'`, a _rocm_ image tag is inferred.
 
 | `gpu.nvidiaResource`
 | string
-| `link:http://nvidia.com/gpu[nvidia.com/gpu]`
-| Requested resource name; change to a MIG slice (e.g. `link:http://nvidia.com/mig-1g.10gb[nvidia.com/mig-1g.10gb]`) to schedule MIG devices.
+| `\link:http://nvidia.com/gpu[]`
+| Requested resource name; change to a MIG slice (e.g. `\link:http://nvidia.com/mig-1g.10gb[nvidia.com/mig-1g.10gb]`) to schedule MIG devices.
 
 | `gpu.mig.enabled`
 | bool
@@ -159,7 +161,7 @@ If set to `'amd'`, a _rocm_ image tag is inferred.
 | `{}`
 | Annotations added to the ServiceAccount.
 
-| `link:http://serviceAccount.name[serviceAccount.name]`
+| `\link:http://serviceAccount.name[serviceAccount.name]`
 | string
 | `""`
 | Explicit ServiceAccount name (otherwise auto-generated).

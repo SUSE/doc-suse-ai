@@ -1,5 +1,7 @@
 [#pytorch-helm-overrides]
 = Examples of {pytorch} {helm} chart override files
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 

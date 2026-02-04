@@ -1,5 +1,7 @@
 [#owui-installing]
 = Installing {owui}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 include::../snippets/openwebui-intro.adoc[]
 

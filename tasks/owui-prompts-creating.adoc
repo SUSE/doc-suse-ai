@@ -1,5 +1,7 @@
 [#owui-prompts-creating]
 = Creating a system prompt
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This procedure shows how to create a new system prompt. 

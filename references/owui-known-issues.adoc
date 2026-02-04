@@ -1,10 +1,14 @@
 [#owui-known-issues]
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = {owui} known issues
 endif::[]
+
+:override-title!:
 
 This section lists the known issues with the {owui} and their solutions. 
 

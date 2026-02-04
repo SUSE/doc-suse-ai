@@ -1,5 +1,7 @@
 [#mcpo-installing]
 = Installing {mcpo}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {mcp} (Model Context Protocol) is an open source standard for connecting AI applications{mdash}such as {suseai}{mdash}to external systems.
 These external systems can include data sources like databases or local files, or tools like calculators or search engines.

@@ -1,5 +1,7 @@
 [#suse-security-installation-kubernetes]
 = Installing {ssecurity} using {kube}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 You can use {kube} to deploy separate manager, controller and enforcer containers and make sure that all new nodes have an enforcer deployed.
 {ssecurity} requires and supports {kube} network plug-ins such as flannel, weave and calico.
@@ -13,7 +15,7 @@ Refer to xref:suse-security-installation-kubernetes-node-labels[] for specifying
 [NOTE]
 ====
 It is not recommended to deploy (scale) more than one manager behind a load balancer due to potential session state issues.
-If you plan to use a PersistentVolume claim to store the backup of {ssecurity} configuration files, please see the general Backup/Persistent Data section in the link:https://ranchermanager.docs.rancher.com/integrations-in-rancher/neuvector/production-deployment-considerations#backups-and-persistent-data[Deploying {ssecurity}] overview.
+If you plan to use a PersistentVolume claim to store the backup of {ssecurity} configuration files, please see the general Backup/Persistent Data section in the link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/integrations/neuvector/overview.html[Deploying {ssecurity}] overview.
 ====
 
 If your deployment supports an integrated load balancer, change type `NodePort` to `LoadBalancer` for the console in the YAML file below.
@@ -550,7 +552,7 @@ spec:
 == {kube} deployment YAML for v5.4.2 onwards
 
 The following sample YAML is for versions 5.4.2 and onwards where we need to mount the internal certificates on Controller, Enforcer and Scanner pods since we do not support hardcoded certificates anymore.
-Create the internal-certificate secret from the given link before deploying: link:https://ranchermanager.docs.rancher.com/integrations-in-rancher/neuvector/custom-certs#replacing-internal-certificates[Replacing Internal Certificates].
+Create the internal-certificate secret from the given link before deploying: link:https://documentation.suse.com/cloudnative/security/5.4/en/internal.html[Replacing Internal Certificates].
 
 [source,yaml]
 ----

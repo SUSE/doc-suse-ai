@@ -1,5 +1,7 @@
 [#openwebui-input-field-collections]
 = Specifying preconfigured documents, collections or external URLs from the chat input field
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 Besides prompting preconfigured AI models, you can "talk"
 to documents or collections of documents uploaded by the administrator.

@@ -1,5 +1,7 @@
 [#ai-hallucinations-how-to-prevent]
 = How can I prevent AI from generating hallucinations?
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 You can help the AI model generate more reliable and precise content by creating effective prompts.
 This process is called __prompt engineering__.

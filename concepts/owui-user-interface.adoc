@@ -1,10 +1,14 @@
 [#openwebui-ui]
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = {owui} user interface
 endif::[]
+
+:override-title!:
 
 The {owui} interface consists of three main parts. 
 

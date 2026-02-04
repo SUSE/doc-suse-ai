@@ -1,5 +1,7 @@
 [#mlflow-installing]
 = Installing {mlflow}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {mlflow} is an open-source platform for managing the end-to-end machine learning lifecycle.
 It provides a centralized model registry to track and manage the entire lifecycle of machine learning models.
@@ -30,7 +32,7 @@ include::../snippets/ai-library-requirement.adoc[]
 
 . Create a skeleton for a new `{mlflow}` {helm} chart.
 +
-[source,subs="+attributes"]
+[source,,subs="+attributes"]
 ----
 {prompt_user}helm create mlflow
 ----
@@ -207,14 +209,14 @@ spec:
 ----
 . Install {mlflow} using the following command:
 +
-[source,subs="+attributes"]
+[source,,subs="+attributes"]
 ----
 {prompt_user}helm install mlflow ./mlflow \
   -n SUSE_AI_NAMESPACE
 ----
 . Validate that {ingress} is enabled for {mlflow}.
 +
-[source,subs="+attributes"]
+[source,,subs="+attributes"]
 ----
 {prompt_user}kubectl get ingress --all-namespaces
 NAMESPACE        AME       CLASS HOSTS                ADDRESS     PORTS     AGE
@@ -228,7 +230,7 @@ suse-private-ai  pen-webui nginx suse-ollama-webui    10.0.3.184  80, 443   8h
 
 To uninstall {mlflow}, run the following command:
 
-[source,subs="+attributes"]
+[source,,subs="+attributes"]
 ----
 {prompt_user}helm uninstall mlflow -n SUSE_AI_NAMESPACE
 ----
@@ -245,12 +247,14 @@ There are two ways to install {mlflow} using {docker}:
 === Installing {mlflow} using a {docker} container
 
 . Download the {mlflow} container.
-Replace `CONTAINER_VERSION` with the current container version.
-[source,subs="+attributes"]
+  Replace `CONTAINER_VERSION` with the current container version.
++
+[source,,subs="+attributes"]
 ----
 {prompt_user}docker pull dp.apps.rancher.io/containers/mlflow:CONTAINER_VERSION
 ----
-.  _(Optional)_ Verify the downloaded image.
+. _(Optional)_ Verify the downloaded image.
++
 [source,subs="+attributes"]
 ----
 {prompt_user}docker images
@@ -259,6 +263,7 @@ dp.apps.rancher.io/containers/mlflow 3.6.0  d984124afc22 33 hours ago 715MB
 ----
 . Run the {mlflow} server by starting the container at port 5000.
 Replace `CONTAINER_VERSION` with the current container version.
++
 [source,subs="+attributes"]
 ----
 {prompt_user} docker run -p 5000:5000 \
@@ -295,25 +300,28 @@ services:
       - "5000"
 ----
 . Run {mlflow} using the following command:
-[source,subs="+attributes"]
++
+[source,,subs="+attributes"]
 ----
 {prompt_user}docker-compose up -d
 [...]
 [+] Running 2/2
- \u2714 Network {exampleuser_plain}_default  Created                0.0s 
+ \u2714 Network {exampleuser}_default  Created                0.0s 
  \u2714 Container mlflow      Started                         4s
 ----
 .  _(Optional)_ Verify that the container is running.
++
 [source,subs="+attributes"]
 ----
-(venv) {exampleuser_plain}@localhost:~[] docker ps
+(venv) {exampleuser}@localhost:~[] docker ps
 CONTAINER ID IMAGE    ...     STATUS          PORTS                     NAMES
 1e58723cb3d  mlflow:3.6.0     Up 23 seconds   0.0.0.0:5000->5000/tcp... mlflow
 ----
 .  _(Optional)_ Follow the logs to ensure that the {mlflow} server has started correctly.
++
 [source,subs="+attributes"]
 ----
-{prompt_user}(venv) {exampleuser_plain}@localhost:~[] docker-compose logs -f
+{prompt_user}(venv) {exampleuser}@localhost:~[] docker-compose logs -f
 mlflow [2025-11-01 00:56:54 +0000] [3] [INFO] Starting gunicorn 23.0.0
 mlflow [2025-11-01 00:56:54 +0000] [3] [INFO] Listening at: http://0.0.0.0:5000 (3)
 mlflow [2025-11-01 00:56:54 +0000] [3] [INFO] Using worker: sync

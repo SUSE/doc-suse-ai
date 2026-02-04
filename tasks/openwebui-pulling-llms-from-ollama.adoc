@@ -1,5 +1,7 @@
 [#openwebui-downloading-ai-models-from-ollama]
 = Downloading AI models from {ollama}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {ollama} (https://ollama.com/) is an online repository that hosts open source AI models.
 This procedure describes how to download and use these models from the {owui} interface. 

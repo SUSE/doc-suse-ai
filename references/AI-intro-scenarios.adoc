@@ -1,6 +1,8 @@
 
 [#ai-intro-scenarios]
 = What are typical scenarios for using {productname}?
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 [abstract]
 --

@@ -1,5 +1,7 @@
 [#openwebui-setting-chat-system-prompt]
 = Setting a system prompt for the current chat
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This topic explains how to set a system prompt for the current chat session. 

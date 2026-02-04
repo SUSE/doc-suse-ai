@@ -1,5 +1,7 @@
 [#openwebui-user-revoking-access]
 = Revoking access to {owui}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This topic explains how to revoke access to {owui} for an existing user account. 

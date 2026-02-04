@@ -1,5 +1,7 @@
 [#openwebui-downloading-ai-models-from-huggingface]
 = Downloading AI models from {huggingface}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {huggingface} (https://huggingface.co/models) is an online repository for AI models.
 It also supports models in the GGUF binary format optimized for quick loading and saving of models.

@@ -1,10 +1,14 @@
 [#openwebui-setting-chat-model]
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Specifying an AI model for the current chat
 endif::[]
+
+:override-title!:
 
 ifndef::part-of-article[]
 This topic explains how to specify an AI model for the current chat session.

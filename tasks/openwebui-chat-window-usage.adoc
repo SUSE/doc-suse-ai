@@ -1,10 +1,14 @@
 [#openwebui-chat-window-usage]
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Using the {owui} chat window
 endif::[]
+
+:override-title!:
 
 The chat window is the primary interface for interacting with the AI, allowing you to send prompts and receive responses. 
 

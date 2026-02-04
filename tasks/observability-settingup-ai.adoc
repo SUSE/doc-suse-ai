@@ -1,5 +1,7 @@
 [#observability-installing]
 = Setting up {sobservability} for {productname}
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 
 {sobservability} provides comprehensive monitoring and insights into your infrastructure and applications.
 It enables efficient tracking of metrics, logs and traces, helping you maintain optimal performance and troubleshoot issues effectively.
@@ -56,7 +58,7 @@ image::ai-observability-overview.png[The chart showing a high-level overview of 
 .Setup clusters
 ====
 You can create and configure {kube} clusters for {productname} and {sobservability} as you prefer.
-If you are using {ranchermanager}, check its link:https://ranchermanager.docs.rancher.com/how-to-guides/new-user-guides/kubernetes-clusters-in-rancher-setup[documentation].
+If you are using {ranchermanager}, check its link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/cluster-deployment/cluster-deployment.html[documentation].
 For testing purposes, you can even share one cluster for both deployments.
 You can skip instructions on setting up a specific cluster if you already have one configured.
 ====
@@ -128,14 +130,12 @@ Example: `suse-ai-cluster`.
 
 .. Create the `genai_values.yaml` file with the following content:
 +
+ifdef::deployment_standard[]
 [source,yaml]
 ----
 global:
   imagePullSecrets:
   - application-collection <.>
-  ifdef::deployment_airgap[]
-  imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-  endif::[]
 serverUrl: <SUSE_OBSERVABILITY_API_URL>
 apiKey: <SUSE_OBSERVABILITY_API_KEY>
 tokenType: <SUSE_OBSERVABILITY_API_TOKEN_TYPE>
@@ -144,6 +144,23 @@ clusterName: <OBSERVED_SERVER_NAME>
 ----
 <.> Instructs {helm} to use credentials from the {sappco}.
 For instructions on how to configure the image pull secrets for the {sappco}, refer to the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
+endif::[]
+ifdef::deployment_airgap[]
+[source,yaml]
+----
+global:
+  imagePullSecrets:
+  - application-collection <.>
+  imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+serverUrl: <SUSE_OBSERVABILITY_API_URL>
+apiKey: <SUSE_OBSERVABILITY_API_KEY>
+tokenType: <SUSE_OBSERVABILITY_API_TOKEN_TYPE>
+apiToken: <SUSE_OBSERVABILITY_TOKEN>
+clusterName: <OBSERVED_SERVER_NAME>
+----
+<.> Instructs {helm} to use credentials from the {sappco}.
+For instructions on how to configure the image pull secrets for the {sappco}, refer to the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
+endif::[]
 
 .. Run the install command.
 +
@@ -194,16 +211,16 @@ The difference between deployment scenarios affects the *OTEL Collector exporter
 SUSE_OBSERVABILITY_API_URL::
 The URL of the {sobservability} API.
 +
-*Single-cluster example:* http://suse-observability-otel-collector.suse-observability.svc.cluster.local:4317
+*Single-cluster example:* \http://suse-observability-otel-collector.suse-observability.svc.cluster.local:4317
 +
-*Multi-cluster example:* https://suse-observability-api.your-domain.com
+*Multi-cluster example:* \https://suse-observability-api.your-domain.com
 
 SUSE_OBSERVABILITY_COLLECTOR_ENDPOINT::
 The endpoint of the {sobservability} Collector.
 +
-*Single-cluster example:* http://suse-observability-router.suse-observability.svc.cluster.local:8080/receiver/stsAgent
+*Single-cluster example:* \http://suse-observability-router.suse-observability.svc.cluster.local:8080/receiver/stsAgent
 +
-*Multi-cluster example:* https://suse-observability-router.your-domain.com/receiver/stsAgent
+*Multi-cluster example:* \https://suse-observability-router.your-domain.com/receiver/stsAgent
 
 [.procedure]
 . *Install {nvoperator}.*
@@ -223,14 +240,12 @@ kubectl create secret generic open-telemetry-collector \
 +
 Create a new file named `otel-values.yaml` with the following content.
 +
+ifdef::deployment_standard[]
 [source,yaml]
 ----
 global:
   imagePullSecrets:
   - application-collection
-  ifdef::deployment_airgap[]
-  repository: <LOCAL_DOCKER_REGISTRY_URL>:5043/opentelemetry-collector-k8s
-  endif::[]
 extraEnvsFrom:
   - secretRef:
       name: open-telemetry-collector
@@ -361,6 +376,145 @@ Because {milvus} will be installed in subsequent steps, you can return to this s
 Remember that the value can be distinct, depending on the deployment pattern.
 For production usage, we recommend using TLS communication.
 <.> Replace `<CLUSTER_NAME>` with the cluster's name.
+endif::[]
+ifdef::deployment_airgap[]
+[source,yaml]
+----
+global:
+  imagePullSecrets:
+  - application-collection
+  repository: <LOCAL_DOCKER_REGISTRY_URL>:5043/opentelemetry-collector-k8s
+extraEnvsFrom:
+  - secretRef:
+      name: open-telemetry-collector
+mode: deployment
+ports:
+  metrics:
+    enabled: true
+presets:
+  kubernetesAttributes:
+    enabled: true
+    extractAllPodLabels: true
+config:
+  receivers:
+    prometheus:
+      config:
+        scrape_configs:
+          - job_name: 'gpu-metrics'
+            scrape_interval: 10s
+            scheme: http
+            kubernetes_sd_configs:
+              - role: endpoints
+                namespaces:
+                  names:
+                    - gpu-operator
+          - job_name: 'milvus'
+            scrape_interval: 15s
+            metrics_path: '/metrics'
+            static_configs:
+              - targets: ['<MILVUS_SERVICE_NAME>.<SUSE_AI_NAMESPACE>.svc.cluster.local:9091'] <.>
+          - job_name: 'vllm'
+            scrape_interval: 10s
+            scheme: http
+            kubernetes_sd_configs:
+              - role: service
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_namespace]
+                action: keep
+                regex: '<VLLM_NAMESPACE>' <.>
+
+              - source_labels: [__meta_kubernetes_service_name]
+                action: keep
+                regex: '.*<VLLM_RELEASE_NAME>.*' <.>
+  exporters:
+    otlp:
+      endpoint: https://<OPEN_TELEMETRY_COLLECTOR_NAME>.suse-observability.svc.cluster.local:4317 <.>
+      headers:
+        Authorization: "SUSEObservability ${env:API_KEY}"
+      tls:
+        insecure: true
+  processors:
+    tail_sampling:
+      decision_wait: 10s
+      policies:
+      - name: rate-limited-composite
+        type: composite
+        composite:
+          max_total_spans_per_second: 500
+          policy_order: [errors, slow-traces, rest]
+          composite_sub_policy:
+          - name: errors
+            type: status_code
+            status_code:
+              status_codes: [ ERROR ]
+          - name: slow-traces
+            type: latency
+            latency:
+              threshold_ms: 1000
+          - name: rest
+            type: always_sample
+          rate_allocation:
+          - policy: errors
+            percent: 33
+          - policy: slow-traces
+            percent: 33
+          - policy: rest
+            percent: 34
+    resource:
+      attributes:
+      - key: k8s.cluster.name
+        action: upsert
+        value: <CLUSTER_NAME> <.>
+      - key: service.instance.id
+        from_attribute: k8s.pod.uid
+        action: insert
+    filter/dropMissingK8sAttributes:
+      error_mode: ignore
+      traces:
+        span:
+          - resource.attributes["k8s.node.name"] == nil
+          - resource.attributes["k8s.pod.uid"] == nil
+          - resource.attributes["k8s.namespace.name"] == nil
+          - resource.attributes["k8s.pod.name"] == nil
+  connectors:
+    spanmetrics:
+      metrics_expiration: 5m
+      namespace: otel_span
+    routing/traces:
+      error_mode: ignore
+      table:
+      - statement: route()
+        pipelines: [traces/sampling, traces/spanmetrics]
+  service:
+    extensions:
+      - health_check
+    pipelines:
+      traces:
+        receivers: [otlp, jaeger]
+        processors: [filter/dropMissingK8sAttributes, memory_limiter, resource]
+        exporters: [routing/traces]
+      traces/spanmetrics:
+        receivers: [routing/traces]
+        processors: []
+        exporters: [spanmetrics]
+      traces/sampling:
+        receivers: [routing/traces]
+        processors: [tail_sampling, batch]
+        exporters: [debug, otlp]
+      metrics:
+        receivers: [otlp, spanmetrics, prometheus]
+        processors: [memory_limiter, resource, batch]
+        exporters: [debug, otlp]
+----
+<.> Configure the {milvus} service and namespace for the {prometheus} scraper.
+Because {milvus} will be installed in subsequent steps, you can return to this step and edit the endpoint if necessary.
+<.> Update to match the values in the {vllm} deployment section.
+<.> Update to match the values in the {vllm} deployment section.
+<.> Set the exporter to your exposed {sobservability} collector.
+Remember that the value can be distinct, depending on the deployment pattern.
+For production usage, we recommend using TLS communication.
+<.> Replace `<CLUSTER_NAME>` with the cluster's name.
+endif::[]
 +
 Finally, run the installation command.
 +
@@ -414,6 +568,7 @@ Then apply the configuration by running the following command.
 ----
 . *Install the {sobservability} Agent.*
 +
+--
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -427,6 +582,7 @@ Then apply the configuration by running the following command.
 <.> Retrieve the API key using the Web UI or from the `baseConfig_values.yaml` file that you used during the {sobservability} installation.
 <.> Replace `<CLUSTER_NAME>` with the cluster's name.
 <.> Replace with your {sobservability} server URL.
+--
 . *Install {productname}.*
 Refer to xref:ai-library-installing[] for the complete procedure.
 

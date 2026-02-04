@@ -1,0 +1,31 @@
+[#qdrant-helm-overrides]
+= Examples of {qdrant} {helm} chart override files
+:revdate: 2026-02-03
+:page-revdate: {revdate}
+
+include::../snippets/helm-chart-overrides-intro.adoc[]
+
+[#qdrant-chart-example-basic]
+.Basic override file when the cluster has no default storage class set.
+====
+[source,yaml]
+----
+# qdrant_custom_overrides.yaml
+global:
+  imagePullSecrets:
+    - suse-ai-registry <.>
+persistence:
+  accessModes: ["ReadWriteOnce"]
+  size: 10Gi
+  annotations: {}
+  storageClassName: local-path <.>
+  # storageVolumeName: qdrant-storage
+  # storageSubPath: ""
+  # volumeAttributesClassName: ""
+
+----
+<.> Specify the secret containing the credentials for the {sregistry} in global.imagePullSecrets.
+For instructions on how to configure the image pull secrets for the {sregistry}, as described in xref:suse-ai-deploy-suse-ai[].
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+====

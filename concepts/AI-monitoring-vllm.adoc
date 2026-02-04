@@ -1,5 +1,7 @@
 [#ai-monitoring-vllm]
 = Monitoring {vllm}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {vllm} is monitored by scraping its {prometheus}-compatible metrics endpoints.
 The {sobservability} Extension uses these metrics to visualize {vllm}'s status and activity. 

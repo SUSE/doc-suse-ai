@@ -1,5 +1,7 @@
 [#ai-deployment-kube-installing]
 = Installing the Linux and {kube} distribution
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 This procedure includes the steps to install the base Linux operating
 system and a {kube} distribution for users who start deploying on

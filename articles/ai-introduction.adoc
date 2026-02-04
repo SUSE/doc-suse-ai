@@ -1,9 +1,8 @@
 include::../common/generic-attributes.adoc[]
 = Introduction to {productname}
-
+:docinfo:
 :doctype: article
 :experimental:
-:docinfo:
 
 ifdef::env-github[]
 :imagesdir: ../images/

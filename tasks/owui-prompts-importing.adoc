@@ -1,5 +1,7 @@
 [#owui-prompts-importing]
 = Importing exported system prompts
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This procedure shows how to import a system prompt that was previously exported. 

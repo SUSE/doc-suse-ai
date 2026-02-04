@@ -1,10 +1,14 @@
 [#openwebui-user-account-creating]
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Creating user accounts in {owui}
 endif::[]
+
+:override-title!:
 
 ifndef::part-of-article[]
 This topic explains how to create a new user account with an assigned role in {owui}. It also describes how to create multiple user accounts from a CSV list. 

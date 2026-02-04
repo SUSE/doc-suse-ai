@@ -1,6 +1,8 @@
 
 [#ai-intro-benefits]
 = What are the benefits of using {productname}?
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 [abstract]
 --

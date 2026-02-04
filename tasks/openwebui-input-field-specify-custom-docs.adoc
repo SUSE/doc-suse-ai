@@ -1,5 +1,7 @@
 [#openwebui-input-field-specify-custom-docs]
 = Adding custom data sources from the chat input field
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 Besides prompting preconfigured AI models, you can "talk"
 to custom data sources specified in the chat input field. AI processes

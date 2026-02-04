@@ -1,9 +1,8 @@
 include::../common/generic-attributes.adoc[]
 = Configuring {owui} for AI Interaction 
-
+:docinfo:
 :doctype: article
 :experimental:
-:docinfo:
 :part-of-article:
 
 ifdef::env-github[]

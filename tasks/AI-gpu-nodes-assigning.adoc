@@ -1,5 +1,7 @@
 [#ai-gpu-nodes-assigning]
 = Assigning GPU nodes to applications
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 When deploying a containerized application to {kube}, you need to ensure that containers requiring GPU resources are run on appropriate worker nodes.
 For example, {ollama}, a core component of {productname}, can deeply benefit from the use of GPU acceleration.

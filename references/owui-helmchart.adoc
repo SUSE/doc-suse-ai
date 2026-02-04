@@ -1,5 +1,7 @@
 [#owui-helmchart-values]
 = Values for the {owui} {helm} chart
+:revdate: 2026-01-28
+:page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 
@@ -153,7 +155,7 @@ It should be updated in a production deployment and changed to the required API 
 |ollama.enabled
 |bool
 |true
-|Automatically install {ollama} {helm} chart from link:https://otwld.github.io/ollama-helm/[].
+|Automatically install {ollama} {helm} chart from \oci://dp.apps.rancher.io/charts/ollama.
 Configure the following link:https://github.com/otwld/ollama-helm/#helm-values[{helm} values].
 
 |ollama.fullnameOverride
@@ -171,7 +173,7 @@ These can be added instead of automatically installing the {ollama} {helm} chart
 |string
 |""
 |OpenAI base API URL to use.
-Defaults to the Pipelines service endpoint when Pipelines are enabled, or to `https://api.openai.com/v1` if Pipelines are not enabled and this value is blank.
+Defaults to the Pipelines service endpoint when Pipelines are enabled, or to `\https://api.openai.com/v1` if Pipelines are not enabled and this value is blank.
 
 |persistence.accessModes
 |list

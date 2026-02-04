@@ -1,5 +1,7 @@
 [#ai-hardware-requirements-gpu]
 = GPU hardware for AI/ML workloads
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 To run AI/ML workloads, such as training machine learning models or running inference workloads, deploy cluster nodes with compatible {nvidia} GPUs to gain acceleration.
 

@@ -1,0 +1,129 @@
+[#qdrant-installing]
+= Installing {qdrant}
+
+:revdate: 2026-02-03
+:page-revdate: {revdate}
+
+{qdrant} is an AI-native vector database and a semantic search engine. 
+You can use it to extract meaningful information from unstructured data.
+
+[#qdrant-installing-app-details]
+== Details about the {qdrant} application
+
+Before deploying {qdrant}, it is important to know more about the supported configurations and documentation.
+The following command provides the corresponding details, assuming you have already executed the `helm registry login` 
+command as described in xref:suse-ai-deploy-suse-ai[].
+
+[source,,subs="+attributes"]
+----
+{prompt_user}helm show values oci://registry.suse.com/ai/charts/qdrant
+----
+
+To list the available chart versions from this {sregistry}, you can use tools like crane, skopeo, etc.
+Here is an example of the `crane` command.
+[source,,subs="+attributes"]
+----
+{prompt_user}crane auth login registry.suse.com -u regcode -p <SCC_REG_CODE>
+{prompt_user}crane ls registry.suse.com/ai/charts/qdrant
+----
+
+[#qdrant-installing-procedure]
+== {qdrant} installation procedure
+
+include::../snippets/ai-library-requirement.adoc[]
+
+. Create a `qdrant_custom_overrides.yaml` file to override the values of the {helm} chart.
+Find examples of {qdrant} override files in xref:qdrant-helm-overrides[] and a list of all valid options and their values from running helm show values.
+. Install the {qdrant} {helm} chart using the `qdrant_custom_overrides.yaml` file using the following command.
++
+[source,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  qdrant oci://registry.suse.com/ai/charts/qdrant \
+  -n SUSE_AI_NAMESPACE \
+  -f qdrant_custom_overrides.yaml
+----
+
+[#qdrant-owui-integration]
+== Integrating {qdrant} with {owui}
+
+To integrate {qdrant} with {owui}, follow these steps:
+
+. Edit the override file for {owui}, `owui_custom_overrides.yaml` and update the `extraEnvVars` section as follows.
++
+* Change the `VECTOR_DB` value to `qdrant`.
+* Add the {qdrant}-related environment variables: 
++
+[source,yaml]
+----
+extraEnvVars:
+- name: DEFAULT_MODELS
+  value: "gemma:2b"
+- name: DEFAULT_USER_ROLE
+  value: "pending"
+- name: ENABLE_SIGNUP
+  value: "true"
+- name: GLOBAL_LOG_LEVEL
+  value: INFO
+- name: RAG_EMBEDDING_MODEL
+  value: "sentence-transformers/all-MiniLM-L6-v2"
+- name: INSTALL_NLTK_DATASETS
+  value: "true"
+- name: VECTOR_DB
+  value: "qdrant"
+- name: QDRANT_URI
+  value: http://qdrant.<SUSE_AI_NAMESPACE>.svc.cluster.local:6333
+# Optional: If your Qdrant instance requires authentication, provide the API key here
+#- name: QDRANT_API_KEY
+#  value: <qdrant_api_key>
+- name: OPENAI_API_KEY
+  value: "0p3n-w3bu!"
+----
+. Redeploy {owui}.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  open-webui oci://dp.apps.rancher.io/charts/open-webui \
+  -n <SUSE_AI_NAMESPACE> \
+  -f <owui_custom_overrides.yaml>
+----
+. Verify that `VECTOR_DB` is set to `qdrant`.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl exec -it open-webui-0 -n <SUSE_AI_NAMESPACE> \
+  -- sh -c 'echo "VECTOR_DB=$VECTOR_DB"'
+
+Defaulted container "open-webui" out of: open-webui, copy-app-data (init)
+VECTOR_DB=qdrant
+----
+
+[#qdrant-upgrading]
+== Upgrading {qdrant}
+
+You can upgrade {qdrant} to a specific version by running the following command:
+
+[source,subs="+attributes"]
+----
+{prompt_user}helm upgrade \
+  qdrant oci://dp.apps.rancher.io/ai/charts/qdrant \
+  -n SUSE_AI_NAMESPACE \
+  --version VERSION_NUMBER \
+  -f qdrant_custom_overrides.yaml
+----
+
+[TIP]
+====
+If you omit the `--version` option, {qdrant} gets upgraded to the latest available version.
+====
+
+[#qdrant-uninstalling]
+== Uninstalling {qdrant}
+
+To uninstall {qdrant}, run the following command:
+
+[source,subs="+attributes"]
+----
+{prompt_user}helm uninstall qdrant -n SUSE_AI_NAMESPACE
+----

@@ -1,5 +1,7 @@
 [#cert-manager-installing]
 = Installing {certmanager}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 {certmanager} is an extensible X.509 certificate controller for {kube} workloads.
 It supports certificates from popular public issuers as well as private issuers.

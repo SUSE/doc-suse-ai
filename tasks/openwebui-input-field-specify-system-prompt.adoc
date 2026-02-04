@@ -1,5 +1,7 @@
 [#openwebui-input-field-specify-system-prompt]
 = Selecting a preconfigured system prompt from the chat input field
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 System prompts define the mood, context or style for user interactions.
 This section details how to select a preconfigured  system prompt from the input field. 

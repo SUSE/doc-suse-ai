@@ -1,10 +1,14 @@
 [#openwebui-introduction]
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = What is {owui}?
 endif::[]
+
+:override-title!:
 
 {owui} is a Web-based interface that allows you to interact with AI models, such as _large language models_ (LLM). It simplifies working with AI by providing a graphical user interface (GUI) instead of relying on command-line tools.
 The goal of {owui} is to make AI accessible to a broader audience, including those without technical expertise in AI development. 

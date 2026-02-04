@@ -1,5 +1,7 @@
 [#ollama-helmchart]
 = Values for the {ollama} {helm} chart
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 

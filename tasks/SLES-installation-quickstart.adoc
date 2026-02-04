@@ -1,5 +1,7 @@
 [#sles-installation-quickstart]
 = Installing {sls}
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 Use the following procedures to install {slsa} on all supported hardware
 platforms. They assume you have successfully booted into the
@@ -45,7 +47,7 @@ the `{installmedia}` or
 `FLASH_DISK` needs to be replaced with the
 flash device. To identify the device, insert it and run:
 
-[source,bash]
+[source,bash,subs="+attributes"]
 ----
 {prompt_root}grep -Ff <(hwinfo --disk --short) <(hwinfo --usb --short)
 disk:
@@ -55,7 +57,7 @@ disk:
 Make sure the size of the device is sufficient for the desired image.
 You can check the size of the device with:
 
-[source]
+[source,,subs="+attributes"]
 ----
 {prompt_root}fdisk -l /dev/sdc | grep -e "^/dev"
      /dev/sdc1  *     2048 31490047 31488000  15G 83 Linux

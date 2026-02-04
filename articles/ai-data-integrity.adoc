@@ -1,9 +1,8 @@
 include::../common/generic-attributes.adoc[]
 = Maintaining Data Integrity of AI Applications
-
+:docinfo:
 :doctype: article
 :experimental:
-:docinfo:
 
 ifdef::env-github[]
 :imagesdir: ../images/

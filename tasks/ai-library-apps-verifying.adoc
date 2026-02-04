@@ -1,0 +1,72 @@
+[#ai-library-apps-verifying]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Verifying {suse} {ailibrary} applications
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{ailibrary} applications are hosted in the private {suse}-trusted registries: {sappco} and {sregistry}.
+This section provides steps to verify the {ailibrary} artifacts using *cosign*--a tool for signing and verifying OCI containers and other artifacts.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-02-02
+:page-revdate: {revdate}
+
+[#verify-artifacts-saappco]
+.Verifying containers and {helm} charts hosted on the {sappco}
+====
+Refer to link:https://docs.apps.rancher.io/get-started/authentication[Authentication] to learn how to get authentication information for {sappco}.
+
+Run the following command to verify artifacts hosted on the {sappco}.
+
+[source,bash,subs="+attributes"]
+----
+{prompt_root}docker run --rm dp.apps.rancher.io/containers/cosign:2 \
+  verify dp.apps.rancher.io/containers/milvus:2.6.9 \
+  --registry-username <SUSE_APPLICATION_COLLECTION_USERNAME> \ <.>
+  --registry-password <SUSE_APPLICATION_COLLECTION_PASSWORD> \ <.>
+  --key https://apps.rancher.io/ap-pubkey.pem
+----
+<.> Provide {sappco} user name.
+<.> Provide {sappco} password.
+====
+
+[#verify-artifacts-sregistry]
+.Verifying containers and {helm} charts hosted on the {sregistry}
+====
+Refer to link:https://documentation.suse.com/container/all/single-html/Container-guide/#container-ltss-images[Using LTSS container images from the SUSE Registry] to learn how to get authentication information for {sregistry}.
+
+You can either download the link:/suse-ai/files/sr-pubkey.pem[public key] file or create it by saving the key's content as a text file:
+[source]
+----
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEyeQH2ZWIPhRP+gvznCze1XjosF+M
+RcYK1NYqHrJdicDHaVuY8wRvOWOb3dk87rD4XTRa1PA4OHIukef1lshEfQ==
+-----END PUBLIC KEY-----
+----
+
+Run the following command to verify artifacts hosted on the {sregistry}.
+
+[source,bash,subs="+attributes"]
+----
+{prompt_root}docker run --rm dp.apps.rancher.io/containers/cosign:2 \
+  verify registry.suse.com/ai/containers/qdrant:v1.16.3 \
+  --registry-username SUSE_REGISTRY_USERNAME \ <.>
+  --registry-password SUSE_REGISTRY_PASSWORD \ <.>
+  --key <PUBLIC_KEY_FILE> <.>
+----
+<.> Provide {sregistry} user name.
+<.> Provide {sregistry} password.
+<.> Provide a path to the public key file.
+====

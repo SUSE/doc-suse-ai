@@ -1,5 +1,7 @@
 [#owui-prompts-exporting]
 = Exporting existing system prompts
+:revdate: 2025-12-22
+:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This procedure shows how to export an existing system prompt. 
