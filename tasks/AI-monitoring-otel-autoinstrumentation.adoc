@@ -3,8 +3,8 @@
 
 This section describes how to instrument {kube} applications using the {otelemetry} Operator for {kube}.
 It also explains how to forward telemetry (metrics and traces) to {sobservability}.
-The Operator simplifies deployment of {otelemetry} components.
-It also enables automatic instrumentation without modifying application code.
+The Operator simplifies the deployment of {otelemetry} components.
+It also enables automatic instrumentation without modifying the application code.
 
 The guidance is presented in two paths:
 
@@ -63,7 +63,7 @@ It manages the following custom resources (CRs):
 * `OpenTelemetryCollector`: Defines and deploys {otelemetry} Collector instances managed by the Operator.
 * `TargetAllocator`: Distributes {prometheus} scrape targets across Collector replicas.
 * `OpAMPBridge`: Optional component that reports and manages Collector state via the OpAMP protocol.
-* `Instrumentation`: Defines automatic instrumentation settings and exporter configuration for workloads.
+* `Instrumentation`: Defines automatic instrumentation settings and exporter configurations for workloads.
 
 . Verify that the CRDs are installed.
 +
@@ -309,9 +309,9 @@ image::ai-observability-monitoring-traces-view.png["Screenshot showing the trace
 If you prefer the Operator to manage the Collector deployment and configuration, use the `OpenTelemetryCollector` custom resource.
 
 [#ai-monitoring-otel-operator-path-b-imagepull]
-=== Configure image pulls from Application Collection
+=== Configure image pulls from the Application Collection
 
-To pull the Collector image from Application Collection, create a ServiceAccount with `imagePullSecrets`.
+To pull the Collector image from the Application Collection, create a ServiceAccount with `imagePullSecrets`.
 Then attach it to the Collector CR via the `spec.serviceAccount` attribute.
 
 [source,bash,subs="+attributes"]
@@ -488,7 +488,7 @@ Go auto-instrumentation silent or failing. ::
 No init container or injection not happening. ::
 +
 * This may be caused by a typo in the annotation, the wrong language annotation (for example, `inject-java` vs `inject-python`), or the `Instrumentation` resource not being present in the namespace at pod startup.
-* Confirm the annotation matches the intended language.
+* Confirm that the annotation matches the intended language.
 * Ensure the `Instrumentation` resource exists in the pod namespace before pods are created.
 * If pods are already running, redeploy them after creating `Instrumentation`.
 
