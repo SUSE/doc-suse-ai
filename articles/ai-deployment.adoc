@@ -1,5 +1,6 @@
 include::../common/generic-attributes.adoc[]
-= Deploying and Installing {productname}:docinfo:
+= Deploying and Installing {productname}
+:docinfo:
 :doctype: article
 :experimental:
 
