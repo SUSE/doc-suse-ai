@@ -1,14 +1,25 @@
 [#suse-ai-deploy-suse-ai]
+include::../common/generic-attributes.adoc[]
+// overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-01-26
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Installing {ailibrary}
 endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+endif::[]
 
+// erase the flag for future overrides
+:override-abstract!:
 :override-title!:
+
+:revdate: 2026-02-10
+:page-revdate: {revdate}
 
 ifdef::deployment_standard[]
 This procedure includes steps to install {ailibrary} applications.

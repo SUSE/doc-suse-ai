@@ -1,11 +1,26 @@
 [#litellm-installing]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Installing {litellm}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{litellm} is an open-source LLM proxy and abstraction layer that lets you interact with many different large language model providers through a single, OpenAI-compatible API.
+endif::[]
 
-:revdate: 2026-02-04
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-02-10
 :page-revdate: {revdate}
-
-{litellm} is an open-source LLM proxy and abstraction layer that lets you interact with many different large language model providers
-through a single, OpenAI-compatible API.
 
 [#litellm-installing-app-details]
 == Details about the {litellm} application
@@ -19,7 +34,7 @@ command as described in xref:suse-ai-deploy-suse-ai[].
 {prompt_user}helm show values oci://registry.suse.com/ai/charts/litellm
 ----
 
-To list the available chart versions from this {sregistry}, you can use tools like crane, skopeo, etc.
+To list the available chart versions from this {sregistry}, you can use tools like crane, {skopeo}, etc.
 Here is an example of the `crane` command.
 [source,,subs="+attributes"]
 ----
@@ -33,8 +48,8 @@ Here is an example of the `crane` command.
 include::../snippets/ai-library-requirement.adoc[]
 
 . Create a `litellm_custom_overrides.yaml` file to override the values of the {helm} chart.
-Find examples of {litellm} override files in xref:litellm-helm-overrides[] and a list of all valid options and their values from running helm show values.
-. Install the {litellm} {helm} chart using the `litellm_custom_overrides.yaml` file using the following command.
+  Find examples of {litellm} override files in xref:litellm-helm-overrides[] together with a list of all valid options and their values as displayed by the `helm show` commands.
+. Install the {litellm} {helm} chart using the `litellm_custom_overrides.yaml` file by running the following command.
 +
 [source,subs="+attributes"]
 ----

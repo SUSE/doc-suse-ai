@@ -1,4 +1,11 @@
 <revhistory xml:id="rh-deployment">
+  <revision><date>2026-02-10</date>
+    <revdescription>
+      <para>
+        Added a section about {litellm} installation
+      </para>
+    </revdescription>
+  </revision>
   <revision><date>2026-02-02</date>
     <revdescription>
       <para>

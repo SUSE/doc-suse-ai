@@ -1,12 +1,30 @@
 [#litellm-helm-overrides]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Examples of {litellm} {helm} chart override files
-:revdate: 2026-02-03
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-02-10
 :page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 
 [#litellm-chart-example-basic]
-.Basic override file with postgresql deployment and master key automatically generated.
+.Basic override file with {postgresql} deployment and master key automatically generated.
 ====
 [source,yaml]
 ----
@@ -19,24 +37,24 @@ postgresql:
   persistence:
     storageClassName: "local-path" <.>
 ----
-<.> Specify the secret containing the credentials for the {sappco} in global.imagePullSecrets.
-For instructions on how to configure the image pull secrets for the {sappco}, as described in xref:suse-ai-deploy-suse-ai[].
-<.> Specify the secret containing the credentials for the {sregistry} in global.imagePullSecrets.
-For instructions on how to configure the image pull secrets for the {sregistry}, as described in xref:suse-ai-deploy-suse-ai[].
+<.> Specify the secret containing the credentials for the {sappco} in `global.imagePullSecrets`.
+    For instructions on how to configure the image pull secrets for the {sappco}, refer to xref:suse-ai-deploy-suse-ai[].
+<.> Specify the secret containing the credentials for the {sregistry} in `global.imagePullSecrets`.
+    For instructions on how to configure the image pull secrets for the {sregistry}, refer to xref:suse-ai-deploy-suse-ai[].
 <.> Use `local-path` storage only for testing purposes.
-For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+    For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
 ====
 
-The {litellm} chart from {sregistry} makes use of subcharts such as Redis and PostgreSQL from the {sappco} registry. Therefore, both registry secrets must be configured.
+The {litellm} chart from {sregistry} makes use of subcharts such as {redis} and {postgresql} from the {sappco} registry.
+Therefore, both registry secrets must be configured.
 
 == Validating the installation
 
 You can monitor the status of the {litellm} installation by running the following command:
 
-+
 [source,bash,subs="+attributes"]
 ----
-{prompt_user} kubectl get pods -n <SUSE_AI_NAMESPACE>
+{prompt_user}kubectl get pods -n <SUSE_AI_NAMESPACE>
 
 NAME                         READY   STATUS    RESTARTS   AGE
 [...]
@@ -46,25 +64,25 @@ litellm-postgresql-0          1/1     Running   0          2m33s
 
 Pods for the {litellm} deployment should transition to the `Ready` and `Running` states.
 
-[.procedure]
 == Validation
 
-. By default, the configuration does not enable Ingress. To expose the service on localhost, run:
-+
+By default, the configuration does not enable {ingress}. To expose the service on localhost, run:
+
 [source,bash,subs="+attributes"]
 ----
-{prompt_user} kubectl -n <SUSE_AI_NAMESPACE> port-forward service/litellm 4000:4000
+{prompt_user}kubectl \
+  -n <SUSE_AI_NAMESPACE> port-forward service/litellm 4000:4000
 ----
 
-Your LiteLLM Proxy Server is now running at http://127.0.0.1:4000.
+Your {litellm} Proxy Server is now running at http://127.0.0.1:4000.
 
 == Admin UI access
 
-. You can access Admin UI at http://127.0.0.1:4000/ui and login using admin user. 
-You can retrieve the password for the admin user from the secret resource:
+You can access the administration page at http://127.0.0.1:4000/ui and log in using the administrator account. 
+Retrieve the password for the administrator user from the secret resource:
 
-+
 [source,bash,subs="+attributes"]
 ----
-{prompt_user} kubectl get secret litellm-masterkey -n <SUSE_AI_NAMESPACE> -o jsonpath='{.data.masterkey}' | base64 --decode
+{prompt_user}kubectl get secret litellm-masterkey \
+  -n <SUSE_AI_NAMESPACE> -o jsonpath='{.data.masterkey}' | base64 --decode
 ----
