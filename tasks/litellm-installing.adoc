@@ -12,7 +12,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{litellm} is an open-source LLM proxy and abstraction layer that lets you interact with many different large language model providers through a single, OpenAI-compatible API.
+{litellm} is an open source LLM proxy and abstraction layer that lets you interact with many large language model providers through a single, OpenAI-compatible API.
 endif::[]
 
 // erase the flag for future overrides
