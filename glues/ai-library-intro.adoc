@@ -1,12 +1,30 @@
 [#ai-library-installing]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Installing applications from {ailibrary}
-
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
 {productname} is delivered as a set of components that you can combine to meet specific use cases.
 To enable the full integrated stack, you need to deploy multiple applications in sequence.
 Applications with the fewest dependencies must be installed first, followed by dependent applications once their required dependencies are in place within the cluster.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
 
 ifdef::deployment_standard[]
 You can install required {ailibrary} component {helm} charts using either the {helm} CLI or the {sailifecyclemanager} GUI (xref:ai-lifecycle-manager[]).
-To simplify the installation, the AI library also provides a meta Helm chart called {saideployer} (xref:ailibrary-installing-deployer[]).
+To simplify the installation, the {ailibrary} also provides a meta {helm} chart called {saideployer} (xref:ailibrary-installing-deployer[]).
 Use it to include all the dependencies specific to your use case in a single `values.yaml` file and install the {saideployer} chart using the {helm} CLI or the {sailifecyclemanager} GUI.
 endif::[]
+
+include::../snippets/ai-separate-rancher-cluster.adoc[]

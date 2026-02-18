@@ -1,19 +1,40 @@
 [#suse-ai-deploy-prepare]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Preparing the cluster for {ailibrary}
-:revdate: 2026-01-26
-:page-revdate: {revdate}
-
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
 This procedure assumes that you already have the base operating system installed on cluster nodes as well as the {rke2} {kube} distribution installed and operational.
 If you are installing from scratch, refer to xref:ai-deployment-kube-installing[] first.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-02-18
+:page-revdate: {revdate}
+
 
 ifdef::deployment_standard[]
-. Install xref:rancher-installation-quickstart[{ranchermanager}] on the cluster.
+. Install xref:rancher-installation-quickstart[{ranchermanager}].
 endif::[]
 ifdef::deployment_airgap[]
-. Install xref:rancher-installation-airgapped[{ranchermanager}] on the cluster.
+. Install xref:rancher-installation-airgapped[{ranchermanager}].
 endif::[]
-. Install the {nvoperator} on the cluster as described in xref:nvidia-operator-installation[].
-. Connect the {kube} cluster to {ranchermanager} as described in xref:rancher-register-clusters[].
++
+include::../snippets/ai-separate-rancher-cluster.adoc[]
++
+. Install the {nvoperator} as described in xref:nvidia-operator-installation[].
+. Connect the _downstream_ {kube} cluster to {ranchermanager} running on the _upstream_ cluster as described in xref:rancher-register-clusters[].
 . Configure the GPU-enabled nodes so that the {productname} containers are assigned to Pods that run on nodes equipped with {nvidia} GPU hardware.
 Find more details about assigning Pods to nodes in xref:ai-gpu-nodes-assigning[].
 . _(Optional)_ Install {ssecurity} as described in xref:ai-security-installation[].

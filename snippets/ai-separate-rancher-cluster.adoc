@@ -1,0 +1,8 @@
+[IMPORTANT]
+.Separate cluster for {ranchera}
+====
+For production deployments, *always* use at least two {kube} clusters:
+
+* The _upstream_ cluster is used exclusively by the {ranchera} installation.
+* The _downstream_ cluster holds the rest of {productname} components including {ailibrary} applications.
+====
