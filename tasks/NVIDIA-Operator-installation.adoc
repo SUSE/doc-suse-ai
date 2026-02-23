@@ -69,14 +69,14 @@ This library is used by Kubernetes components to interact with the kernel driver
 Once the OS is ready and RKE2 is running, install the GPU Operator with the following yaml manifest.
 
 [CAUTION]
-==
+====
 The NVIDIA operator restarts containerd with a hangup call which restarts RKE2.
-==
+====
 
 [IMPORTANT]
-==
+====
 The envvars `ACCEPT_NVIDIA_VISIBLE_DEVICES_ENVVAR_WHEN_UNPRIVILEGED`, `ACCEPT_NVIDIA_VISIBLE_DEVICES_AS_VOLUME_MOUNTS` and `DEVICE_LIST_STRATEGY` are required to properly isolate GPU resources as explained in https://docs.google.com/document/d/1zy0key-EL6JH50MZgwg96RPYxxXXnVUdxLZwGiyqLd8/edit?tab=t.0[Preventing unprivileged access to GPUs in Kubernetes].
-==
+====
 
 [,yaml]
 ----
@@ -92,6 +92,8 @@ spec:
   targetNamespace: gpu-operator
   createNamespace: true
   valuesContent: |-
+    driver:
+      enabled: "false"
     toolkit:
       env:
       - name: CONTAINERD_SOCKET
@@ -172,9 +174,9 @@ limits:
 
 [IMPORTANT]
 .Version Gate
-==
+====
 Available as of October 2024 releases: v1.28.15+rke2r1, v1.29.10+rke2r1, v1.30.6+rke2r1, v1.31.2+rke2r1.
-==
+====
 
 RKE2 will now use `PATH` to find alternative container runtimes, in addition to checking the default paths used by the container runtime packages. In order to use this feature, you must modify the RKE2 service's PATH environment variable to add the directories containing the container runtime binaries.
 
@@ -186,9 +188,9 @@ It's recommended that you modify one of this two environment files:
 This example will add the `PATH` in `/etc/default/rke2-server`:
 
 [CAUTION]
-==
+====
 `PATH` changes should be done with care to avoid placing untrusted binaries in the path of services that run as root.
-==
+====
 
 [,bash]
 ----
