@@ -1,8 +1,5 @@
 [IMPORTANT]
-.Separate cluster for {ranchera}
+.Separate clusters for specific {productname} components
 ====
-For production deployments, *always* use at least two {kube} clusters:
-
-* The _upstream_ cluster is used exclusively by the {ranchera} installation.
-* The _downstream_ cluster holds the rest of {productname} components including {ailibrary} applications.
+For production deployments, we strongly recommended deploying {ranchera}, {sobservability}, and workloads from the AI library to separate {kube} clusters.
 ====
