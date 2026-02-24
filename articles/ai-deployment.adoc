@@ -115,9 +115,12 @@ include::../tasks/ai-node-installer.adoc[leveloffset=+3]
 include::../tasks/ai-deployment-ailibrary-deployer.adoc[leveloffset=+2]
 :override-title: Lifecycle manager
 include::../concepts/ai-lifecycle-manager.adoc[leveloffset=+2]
-:override-title: Installation
+:override-title: Installation using {ranchera} UI
 :override-abstract: {empty}
-include::../tasks/ai-lifecycle-manager-installing.adoc[leveloffset=+3]
+include::../tasks/ai-lifecycle-manager-installing-rancher-ui.adoc[leveloffset=+3]
+:override-title: Installation using {saioperator}
+:override-abstract: {empty}
+include::../tasks/ai-lifecycle-manager-installing-ai-operator.adoc[leveloffset=+3]
 //:override-title: User roles
 //:override-abstract: {empty}
 //include::../references/ai-lifecycle-manager-user-roles.adoc[leveloffset=+3]
@@ -127,7 +130,6 @@ include::../tasks/ai-lifecycle-manager-clusterrepo-creating.adoc[leveloffset=+3]
 :override-title: Installing and managing applications
 :override-abstract: {empty}
 include::../tasks/ai-lifecycle-manager-installing-applications.adoc[leveloffset=+3]
-
 
 // steps after deployment
 //:override-title: Steps after the installation is complete

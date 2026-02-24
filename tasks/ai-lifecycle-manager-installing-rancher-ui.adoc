@@ -1,4 +1,4 @@
-[#ai-lifecycle-manager-installing]
+[#ai-lifecycle-manager-installing-rancher-ui]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
@@ -7,7 +7,7 @@ ifdef::override-title[]
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
-= Installing {sailifecyclemanager}
+= Installing {sailifecyclemanager} using {ranchera} UI
 endif::[]
 // overridden abstract?
 ifdef::override-abstract[]
