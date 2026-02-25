@@ -35,12 +35,13 @@ For multi-cluster deployments, install the {saioperator} to the same cluster whe
 ----
 {prompt_user}helm install suse-ai-operator \
   -n suse-ai-operator-system \ <.>
-  --version <VERSION> \ <.>
+  --version 1.0.0 \ <.>
   --create-namespace \
   oci://ghcr.io/suse/chart/suse-ai-operator
 ----
 <.> Modify the namespace to match your needs.
-<.> Replace `<VERSION>` with a production tag published in the GitHub Container Registry.
+<.> You may replace the version with a production tag published in the link:https://github.com/SUSE/suse-ai-lifecycle-manager/pkgs/container/chart%2Fsuse-ai-operator[GitHub Container Registry].
+
 . Create the InstallAIExtension Custom Resource (CR).
   Save the `suse-ai-extension.yaml` file with the following content.
 +
@@ -54,11 +55,14 @@ spec:
   helm:
     name: suse-ai-lifecycle-manager
     url: "oci://ghcr.io/suse/chart/suse-ai-lifecycle-manager"
-    version: "1.0.0"
+    version: "1.0.0" <.>
   extension:
     name: suse-ai-lifecycle-manager
-    version: "1.0.0"
+    version: "1.0.0" <.>
 ----
+<.> You may replace the version with a production tag published in the link:https://github.com/SUSE/suse-ai-lifecycle-manager/pkgs/container/chart%2Fsuse-ai-lifecycle-manager[GitHub Container Registry].
+<.> You may replace the version with a production tag published in the link:https://github.com/SUSE/suse-ai-lifecycle-manager/pkgs/container/suse-ai-lifecycle-manager[GitHub Container Registry].
+
 . Apply the `suse-ai-extension.yaml` file to install the extension.
 +
 [source,bash,subs="+attributes"]
