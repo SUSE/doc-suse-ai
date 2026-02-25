@@ -15,7 +15,7 @@ ifdef::override-abstract[]
 endif::[]
 ifndef::override-abstract[]
 The {sailifecyclemanager} adds capabilities to {ranchera} for deploying and managing AI-powered applications.
-Its usage and administration depends on which user role is being used.
+Its usage and administration depend on which user role is being used.
 endif::[]
 
 // erase the flag for future overrides
