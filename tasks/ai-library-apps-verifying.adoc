@@ -32,7 +32,7 @@ Run the following command to verify artifacts hosted on the {sappco}.
 
 [source,bash,subs="+attributes"]
 ----
-{prompt_root}docker run --rm dp.apps.rancher.io/containers/cosign:2 \
+{prompt_user}docker run --rm dp.apps.rancher.io/containers/cosign:2 \
   verify dp.apps.rancher.io/containers/milvus:2.6.9 \
   --registry-username <SUSE_APPLICATION_COLLECTION_USERNAME> \ <.>
   --registry-password <SUSE_APPLICATION_COLLECTION_PASSWORD> \ <.>
@@ -50,23 +50,99 @@ Refer to link:https://documentation.suse.com/container/all/single-html/Container
 You can either download the link:/suse-ai/files/sr-pubkey.pem[public key] file or create it by saving the key's content as a text file:
 [source]
 ----
+{prompt_user}cat <<EOF >./suse-ai-pubkey.pem
 -----BEGIN PUBLIC KEY-----
 MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEyeQH2ZWIPhRP+gvznCze1XjosF+M
 RcYK1NYqHrJdicDHaVuY8wRvOWOb3dk87rD4XTRa1PA4OHIukef1lshEfQ==
 -----END PUBLIC KEY-----
+EOF
 ----
 
 Run the following command to verify artifacts hosted on the {sregistry}.
+This ensures the image was published by SUSE and has not been tampered with.
 
 [source,bash,subs="+attributes"]
 ----
-{prompt_root}docker run --rm dp.apps.rancher.io/containers/cosign:2 \
+{prompt_user}docker run --rm \
+  dp.apps.rancher.io/containers/cosign:2 \
   verify registry.suse.com/ai/containers/qdrant:v1.16.3 \
   --registry-username SUSE_REGISTRY_USERNAME \ <.>
   --registry-password SUSE_REGISTRY_PASSWORD \ <.>
-  --key <PUBLIC_KEY_FILE> <.>
+  --key https://documentation.suse.com/suse-ai/files/sr-pubkey.pem
 ----
 <.> Provide {sregistry} user name.
 <.> Provide {sregistry} password.
-<.> Provide a path to the public key file.
+
+Or by mounting the previously created pem file:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}docker run --rm \
+  -v $(pwd)/suse-ai-pubkey.pem:/suse-ai-pubkey.pem \
+  dp.apps.rancher.io/containers/cosign:2 \
+  verify registry.suse.com/ai/containers/qdrant:v1.16.3 \
+  --registry-username SUSE_REGISTRY_USERNAME \ <.>
+  --registry-password SUSE_REGISTRY_PASSWORD \ <.>
+  --key /suse-ai-pubkey.pem <.>
+----
+<.> Provide {sregistry} user name.
+<.> Provide {sregistry} password.
+<.> Path (on the container) to the mounted public key.
+====
+
+[#discover-attestations-sregistry]
+.Discovering Attached Attestations (Optional)
+====
+The images contain attached cryptographic metadata. To see exactly what types of attestations are available for a specific image (such as an SBOM or Vulnerability report), query the registry and parse the output with `jq`:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}docker run --rm \
+  dp.apps.rancher.io/containers/cosign:2 \
+  download attestation \
+  --registry-username SUSE_REGISTRY_USERNAME \ <.>
+  --registry-password SUSE_REGISTRY_PASSWORD \ <.>
+  registry.suse.com/ai/containers/qdrant:v1.17.0 \
+  | jq -r '.payload | @base64d | fromjson | .predicateType' | sort -u
+----
+<.> Provide {sregistry} user name.
+<.> Provide {sregistry} password.
+
+This outputs a list of URIs. For example, `https://cyclonedx.org/bom` indicates that a CycloneDX Software Bill of Materials (SBOM) is attached.
+====
+
+[#extract-sbom-sregistry]
+.Extracting the CycloneDX SBOM
+====
+By default, `cosign` wraps attestations in an `in-toto` security envelope.
+
+The following command verifies the attestation signature, unwraps the envelope, decodes the payload, and saves the pure CycloneDX data (`.predicate`) into a local JSON file:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}docker run --rm \
+  dp.apps.rancher.io/containers/cosign:2 \
+  verify-attestation \
+  --type cyclonedx \
+  --registry-username SUSE_REGISTRY_USERNAME \ <.>
+  --registry-password SUSE_REGISTRY_PASSWORD \ <.>
+  --key https://documentation.suse.com/suse-ai/files/sr-pubkey.pem \
+  registry.suse.com/ai/containers/qdrant:v1.17.0 2>/dev/null \
+  | jq -r '.payload | @base64d | fromjson | .predicate' > qdrant-sbom.json
+----
+<.> Provide {sregistry} user name.
+<.> Provide {sregistry} password.
+====
+
+[#scan-sbom-sregistry]
+.Scanning the SBOM for Vulnerabilities
+====
+Because the SBOM is now available, you can scan it for known vulnerabilities instantly using a security scanner like Trivy (without needing to download or unpack the actual container image).
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}trivy sbom ./qdrant-sbom.json
+----
+
+Trivy will instantly cross-reference the extracted CycloneDX document against its vulnerability database and output a table of any known CVEs inside the container's OS packages and application libraries.
 ====
