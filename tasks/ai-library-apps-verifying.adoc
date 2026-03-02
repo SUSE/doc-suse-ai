@@ -73,7 +73,7 @@ This ensures the image was published by {suse} and has not been tampered with.
 <.> Provide {sregistry} user name.
 <.> Provide {sregistry} password.
 
-Or by mounting the previously created pem file:
+Alternatively, mount the previously created PEM file:
 
 [source,bash,subs="+attributes"]
 ----
