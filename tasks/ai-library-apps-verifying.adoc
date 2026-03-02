@@ -59,7 +59,7 @@ EOF
 ----
 
 Run the following command to verify artifacts hosted on the {sregistry}.
-This ensures the image was published by SUSE and has not been tampered with.
+This ensures the image was published by {suse} and has not been tampered with.
 
 [source,bash,subs="+attributes"]
 ----
