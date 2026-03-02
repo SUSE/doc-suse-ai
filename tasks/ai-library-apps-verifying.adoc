@@ -109,7 +109,8 @@ To see exactly what types of attestations are available for a specific image (su
 <.> Provide {sregistry} user name.
 <.> Provide {sregistry} password.
 
-This outputs a list of URIs. For example, `https://cyclonedx.org/bom` indicates that a CycloneDX Software Bill of Materials (SBOM) is attached.
+This outputs a list of URIs.
+For example, `\https://cyclonedx.org/bom` indicates that a CycloneDX Software Bill of Materials (SBOM) is attached.
 ====
 
 [#extract-sbom-sregistry]
