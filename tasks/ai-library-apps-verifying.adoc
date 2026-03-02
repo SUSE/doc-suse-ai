@@ -139,7 +139,7 @@ The following command verifies the attestation signature, unwraps the envelope, 
 [#scan-sbom-sregistry]
 .Scanning the SBOM for Vulnerabilities
 ====
-Because the SBOM is now available, you can scan it for known vulnerabilities instantly using a security scanner like Trivy (without needing to download or unpack the actual container image).
+Because the SBOM is now available, you can scan it for known vulnerabilities instantly using a security scanner like Trivy without needing to download or unpack the actual container image.
 
 [source,bash,subs="+attributes"]
 ----
