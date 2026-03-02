@@ -93,7 +93,8 @@ Alternatively, mount the previously created PEM file:
 [#discover-attestations-sregistry]
 .Discovering attached attestations (optional)
 ====
-The images contain attached cryptographic metadata. To see exactly what types of attestations are available for a specific image (such as an SBOM or Vulnerability report), query the registry and parse the output with `jq`:
+The images contain attached cryptographic metadata.
+To see exactly what types of attestations are available for a specific image (such as an SBOM or Vulnerability report), query the registry and parse the output with `jq`:
 
 [source,bash,subs="+attributes"]
 ----
