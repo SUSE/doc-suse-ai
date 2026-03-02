@@ -48,7 +48,7 @@ Run the following command to verify artifacts hosted on the {sappco}.
 Refer to link:https://documentation.suse.com/container/all/single-html/Container-guide/#container-ltss-images[Using LTSS container images from the SUSE Registry] to learn how to get authentication information for {sregistry}.
 
 You can either download the link:/suse-ai/files/sr-pubkey.pem[public key] file or create it by saving the key's content as a text file:
-[source]
+[source,subs="+attributes"]
 ----
 {prompt_user}cat <<EOF >./suse-ai-pubkey.pem
 -----BEGIN PUBLIC KEY-----
