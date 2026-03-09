@@ -1,6 +1,25 @@
 [#nvidia-gpu-driver-installation-sles]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Installing {nvidia} GPU drivers on {sles}
-:revdate: 2026-01-28
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{empty}
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-03-09
 :page-revdate: {revdate}
 
 [#nvidia-gpu-requirements-sles]
@@ -99,6 +118,14 @@ endif::[]
   nv-prefer-signed-open-driver
 {prompt_root}version=$(rpm -qa --queryformat '%\{VERSION}\n' \
   nv-prefer-signed-open-driver | cut -d "_" -f1 | sort -u | tail -n 1)
+----
+
+. Install the nvidia-gl-G06 package along with the open driver on the GPU nodes if the application needs {nvidia} Vulkan capabilities.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_root}zypper install -y --auto-agree-with-licenses \
+nvidia-gl-G06=$\{version}
 ----
 
 . You can then install the appropriate packages for additional utilities

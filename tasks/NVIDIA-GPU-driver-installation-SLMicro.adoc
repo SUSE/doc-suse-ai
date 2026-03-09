@@ -129,6 +129,14 @@ endif::[]
   | cut -d "_" -f1 | sort -u | tail -n 1)
 ----
 
+. Install the nvidia-gl-G06 package along with the open driver on the GPU nodes if the application needs {nvidia} Vulkan capabilities.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_tr-up}zypper install -y --auto-agree-with-licenses \
+nvidia-gl-G06=$\{version}
+----
+
 . You can then install the appropriate packages for additional utilities
   that are useful for testing purposes.
 +
