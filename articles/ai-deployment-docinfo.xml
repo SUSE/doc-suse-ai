@@ -1,4 +1,11 @@
 <revhistory xml:id="rh-deployment">
+  <revision><date>2026-03-09</date>
+    <revdescription>
+      <para>
+        Added a new Helm chart example where {qdrant} uses GPU capabilities
+      </para>
+    </revdescription>
+  </revision>
   <revision><date>2026-02-10</date>
     <revdescription>
       <para>

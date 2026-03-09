@@ -1,9 +1,26 @@
 [#qdrant-helm-overrides]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Examples of {qdrant} {helm} chart override files
-:revdate: 2026-02-03
-:page-revdate: {revdate}
-
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
 include::../snippets/helm-chart-overrides-intro.adoc[]
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-03-09
+:page-revdate: {revdate}
 
 [#qdrant-chart-example-basic]
 .Basic override file when the cluster has no default storage class set.
@@ -24,8 +41,49 @@ persistence:
   # volumeAttributesClassName: ""
 
 ----
-<.> Specify the secret containing the credentials for the {sregistry} in global.imagePullSecrets.
-For instructions on how to configure the image pull secrets for the {sregistry}, as described in xref:suse-ai-deploy-suse-ai[].
+<.> Specify the secret containing the credentials for the {sregistry} in `global.imagePullSecrets`.
+For instructions on how to configure the image pull secrets for the {sregistry}, refer to xref:suse-ai-deploy-suse-ai[].
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+====
+
+[#qdrant-chart-example-gpu]
+.An example where {qdrant} uses GPU capabilities.
+====
+[source,yaml]
+----
+# qdrant_custom_overrides.yaml
+global:
+  imagePullSecrets:
+    - suse-ai-registry <.>
+env:
+  - name: QDRANT__GPU__INDEXING
+    value: "1"
+  - name: QDRANT__LOG_LEVEL
+    value: debug
+image:
+  registry: registry.suse.com
+  repository: ai/containers/qdrant
+  pullPolicy: IfNotPresent
+  useUnprivilegedImage: false
+  tag: "v1.17.0-gpu-nvidia"
+persistence:
+  accessModes: ["ReadWriteOnce"]
+  size: 10Gi
+  annotations: {}
+  additionalLabels: {}
+  # storageVolumeName: qdrant-storage
+  # storageSubPath: ""
+  storageClassName: local-path <.>
+  # volumeAttributesClassName: ""
+resources:
+  requests:
+    nvidia.com/gpu: 1
+  limits:
+    nvidia.com/gpu: 1
+----
+<.> Specify the secret containing the credentials for the {sregistry} in `global.imagePullSecrets`.
+For instructions on how to configure the image pull secrets for the {sregistry}, refer to xref:suse-ai-deploy-suse-ai[].
 <.> Use `local-path` storage only for testing purposes.
 For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
 ====
