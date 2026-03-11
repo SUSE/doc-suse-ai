@@ -2,6 +2,13 @@
   <revision><date>2026-03-09</date>
     <revdescription>
       <para>
+        Added a new Helm chart example where {qdrant} uses GPU capabilities
+      </para>
+    </revdescription>
+  </revision>
+  <revision><date>2026-03-09</date>
+    <revdescription>
+      <para>
         Suggested to install the nvidia-gl-G06 package for Vulkan capabilities
       </para>
     </revdescription>
