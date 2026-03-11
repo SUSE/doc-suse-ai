@@ -40,7 +40,7 @@ endif::[]
 . Purchase the {productname} entitlement.
 It is a separate entitlement from {rancherprime}.
 . Access {productname} via the {sappco} at link:https://apps.rancher.io/[] to perform the check for the {productname} entitlement.
-. If the entitlement check is successful, you are given access to the {productname}-related {helm} charts and container images, and can deploy directly from the {sappco}.
+If the entitlement check is successful, you are given access to the {productname}-related {helm} charts and container images, and can deploy directly from the {sappco}.
 . Visit the {sappco}, sign in and get the user access token as described in link:https://docs.apps.rancher.io/get-started/authentication/[].
 ifdef::deployment_airgap[]
 . On the _local_ cluster, create a {kube} namespace if it does not already exist.
