@@ -22,6 +22,12 @@ endif::[]
 :revdate: 2026-02-10
 :page-revdate: {revdate}
 
+[NOTE]
+.Upstream {litellm}
+====
+The upstream {litellm} project uses `cgr.dev/chainguard/wolfi-base` as the base container image.
+====
+
 [#litellm-installing-app-details]
 == Details about the {litellm} application
 

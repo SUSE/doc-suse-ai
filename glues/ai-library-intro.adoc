@@ -21,10 +21,34 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-ifdef::deployment_standard[]
-You can install required {ailibrary} component {helm} charts using either the {helm} CLI or the {sailifecyclemanager} GUI (xref:ai-lifecycle-manager[]).
-To simplify the installation, the {ailibrary} also provides a meta {helm} chart called {saideployer} (xref:ailibrary-installing-deployer[]).
-Use it to include all the dependencies specific to your use case in a single `values.yaml` file and install the {saideployer} chart using the {helm} CLI or the {sailifecyclemanager} GUI.
-endif::[]
-
 include::../snippets/ai-separate-rancher-cluster.adoc[]
+
+[#ai-library-whatis-sappco]
+== What is {sappco}?
+{sappco} provides curated, trusted, compliant and up-to-date applications for {kube}.
+Learn more at its dedicated link:https://apps.rancher.io/[website] and link:https://www.suse.com/products/rancher/application-collection/[product summary].
+
+[#ai-library-whatis-sregistry]
+== What is {sregistry}?
+Applications in the {sregistry} are not built by the {suse} build system.
+They are mirrored upstream projects with attached supply chain artifacts.
+These artifacts help you source popular applications and tools in the AI ecosystem from a single source and provide built-in visibility into their upstream origins.
+Learn more at the registry's link:https://registry.suse.com/[website] and refer to xref:ai-library-apps-verifying[] to see how to verify the supply chain artifacts.
+
+ifdef::deployment_standard[]
+You can install required {ailibrary} component {helm} charts using one of the following methods:
+
+* Install each AI application manually using the {helm} CLI as described in xref:suse-ai-deploy-suse-ai[].
+* Use a meta {helm} chart called {saideployer} to include all the dependencies specific to your use case.
+  Refer to xref:ailibrary-installing-deployer[] for more details.
+* Use {sailifecyclemanager} GUI to install individual AI applications.
+  Refer to xref:ai-lifecycle-manager[] for more details.
++
+[IMPORTANT]
+.The ClusterRepo repository
+====
+{helm} charts of AI applications are hosted in the private {suse} registries: {sappco} and {sregistry}.
+Therefore, {sailifecyclemanager} requires a ClusterRepo repository as the source for AI application charts.
+The ClusterRepo name will be used by the extension to identify and select the charts' source.
+====
+endif::[]

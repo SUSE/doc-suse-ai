@@ -50,7 +50,7 @@ ifdef::deployment_standard[]
 endif::[]
 The steps in this procedure assume that all containers are deployed into the same namespace referred to as `SUSE_AI_NAMESPACE`.
 Replace its name to match your preferences.
-{helm} charts of AI applications are hosted in the private {suse}-trusted registries: {sappco} and {sregistry}.
+{helm} charts of AI applications are hosted in the private {suse} registries: {sappco} and {sregistry}.
 +
 [source,bash,subs="+attributes"]
 ----

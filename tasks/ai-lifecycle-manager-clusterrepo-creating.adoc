@@ -22,7 +22,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-{helm} charts of AI applications are hosted in the private {suse}-trusted registries: {sappco} and {sregistry}.
+{helm} charts of AI applications are hosted in the private {suse} registries: {sappco} and {sregistry}.
 Therefore, {sailifecyclemanager} requires a *ClusterRepo* repository as the source for AI application charts.
 The ClusterRepo name will be used by the extension to identify and select the charts' source.
 
