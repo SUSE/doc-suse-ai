@@ -43,6 +43,7 @@ It is a separate entitlement from {rancherprime}.
 If the entitlement check is successful, you are given access to the {productname}-related {helm} charts and container images, and can deploy directly from the {sappco}.
 . Visit the {sappco}, sign in and get the user access token as described in link:https://docs.apps.rancher.io/get-started/authentication/[].
 ifdef::deployment_airgap[]
+. Visit {scc}, select the organization with an active {productname} subscription from the left sidebar, and save the registration code for the {productname} subscription.
 . On the _local_ cluster, create a {kube} namespace if it does not already exist.
 endif::[]
 ifdef::deployment_standard[]
@@ -84,7 +85,8 @@ Replace its name to match your preferences.
   -u <APPCO_USERNAME> \
   -p <APPCO_USER_TOKEN>
 ----
-. Log in to the {sregistry} {helm} registry. User is regcode and Password is the SCC registration code of your SUSE AI subscription.
+. Log in to the {sregistry} {helm} registry.
+User is `regcode` and password is the {scca} registration code of your {productname} subscription you saved earlier.
 +
 [source,bash,subs="+attributes"]
 ----
