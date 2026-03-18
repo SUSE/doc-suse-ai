@@ -1,0 +1,95 @@
+[#ai-lifecycle-manager-installing-ai-operator]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-02-24
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Installing {sailifecyclemanager} using {saioperator}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The {sailifecyclemanager} adds capabilities to {ranchera} for deploying and managing AI-powered applications.
+Its usage and administration depend on which user role is being used.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+
+include::../snippets/ai-rancher-admin-requirement.adoc[]
+
+[IMPORTANT]
+====
+For multi-cluster deployments, install the {saioperator} to the same cluster where the main {ranchera} server runs.
+====
+. Install the {saioperator}:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm install suse-ai-operator \
+  -n suse-ai-operator-system \ <.>
+  --version 0.1.0 \ <.>
+  --create-namespace \
+  oci://ghcr.io/suse/chart/suse-ai-operator
+----
+<.> Modify the namespace to match your needs.
+<.> You may replace the version with the production tag published in the link:https://github.com/SUSE/suse-ai-lifecycle-manager/pkgs/container/chart%2Fsuse-ai-operator[GitHub Container Registry].
+
+. Create the InstallAIExtension Custom Resource (CR).
+  Save the `suse-ai-extension.yaml` file with the following content.
++
+[source,yaml]
+----
+apiVersion: ai-platform.suse.com/v1alpha1
+kind: InstallAIExtension
+metadata:
+  name: suseai
+spec:
+  helm:
+    name: suse-ai-lifecycle-manager
+    url: "oci://ghcr.io/suse/chart/suse-ai-lifecycle-manager"
+    version: "1.0.0" <.>
+  extension:
+    name: suse-ai-lifecycle-manager
+    version: "1.0.0" <.>
+----
+<.> You may replace the version with the production tag published in the link:https://github.com/SUSE/suse-ai-lifecycle-manager/pkgs/container/chart%2Fsuse-ai-lifecycle-manager[GitHub Container Registry].
+<.> You may replace the version with the production tag published in the link:https://github.com/SUSE/suse-ai-lifecycle-manager/pkgs/container/suse-ai-lifecycle-manager[GitHub Container Registry].
+
+. Apply the `suse-ai-extension.yaml` file to install the extension.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f suse-ai-extension.yaml
+----
+
+[#ai-lifecycle-manager-uinstalling-operator]
+== Uninstalling the {suseai} Extension and Operator
+
+. Remove the InstallAIExtension CR:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl delete -f suse-ai-extension.yaml
+----
+
+. Uninstall the {saioperator}:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm uninstall suse-ai-operator -n suse-ai-operator-system
+----
+
+. Delete the associated Custom Resource Definitions (CRDs):
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl delete crd installaiextension.ai-platform.suse.com
+----

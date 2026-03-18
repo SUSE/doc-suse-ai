@@ -1,4 +1,11 @@
 <revhistory xml:id="rh-ai-deployment-airgapped">
+  <revision><date>2026-03-09</date>
+    <revdescription>
+      <para>
+        Suggested to install the nvidia-gl-G06 package for Vulkan capabilities
+      </para>
+    </revdescription>
+  </revision>
   <revision><date>2026-01-27</date>
     <revdescription>
       <para>
