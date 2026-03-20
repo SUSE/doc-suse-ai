@@ -13,7 +13,7 @@ ifdef::override-abstract[]
 endif::[]
 ifndef::override-abstract[]
 {productname} is a cloud native solution that comprises multiple software building blocks.
-These blocks include the Linux operating system, {kube} cluster with a Web UI management layer, supportive tools to utilize GPU capabilities, and other containerized applications that care for monitoring and security.
+These blocks include the Linux operating system, a {kube} cluster with a Web UI management layer, tools for GPU support, and other containerized applications for monitoring and security.
 The {sappco} includes a collection of AI-related workloads called __{ailibrary}__. 
 endif::[]
 
@@ -33,11 +33,11 @@ We prefer https://documentation.suse.com/sles[{sls}].
 If you require an immutable operating system, https://documentation.suse.com/sle-micro[{slema}] is the recommended alternative. 
 
 {kube} cluster::
-{kube} cluster managed by {ranchermanager} ensuring container and application lifecycle management.
+{kube} cluster managed by {ranchermanager}, ensuring container and application lifecycle management.
 We recommend using the {rke2} (https://documentation.suse.com/cloudnative/rke2/) distribution. 
 
 {nvoperator}::
-Utilizes the {nvidia} GPU computing power and capabilities for processing AI-related tasks. 
+Uses the {nvidia} GPU's computing power and capabilities for processing AI-related tasks. 
 
 link:https://www.suse.com/solutions/security/[{ssecurity}]::
 For security and compliance. 
@@ -56,7 +56,7 @@ For managing multiple Linux distributions.
 
 link:https://www.suse.com/products/rancher/application-collection/[{sappco}]::
 Provides curated, trusted, compliant and up-to-date applications for {kube}.
-Learn more at its dedicated link:https://apps.rancher.io/[website] and link:https://www.suse.com/products/rancher/application-collection/[product summary].
+Learn more on its dedicated link:https://apps.rancher.io/[Web site] and in the link:https://www.suse.com/products/rancher/application-collection/[product summary].
 
 [#suse-ai-schema]
 .Basic schema of {productname}

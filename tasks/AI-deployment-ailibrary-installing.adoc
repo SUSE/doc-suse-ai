@@ -49,7 +49,7 @@ endif::[]
 ifdef::deployment_standard[]
 . Create a {kube} namespace if it does not already exist.
 endif::[]
-The steps in this procedure assume that all containers are deployed into the same namespace referred to as `SUSE_AI_NAMESPACE`.
+The steps in this procedure assume that all containers are deployed into the same namespace, referred to as `SUSE_AI_NAMESPACE`.
 Replace its name to match your preferences.
 {helm} charts of AI applications are hosted in the private {suse} registries: {sappco} and {sregistry}.
 +
@@ -86,7 +86,7 @@ Replace its name to match your preferences.
   -p <APPCO_USER_TOKEN>
 ----
 . Log in to the {sregistry} {helm} registry.
-User is `regcode` and password is the {scca} registration code of your {productname} subscription you saved earlier.
+The username is `regcode` and the password is the {scca} registration code of your {productname} subscription you saved earlier.
 +
 [source,bash,subs="+attributes"]
 ----
