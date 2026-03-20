@@ -39,8 +39,8 @@ endif::[]
 [.procedure]
 . Purchase the {productname} entitlement.
 It is a separate entitlement from {rancherprime}.
-. Access {productname} via the {sappco} at link:https://apps.rancher.io/[] to perform the check for the {productname} entitlement.
-If the entitlement check is successful, you are given access to the {productname}-related {helm} charts and container images, and can deploy directly from the {sappco}.
+. Visit link:https://apps.rancher.io/[] to perform the check for the {productname} entitlement.
+If the entitlement check is successful, you are given access to pull and deploy the {productname}-related {helm} charts and container images available on {sappco}.
 . Visit the {sappco}, sign in and get the user access token as described in link:https://docs.apps.rancher.io/get-started/authentication/[].
 ifdef::deployment_airgap[]
 . Visit {scc}, select the organization with an active {productname} subscription from the left sidebar, and save the registration code for the {productname} subscription.
