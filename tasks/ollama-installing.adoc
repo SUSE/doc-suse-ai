@@ -6,7 +6,7 @@
 {ollama} is a tool for running and managing language models locally on your computer.
 It offers a simple interface to download, run and interact with models without relying on cloud resources.
 
-[TIP,os=suseai]
+[TIP]
 ====
 When installing {suseai}, {ollama} is installed by the {owui} installation by default.
 If you decide to install {ollama} separately, disable its installation during the installation of {owui} as outlined in xref:owui-ollama-deploy-separate[].

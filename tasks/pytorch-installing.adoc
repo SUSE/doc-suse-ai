@@ -29,14 +29,27 @@ include::../snippets/ai-library-requirement.adoc[]
 Find examples of {pytorch} override files in xref:pytorch-helm-overrides[] and a list of all valid options and their values in xref:pytorch-helm-values[].
 . Install the {pytorch} {helm} chart using the `pytorch_custom_overrides.yaml` file using the following command.
 +
-[source,subs="+attributes"]
+ifdef::deployment_standard[]
+[source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
   pytorch oci://dp.apps.rancher.io/charts/pytorch \
   -n SUSE_AI_NAMESPACE \
   -f pytorch_custom_overrides.yaml
 ----
+endif::[]
+ifdef::deployment_airgap[]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  pytorch charts/pytorch-<X.Y.Z>.tgz \
+  -n SUSE_AI_NAMESPACE \
+  --version <X.Y.Z> \
+  -f pytorch_custom_overrides.yaml
+----
+endif::[]
 
+ifdef::deployment_standard[]
 [#pytorch-upgrading]
 == Upgrading {pytorch}
 
@@ -55,6 +68,7 @@ You can upgrade {pytorch} to a specific version by running the following command
 ====
 If you omit the `--version` option, {pytorch} gets upgraded to the latest available version.
 ====
+endif::[]
 
 [#pytorch-uninstalling]
 == Uninstalling {pytorch}

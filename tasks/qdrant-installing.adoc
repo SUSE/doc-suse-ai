@@ -36,6 +36,7 @@ include::../snippets/ai-library-requirement.adoc[]
 Find examples of {qdrant} override files in xref:qdrant-helm-overrides[] and a list of all valid options and their values from running helm show values.
 . Install the {qdrant} {helm} chart using the `qdrant_custom_overrides.yaml` file using the following command.
 +
+ifdef::deployment_standard[]
 [source,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -43,6 +44,17 @@ Find examples of {qdrant} override files in xref:qdrant-helm-overrides[] and a l
   -n SUSE_AI_NAMESPACE \
   -f qdrant_custom_overrides.yaml
 ----
+endif::[]
+ifdef::deployment_airgap[]
+[source,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  qdrant charts/qdrant-<X.Y.Z>.tgz \
+  -n SUSE_AI_NAMESPACE \
+  --version <X.Y.Z> \
+  -f qdrant_custom_overrides.yaml
+----
+endif::[]
 
 [#qdrant-owui-integration]
 == Integrating {qdrant} with {owui}
@@ -81,6 +93,7 @@ extraEnvVars:
 ----
 . Redeploy {owui}.
 +
+ifdef::deployment_standard[]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -88,6 +101,17 @@ extraEnvVars:
   -n <SUSE_AI_NAMESPACE> \
   -f <owui_custom_overrides.yaml>
 ----
+endif::[]
+ifdef::deployment_airgap[]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  open-webui charts/open-webui-<X.Y.Z>.tgz \
+  -n <SUSE_AI_NAMESPACE> \
+  --version <X.Y.Z> \
+  -f <owui_custom_overrides.yaml>
+----
+endif::[]
 . Verify that `VECTOR_DB` is set to `qdrant`.
 +
 [source,bash,subs="+attributes"]
@@ -99,6 +123,7 @@ Defaulted container "open-webui" out of: open-webui, copy-app-data (init)
 VECTOR_DB=qdrant
 ----
 
+ifdef::deployment_standard[]
 [#qdrant-upgrading]
 == Upgrading {qdrant}
 
@@ -117,6 +142,7 @@ You can upgrade {qdrant} to a specific version by running the following command:
 ====
 If you omit the `--version` option, {qdrant} gets upgraded to the latest available version.
 ====
+endif::[]
 
 [#qdrant-uninstalling]
 == Uninstalling {qdrant}
