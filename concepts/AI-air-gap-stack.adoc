@@ -28,5 +28,5 @@ The following simplified workflow outlines the intended usage:
 Transfer the downloaded content to an air-gapped _local_ host and add it as a {zypper} repository to install {nvidia} drivers on _local_ GPU nodes.
 . Use `SUSE-AI-get-images.sh` on a _remote_ host to download {docker} images of required {productname} components.
 Transfer them to an air-gapped _local_ host.
-. Use `SUSE-AI-load-images.sh` to load the transferred {docker} images of {productname} components into a custom _local_ ${docker} image registry.
-. Install {ailibrary} components on the _local_ {kube} cluster from the _local_ custom {docker} registry.
+. Use `SUSE-AI-load-images.sh` to load the transferred {docker} images of {productname} components into a custom _local_ {docker} image registry.
+. Install {ailibrary} applications on the _local_ {kube} cluster from the _local_ custom {docker} registry.

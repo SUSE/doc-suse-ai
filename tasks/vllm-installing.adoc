@@ -1,6 +1,6 @@
 [#vllm-installing]
 = Installing {vllm}
-:revdate: 2025-12-22
+:revdate: 2026-03-24
 :page-revdate: {revdate}
 
 {vllm} is an open-source high-performance inference and serving engine for large language models (LLMs).
@@ -52,6 +52,7 @@ The current release of {productname} {vllm} does not support Ray and LoraControl
 Find examples of override files in xref:vllm-helm-overrides[].
 . After saving the override file as `vllm_custom_overrides.yaml`, apply its configuration with the following command.
 +
+ifdef::deployment_standard[]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -59,6 +60,17 @@ Find examples of override files in xref:vllm-helm-overrides[].
   -n <SUSE_AI_NAMESPACE> \
   -f <vllm_custom_overrides.yaml>
 ----
+endif::[]
+ifdef::deployment_airgap[]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  vllm charts/vllm-<X.Y.Z>.tgz \
+  -n <SUSE_AI_NAMESPACE> \
+  --version <X.Y.Z> \
+  -f <vllm_custom_overrides.yaml>
+----
+endif::[]
 
 [#vllm-owui-integration]
 == Integrating {vllm} with {owui}

@@ -19,7 +19,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-02-10
+:revdate: 2026-03-25
 :page-revdate: {revdate}
 
 [NOTE]
@@ -57,6 +57,7 @@ include::../snippets/ai-library-requirement.adoc[]
   Find examples of {litellm} override files in xref:litellm-helm-overrides[] together with a list of all valid options and their values as displayed by the `helm show` commands.
 . Install the {litellm} {helm} chart using the `litellm_custom_overrides.yaml` file by running the following command.
 +
+ifdef::deployment_standard[]
 [source,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -64,7 +65,19 @@ include::../snippets/ai-library-requirement.adoc[]
   -n SUSE_AI_NAMESPACE \
   -f litellm_custom_overrides.yaml
 ----
+endif::[]
+ifdef::deployment_airgap[]
+[source,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  litellm litellm-<X.Y.Z>.tgz \
+  -n SUSE_AI_NAMESPACE \
+  --version <X.Y.Z> \
+  -f litellm_custom_overrides.yaml
+----
+endif::[]
 
+ifdef::deployment_standard[]
 [#litellm-upgrading]
 == Upgrading {litellm}
 
@@ -83,6 +96,7 @@ You can upgrade {litellm} to a specific version by running the following command
 ====
 If you omit the `--version` option, {litellm} gets upgraded to the latest available version.
 ====
+endif::[]
 
 [#litellm-uninstalling]
 == Uninstalling {litellm}

@@ -1,9 +1,16 @@
 [#pytorch-helm-overrides]
 = Examples of {pytorch} {helm} chart override files
-:revdate: 2025-12-22
+:revdate: 2026-03-25
 :page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
+
+ifdef::deployment_standard[]
+:imgRegistry: {empty}
+endif::[]
+ifdef::deployment_airgap[]
+:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+endif::[]
 
 [#pytorch-chart-example-basic]
 .Basic override file with GPU enabled
@@ -15,6 +22,7 @@ runtimeClassName: nvidia
 global:
   imagePullSecrets:
     - application-collection <.>
+    {imgRegistry}
 image:
   registry: dp.apps.rancher.io  
   repository: containers/pytorch
@@ -51,7 +59,8 @@ To create a ConfigMap, run the following command:
 runtimeClassName: nvidia
 global:
   imagePullSecrets:
-    - application-collection 
+    - application-collection
+    {imgRegistry}
 image:
   registry: dp.apps.rancher.io <.>
   repository: containers/pytorch
@@ -86,6 +95,7 @@ runtimeClassName: nvidia
 global:
   imagePullSecrets:
     - application-collection <.>
+    {imgRegistry}
 image:
   registry: dp.apps.rancher.io  
   repository: containers/pytorch
@@ -121,6 +131,7 @@ runtimeClassName: nvidia
 global:
   imagePullSecrets:
     - application-collection <.>
+    {imgRegistry}
 image:
   registry: dp.apps.rancher.io  
   repository: containers/pytorch
@@ -157,6 +168,7 @@ runtimeClassName: nvidia
 global:
   imagePullSecrets:
     - application-collection <.>
+    {imgRegistry}
 image:
   registry: dp.apps.rancher.io  
   repository: containers/pytorch

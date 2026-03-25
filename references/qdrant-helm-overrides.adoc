@@ -19,8 +19,15 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-09
+:revdate: 2026-03-25
 :page-revdate: {revdate}
+
+`ifdef::deployment_standard[]
+:imgRegistry: {empty}
+endif::[]
+ifdef::deployment_airgap[]
+:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+endif::[]`
 
 [#qdrant-chart-example-basic]
 .Basic override file when the cluster has no default storage class set.
@@ -31,6 +38,7 @@ endif::[]
 global:
   imagePullSecrets:
     - suse-ai-registry <.>
+    {imgRegistry}
 persistence:
   accessModes: ["ReadWriteOnce"]
   size: 10Gi
@@ -56,6 +64,7 @@ For production use, we recommend using a storage solution suitable for persisten
 global:
   imagePullSecrets:
     - suse-ai-registry <.>
+    {imgRegistry}
 env:
   - name: QDRANT__GPU__INDEXING
     value: "1"

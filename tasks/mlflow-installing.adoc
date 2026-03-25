@@ -1,7 +1,14 @@
 [#mlflow-installing]
 = Installing {mlflow}
-:revdate: 2025-12-22
+:revdate: 2026-03-25
 :page-revdate: {revdate}
+
+ifdef::deployment_standard[]
+:imgRegistry: {empty}
+endif::[]
+ifdef::deployment_airgap[]
+:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+endif::[]
 
 {mlflow} is an open-source platform for managing the end-to-end machine learning lifecycle.
 It provides a centralized model registry to track and manage the entire lifecycle of machine learning models.
@@ -10,20 +17,19 @@ This helps streamline the transition from development to production, ensuring re
 
 This section describes how to deploy {mlflow} using either {docker} or {helm} on a {kube} cluster.
 
-// 2025-11-26 tbazant: commenting for now as we don't have an mlflow chart in appco
-//[#mlflow-installing-app-details]
-//== Details about the {mlflow} application
-//
-//Before deploying {mlflow}, it is important to know more about the supported configurations and documentation.
-//The following command provides the corresponding details:
-//
-//[source]
-//----
-//helm show values oci://dp.apps.rancher.io/charts/mlflow
-//----
-//
-//Alternatively, you can also refer to the {mlflow} {helm} chart page on the {sappco} site at link:https://apps.rancher.io/applications/mlflow[].
-//It contains {mlflow} dependencies, available versions and the link to pull the {mlflow} container image.
+[#mlflow-installing-app-details]
+== Details about the {mlflow} application
+
+Before deploying {mlflow}, it is important to know more about the supported configurations and documentation.
+The following command provides the corresponding details:
+
+[source]
+----
+helm show values oci://dp.apps.rancher.io/charts/mlflow
+----
+
+Alternatively, you can also refer to the {mlflow} {helm} chart page on the {sappco} site at link:https://apps.rancher.io/applications/mlflow[].
+It contains {mlflow} dependencies, available versions and the link to pull the {mlflow} container image.
 
 [#mlflow-installing-kubernetes]
 == Installing {mlflow} using {helm} on a {kube} cluster
@@ -50,6 +56,7 @@ image:
   tag: "CONTAINER_VERSION"
 imagePullSecrets:
   - name: application-collection
+  {imgRegistry}
 nameOverride: ""
 fullnameOverride: ""
 serviceAccount:

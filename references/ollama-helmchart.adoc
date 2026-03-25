@@ -1,6 +1,6 @@
 [#ollama-helmchart]
 = Values for the {ollama} {helm} chart
-:revdate: 2025-12-22
+:revdate: 2026-03-24
 :page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
@@ -28,11 +28,18 @@ If you do not want to use the {nvidia} GPU, remove the `gpu` section from `ollam
 
 .Basic override file with GPU and two models pulled at startup
 ====
+ifdef::deployment_standard[]
+:imgRegistry: {empty}
+endif::[]
+ifdef::deployment_airgap[]
+:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+endif::[]
 [source,yaml]
 ----
 global:
   imagePullSecrets:
   - application-collection
+  {imgRegistry}
 ingress:
   enabled: false
 defaultModel: "gemma:2b"
@@ -54,7 +61,7 @@ persistentVolume: <.>
   enabled: true
   storageClass: local-path <.>
 ----
-<.> Without the `persistentVolume` option enabled, changes made to {ollama}--such as downloading other LLM-- are lost when the container is restarted.
+<.> Without the `persistentVolume` option enabled, changes made to {ollama}, such as downloading other LLM, are lost when the container is restarted.
 <.> Use `local-path` storage only for testing purposes.
 For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
 ====

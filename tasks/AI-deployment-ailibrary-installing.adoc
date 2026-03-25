@@ -95,7 +95,8 @@ The username is `regcode` and the password is the {scca} registration code of yo
   -p <SCC_REG_CODE>
 ----
 ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
-. On the _remote_ host, download the `SUSE-AI-get-images.sh` script from the xref:ai-air-gap-stack[air-gap stack] and run it.
+. On the _remote_ host, download the `SUSE-AI-get-images.sh` script and the `charts.txt` file from the xref:ai-air-gap-stack[air-gap stack].
+Edit the list of workloads in the `charts.txt` file to match your preferences and run the script.
 +
 [source,bash,subs="+attributes"]
 ----
@@ -121,20 +122,13 @@ ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 You can either install each component separately, or use the {saideployer} chart to install the components together as described in xref:ailibrary-installing-deployer[].
 endif::[]
 
-ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
-.. Install {milvus} as described in xref:milvus-installing[].
-endif::[]
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 .. Install an application with vector database capabilities.
 {owui} supports either xref:opensearch-installing[{opensearch}] or xref:milvus-installing[{milvus}].
-endif::[]
 ..  _(Optional)_ Install {ollama} as described in xref:ollama-installing[].
 .. Install {owui} as described in xref:owui-installing[].
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 .. Install {vllm} as described in xref:vllm-installing[].
 .. Install {mcpo} as described in xref:mcpo-installing[].
 .. Install {pytorch} as described in xref:pytorch-installing[].
 .. Install {mlflow} as described in xref:mlflow-installing[].
 .. Install {qdrant} as described in xref:qdrant-installing[].
 .. Install {litellm} as described in xref:litellm-installing[].
-endif::[]
