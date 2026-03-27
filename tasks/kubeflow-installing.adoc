@@ -175,3 +175,27 @@ done
 ----
 <.> `--force-conflicts` is required because cert-manager-cainjector, istiod (pilot-discovery), and the clusterrole-aggregation-controller modify fields (caBundle, webhook failurePolicy, aggregated RBAC rules) that {helm} tracks.
 This flag lets {helm} reclaim ownership of those fields on each upgrade.
+
+ifdef::deployment_standard[]
+[#kubeflow-upgrading]
+== Upgrading {kubeflow}
+
+You can upgrade {kubeflow} to a specific version by running the following command:
+
+[source,subs="+attributes"]
+----
+{prompt_user}helm upgrade kubeflow \
+  oci://registry.suse.com/ai/charts/kubeflow \
+  -n kubeflow \
+  --version VERSION_NUMBER \
+  --wait --timeout 15m \
+  --force-conflicts <.>
+----
+<.> Always use the `--force-conflicts` option during upgrades.
+This flag lets {helm} reclaim ownership of modified fields on each upgrade.
+
+[TIP]
+====
+If you omit the `--version` option, {kubeflow} gets upgraded to the latest available version.
+====
+endif::[]
