@@ -1,0 +1,72 @@
+[#kubeflow-user-profiles]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Managing {kubeflow} user profile and namespaces
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{kubeflow} uses a profile-per-user model.
+The default user namespace that {kubeflow} creates during the installation is `kubeflow-user-example-com`.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-03-30
+:page-revdate: {revdate}
+
+[#kubeflow-user-profile-at-install]
+== Adding users during the installation
+
+Insert or update the following snippet in your `kubeflow-override-values.yaml` file:
+
+[source,yaml]
+----
+# in your kubeflow-override-values.yaml
+additionalUsers:
+  - email: tux@example.com
+    namespace: tux  # explicit name recommended — avoids email slug collisions
+    resourceQuota:
+      requests.cpu: "4"
+      requests.memory: 8Gi
+  - email: geeko@example.com
+    namespace: geeko
+----
+
+[IMPORTANT]
+.Use an explicit namespace
+====
+The `namespace` field is optional but strongly recommended.
+Without it, the namespace is auto-generated from the e-mail by replacing `@` with `--` and `.` with `-`.
+e-mails that differ only by `.` vs `-` -- such as `tux.geeko@example.com` and `tux-geeko@example.com` -- produce the same auto-generated namespace.
+Use an explicit `namespace` to disambiguate.
+====
+
+[#kubeflow-user-profile-after-install]
+== Adding users after the installation
+
+Apply a profile custom resource manually:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f - <<EOF
+apiVersion: kubeflow.org/v1
+kind: Profile
+metadata:
+  name: tux
+spec:
+  owner:
+    kind: User
+    name: tux@example.com
+EOF
+----
+
+The profiles controller creates the namespace and all required resources (RoleBindings, ServiceAccounts and AuthorizationPolicies) automatically.
