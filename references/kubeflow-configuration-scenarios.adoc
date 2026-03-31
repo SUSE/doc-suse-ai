@@ -23,7 +23,7 @@ endif::[]
 :revdate: 2026-03-30
 :page-revdate: {revdate}
 
-[#kubeflow-config-scenarios-nodeport]
+[#kubeflow-config-scenarios-nodeport
 == Non-production: NodePort access (zero-configuration)
 
 No values override file is needed.
@@ -36,7 +36,7 @@ Email:    user@example.com
 Password: 12341234
 ----
 
-[#`kubeflow-config-scenarios-http]
+[#kubeflow-config-scenarios-http]
 == Non-production: Named host name over HTTP
 
 Use this if you want a stable URL for a shared development cluster.

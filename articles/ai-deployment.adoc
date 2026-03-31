@@ -97,6 +97,9 @@ include::../tasks/kubeflow-accessing.adoc[leveloffset=+3]
 include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+3]
 include::../tasks/kubeflow-hardening.adoc[leveloffset=+3]
 include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+3]
+include::../references/kubeflow-upgrade-notes.adoc[leveloffset=+3]
+include::../references/kubeflow-limitations.adoc[leveloffset=+3]
+include::../references/kubeflow-troubleshooting.adoc[leveloffset=+3]
 include::../tasks/ai-library-apps-verifying.adoc[leveloffset=+2]
 
 

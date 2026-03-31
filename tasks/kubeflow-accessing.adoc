@@ -38,7 +38,7 @@ If NodePorts are not directly reachable use port-forward instead:
 
 Navigate to \http://localhost:8080
 
-[#kubeflow-accessing-nodeport]]
+[#kubeflow-accessing-nodeport]
 == Option B: NodePort
 
 The {istio} gateway Service is type `LoadBalancer` and always gets NodePorts assigned, even without a
