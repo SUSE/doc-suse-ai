@@ -12,7 +12,8 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-
+The current {kubeflow} distribution has the following known limitations.
+Understanding these limitations is crucial for successful deployment and operation.
 endif::[]
 
 // erase the flag for future overrides
