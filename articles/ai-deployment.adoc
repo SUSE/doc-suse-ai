@@ -94,11 +94,17 @@ include::../references/litellm-helmchart.adoc[leveloffset=+3]
 include::../tasks/mlflow-installing.adoc[leveloffset=+2]
 include::../tasks/kubeflow-installing.adoc[leveloffset=+2]
 include::../tasks/kubeflow-accessing.adoc[leveloffset=+3]
+:override-title: Configuration scenarios
 include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+3]
+:override-title: Hardening for production use
 include::../tasks/kubeflow-hardening.adoc[leveloffset=+3]
+:override-title: Managing user profiles and namespaces
 include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+3]
+:override-title: Upgrade notes
 include::../references/kubeflow-upgrade-notes.adoc[leveloffset=+3]
+:override-title: Known limitations
 include::../references/kubeflow-limitations.adoc[leveloffset=+3]
+:override-title: Troubleshooting
 include::../references/kubeflow-troubleshooting.adoc[leveloffset=+3]
 include::../tasks/ai-library-apps-verifying.adoc[leveloffset=+2]
 

@@ -24,7 +24,7 @@ endif::[]
 :page-revdate: {revdate}
 
 [#kubeflow-installing-app-details]
-== Details about the {kubeflow} application
+== Details about the application
 
 Before deploying {kubeflow}, it is important to know more about the supported configurations and documentation.
 The following command provides the corresponding details:
