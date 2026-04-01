@@ -12,7 +12,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-This document provides solutions for common issues encountered when using {kubeflow}.
+Learn about solutions for common issues encountered when using {kubeflow}.
 endif::[]
 
 // erase the flag for future overrides

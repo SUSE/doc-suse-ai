@@ -12,8 +12,8 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-This document outlines important considerations and specific instructions for managing and upgrading your {kubeflow} deployment.
-It covers critical aspects like configuration conflicts, credential rotation, and potential service interruptions.
+Following are important considerations and specific instructions for managing and upgrading your {kubeflow} deployment.
+They cover critical aspects like configuration conflicts, credential rotation, and potential service interruptions.
 endif::[]
 
 // erase the flag for future overrides

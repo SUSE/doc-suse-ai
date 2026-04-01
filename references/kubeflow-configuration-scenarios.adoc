@@ -12,8 +12,8 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-This document provides a set of common configuration scenarios for deploying {kubeflow}.
-These scenarios range from simple non-production setups for development and testing to production-ready configurations with TLS and automated DNS.
+Following is a set of common configuration scenarios for deploying {kubeflow}.
+They range from simple non-production setups for development and testing to production-ready configurations with TLS and automated DNS.
 endif::[]
 
 // erase the flag for future overrides
