@@ -5,33 +5,6 @@
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 
-[WARNING]
-.{vllm} deployment issue
-====
-There is a bug with the latest revisions of 0.3.2 `containers/lmcache-vllm-openai` and 0.9.1 `containers/vllm-openai` where the deployment fails with the error:
-[source]
-----
-ValueError: 'aimv2' is already used by a Transformers config, pick another name.
-----
-This will be fixed in later versions. However, you can use a specific tag revision that does not have this issue.
-As a workaround, update references to these image tags in your overrides YAML file.
-Follow the examples below with the following specific revision of the image.
-
-For `containers/vllm-openai`:
-[source,yaml]
-----
-    repository: "containers/vllm-openai"
-    tag: "0.9.1-3.1"
-----
-
-For `containers/lmcache-vllm-openai`:
-[source,yaml]
-----
-    repository: "containers/lmcache-vllm-openaii"
-    tag: "0.3.2-2.3"
-----
-====
-
 [#vllm-helm-overrides-minimal]
 .Minimal configuration
 ====
@@ -47,7 +20,7 @@ servingEngineSpec:
   - name: "phi3-mini-4k"
     registry: "dp.apps.rancher.io"
     repository: "containers/vllm-openai"
-    tag: "0.9.1"
+    tag: "0.13.0"
     imagePullPolicy: "IfNotPresent"
     modelURL: "microsoft/Phi-3-mini-4k-instruct"
     replicaCount: 1
@@ -153,7 +126,7 @@ servingEngineSpec:
   - name: "llama3" <.>
     registry: "dp.apps.rancher.io" <.>
     repository: "containers/vllm-openai" <.>
-    tag: "0.9.1" <.>
+    tag: "0.13.0" <.>
     imagePullPolicy: "IfNotPresent"
     modelURL: "meta-llama/Llama-3.1-8B-Instruct" <.>
     replicaCount: 1 <.>
@@ -295,7 +268,7 @@ servingEngineSpec:
   - name: "llama3"
     registry: "dp.apps.rancher.io"
     repository: "containers/vllm-openai"
-    tag: "0.9.1"
+    tag: "0.13.0"
     imagePullPolicy: "IfNotPresent"
     modelURL: "/models/llama-3.1-8b-it"
     replicaCount: 1
@@ -356,7 +329,7 @@ servingEngineSpec:
   - name: "llama3"
     registry: "dp.apps.rancher.io"
     repository: "containers/vllm-openai"
-    tag: "0.9.1"
+    tag: "0.13.0"
     imagePullPolicy: "IfNotPresent"
     modelURL: "meta-llama/Llama-3.1-8B-Instruct"
     replicaCount: 1
@@ -372,7 +345,7 @@ servingEngineSpec:
   - name: "mistral"
     registry: "dp.apps.rancher.io"
     repository: "containers/vllm-openai"
-    tag: "0.9.1"
+    tag: "0.13.0"
     imagePullPolicy: "IfNotPresent"
     modelURL: "mistralai/Mistral-7B-Instruct-v0.2"
     replicaCount: 1
