@@ -81,10 +81,33 @@ Cloudflare API token::
 Only required if you want automatic DNS record management via `external-dns`` or Let's Encrypt DNS-01 challenges.
 Not needed for basic installs.
 
+[NOTE]
+====
+We recommend using the latest versions of the {helm} charts.
+====
+
 [#kubeflow-installing-kubernetes]
 == Installation procedure
 
 include::../snippets/ai-library-requirement.adoc[]
+
+. Log in to {sappco} registry
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm registry login dp.apps.rancher.io \
+  --username=<APPCO-REGISTRY-USERNAME> \
+  --password=<APPCO-REGISTRY-TOKEN>
+----
+
+. Log in to {sregistry}
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm registry login registry.suse.com \
+  --username=regcode \
+  --password=<SUSE-AI-REGISTRY-TOKEN>
+----
 
 . Create namespaces.
 +
@@ -102,22 +125,22 @@ done
 for ns in cert-manager istio-system kubeflow kubeflow-user-example-com; do
   kubectl create secret docker-registry application-collection \
     --docker-server=dp.apps.rancher.io \
-    --docker-username=<registry-username> \
-    --docker-password=<registry-token> \
+    --docker-username=<APPCO-REGISTRY-USERNAME> \
+    --docker-password=<APPCO-REGISTRY-TOKEN> \
     -n "$ns" \
     --dry-run=client -o yaml | kubectl apply -f -
 done
 ----
 
-. . Create {sregistry} image pull secrets.
+. Create {sregistry} image pull secrets.
 +
 [source,bash]
 ----
 for ns in cert-manager istio-system kubeflow kubeflow-user-example-com; do
-  kubectl create secret docker-registry suse-registry \
+  kubectl create secret docker-registry suse-ai-registry \
     --docker-server=registry.suse.com \
-    --docker-username=<suse-registry-username> \
-    --docker-password=<suse-registry-token> \
+    --docker-username=regcode \
+    --docker-password=<SUSE-AI-REGISTRY-TOKEN> \
     -n "$ns" \
     --dry-run=client -o yaml | kubectl apply -f -
 done
@@ -158,10 +181,14 @@ done
   --namespace istio-system \
   --set global.imagePullSecrets[0].name=application-collection \
   --set gateway.enabled=true \
+  --force-conflicts \
+  --server-side=true \
   --wait --timeout 5m
 ----
 
 . Install {kubeflow}.
++
+Install directly from the OCI registry (no source checkout required):
 +
 [source,bash,subs="+attributes"]
 ----
@@ -170,11 +197,28 @@ done
   --version 0.3.1 \
   -n kubeflow \
   --force-conflicts \ <.>
+  --server-side=true \
   --wait --timeout 15m \
   -f my-values.yaml
 ----
 <.> `--force-conflicts` is required because cert-manager-cainjector, istiod (pilot-discovery), and the clusterrole-aggregation-controller modify fields (caBundle, webhook failurePolicy, aggregated RBAC rules) that {helm} tracks.
 This flag lets {helm} reclaim ownership of those fields on each upgrade.
+
++
+To apply a values override file, for example the `demo-overrides.yaml` provided in the link:https://github.com/SUSE/suse-ai-charts/tree/main/kubeflow[repo], run the following command.
+**Never use `demo-overrides.yaml` in production**:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install kubeflow \
+  oci://registry.suse.com/ai/charts/kubeflow \
+  --version 0.3.1 \
+  -n kubeflow \
+  --force-conflicts \
+  --server-side=true \
+  --wait --timeout 15m \
+  -f demo-overrides.yaml
+----
 
 ifdef::deployment_standard[]
 [#kubeflow-upgrading]
