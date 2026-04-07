@@ -14,7 +14,6 @@ endif::[]
 ifndef::override-abstract[]
 The override value chart ships with defaults that are not suitable for production.
 Update these values before exposing the deployment to any network or storing sensitive data.
-A security warning is printed by the `helm install` or `helm upgrade` commands if any defaults are still active.
 endif::[]
 
 // erase the flag for future overrides
@@ -24,9 +23,15 @@ endif::[]
 :revdate: 2026-03-30
 :page-revdate: {revdate}
 
+[WARNING]
+.Demo credentials
+====
+By default (`global.demoMode: false`), the chart *fails at render time* with a security error if any well-known demo credential is still present.
+To suppress this during local development, set `global.demoMode: true` in your override values file but *never set this in production*.
+====
+
 . *Change all default credentials.*
-The three demo secrets that trigger the `NOTES.txt` warning:
-+
+The credentials that trigger the render-time security check:
 [source,yaml]
 ----
 # in your kubeflow-override-values.yaml
@@ -76,7 +81,7 @@ Set a non-empty password by patching the secret before upgrading:
 ----
 ====
 
-. *Use an external identity provider.* 
+. *Use an external identity provider.*
 Replace Dex static passwords with an LDAP, SAML, or upstream OIDC connector.
 Add a `connectors` block to `dex.config` and remove `staticPasswords` and `enablePasswordDB: true`.
 

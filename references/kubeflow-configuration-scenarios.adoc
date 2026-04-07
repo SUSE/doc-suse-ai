@@ -108,8 +108,14 @@ kubeflow-istio-resources:
       email: "admin@example.com"   # your ACME account email
       server: prod                 # prod | staging (use staging first to test)
       solver: cloudflare           # dns01 via Cloudflare
+      # Configuring cloudflare since solver is cloudflare
+	    cloudflare:
+	      email: "admin@example.com"
+	      apiTokenSecretRef:
+	        name: cloudflare-api-key
+	        key: apiKey
 
-# external-dns — watches the Istio Gateway and creates/updates DNS records
+# external-dns — watches the {istio} Gateway and creates/updates DNS records
 externaldns:
   enabled: true
   provider:
@@ -121,6 +127,12 @@ externaldns:
   txtOwnerId: "kubeflow"   # unique per cluster — prevents conflicts
   sources:
     - istio-gateway
+  env:
+	    - name: CF_API_TOKEN
+	      valueFrom:
+	        secretKeyRef:
+	          name: cloudflare-api-key
+	          key: apiKey
 
 # Credentials — change ALL of these
 auth:
@@ -165,22 +177,13 @@ user-namespace:
 
 # Optional hardening
 networkPolicies:
-  enabled: true   # requires a CNI that enforces NetworkPolicy (Calico, Cilium, Canal)
+  enabled: false   # (Experimental) set to 'true' when using CNI that enforces NetworkPolicy (Calico, Cilium, Canal)
 
 monitoring:
-  enabled: false  # set true after Rancher Monitoring (kube-prometheus-stack) is installed
+  enabled: false  # Leave this to 'false' as monitoring is not implemented yet
 ----
 
 Installation:
-
-[source,bash,subs="+attributes"]
-----
-{prompt_user}./runMe.sh <registry-username> <registry-token> \
-  --cloudflare-api-key "<YOUR-CLOUDFLARE-API-TOKEN>" \
-  -f kubeflow-override-values.yaml
-----
-
-Alternatively, install manually:
 
 [source,bash,subs="+attributes"]
 ----
@@ -231,5 +234,64 @@ kubeflow-istio-resources:
 auth:
   oidc:
     clientSecret: "<STRONG-RANDOM-32-CHAR-SECRET>"
-[...]
+[...] # (rest of credentials)
 ----
+
+== Production: Use an existing external-dns and cert-manager
+
+If the existing environment already has `externa-dns` and `cert-manager`, {kubeflow} can make use of them if the follow conditions are satisfied:
+
+* `external-dns` must be configured to watch for the `istio-gateway` source.
+You can check the deployment with the `kubectl` command:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get deployment external-dns -n external-dns -o yaml | grep source=
+  - --source=service
+  - --source=ingress
+  - --source=istio-gateway
+----
+
+* A cluster issuer must exist in the environment and configured to issue certificates from a production public CA such as LetsEncrypt.
+You can check the deployment with the `kubectl` command:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get clusterissuer
+
+NAME                     READY   AGE
+letsencrypt-production   True    75m
+----
++
+To configure {kubeflow} to use existing `external-dns` and `cert-manager`, reference it in your values:
+
+[source,yaml]
+----
+# kubeflow-override-values.yaml
+kubeflow-istio-resources:
+  hostname: "kubeflow.example.com"
+  externalDNSEnabled: true
+  tls:
+    source: "issuerRef"
+    httpsRedirect: true
+
+    issuerRef:
+      name: letsencrypt-production
+
+externaldns:
+  enabled: false
+
+# Change credentials as shown in the Let's Encrypt scenario above
+auth:
+  oidc:
+    clientSecret: "<STRONG-RANDOM-32-CHAR-SECRET>"
+[...] # (rest of credentials)
+----
+
+[NOTE]
+.Verify {istio} CRDs installation
+====
+When adding `istio-gateway` as a source to `external-dns`, make sure the {istio} CRDs are installed.
+Otherwise, `external-dns` pod may keep crashing with an error indicating failure to list {istio}n gateway resource.
+However the error will eventually go away after {istio} is installed by {kubeflow}.
+====
