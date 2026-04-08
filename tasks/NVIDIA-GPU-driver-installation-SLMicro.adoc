@@ -28,7 +28,7 @@ endif::[]
 If you are following this guide, it assumes that you have the following
 already available:
 
-* At least one host with {slem} {slmicro-ai-version} installed, physical
+* At least one host with {slem} {slmicro-version} installed, physical
   or virtual.
 * Your hosts are attached to a subscription as this is required for
   package access.
@@ -68,7 +68,7 @@ functional system.
 [#nvidia-gpu-pre-install-procedure-slmicro]
 == The installation procedure
 
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 . On the *remote* host, run the script
   `SUSE-AI-mirror-nvidia.sh` from the air-gapped stack
   (see xref:ai-air-gap-stack[]) to download all required
@@ -95,7 +95,7 @@ endif::[]
 {prompt_root}{tr-up-shell}
 ----
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 . When you are in the {tr-up-shell} session, add a package repository
   from {nvidia}. This allows pulling in additional utilities, for
   example, `nvidia-smi`.
@@ -121,7 +121,7 @@ For the {arm64} architecture, run:
 ----
 endif::[]
 
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 . On each GPU-enabled *local* host in its
   {tr-up-shell} session, add a package repository from the
   safely transferred {nvidia} RPM packages directory. This allows

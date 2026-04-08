@@ -56,7 +56,7 @@ ifdef::deployment_airgap[]
 endif::[]
 --
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [#owui-upgrading]
 == Upgrading {owui}
 

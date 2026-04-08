@@ -103,7 +103,6 @@ Specifically, the value should be a comma-delimited string which only contains I
 
 [NOTE]
 ====
-
 You can not re-register a cluster that is currently active in a Rancher setup.
 ====
 
@@ -280,7 +279,7 @@ To prevent issues when upgrading, the https://kubernetes.io/docs/tasks/administe
 
 == Authorized Cluster Endpoint Support for {rke2} and {k3s} Clusters
 
-Rancher supports Authorized Cluster Endpoints (ACE) for registered RKE2 and K3s clusters. This support includes manual steps you will perform on the downstream cluster to enable the ACE. For additional information on the authorized cluster endpoint, click xref:cluster-admin/manage-clusters/access-clusters/authorized-cluster-endpoint.adoc[here].
+Rancher supports Authorized Cluster Endpoints (ACE) for registered RKE2 and K3s clusters. This support includes manual steps you will perform on the downstream cluster to enable the ACE. For additional information on the authorized cluster endpoint, click link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/cluster-admin/manage-clusters/access-clusters/authorized-cluster-endpoint.html[here].
 
 [NOTE]
 .Notes:
@@ -288,7 +287,7 @@ Rancher supports Authorized Cluster Endpoints (ACE) for registered RKE2 and K3s 
 
 * These steps only need to be performed on the control plane nodes of the downstream cluster. You must configure each control plane node individually.
 * The following steps will work on both RKE2 and K3s clusters registered in v2.6.x as well as those registered (or imported) from a previous version of Rancher with an upgrade to v2.6.x.
-* These steps will alter the configuration of the downstream RKE2 and K3s clusters and deploy the `kube-api-authn-webhook`. If a future implementation of the ACE requires an update to the `kube-api-authn-webhook`, then this would also have to be done manually. For more information on this webhook, click xref:cluster-admin/manage-clusters/access-clusters/authorized-cluster-endpoint.adoc#_about_the_kube_api_auth_authentication_webhook[here].
+* These steps will alter the configuration of the downstream RKE2 and K3s clusters and deploy the `kube-api-authn-webhook`. If a future implementation of the ACE requires an update to the `kube-api-authn-webhook`, then this would also have to be done manually. For more information on this webhook, click link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/cluster-admin/manage-clusters/access-clusters/authorized-cluster-endpoint.html[here].
 ====
 
 === *Manual steps to be taken on the control plane of each downstream cluster to enable ACE:*

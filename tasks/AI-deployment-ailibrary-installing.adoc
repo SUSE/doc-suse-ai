@@ -21,14 +21,14 @@ endif::[]
 :revdate: 2026-02-10
 :page-revdate: {revdate}
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 This procedure includes steps to install {ailibrary} applications.
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 This procedure includes steps to install {ailibrary} applications in an air-gapped environments.
 endif::[]
 
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [NOTE]
 ====
 If the following steps do not specify on which part of the air-gapped architecture--_local_ or _remote_--the task should be performed, assume _remote_.
@@ -42,11 +42,11 @@ It is a separate entitlement from {rancherprime}.
 . Visit link:https://apps.rancher.io/[] to perform the check for the {productname} entitlement.
 If the entitlement check is successful, you are given access to pull and deploy the {productname}-related {helm} charts and container images available on {sappco}.
 . Visit the {sappco}, sign in and get the user access token as described in link:https://docs.apps.rancher.io/get-started/authentication/[].
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 . Visit {scc}, select the organization with an active {productname} subscription from the left sidebar, and save the registration code for the {productname} subscription.
 . On the _local_ cluster, create a {kube} namespace if it does not already exist.
 endif::[]
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 . Create a {kube} namespace if it does not already exist.
 endif::[]
 The steps in this procedure assume that all containers are deployed into the same namespace, referred to as `SUSE_AI_NAMESPACE`.
@@ -94,9 +94,8 @@ The username is `regcode` and the password is the {scca} registration code of yo
   -u regcode \
   -p <SCC_REG_CODE>
 ----
-ifdef::deployment_airgap[]
-. On the _remote_ host, download the `SUSE-AI-get-images.sh` script and the `charts.txt` file from the xref:ai-air-gap-stack[air-gap stack].
-Edit the list of workloads in the `charts.txt` file to match your preferences and run the script.
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+. On the _remote_ host, download the `SUSE-AI-get-images.sh` script from the xref:ai-air-gap-stack[air-gap stack] and run it.
 +
 [source,bash,subs="+attributes"]
 ----
@@ -118,14 +117,19 @@ Set `DST_REGISTRY_USERNAME` and `DST_REGISTRY_PASSWORD` environment variables if
 endif::[]
 . Install {certmanager} as described in xref:cert-manager-installing[].
 . Install {ailibrary} components.
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 You can either install each component separately, or use the {saideployer} chart to install the components together as described in xref:ailibrary-installing-deployer[].
 endif::[]
 
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+.. Install {milvus} as described in xref:milvus-installing[].
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 .. Install an application with vector database capabilities.
 {owui} supports either xref:opensearch-installing[{opensearch}] or xref:milvus-installing[{milvus}].
 ..  _(Optional)_ Install {ollama} as described in xref:ollama-installing[].
 .. Install {owui} as described in xref:owui-installing[].
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 .. Install {vllm} as described in xref:vllm-installing[].
 .. Install {mcpo} as described in xref:mcpo-installing[].
 .. Install {pytorch} as described in xref:pytorch-installing[].

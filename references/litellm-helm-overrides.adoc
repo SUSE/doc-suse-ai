@@ -82,11 +82,11 @@ By default, the configuration does not enable {ingress}. To expose the service o
   -n <SUSE_AI_NAMESPACE> port-forward service/litellm 4000:4000
 ----
 
-Your {litellm} Proxy Server is now running at http://127.0.0.1:4000.
+Your {litellm} Proxy Server is now running at `\http://127.0.0.1:4000`.
 
 == Admin UI access
 
-You can access the administration page at http://127.0.0.1:4000/ui and log in using the administrator account. 
+You can access the administration page at `\http://127.0.0.1:4000/ui` and log in using the administrator account. 
 Retrieve the password for the administrator user from the secret resource:
 
 [source,bash,subs="+attributes"]

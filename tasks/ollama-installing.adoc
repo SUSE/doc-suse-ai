@@ -35,7 +35,7 @@ include::../snippets/ai-library-requirement.adoc[]
 Refer to xref:ollama-helmchart[] for more details.
 . Install the {ollama} {helm} chart using the `ollama-custom-overrides.yaml` override file.
 +
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade \
@@ -44,7 +44,7 @@ ifdef::deployment_standard[]
   -f ollama_custom_overrides.yaml
 ----
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade \
@@ -85,7 +85,7 @@ To uninstall {ollama}, run the following command:
 {prompt_user}helm uninstall ollama -n <SUSE_AI_NAMESPACE>
 ----
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [#ollama-upgrading]
 == Upgrading {ollama}
 

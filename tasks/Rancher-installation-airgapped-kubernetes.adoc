@@ -32,7 +32,7 @@ Skip this section if you are installing {ranchermanager} on a single node with {
 
 Rancher can be installed on any Kubernetes cluster, including hosted Kubernetes providers.
 
-The steps to set up an air-gapped Kubernetes cluster on RKE, RKE2, or K3s are shown below.
+The steps to set up an air-gapped Kubernetes cluster on RKE2 or K3s are shown below.
 
 --
 In this guide, we are assuming you have created your nodes in your air-gapped environment and have a secure Docker private registry on your bastion server.

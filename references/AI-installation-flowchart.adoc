@@ -21,7 +21,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 The presented steps mainly relate to *manual* command-line installation.
 
 However, there are alternative installation methods that can ease parts of the installation process.
@@ -34,13 +34,13 @@ The chart focuses on the following possible scenarios:
 * You have a supported Linux operating system and {kube} distribution installed on cluster nodes.
 * You have {rancherprime} and all supportive components installed on the {kube} cluster and are prepared to install the required applications from the {ailibrary}.
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [#fg-ai-installation-flowchart]
 .{productname} installation process
 image::ai-installation-flowchart.png[alt="{productname} installation process",width=100%]
 endif::[]
 
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [#fg-ai-installation-flowchart-airgapped]
 .{productname} air-gapped installation process
 image::ai-installation-flowchart-airgapped.png[alt="{productname} air-gapped installation process",width=100%]

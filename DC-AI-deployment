@@ -6,7 +6,9 @@ IMG_SRC_DIR="images"
 ADOC_POST=yes
 ADOC_TYPE=book
 ADOC_ATTRIBUTES=" --attribute env-daps=1"
-ADOC_ATTRIBUTES+=" --attribute deployment_standard"
+ADOC_ATTRIBUTES+=" --attribute PROF_PRODUCT=suseai"
+ADOC_ATTRIBUTES+=" --attribute PROF_PRODUCT=suseai"
+ADOC_ATTRIBUTES+=" --attribute PROF_DEPLOYMENT=standard"
 
 STYLEROOT="/usr/share/xml/docbook/stylesheet/suse2022-ns"
 FALLBACK_STYLEROOT="/usr/share/xml/docbook/stylesheet/suse-ns"

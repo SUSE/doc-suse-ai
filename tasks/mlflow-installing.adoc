@@ -343,7 +343,7 @@ mlflow [2025-11-01 00:56:55 +0000] [7] [INFO] Booting worker with pid: 7
 
 After the {mlflow} server is up and running, you can access it from a Web browser either on the local host or exposed via {ingress}.
 
-To access {mlflow} locally, point your Web browser to `http://localhost:5000`.
+To access {mlflow} locally, point your Web browser to `\http://localhost:5000`.
 
 To access {mlflow} via {ingress}, add a corresponding line to your `/etc/hosts`, for example:
 
@@ -352,7 +352,7 @@ To access {mlflow} via {ingress}, add a corresponding line to your `/etc/hosts`,
 10.0.3.184 suse-mflow
 ----
 
-Then point your Web browser to `http://suse-mlflow`.
+Then point your Web browser to `\http://suse-mlflow`.
 
 [#fg-mlflow-webui]
 .{mlflow} Web UI

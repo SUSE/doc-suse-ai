@@ -15,7 +15,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{rke2} can be installed in an air-gapped environment with two different methods. You can either deploy via the `rke2-airgap-images` tarball artifact or by using a private registry.
+{rke2} can be installed in an air-gapped environment, you must first load the images into the air-gapped environment and then install RKE2.
 endif::[]
 
 :revdate: 2025-12-22
@@ -51,7 +51,12 @@ ip addr add 203.0.113.254/31 dev dummy0
 ip route add default via 203.0.113.255 dev dummy0 metric 1000
 ----
 
-== Tarball Method
+== 1. Load Images
+
+There are two different methods to load the images. Each image loading method has different requirements and is suited for different air-gapped scenarios. Choose the method that best fits your infrastructure and security requirements.
+
+
+=== Tarball Method
 
 . Download the air-gap images tarballs from the https://scc.suse.com/rancher-docs/rancherprime/latest/en/reference-guide.html#prime-artifacts-url[Prime Artifacts URL] for the RKE2 version, CNI, and platform you are using.
  ** `rke2-images.linux-<ARCH>.tar.zst`, or `rke2-images-core.linux-<ARCH>.tar.gz`. This tarball contains the core container images required for RKE2 Prime to function. Zstandard offers better compression ratios and faster decompression speeds compared to gzip.
@@ -61,15 +66,16 @@ ip route add default via 203.0.113.255 dev dummy0 metric 1000
  *** If using your own CNI (`--cni=none`), download only the `rke2-images-core` archive.
  ** If enabling the vSphere CPI/CSI charts (`--cloud-provider-name=rancher-vsphere`), you must also download the `rke2-images-vsphere` archive.
 . Create a directory named `/rke2-artifacts` on the node and save the previously downloaded files there.
-. <<Install RKE2>>.
+. <<Install-RKE2, Istall RKE2>>.
 
-== Private Registry Method
+==== Private Registry Method
 
 Private registry support honors all settings from the link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/containerd_registry_configuration.html[containerd registry configuration], including endpoint override, transport protocol (HTTP/HTTPS), authentication, certificate verification, and more.
 
 . Add all the required system images to your private registry. A list of images can be obtained from the `.txt` file corresponding to each tarball referenced above. Alternatively, you can `docker load` the airgap image tarballs, then tag and push the loaded images.
-. <<Install RKE2>> using the `system-default-registry` parameter, or use the link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/containerd_registry_configuration.html[containerd registry configuration] to use your registry as a mirror for docker.io.
+. <<Install-RKE2, Install RKE2>> using the `system-default-registry` parameter, or use the xref:install/containerd_registry_configuration.adoc[containerd registry configuration] to use your registry as a mirror for docker.io.
 
+[#Install-RKE2]
 == Install RKE2
 
 The following options to install RKE2 should only be performed after completing either the <<Tarball Method>> or <<Private Registry Method>>.
@@ -122,6 +128,16 @@ curl -sfL https://get.rke2.io --output install.sh
 [,bash]
 ----
 INSTALL_RKE2_ARTIFACT_PATH=/rke2-artifacts sh install.sh
+----
+
+. If you are using the Rancher Prime registry, set the following values in `config.yaml`:
+.. Set `system-default-registry: registry.rancher.com`.
+.. If you are not using the default CNI, Canal, set `cni: <CNI>`.
++
+[,yaml]
+----
+system-default-registry: registry.rancher.com
+cni: <CNI>
 ----
 
 . Enable and run the service as outlined link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/quickstart.html[here].

@@ -17,7 +17,7 @@ include::../snippets/openwebui-requirement-admin-privileges.adoc[]
 . In the bottom left of the {owui} window, click your avatar icon to open the user menu and select menu:Admin Panel[] . 
 . Click the menu:Settings[] tab and select menu:Connections[] from the left menu. 
 . In the menu:Manage OpenAI API Connections[] section, click the small "plus" icon on the right to open the menu:Add connection[] screen. 
-. Enter `https://api.groq.com/openai/v1` as the base URL and the API key that you have previously created. Confirm with menu:Save[] . 
+. Enter `\https://api.groq.com/openai/v1` as the base URL and the API key that you have previously created. Confirm with menu:Save[] . 
 +
 .Adding the Groq API
 image::owui-add-openai-api.png[Adding the Groq API,scaledwidth=75%]

@@ -33,7 +33,7 @@ include::../snippets/ai-library-requirement.adoc[]
 . When installed as part of {productname}, {milvus} depends on {etcd}, {minio} and Apache Kafka.
 Because the {milvus} chart uses a non-default configuration, create an override file `milvus_custom_overrides.yaml` with the following content.
 +
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [TIP]
 ====
 As a template, you can download the {milvus} {helm} chart that includes the `values.yaml` file with the default configuration by running the following command:
@@ -44,19 +44,74 @@ As a template, you can download the {milvus} {helm} chart that includes the `val
 ----
 ====
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [TIP]
 ====
 As a template, you can use the `values.yaml` file that is included in the `charts/milvus-<X.Y.Z>.tgz` TAR archive.
 ====
 endif::[]
 +
-ifdef::deployment_standard[]
-:imgRegistry: {empty}
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+[source,yaml]
+----
+global:
+  imagePullSecrets:
+  - application-collection
+cluster:
+  enabled: true
+standalone:
+  persistence:
+    persistentVolumeClaim:
+      storageClassName: "local-path"
+etcd:
+  replicaCount: 1
+  persistence:
+    storageClassName: "local-path"
+minio:
+  mode: distributed
+  replicas: 4
+  rootUser: "admin"
+  rootPassword: "adminminio"
+  persistence:
+    storageClass: "local-path"
+  resources:
+    requests:
+      memory: 1024Mi
+kafka:
+  enabled: true
+  name: kafka
+  replicaCount: 3
+  broker:
+    enabled: true
+  cluster:
+    listeners:
+      client:
+        protocol: 'PLAINTEXT'
+      controller:
+        protocol: 'PLAINTEXT'
+  persistence:
+    enabled: true
+    annotations: {}
+    labels: {}
+    existingClaim: ""
+    accessModes:
+      - ReadWriteOnce
+    resources:
+      requests:
+        storage: 8Gi
+    storageClassName: "local-path"
+extraConfigFiles: <.>
+  user.yaml: |+
+    trace:
+      exporter: jaeger
+      sampleFraction: 1
+      jaeger:
+        url: "http://opentelemetry-collector.observability.svc.cluster.local:14268/api/traces" <.>
+----
+<.> The `extraConfigFiles` section is optional, required only to receive telemetry data from {owui}.
+<.> The URL of the {otelemetry} Collector installed by the user.
 endif::[]
-ifdef::deployment_airgap[]
-:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,yaml]
 ----
 global:
@@ -124,7 +179,7 @@ For production environments, we recommend using an enterprise class storage solu
 ====
 . Install the {milvus} {helm} chart using the `milvus_custom_overrides.yaml` override file.
 +
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -133,7 +188,7 @@ ifdef::deployment_standard[]
   --version 4.2.2 -f <milvus_custom_overrides.yaml>
 ----
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -197,7 +252,7 @@ parameters:
       storageClassName: longhorn-xfs
 ----
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [#milvus-upgrading]
 == Upgrading {milvus}
 

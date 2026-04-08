@@ -43,7 +43,7 @@ image::owui-okta-admin-panel.png[{okta} administrator panel,scaledwidth=100%]
 image::owui-okta-configure1.png[{okta} configuration window,scaledwidth=75%]
 +
 . In the menu:General Settings[] section, set the menu:App integration name[] to menu:{owui}[] . In the menu:Grant type[] section, toggle the menu:Refresh token[] option. Optionally, specify an image for the application logo. 
-. Set menu:Sign-in redirect URIs[] to the callback URI, for example, `http://localhost:8080/oauth/oidc/callback`. The URI follows this pattern: 
+. Set menu:Sign-in redirect URIs[] to the callback URI, for example, `\http://localhost:8080/oauth/oidc/callback`. The URI follows this pattern: 
 +
 ----
 PROTOCOL://OPENWEBUI_DOMAIN:OPTIONAL_PORT_NUMBER/oauth/oidc/callback

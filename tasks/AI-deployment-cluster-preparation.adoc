@@ -24,10 +24,10 @@ endif::[]
 :page-revdate: {revdate}
 
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 . Install xref:rancher-installation-quickstart[{ranchermanager}].
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 . Install xref:rancher-installation-airgapped[{ranchermanager}].
 endif::[]
 +

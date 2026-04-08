@@ -93,7 +93,7 @@ If you do not change the default, it remains English (US). Change the
 settings here, if necessary. Use the menu:Keyboard Test[]
 text box to test the layout.
 
-Select {sls} {sles-ai-version} for installation. You need to have a
+Select {sls} {sles-version} for installation. You need to have a
 registration code for the product. Proceed with menu:Next[].
 
 [TIP]
@@ -279,7 +279,7 @@ numerically intensive workloads.
 
 Legacy Module::
 Helps you with migrating applications from earlier versions of
-{slsa} and other systems to {slsa} {sles-ai-version} by providing
+{slsa} and other systems to {slsa} {sles-version} by providing
 packages which are discontinued on {sle}. Packages in this module
 are selected based on the requirements for migration and the level
 of complexity of configuration.

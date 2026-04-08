@@ -173,7 +173,7 @@ These can be added instead of automatically installing the {ollama} {helm} chart
 |string
 |""
 |OpenAI base API URL to use.
-Defaults to the Pipelines service endpoint when Pipelines are enabled, or to `https://api.openai.com/v1` if Pipelines are not enabled and this value is blank.
+Defaults to the Pipelines service endpoint when Pipelines are enabled, or to `\https://api.openai.com/v1` if Pipelines are not enabled and this value is blank.
 
 |persistence.accessModes
 |list

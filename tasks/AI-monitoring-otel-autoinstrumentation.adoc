@@ -496,8 +496,8 @@ No init container or injection not happening. ::
 
 Telemetry not reaching the Collector (exporter pointing to localhost). ::
 +
-* Instrumentation defaults to `http://localhost:4317` if `spec.exporter.endpoint` is omitted. Telemetry is dropped or sent to a pod-local endpoint.
-* Set `spec.exporter.endpoint` to the Collector Service FQDN (for example, `http://<collector-name>.<namespace>.svc.cluster.local:4318`).
+* Instrumentation defaults to `\http://localhost:4317` if `spec.exporter.endpoint` is omitted. Telemetry is dropped or sent to a pod-local endpoint.
+* Set `spec.exporter.endpoint` to the Collector Service FQDN (for example, `\http://<collector-name>.<namespace>.svc.cluster.local:4318`).
 * Verify `OTEL_EXPORTER_OTLP_ENDPOINT` in the pod environment.
 
 

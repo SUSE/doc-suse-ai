@@ -271,7 +271,7 @@ Defaulted container "open-webui" out of: open-webui, copy-app-data (init)
 VECTOR_DB=opensearch
 ----
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [#opensearch-upgrading]
 == Upgrading {opensearch}
 

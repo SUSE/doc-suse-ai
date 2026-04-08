@@ -28,7 +28,7 @@ endif::[]
 If you are following this guide, it assumes that you have the following
 already available:
 
-* At least one host with {slsa} {sles-ai-version} installed, physical or
+* At least one host with {slsa} {sles-version} installed, physical or
   virtual.
 * Your hosts are attached to a subscription as this is required for
   package access.
@@ -67,7 +67,7 @@ functional system.
 [#nvidia-gpu-pre-install-procedure-sles]
 == The installation procedure
 
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 . On the *remote* host, run the script
   `SUSE-AI-mirror-nvidia.sh` from the air-gapped stack
   (see xref:ai-air-gap-stack[]) to download all required
@@ -85,7 +85,7 @@ After the download is complete, transfer the downloaded directory with
 all its content to each GPU-enabled *local* host.
 endif::[]
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 . Add a package repository from {nvidia}. This allows pulling in
   additional utilities, for example, `nvidia-smi`.
 +

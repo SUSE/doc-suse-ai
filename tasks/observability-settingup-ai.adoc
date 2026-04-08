@@ -98,10 +98,10 @@ This initial step is identical for both single-cluster and multi-cluster deploym
 --
 . *Install {sobservability}.*
 You can follow the official
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 link:https://documentation.suse.com/cloudnative/suse-observability/latest/en/classic.html[{sobservability} installation documentation]
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 link:https://documentation.suse.com/cloudnative/suse-observability/latest/en/k8s-suse-rancher-prime-air-gapped.html[{sobservability} air-gapped installation documentation]
 endif::[]
 for all installation instructions.
@@ -133,7 +133,7 @@ Example: `suse-ai-cluster`.
 
 .. Create the `genai_values.yaml` file with the following content:
 +
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,yaml]
 ----
 global:
@@ -156,7 +156,7 @@ tls: <.>
 For instructions on how to configure the image pull secrets for the {sappco}, refer to the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
 <.> Provides optional TLS configuration for secure communication.
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,yaml]
 ----
 global:
@@ -183,7 +183,7 @@ endif::[]
 
 .. Run the install command.
 +
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install ai-obs \
@@ -191,7 +191,7 @@ ifdef::deployment_standard[]
   -f genai_values.yaml --namespace so-extensions --create-namespace
 ----
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install ai-obs \
@@ -260,7 +260,7 @@ kubectl create secret generic open-telemetry-collector \
 +
 Create a new file named `otel-values.yaml` with the following content.
 +
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,yaml]
 ----
 image:
@@ -417,7 +417,7 @@ Remember that the value can be distinct, depending on the deployment pattern.
 For production usage, we recommend using TLS communication.
 <.> Replace `<CLUSTER_NAME>` with the cluster's name.
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,yaml]
 ----
 image:

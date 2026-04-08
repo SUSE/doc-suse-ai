@@ -9,12 +9,7 @@ include::../snippets/helm-chart-overrides-intro.adoc[]
 .{owui} override file with {ollama} included
 ====
 The following override file installs {ollama} during the {owui} installation.
-ifdef::deployment_standard[]
-:imgRegistry: {empty}
-endif::[]
-ifdef::deployment_airgap[]
-:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,yaml]
 ----
 global:
@@ -108,12 +103,166 @@ You can customize it to match your actual infrastructure experimentally.
 Refer to link:https://www.nltk.org/index.html[] for licensing information.
 <.> API key value for communication between {owui} and {owui} Pipelines.
 The default value is '0p3n-w3bu!'.
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+[source,yaml]
+----
+global:
+  imagePullSecrets:
+  - application-collection
+  imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+ollamaUrls:
+- http://open-webui-ollama.<SUSE_AI_NAMESPACE>.svc.cluster.local:11434
+persistence:
+  enabled: true
+  storageClass: local-path <.>
+ollama:
+  enabled: true
+  ingress:
+    enabled: false
+  defaultModel: "gemma:2b"
+  ollama:
+    models: <.>
+      pull:
+        - "gemma:2b"
+        - "llama3.1"
+    gpu: <.>
+      enabled: true
+      type: 'nvidia'
+      number: 1
+    persistentVolume: <.>
+      enabled: true
+      storageClass: local-path
+pipelines:
+  enabled: true
+  persistence:
+    storageClass: local-path
+  extraEnvVars: <.>
+    - name: PIPELINES_URLS <.>
+      value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/suse_ai_filter.py"
+    - name: OTEL_SERVICE_NAME <.>
+      value: "Open WebUI"
+    - name: OTEL_EXPORTER_HTTP_OTLP_ENDPONT <.>
+      value: "http://opentelemetry-collector.suse-observability.svc.cluster.local:4318"
+    - name: PRICING_JSON <.>
+      value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/pricing.json"
+ingress:
+  enabled: true
+  class: ""
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "1024m"
+  host: suse-ollama-webui <.>
+  tls: true
+extraEnvVars:
+- name: DEFAULT_MODELS <.>
+  value: "gemma:2b"
+- name: DEFAULT_USER_ROLE
+  value: "user"
+- name: WEBUI_NAME
+  value: "SUSE AI"
+- name: GLOBAL_LOG_LEVEL
+  value: INFO
+- name: RAG_EMBEDDING_MODEL
+  value: "sentence-transformers/all-MiniLM-L6-v2"
+- name: VECTOR_DB
+  value: "milvus"
+- name: MILVUS_URI
+  value: http://milvus.<SUSE_AI_NAMESPACE>.svc.cluster.local:19530
+- name: INSTALL_NLTK_DATASETS <.>
+  value: "true"
+- name: OMP_NUM_THREADS
+  value: "1"
+- name: OPENAI_API_KEY <.>
+  value: "0p3n-w3bu!"
+----
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution more suitable for persistent storage.
+To use {sstorage}, specify `longhorn`.
+<.> Specifies that two large language models (LLM) will be loaded in {ollama} when the container starts.
+<.> Enables GPU support for {ollama}.
+The `type` must be `nvidia` because {nvidia} GPUs are the only supported devices.
+`number` must be between 1 and the number of {nvidia} GPUs present on the system.
+<.> Without the `persistentVolume` option enabled, changes made to {ollama}--such as downloading other LLM-- are lost when the container is restarted.
+<.> The environment variables that you are making available for the pipeline's runtime container.
+<.> A list of pipeline URLs to be downloaded and installed by default.
+Individual URLs are separated by a semicolon `;`.
+For air-gapped deployments, you need to provide the pipelines at URLs that are accessible from the local host, such as an internal GitLab instance.
+<.> The service name that appears in traces and topological representations in {sobservability}.
+<.> The endpoint for the {otelemetry} collector.
+Make sure to use the HTTP port of your collector.
+<.> A file for the model multipliers in cost estimation.
+You can customize it to match your actual infrastructure experimentally.
+For air-gapped deployments, you need to provide the pipelines at URLs that are accessible from the local host, such as an internal GitLab instance.
+<.> Specifies the default LLM for {ollama}.
+<.> Specifies the host name for the {owui} Web UI.
+<.> Installs the _natural language toolkit_ (NLTK) datasets for {ollama}.
+Refer to link:https://www.nltk.org/index.html[] for licensing information.
+<.> API key value for communication between {owui} and {owui} Pipelines.
+The default value is '0p3n-w3bu!'.
+endif::[]
 ====
 
 [#owui-ollama-deploy-separate]
 .{owui} override file with {ollama} installed separately
 ====
 The following override file installs {ollama} separately from the {owui} installation.
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+[source,yaml]
+----
+global:
+  imagePullSecrets:
+  - application-collection
+ollamaUrls:
+- http://ollama.<SUSE_AI_NAMESPACE>.svc.cluster.local:11434
+persistence:
+  enabled: true
+  storageClass: local-path <.>
+ollama:
+  enabled: false
+pipelines:
+  enabled: False
+  persistence:
+    storageClass: local-path <.>
+ingress:
+  enabled: true
+  class: ""
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  host: suse-ollama-webui
+  tls: true
+extraEnvVars:
+- name: DEFAULT_MODELS <.>
+  value: "gemma:2b"
+- name: DEFAULT_USER_ROLE
+  value: "user"
+- name: WEBUI_NAME
+  value: "SUSE AI"
+- name: GLOBAL_LOG_LEVEL
+  value: INFO
+- name: RAG_EMBEDDING_MODEL
+  value: "sentence-transformers/all-MiniLM-L6-v2"
+- name: VECTOR_DB
+  value: "milvus"
+- name: MILVUS_URI
+  value: http://milvus.<SUSE_AI_NAMESPACE>.svc.cluster.local:19530
+- name: ENABLE_OTEL <.>
+  value: "true"
+- name: OTEL_EXPORTER_OTLP_ENDPOINT <.>
+  value: http://opentelemetry-collector.observability.svc.cluster.local:4317 <.>
+- name: OMP_NUM_THREADS
+  value: "1"
+----
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+<.> Specifies the default LLM for {ollama}.
+<.> These values are optional, required only to receive telemetry data from {owui}.
+<.> These values are optional, required only to receive telemetry data from {owui}.
+<.> The URL of the {otelemetry} Collector installed by the user.
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,yaml]
 ----
 global:
@@ -180,6 +329,39 @@ This simple filter adds a limit to the number of question and answer turns durin
 =====
 Pipelines normally require additional configuration provided either via environment variables or specified in the {owui} Web UI.
 =====
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+[source,yaml]
+----
+global:
+  imagePullSecrets:
+  - application-collection
+ollamaUrls:
+- http://ollama.<SUSE_AI_NAMESPACE>.svc.cluster.local:11434
+persistence:
+  enabled: true
+  storageClass: local-path
+ollama:
+  enabled: false
+pipelines:
+  enabled: true
+  persistence:
+    storageClass: local-path
+  extraEnvVars:
+  - name: PIPELINES_URLS <.>
+    value: "https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/heads/main/integrations/oi-filter/conversation_turn_limit_filter.py"
+ingress:
+  enabled: true
+  class: ""
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  host: suse-ollama-webui
+  tls: true
+[...]
+----
+<.> A list of pipeline URLs to be downloaded and installed by default.
+Individual URLs are separated by a semicolon `;`.
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,yaml]
 ----
 global:
@@ -213,6 +395,7 @@ ingress:
 Individual URLs are separated by a semicolon `;`.
 ====
 
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [#owui-ollama-deploy-vllm]
 .{owui} override file with a connection to {vllm}
 ====

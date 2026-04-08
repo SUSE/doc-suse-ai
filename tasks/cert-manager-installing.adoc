@@ -31,7 +31,7 @@ include::../snippets/ai-library-requirement.adoc[]
 
 Install the {certmanager} chart.
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install cert-manager \
@@ -41,7 +41,7 @@ ifdef::deployment_standard[]
   --set 'global.imagePullSecrets[0].name'=application-collection
 ----
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade \
@@ -53,7 +53,7 @@ ifdef::deployment_airgap[]
 ----
 endif::[]
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [#cert-manager-upgrading]
 == Upgrading {certmanager}
 

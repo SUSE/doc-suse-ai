@@ -46,7 +46,7 @@ You can use any RKE2 Prime version listed on the Prime Artifacts URL for the ass
 
 {rke2} provides an installation script that is a convenient way to install it as a service on systemd based systems. This script is available at https://get.rke2.io. To install {rke2} using this method do the following:
 
-. Run the installer, where `INSTALL_RKE2_ARTIFACT_URL` is the Prime Artifacts URL and `INSTALL_RKE2_CHANNEL` is a release channel you can subscribe to and defaults to `stable`. In this example, `INSTALL_RKE2_CHANNEL="latest"` gives you the latest version of RKE2.
+. Run the installer, where `INSTALL_RKE2_ARTIFACT_URL` is the Prime https://scc.suse.com/rancher-docs/rancherprime/latest/en/reference-guide.html#prime-artifacts-url[Prime Artifacts URL] and `INSTALL_RKE2_CHANNEL` is a release channel you can subscribe to and defaults to `stable`. In this example, `INSTALL_RKE2_CHANNEL="latest"` gives you the latest version of RKE2.
 +
 [,sh]
 ----
@@ -172,7 +172,7 @@ journalctl -u rke2-agent -f
 
 [NOTE]
 ====
-Each machine must have a unique host name. If your machines do not have unique host names, set the `node-name` parameter in the `config.yaml` file and provide a value with a valid and unique host name for each node. To learn more about the config.yaml file, refer to the link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/configuration.html#_configuration-file[Configuration Options documentation].
+Each machine must have a unique hostname. If your machines do not have unique hostnames, set the `node-name` parameter in the `config.yaml` file and provide a value with a valid and unique hostname for each node. To learn more about the config.yaml file, refer to the link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/configuration.html#_configuration-file[Configuration Options documentation].
 ====
 
 == Windows Agent (Worker) Node Installation

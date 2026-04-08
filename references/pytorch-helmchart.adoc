@@ -73,8 +73,8 @@ If set to `'amd'`, a _rocm_ image tag is inferred.
 
 | `gpu.nvidiaResource`
 | string
-| `http://nvidia.com/gpu`
-| Requested resource name; change to a MIG slice (e.g. `http://nvidia.com/mig-1g.10gb`) to schedule MIG devices.
+| `\http://nvidia.com/gpu`
+| Requested resource name; change to a MIG slice (e.g. `\http://nvidia.com/mig-1g.10gb`) to schedule MIG devices.
 
 | `gpu.mig.enabled`
 | bool
@@ -161,7 +161,7 @@ If set to `'amd'`, a _rocm_ image tag is inferred.
 | `{}`
 | Annotations added to the ServiceAccount.
 
-| `http://serviceAccount.name`
+| `\http://serviceAccount.name`
 | string
 | `""`
 | Explicit ServiceAccount name (otherwise auto-generated).

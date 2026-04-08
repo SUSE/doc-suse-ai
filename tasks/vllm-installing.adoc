@@ -98,7 +98,7 @@ Confirm with btn:[Save].
 .Adding a {vllm} connection to {owui}
 image::ai-vllm-integrate-owui.png[A screenshot of the {owui} user interface for adding a new connection to {vllm},width=100%]
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [#vllm-upgrading]
 == Upgrading {vllm}
 
