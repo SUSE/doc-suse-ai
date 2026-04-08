@@ -30,7 +30,7 @@ Deploying to a non-standard namespace requires template modifications.
   `workflowDefaults` field.
 They cannot be set via {helm} values at runtime because the configmap is rendered at pod-create time, not {helm} time.
 
-* `knativeServing.enabled` must be `true` for KServe to function.
+* *`knativeServing.enabled` must be `true`* for KServe to function.
 *Disabling Knative Serving* will cause KServe InferenceService resources to remain in a *non-Ready state*.
 
 * Only the *Cloudflare provider* is supported for external-dns out of the box.
@@ -40,10 +40,11 @@ Other providers (AWS Route53, Azure, GCP) require additional `externaldns.env` c
 Pipeline artifact storage has no HA. A {seaweedfs} pod restart causes a brief (~10–60s) S3 outage.
 For production HA, replace {seaweedfs} with an external S3-compatible store.
 
-* *Most {kubeflow} controllers are single-replica only.*
-Leader election is not confirmed for notebook-controller, profiles-controller, tensorboard-controller, training-operator, and several KFP components.
-Setting `replicaCount > 1` for these controllers causes undefined behavior such as duplicate reconciliation or data corruption.
-Only kserve-controller-manager, pvcviewer-controller, and model-registry-controller have confirmed leader election.
+* *Not all {kubeflow} controllers support multiple replicas.*
+Leader election is confirmed for katib-controller (v0.17+), training-operator, kserve-controller-manager, pvcviewer-controller, and model-registry-controller.
+These are safe to scale via `ha-overrides.yaml`.
+It is not confirmed for notebook-controller, profiles-controller, tensorboard-controller, and several KFP background workers.
+Setting `replicaCount > 1` for those may cause duplicate reconciliation or data corruption.
 
 * *CRDs are not automatically upgraded by `helm upgrade`.* {kubeflow} CRDs are placed in `crds/` subdirectories.
 {helm} intentionally skips them on upgrade.

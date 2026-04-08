@@ -32,6 +32,29 @@ Always use `--force-conflicts`::
   --version 0.3.1 \
   -n kubeflow --force-conflicts --wait --timeout 15m
 ----
+Switching database engines or changing StorageClass::
+PVCs with the option `helm.sh/resource-policy: keep` are not deleted by {helm}.
+When switching database images or StorageClasses, delete the PVC manually first:
++
+[source,bash,subs="+attributes"]
+----
+# For KFP MariaDB (Rancher MariaDB StatefulSet)
+{prompt_user}kubectl delete pvc -n kubeflow data-mysql-0
+
+# For Katib MariaDB (standalone Deployment, not StatefulSet)
+{prompt_user}kubectl delete pvc -n kubeflow katib-mysql
+----
+
+Training operator webhook secret migration (auto)::
+On upgrade from chart versions prior to 0.3.0, a pre-upgrade hook automatically migrates the `training-operator-webhook-cert` Secret from type `kubernetes.io/tls` to `Opaque`.
+No manual action is required.
+If the `kubectl get jobs -n kubeflow` command reports a hook failure, delete the secret manually and re-run `helm upgrade`:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl delete secret training-operator-webhook-cert -n kubeflow --ignore-not-found
+{prompt_user}helm upgrade kubeflow charts/kubeflow -n kubeflow --force-conflicts --wait --timeout 15m
+----
 
 Credential rotation ({seaweedfs})::
 Changing `pipelines.seaweedfs.accessKey` and `secretKey` requires restarting all KFP Deployments that read those credentials.

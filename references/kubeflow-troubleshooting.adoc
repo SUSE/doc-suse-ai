@@ -122,9 +122,27 @@ If you pre-created the AuthorizationPolicy with `kubectl` before the first {helm
   meta.helm.sh/release-namespace=kubeflow --overwrite
 ----
 
+{seaweedfs} pod stuck ContainerCreating::
+On K3s 1.34 + cri-dockerd ({ranchera} Desktop), a race between the CNI and the container runtime can leave the {seaweedfs} pod stuck.
+{seaweedfs} acquires a LevelDB file lock on startup.
+If the pod is stuck, the lock is held and the next pod will also fail to start.
+To recover, run the following commands:
++
+[source,bash,subs="+attributes"]
+----
+# Find the Docker container ID for the stuck pod
+{prompt_user}docker ps | grep seaweedfs
+
+# Release the lock
+{prompt_user}docker kill <container-id>
+
+# Delete the stuck pod — a new pod will start cleanly
+{prompt_user}kubectl delete pod -n kubeflow -l app=seaweedfs
+----
+
 Dex login loop (infinite redirect)::
-This usually means oauth2-proxy is receiving a 403 from an Istio AuthorizationPolicy rather than from oauth2-proxy itself.
-The Lua-redirect filter only converts 403 → 302 when the response includes a `set-cookie` header; AuthorizationPolicy 403s do not have one.
+This usually means that oauth2-proxy is receiving a 403 from an Istio AuthorizationPolicy rather than from oauth2-proxy itself.
+The Lua-redirect filter only converts 403 → 302 when the response includes a `set-cookie` header; AuthorizationPolicy 403 messages do not have one.
 +
 Check for sidecar-level AuthorizationPolicy denials:
 +
