@@ -56,7 +56,7 @@ After a chart version bump, run:
 ----
 
 * *Dex must be v0.23.0 (dex 2.42.0).*
-v0.24.0 (dex 2.44.0) uses Go 1.25 which introduced strict IPv6 URL parsing.
+v0.24.0 (dex 2.44.0) uses Go 1.25, which introduced strict IPv6 URL parsing.
 {kube} API server addresses like `[10.43.0.1]:443` are rejected, crashing Dex on startup.
 The chart pins v0.23.0.
 

@@ -101,4 +101,4 @@ link:https://mlflow.org/[{mlflow}]::
 An open source platform to manage the machine learning lifecycle, including experimentation, reproducibility, deployment and a central model registry. 
 
 link:https://www.kubeflow.org/[{kubeflow}]::
-An end-to-end Machine Learning platform on {kube} packaged as a single {helm} umbrella chart.
+An end-to-end machine learning platform on {kube}, packaged as a single {helm} umbrella chart.

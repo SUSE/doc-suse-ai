@@ -28,7 +28,7 @@ endif::[]
 [#kubeflow-accessing-portforward]
 == Option A: Port-forward (local dev)
 
-If NodePorts are not directly reachable use port-forward instead:
+If NodePorts are not directly reachable, use port-forward instead:
 
 [source,bash,subs="+attributes"]
 ----
@@ -36,7 +36,7 @@ If NodePorts are not directly reachable use port-forward instead:
 {prompt_user}kubectl port-forward svc/istio -n istio-system 8080:80
 ----
 
-Navigate to \http://localhost:8080
+Navigate to \http://localhost:8080.
 
 [#kubeflow-accessing-nodeport]
 == Option B: NodePort (standard Linux cluster)
@@ -60,11 +60,11 @@ If your cluster has MetalLB or a cloud load-balancer controller, the Service rec
 {prompt_user}kubectl get svc istio -n istio-system   # wait for EXTERNAL-IP
 ----
 
-Navigate to \http://<EXTERNAL-IP>
+Navigate to \http://<EXTERNAL-IP>.
 
 [TIP]
 ====
-No Helm values change is needed for options A, B, or C.
+No Helm values changes are needed for options A, B, or C.
 ====
 
 ### Option D: Named host name (HTTP)

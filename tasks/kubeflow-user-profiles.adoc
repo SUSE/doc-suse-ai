@@ -24,7 +24,7 @@ endif::[]
 :page-revdate: {revdate}
 
 [#kubeflow-user-profile-at-install]
-== Adding users during the installation
+== Adding users during installation
 
 Insert or update the following snippet in your `kubeflow-override-values.yaml` file:
 +
@@ -52,7 +52,7 @@ Use an explicit `namespace` to disambiguate.
 ====
 
 [#kubeflow-user-profile-after-install]
-== Adding users after the installation
+== Adding users after installation
 
 Add the user to your values file and run `helm upgrade`:
 

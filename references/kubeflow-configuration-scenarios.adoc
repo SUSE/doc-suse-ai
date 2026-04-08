@@ -60,13 +60,13 @@ After the installation, obtain the cluster IP and add a local DNS entry:
 192.168.1.100  kubeflow.dev.example.com
 ----
 
-Navigate to: http://kubeflow.dev.example.com
+Navigate to: http://kubeflow.dev.example.com.
 
 [#kubeflow-config-scenarios-self-signed-tls]
 == Non-production: Self-signed TLS
 
 Suitable for shared development clusters where you can distribute the self-signed CA manually.
-Requires {certmanager}  which was installed by the  `runMe.sh` script in xref:kubeflow-installing-kubernetes[].
+Requires {certmanager}, which was installed by the `runMe.sh` script in xref:kubeflow-installing-kubernetes[].
 
 [source,yaml]
 ----
@@ -88,8 +88,8 @@ Add the self-signed CA to your Web browser trust store to avoid certificate warn
 [#kubeflow-config-scenarios-lets-encrypt]
 == Production: Let's Encrypt TLS + external-dns
 
-Recommended for internet-facing production deployments.
-Uses DNS-01 challenge via Cloudflare so HTTP-01 port requirements are avoided.
+Recommended for Internet-facing production deployments.
+Uses DNS-01 challenge via Cloudflare, so HTTP-01 port requirements are avoided.
 Requires a Cloudflare API token with DNS edit access.
 
 [source,yaml]

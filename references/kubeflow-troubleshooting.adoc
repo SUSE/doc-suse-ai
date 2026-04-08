@@ -62,7 +62,7 @@ kubectl patch storageclass <NAME> \
 ----
 
 `metadata-grpc` CrashLoopBackOff (MLMD)::
-The `metadb` database is created by a post-install hook Job. If the Job failed, re-run it:
+The `metadb` database is created by a post-install hook job. If the job failed, rerun it:
 +
 [source,bash,subs="+attributes"]
 ----
@@ -83,7 +83,7 @@ Check its `NAMESPACE` env var:
 ----
 +
 The value must be an empty string `""`.
-A non-empty value, such as `kubeflow` causes the agent to watch only that namespace and miss workflow updates in user namespaces.
+A non-empty value, such as `kubeflow`, causes the agent to watch only that namespace and miss workflow updates in user namespaces.
 
 TensorBoard unavailable / controller CrashLoopBackOff::
 Check that the `tensorboard-controller-config` ConfigMap contains the following required keys:
@@ -104,13 +104,13 @@ Verify that the `ClusterStorageContainer` CRD and a default object exist:
 {prompt_user}kubectl get clusterstoragecontainer default
 ----
 +
-If either is missing, re-run `helm upgrade` to install them.
+If either is missing, rerun `helm upgrade` to install them.
 
 "RBAC: access denied" for user namespace traffic::
 {ranchera} {istio} uses the `istio` ServiceAccount (not `istio-ingressgateway-service-account`).
 The `rancher-ingressgateway-access` AuthorizationPolicy in each user namespace handles this.
 +
-If you pre-created the AuthorizationPolicy with `kubectl` before the first {helm} install, you need to add {helm} ownership labels/annotations before upgrade:
+If you pre-created the AuthorizationPolicy with `kubectl` before the first {helm} install, you need to add {helm} ownership labels/annotations before upgrading:
 +
 [source,bash,subs="+attributes"]
 ----

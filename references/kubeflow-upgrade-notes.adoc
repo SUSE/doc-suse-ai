@@ -84,7 +84,7 @@ During `helm upgrade`, the old pod is terminated before the new pod starts.
 Expect a brief window of 10s to 60s where S3 artifact uploads and downloads are unavailable.
 In-flight pipeline runs may stall.
 +
-We recommend to temporarily disable active pipeline runs before upgrading.
+We recommend temporarily disabling active pipeline runs before upgrading.
 
 Supply the full values file on upgrade::
 Running `helm upgrade --reuse-values` does not update the `user-namespace` Secret with new {seaweedfs} credentials.
