@@ -227,3 +227,4 @@ To uninstall {milvus}, run the following command:
 ----
 {prompt_user}helm uninstall milvus -n <SUSE_AI_NAMESPACE>
 ----
+

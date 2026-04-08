@@ -52,7 +52,7 @@ The current release of {productname} {vllm} does not support Ray and LoraControl
 Find examples of override files in xref:vllm-helm-overrides[].
 . After saving the override file as `vllm_custom_overrides.yaml`, apply its configuration with the following command.
 +
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -61,7 +61,7 @@ ifdef::deployment_standard[]
   -f <vllm_custom_overrides.yaml>
 ----
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \

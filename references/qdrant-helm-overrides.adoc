@@ -22,10 +22,10 @@ endif::[]
 :revdate: 2026-03-25
 :page-revdate: {revdate}
 
-`ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 :imgRegistry: {empty}
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 :imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
 endif::[]`
 

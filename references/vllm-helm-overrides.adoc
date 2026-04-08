@@ -3,6 +3,13 @@
 :revdate: 2026-03-24
 :page-revdate: {revdate}
 
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+:imgRegistry: {empty}
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+endif::[]
+
 include::../snippets/helm-chart-overrides-intro.adoc[]
 
 [#vllm-helm-overrides-minimal]
@@ -10,12 +17,12 @@ include::../snippets/helm-chart-overrides-intro.adoc[]
 ====
 The following override file installs {vllm} using a model that is publicly available.
 
-ifdef::deployment_standard[]
 [source,yaml]
 ----
 global:
   imagePullSecrets:
   - application-collection
+  {imgRegistry}
 servingEngineSpec:
   modelSpec:
   - name: "phi3-mini-4k"
@@ -29,37 +36,17 @@ servingEngineSpec:
     requestMemory: "16Gi"
     requestGPU: 1
 ----
-endif::[]
-ifdef::deployment_airgap[]
-[source,yaml]
-----
-global:
-  imagePullSecrets:
-  - application-collection
-  imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-servingEngineSpec:
-  modelSpec:
-  - name: "phi3-mini-4k"
-    registry: "dp.apps.rancher.io"
-    repository: "containers/vllm-openai"
-    tag: "0.9.1"
-    imagePullPolicy: "IfNotPresent"
-    modelURL: "microsoft/Phi-3-mini-4k-instruct"
-    replicaCount: 1
-    requestCPU: 6
-    requestMemory: "16Gi"
-    requestGPU: 1
-----
-endif::[]
+====
 
 .Validating the installation
+====
 . Pulling the images can take a long time.
 You can monitor the status of the {vllm} installation by running the following command:
 +
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}kubectl get pods -n <SUSE_AI_NAMESPACE>
-  
+
 NAME                                           READY   STATUS    RESTARTS   AGE
 [...]
 vllm-deployment-router-7588bf995c-5jbkf        1/1     Running   0          8m9s
@@ -68,7 +55,6 @@ vllm-phi3-mini-4k-deployment-vllm-79d6fdc-tx7  1/1     Running   0          8m9s
 +
 Pods for the {vllm} deployment should transition to the states `Ready` and `Running`.
 
-[.procedure]
 .Validating the stack
 . Expose the `vllm-router-service` port to the host machine:
 +
@@ -137,13 +123,13 @@ For more information, see link:https://huggingface.co/meta-llama/Llama-3.1-8B-In
 * The `runtimeClassName` specified here is `nvidia`.
 * Update the `storageClass:` entry for each `modelSpec`.
 
-ifdef::deployment_standard[]
 [source,yaml]
 ----
 # vllm_custom_overrides.yaml
 global:
   imagePullSecrets:
   - application-collection
+  {imgRegistry}
 servingEngineSpec:
   runtimeClassName: "nvidia"
   modelSpec:
@@ -190,62 +176,6 @@ Sufficient memory is required to load the model.
 <.> Your {huggingface} token for accessing gated models.
 Replace `HF_TOKEN` with your actual token.
 ====
-endif::[]
-ifdef::deployment_airgap[]
-[source,yaml]
-----
-# vllm_custom_overrides.yaml
-global:
-  imagePullSecrets:
-  - application-collection
-  imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-servingEngineSpec:
-  runtimeClassName: "nvidia"
-  modelSpec:
-  - name: "llama3" <.>
-    registry: "dp.apps.rancher.io" <.>
-    repository: "containers/vllm-openai" <.>
-    tag: "0.9.1" <.>
-    imagePullPolicy: "IfNotPresent"
-    modelURL: "meta-llama/Llama-3.1-8B-Instruct" <.>
-    replicaCount: 1 <.>
-    requestCPU: 10 <.>
-    requestMemory: "16Gi" <.>
-    requestGPU: 1 <.>
-    storageClass: <STORAGE_CLASS>
-    pvcStorage: "50Gi" <.>
-    pvcAccessMode:
-      - ReadWriteOnce
-
-    vllmConfig:
-      enableChunkedPrefill: false <.>
-      enablePrefixCaching: false <.>
-      maxModelLen: 4096 <.>
-      dtype: "bfloat16" <.>
-      extraArgs: ["--disable-log-requests", "--gpu-memory-utilization", "0.8"] <.>
-
-    hf_token: <HF_TOKEN> <.>
-----
-<.> The unique identifier for your model deployment.
-<.> The {docker} image registry containing the model's serving engine image.
-<.> The {docker} image repository containing the model's serving engine image.
-<.> The version of the model image to use.
-<.> The URL pointing to the model on {huggingface} or another hosting service.
-<.> The number of replicas for the deployment, which allows scaling for load.
-<.> The amount of CPU resources requested per replica.
-<.> Memory allocation for the deployment.
-Sufficient memory is required to load the model.
-<.> The number of GPUs to allocate for the deployment.
-<.> The Persistent Volume Claim (PVC) size for model storage.
-<.> Optimizes performance by prefetching model chunks.
-<.> Enables caching of prompt prefixes to speed up inference for repeated prompts.
-<.> The maximum sequence length the model can handle.
-<.> The data type for model weights, such as `bfloat16` for mixed-precision inference and faster performance on modern GPUs.
-<.> Additional command-line arguments for {vllm}, such as disabling request logging or setting GPU memory utilization.
-<.> Your {huggingface} token for accessing gated models.
-Replace `HF_TOKEN` with your actual token.
-====
-endif::[]
 
 [#vllm-helm-overrides-prefetched]
 .Loading prefetched models from persistent storage
@@ -274,6 +204,7 @@ spec:
 ----
 +
 Save it as `pvc-models.yaml` and apply with `kubectl apply -f pvc-models.yaml`.
+
 . Create a secret resource for the {huggingface} token.
 +
 [source,bash,subs="+attributes"]
@@ -282,6 +213,7 @@ Save it as `pvc-models.yaml` and apply with `kubectl apply -f pvc-models.yaml`.
   generic huggingface-credentials \
   --from-literal=HUGGING_FACE_HUB_TOKEN=<HF_TOKEN>
 ----
+
 . Create a YAML specification for prefetching the model and save it as `job-prefetch-llama3.1-8b.yaml`.
 +
 [source,yaml]
@@ -334,15 +266,16 @@ Apply the specification with the following commands:
 {prompt_user}kubectl -n <SUSE_AI_NAMESPACE> \
   wait --for=condition=complete job/prefetch-llama3.1-8b
 ----
+
 . Update the custom {vllm} override file with support for PVC.
 +
-ifdef::deployment_standard[]
 [source,yaml]
 ----
 # vllm_custom_overrides.yaml
 global:
   imagePullSecrets:
   - application-collection
+  {imgRegistry}
 servingEngineSpec:
   runtimeClassName: "nvidia"
   modelSpec:
@@ -374,49 +307,9 @@ servingEngineSpec:
 ----
 <.> Specify your PVC name.
 <.> The mount path must match the base directory of the `servingEngineSpec.modelSpec.modeURL` value specified above.
-endif::[]
-ifdef::deployment_airgap[]
-[source,yaml]
-----
-# vllm_custom_overrides.yaml
-global:
-  imagePullSecrets:
-  - application-collection
-  imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-servingEngineSpec:
-  runtimeClassName: "nvidia"
-  modelSpec:
-  - name: "llama3"
-    registry: "dp.apps.rancher.io"
-    repository: "containers/vllm-openai"
-    tag: "0.9.1"
-    imagePullPolicy: "IfNotPresent"
-    modelURL: "/models/llama-3.1-8b-it"
-    replicaCount: 1
-
-    requestCPU: 10
-    requestMemory: "16Gi"
-    requestGPU: 1
-
-    extraVolumes:
-      - name: models-pvc
-        persistentVolumeClaim:
-          claimName: models-pvc <.>
-
-    extraVolumeMounts:
-      - name: models-pvc
-        mountPath: /models <.>
-
-    vllmConfig:
-      maxModelLen: 4096
-
-    hf_token: <HF_TOKEN>
-----
-<.> Specify your PVC name.
-<.> The mount path must match the base directory of the `servingEngineSpec.modelSpec.modeURL` value specified above.
-endif::[]
 +
 Save it as `vllm_custom_overrides.yaml` and apply with `kubectl apply -f vllm_custom_overrides.yaml`.
+
 . The following example lists mounted PVCs for a pod.
 +
 [source,bash,subs="+attributes"]
@@ -440,13 +333,13 @@ Ray is currently not supported.
 Therefore, sharding a single large model across multiple GPUs is not supported.
 =====
 
-ifdef::deployment_standard[]
 [source,yaml]
 ----
 # vllm_custom_overrides.yaml
 global:
   imagePullSecrets:
   - application-collection
+  {imgRegistry}
 servingEngineSpec:
   modelSpec:
   - name: "llama3"
@@ -481,50 +374,6 @@ servingEngineSpec:
       maxModelLen: 4096
     hf_token: <HF_TOKEN_FOR_MISTRAL>
 ----
-endif::[]
-ifdef::deployment_standard[]
-[source,yaml]
-----
-# vllm_custom_overrides.yaml
-global:
-  imagePullSecrets:
-  - application-collection
-  imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-servingEngineSpec:
-  modelSpec:
-  - name: "llama3"
-    registry: "dp.apps.rancher.io"
-    repository: "containers/vllm-openai"
-    tag: "0.9.1"
-    imagePullPolicy: "IfNotPresent"
-    modelURL: "meta-llama/Llama-3.1-8B-Instruct"
-    replicaCount: 1
-    requestCPU: 10
-    requestMemory: "16Gi"
-    requestGPU: 1
-    pvcStorage: "50Gi"
-    storageClass: <STORAGE_CLASS>
-    vllmConfig:
-      maxModelLen: 4096
-    hf_token: <HF_TOKEN_FOR_LLAMA_31>
-
-  - name: "mistral"
-    registry: "dp.apps.rancher.io"
-    repository: "containers/vllm-openai"
-    tag: "0.9.1"
-    imagePullPolicy: "IfNotPresent"
-    modelURL: "mistralai/Mistral-7B-Instruct-v0.2"
-    replicaCount: 1
-    requestCPU: 10
-    requestMemory: "16Gi"
-    requestGPU: 1
-    pvcStorage: "50Gi"
-    storageClass: <STORAGE_CLASS>
-    vllmConfig:
-      maxModelLen: 4096
-    hf_token: <HF_TOKEN_FOR_MISTRAL>
-----
-endif::[]
 ====
 
 [#vllm-helm-overrides-offloading]
@@ -543,13 +392,13 @@ These experimental features are only supported on newer GPU generations.
 It is not recommended to enable them without a compelling reason.
 =====
 
-ifdef::deployment_standard[]
 [source,yaml]
 ----
 # vllm_custom_overrides.yaml
 global:
   imagePullSecrets:
   - application-collection
+  {imgRegistry}}
 servingEngineSpec:
   runtimeClassName: "nvidia"
   modelSpec:
@@ -576,42 +425,6 @@ servingEngineSpec:
 
     hf_token: <HF_TOKEN>
 ----
-endif::[]
-ifdef::deployment_airgap[]
-[source,yaml]
-----
-# vllm_custom_overrides.yaml
-global:
-  imagePullSecrets:
-  - application-collecti1on
-  imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-servingEngineSpec:
-  runtimeClassName: "nvidia"
-  modelSpec:
-  - name: "mistral"
-    registry: "dp.apps.rancher.io"
-    repository: "containers/lmcache-vllm-openai"
-    tag: "0.3.2"
-    imagePullPolicy: "IfNotPresent"
-    modelURL: "mistralai/Mistral-7B-Instruct-v0.2"
-    replicaCount: 1
-    requestCPU: 10
-    requestMemory: "40Gi"
-    requestGPU: 1
-    pvcStorage: "50Gi"
-    storageClass: <STORAGE_CLASS>
-    pvcAccessMode:
-      - ReadWriteOnce
-    vllmConfig:
-      maxModelLen: 32000
-
-    lmcacheConfig:
-      enabled: false
-      cpuOffloadingBufferSize: "20"
-
-    hf_token: <HF_TOKEN>
-----
-endif::[]
 ====
 
 [#vllm-helm-overrides-lmcache]
@@ -628,12 +441,7 @@ Setting `lmcacheConfig.enabled` to `true` implicitly enables the `LMCACHE_USE_EX
 These experimental features are only supported on newer GPU generations.
 It is not recommended to enable them without a compelling reason.
 =====
-ifdef::deployment_standard[]
-:imgRegistry: {empty}
-endif::[]
-ifdef::deployment_airgap[]
-:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-endif::[]
+
 [source,yaml,subs="+attributes"]
 ----
 # vllm_custom_overrides.yaml

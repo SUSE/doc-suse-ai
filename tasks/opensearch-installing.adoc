@@ -3,10 +3,10 @@
 :revdate: 2026-03-24
 :page-revdate: {revdate}
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 :imgRegistry: {empty}
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 :imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
 endif::[]
 
@@ -61,7 +61,7 @@ include::../snippets/ai-library-requirement.adoc[]
 +
 For a single-node cluster, use the following template file:
 +
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # opensearch_custom_overrides.yaml
 global:
@@ -96,7 +96,7 @@ config:
 +
 For a multi-node cluster, use the following template file:
 +
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # opensearch_custom_overrides.yaml
 global:
@@ -159,7 +159,7 @@ config:
 ----
 . After saving the override file as `opensearch_custom_overrides.yaml`, apply its configuration with the following command.
 +
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -168,7 +168,7 @@ ifdef::deployment_standard[]
   -f <opensearch_custom_overrides.yaml>
 ----
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -241,7 +241,7 @@ extraEnvVars:
 ----
 . Redeploy {owui}.
 +
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -250,7 +250,7 @@ ifdef::deployment_standard[]
   -f <owui_custom_overrides.yaml>
 ----
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \

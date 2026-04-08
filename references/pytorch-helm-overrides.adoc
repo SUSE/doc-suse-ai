@@ -5,10 +5,10 @@
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 :imgRegistry: {empty}
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 :imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
 endif::[]
 

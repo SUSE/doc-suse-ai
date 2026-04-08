@@ -29,7 +29,7 @@ include::../snippets/ai-library-requirement.adoc[]
 Find examples of {pytorch} override files in xref:pytorch-helm-overrides[] and a list of all valid options and their values in xref:pytorch-helm-values[].
 . Install the {pytorch} {helm} chart using the `pytorch_custom_overrides.yaml` file using the following command.
 +
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -38,7 +38,7 @@ ifdef::deployment_standard[]
   -f pytorch_custom_overrides.yaml
 ----
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
@@ -49,7 +49,7 @@ ifdef::deployment_airgap[]
 ----
 endif::[]
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [#pytorch-upgrading]
 == Upgrading {pytorch}
 

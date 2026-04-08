@@ -3,10 +3,10 @@
 :revdate: 2026-03-25
 :page-revdate: {revdate}
 
-ifdef::deployment_standard[]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 :imgRegistry: {empty}
 endif::[]
-ifdef::deployment_airgap[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 :imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
 endif::[]
 
@@ -132,8 +132,9 @@ volumeMounts: []
 #   readOnly: true
 nodeSelector: {}
 tolerations: []
-affinity: {}</screen>
+affinity: {}
 ----
+
 . Replace `mlflow/template/deployment.yaml` with the following content:
 +
 [source,yaml]
@@ -214,6 +215,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
 ----
+
 . Install {mlflow} using the following command:
 +
 [source,,subs="+attributes"]
@@ -320,7 +322,7 @@ services:
 +
 [source,subs="+attributes"]
 ----
-(venv) {exampleuser}@localhost:~[] docker ps
+{prompt_user}(venv) {exampleuser}@localhost:~[] docker ps
 CONTAINER ID IMAGE    ...     STATUS          PORTS                     NAMES
 1e58723cb3d  mlflow:3.6.0     Up 23 seconds   0.0.0.0:5000->5000/tcp... mlflow
 ----
