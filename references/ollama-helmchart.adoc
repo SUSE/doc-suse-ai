@@ -3,6 +3,13 @@
 :revdate: 2026-03-24
 :page-revdate: {revdate}
 
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+:imgRegistry: {empty}
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+endif::[]
+
 include::../snippets/helm-chart-overrides-intro.adoc[]
 
 [IMPORTANT]
@@ -28,13 +35,7 @@ If you do not want to use the {nvidia} GPU, remove the `gpu` section from `ollam
 
 .Basic override file with GPU and two models pulled at startup
 ====
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-:imgRegistry: {empty}
-endif::[]
-ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
-:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-endif::[]
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 global:
   imagePullSecrets:

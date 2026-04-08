@@ -3,6 +3,13 @@
 :revdate: 2026-03-25
 :page-revdate: {revdate}
 
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+:imgRegistry: {empty}
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+endif::[]
+
 {mcp} (Model Context Protocol) is an open source standard for connecting AI applications{mdash}such as {suseai}{mdash}to external systems.
 These external systems can include data sources like databases or local files, or tools like calculators or search engines.
 
@@ -32,13 +39,7 @@ include::../snippets/ai-library-requirement.adoc[]
 The following file defines multiple {mcp} servers in the `config.mcpServers` section.
 These servers will be added to the {mcpo} configuration file `config.json`.
 +
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-:imgRegistry: {empty}
-endif::[]
-ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
-:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-endif::[]
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # mcpo_custom_overrides.yaml
 global:

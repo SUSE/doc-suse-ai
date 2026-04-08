@@ -33,7 +33,7 @@ endif::[]
 [#litellm-chart-example-basic]
 .Basic override file with {postgresql} deployment and master key automatically generated.
 ====
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # litellm_custom_overrides.yaml
 global:

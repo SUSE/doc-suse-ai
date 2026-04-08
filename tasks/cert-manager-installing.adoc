@@ -16,9 +16,9 @@ Currently, {certmanager} is no longer part of the {owui} {helm} chart and you ne
 Before deploying {certmanager}, it is important to know more about the supported configurations and documentation.
 The following command provides the corresponding details:
 
-[source,bash]
+[source,bash,subs="+attributes"]
 ----
-helm show values oci://dp.apps.rancher.io/charts/cert-manager
+{prompt_user}helm show values oci://dp.apps.rancher.io/charts/cert-manager
 ----
 
 Alternatively, you can also refer to the {certmanager} {helm} chart page on the {sappco} site at link:https://apps.rancher.io/applications/cert-manager[].

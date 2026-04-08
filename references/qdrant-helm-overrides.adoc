@@ -32,7 +32,7 @@ endif::[]`
 [#qdrant-chart-example-basic]
 .Basic override file when the cluster has no default storage class set.
 ====
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # qdrant_custom_overrides.yaml
 global:
@@ -58,7 +58,7 @@ For production use, we recommend using a storage solution suitable for persisten
 [#qdrant-chart-example-gpu]
 .An example where {qdrant} uses GPU capabilities.
 ====
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # qdrant_custom_overrides.yaml
 global:

@@ -17,7 +17,7 @@ include::../snippets/helm-chart-overrides-intro.adoc[]
 ====
 The following override file installs {vllm} using a model that is publicly available.
 
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 global:
   imagePullSecrets:
@@ -123,7 +123,7 @@ For more information, see link:https://huggingface.co/meta-llama/Llama-3.1-8B-In
 * The `runtimeClassName` specified here is `nvidia`.
 * Update the `storageClass:` entry for each `modelSpec`.
 
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # vllm_custom_overrides.yaml
 global:
@@ -269,7 +269,7 @@ Apply the specification with the following commands:
 
 . Update the custom {vllm} override file with support for PVC.
 +
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # vllm_custom_overrides.yaml
 global:
@@ -333,7 +333,7 @@ Ray is currently not supported.
 Therefore, sharding a single large model across multiple GPUs is not supported.
 =====
 
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # vllm_custom_overrides.yaml
 global:
@@ -392,7 +392,7 @@ These experimental features are only supported on newer GPU generations.
 It is not recommended to enable them without a compelling reason.
 =====
 
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # vllm_custom_overrides.yaml
 global:

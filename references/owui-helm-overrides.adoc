@@ -3,19 +3,21 @@
 :revdate: 2026-03-24
 :page-revdate: {revdate}
 
-include::../snippets/helm-chart-overrides-intro.adoc[]
-
-[#owui-helm-overrides-ollama]
-.{owui} override file with {ollama} included
-====
-The following override file installs {ollama} during the {owui} installation.
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 :imgRegistry: {empty}
 endif::[]
 ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 :imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
 endif::[]
-[source,yaml]
+
+include::../snippets/helm-chart-overrides-intro.adoc[]
+
+[#owui-helm-overrides-ollama]
+.{owui} override file with {ollama} included
+====
+The following override file installs {ollama} during the {owui} installation.
+
+[source,yaml,subs="+attributes"]
 ----
 global:
   imagePullSecrets:
@@ -115,7 +117,7 @@ The default value is '0p3n-w3bu!'.
 ====
 The following override file installs {ollama} separately from the {owui} installation.
 
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 global:
   imagePullSecrets:
@@ -182,7 +184,7 @@ This simple filter adds a limit to the number of question and answer turns durin
 Pipelines normally require additional configuration provided either via environment variables or specified in the {owui} Web UI.
 =====
 
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 global:
   imagePullSecrets:
@@ -265,7 +267,7 @@ To install open-webui-pipelines as a stand-alone component, use the following co
 
 Following is an example of the `open-webui-pipelines-values.yaml` override file.
 
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 runtimeClassName: nvidia
 global:

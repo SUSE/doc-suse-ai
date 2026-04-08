@@ -4,6 +4,13 @@
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+:imgRegistry: {empty}
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+endif::[]
+
 {milvus} is a scalable, high-performance vector database designed for AI applications.
 It enables efficient organization and searching of massive unstructured datasets, including text, images and multi-modal content.
 This procedure walks you through the installation of {milvus} and its dependencies.
@@ -51,13 +58,7 @@ As a template, you can use the `values.yaml` file that is included in the `chart
 ====
 endif::[]
 +
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-:imgRegistry: {empty}
-endif::[]
-ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
-:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-endif::[]
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 global:
   imagePullSecrets:
@@ -214,7 +215,7 @@ To upgrade {milvus}, identify the new version number and run the following comma
   milvus oci://dp.apps.rancher.io/charts/milvus \
   -n <SUSE_AI_NAMESPACE> \
   --version <VERSION_NUMBER> \
-  -f <milvus_custom_overrides.yaml>
+  -f milvus_custom_overrides.yaml
 ----
 endif::[]
 

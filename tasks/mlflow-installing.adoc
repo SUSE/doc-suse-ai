@@ -46,7 +46,7 @@ The command creates an `mlflow` directory with the basic file structure for a ch
 . Replace `mlflow/values.yaml` with the following content.
 Replace `CONTAINER_VERSION` with the current chart version.
 +
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # values.yaml
 replicaCount: 1

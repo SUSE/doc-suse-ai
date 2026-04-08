@@ -15,7 +15,7 @@ endif::[]
 [#pytorch-chart-example-basic]
 .Basic override file with GPU enabled
 ====
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # pytorch_custom_overrides.yaml
 runtimeClassName: nvidia
@@ -53,7 +53,7 @@ To create a ConfigMap, run the following command:
   MY_CONFIG_MAP -n SUSE_AI_NAMESPACE
 ----
 
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # pytorch_custom_overrides.yaml
 runtimeClassName: nvidia
@@ -88,7 +88,7 @@ For production use, we recommend using a storage solution suitable for persisten
 ====
 Move the `entrypoint.sh` file plus any helper files under the `scripts/` directory.
 
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # pytorch_custom_overrides.yaml
 runtimeClassName: nvidia
@@ -124,7 +124,7 @@ For production use, we recommend using a storage solution suitable for persisten
 [#pytorch-chart-example-git-public]
 .Git repository clone: public with no authentication
 ====
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # pytorch_custom_overrides.yaml
 runtimeClassName: nvidia
@@ -161,7 +161,7 @@ For production use, we recommend using a storage solution suitable for persisten
 [#pytorch-chart-example-git-private]
 .Git repository clone: private with authentication
 ====
-[source,yaml]
+[source,yaml,subs="+attributes"]
 ----
 # pytorch_custom_overrides.yaml
 runtimeClassName: nvidia
