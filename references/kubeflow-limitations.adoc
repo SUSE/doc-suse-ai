@@ -44,7 +44,7 @@ For production HA, replace {seaweedfs} with an external S3-compatible store.
 Leader election is confirmed for katib-controller (v0.17+), training-operator, kserve-controller-manager, pvcviewer-controller, and model-registry-controller.
 These are safe to scale via `ha-overrides.yaml`.
 It is not confirmed for notebook-controller, profiles-controller, tensorboard-controller, and several KFP background workers.
-Setting `replicaCount > 1` for those may cause duplicate reconciliation or data corruption.
+Setting `replicaCount > 1` for these controllers causes undefined behavior, such as duplicate reconciliation or data corruption.
 
 * *CRDs are not automatically upgraded by `helm upgrade`.* {kubeflow} CRDs are placed in `crds/` subdirectories.
 {helm} intentionally skips them on upgrade.

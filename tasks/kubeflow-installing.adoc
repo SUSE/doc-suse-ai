@@ -73,9 +73,11 @@ It contains {kubeflow} dependencies, available versions and the link to pull the
 |===
 
 Storage class::
-All PVCs use the cluster's default StorageClass unless `global.storageClass`` is set.
-For single-node clusters, the Local Path Provisioner is sufficient for development.
-For production, Longhorn is recommended.
+All PVCs use the cluster default StorageClass unless `global.storageClass` is set.  
+Most components only require RWO (ReadWriteOnce).
+The exception is the Katib PBT hyperparameter tuning algorithm, which requires RWX (ReadWriteMany) to share model checkpoints across trial pods.  
+For single-node clusters, the Local Path Provisioner is sufficient for development (PBT will only work if all trial pods are scheduled on the same node).
+For production, Longhorn is recommended as it supports both RWO and RWX.
 
 Cloudflare API token::
 Only required if you want automatic DNS record management via `external-dns`` or Let's Encrypt DNS-01 challenges.

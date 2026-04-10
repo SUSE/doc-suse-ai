@@ -41,7 +41,7 @@ Navigate to \http://localhost:8080.
 [#kubeflow-accessing-nodeport]
 == Option B: NodePort (standard Linux cluster)
 
-The {istio} gateway Service is type `LoadBalancer` and always gets NodePorts assigned, even without a load-balancer controller:
+The {istio} gateway Service is of type `LoadBalancer` and always gets NodePorts assigned, even without a  load-balancer controller:
 
 [source,bash]
 ----

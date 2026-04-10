@@ -24,6 +24,9 @@ endif::[]
 :page-revdate: {revdate}
 
 Always use `--force-conflicts`::
+The `--force-conflicts` flag is required for `helm upgrade`.
+Certain components, such as `cert-manager-cainjector` and `istiod`, modify fields that {helm} also manages.
+This flag tells {helm} to overwrite these external changes and reclaim ownership.
 +
 [source,bash,subs="+attributes"]
 ----
@@ -84,7 +87,7 @@ During `helm upgrade`, the old pod is terminated before the new pod starts.
 Expect a brief window of 10s to 60s where S3 artifact uploads and downloads are unavailable.
 In-flight pipeline runs may stall.
 +
-We recommend temporarily disabling active pipeline runs before upgrading.
+We recommend temporarily disabling active pipeline runs in the GUI before upgrading.
 
 Supply the full values file on upgrade::
 Running `helm upgrade --reuse-values` does not update the `user-namespace` Secret with new {seaweedfs} credentials.

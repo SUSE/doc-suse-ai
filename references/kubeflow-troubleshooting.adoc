@@ -72,19 +72,6 @@ The `metadb` database is created by a post-install hook job. If the job failed, 
   | kubectl apply -n kubeflow -f -
 ----
 
-Pipeline runs stuck "Pending Execution"::
-The persistence agent must watch all namespaces.
-Check its `NAMESPACE` env var:
-+
-[source,bash,subs="+attributes"]
-----
-{prompt_user}kubectl get deploy ml-pipeline-persistenceagent -n kubeflow \
-  -o jsonpath='{.spec.template.spec.containers[0].env}' | grep -i namespace
-----
-+
-The value must be an empty string `""`.
-A non-empty value, such as `kubeflow`, causes the agent to watch only that namespace and miss workflow updates in user namespaces.
-
 TensorBoard unavailable / controller CrashLoopBackOff::
 Check that the `tensorboard-controller-config` ConfigMap contains the following required keys:
 * `ISTIO_HOST: "*"`
