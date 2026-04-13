@@ -239,7 +239,7 @@ auth:
 
 == Production: Use an existing external-dns and cert-manager
 
-If the existing environment already has `externa-dns` and `cert-manager`, {kubeflow} can make use of them if the follow conditions are satisfied:
+If the existing environment already has `externa-dns` and `cert-manager`, {kubeflow} can make use of them if the following conditions are satisfied:
 
 * `external-dns` must be configured to watch for the `istio-gateway` source.
 You can check the deployment with the `kubectl` command:
@@ -252,7 +252,7 @@ You can check the deployment with the `kubectl` command:
   - --source=istio-gateway
 ----
 
-* A cluster issuer must exist in the environment and configured to issue certificates from a production public CA such as LetsEncrypt.
+* A cluster issuer must exist in the environment and be configured to issue certificates from a production public CA such as Let's Encrypt.
 You can check the deployment with the `kubectl` command:
 +
 [source,bash,subs="+attributes"]
@@ -292,6 +292,6 @@ auth:
 .Verify {istio} CRDs installation
 ====
 When adding `istio-gateway` as a source to `external-dns`, make sure the {istio} CRDs are installed.
-Otherwise, `external-dns` pod may keep crashing with an error indicating failure to list {istio}n gateway resource.
-However the error will eventually go away after {istio} is installed by {kubeflow}.
+Otherwise, `external-dns` pod may keep crashing with an error indicating a failure to list the {istio} gateway resource.
+However, the error will eventually resolve after {istio} is installed by {kubeflow}.
 ====

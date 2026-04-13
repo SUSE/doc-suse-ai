@@ -75,7 +75,7 @@ user-namespace:
 Both the KFP and Katib {mysql} secrets are *auto-generated* (24-char random password) on the first install.
 They are preserved across upgrades with no action required.
 To rotate them, delete the secret and run `helm upgrade` to regenerate:
-+
+
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}kubectl delete secret mysql-secret -n kubeflow        # for KFP
@@ -90,8 +90,8 @@ Add a `connectors` block to `dex.config` and remove `staticPasswords` and `enabl
 
 . *NetworkPolicies.*
 _NetworkPolicies_ are *disabled by default*.
-They use an 'ingress-only deny-by-default' model where egress is unrestricted so that components can reach external services such as {huggingface}, container registries, etc.
-Such configuration is supported by Calico, Cilium, Canal and any other CNI that enforces NetworkPolicy.
+They use an 'ingress-only deny-by-default' model where egress is unrestricted so that components can reach external services such as {huggingface} and container registries.
+Such configurations are supported by Calico, Cilium, Canal, and any other CNI that enforces NetworkPolicy.
 If your CNI does not enforce NetworkPolicy, enable it:
 +
 [source,yaml]

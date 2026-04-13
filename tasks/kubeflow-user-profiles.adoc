@@ -27,7 +27,7 @@ endif::[]
 == Adding users during installation
 
 Insert or update the following snippet in your `kubeflow-override-values.yaml` file:
-+
+
 [source,yaml]
 ----
 # in your kubeflow-override-values.yaml

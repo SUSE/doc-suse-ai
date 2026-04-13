@@ -41,7 +41,7 @@ Navigate to \http://localhost:8080.
 [#kubeflow-accessing-nodeport]
 == Option B: NodePort (standard Linux cluster)
 
-The {istio} gateway Service is of type `LoadBalancer` and always gets NodePorts assigned, even without a  load-balancer controller:
+The {istio} gateway Service is of type `LoadBalancer` and always has NodePorts assigned, even without a load balancer controller:
 
 [source,bash]
 ----
@@ -81,7 +81,7 @@ See xref:kubeflow-config-scenarios-self-signed-tls[] or xref:kubeflow-config-sce
 [NOTE]
 .`external-dns` is required for the Let's Encrypt issuer
 ====
-When using Let's Encrypt as the issuer for Gateway TLS certificate, `external-dns` is required for DNS-01 challenges.
-Furthermore, a load balancer (i.e. MetallLB) must be used in conjunction with `external-dns`.
+When using Let's Encrypt as the issuer for Gateway TLS certificates, `external-dns` is required for DNS-01 challenges.
+Furthermore, a load balancer (i.e. MetalLB) must be used with `external-dns`.
 This ensures that `external-dns` can properly obtain an external IP from the load balancer to create the DNS record.
 ====
