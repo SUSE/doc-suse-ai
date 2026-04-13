@@ -37,6 +37,12 @@ The following command provides the corresponding details:
 Alternatively, you can also refer to the {kubeflow} {helm} chart page on the {sappco} site at link:https://apps.rancher.io/applications/kubeflow[].
 It contains {kubeflow} dependencies, available versions and the link to pull the {kubeflow} container image.
 
+[TIP]
+.{kubeflow} repository
+====
+Referenced files, such as the `runMe.sh` script, are located in the link:https://github.com/SUSE/suse-ai-charts/tree/main/kubeflow[{kubeflow} repository].
+====
+
 [#kubeflow-installing-requirements]
 == Prerequisites
 
