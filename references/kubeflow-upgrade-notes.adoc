@@ -51,7 +51,7 @@ When switching database images or StorageClasses, delete the PVC manually first:
 Training operator webhook secret migration (auto)::
 On upgrade from chart versions prior to 0.3.0, a pre-upgrade hook automatically migrates the `training-operator-webhook-cert` Secret from type `kubernetes.io/tls` to `Opaque`.
 No manual action is required.
-If the `kubectl get jobs -n kubeflow` command reports a hook failure, delete the secret manually and re-run `helm upgrade`:
+If the `kubectl get jobs -n kubeflow` command reports a hook failure, delete the secret manually and rerun `helm upgrade`:
 +
 [source,bash,subs="+attributes"]
 ----

@@ -151,7 +151,7 @@ KFP and Dex PodDisruptionBudgets are already enabled by default.
 +
 PDBs protect against voluntary disruptions (node drains) but only provide meaningful coverage with 2 or more replicas.
 With a single replica, the PDB allows full eviction.
-See the xref:kubeflow-limitations[Known limitations] section for which controllers support HA.
+See xref:kubeflow-limitations[Known limitations] for supported HA controllers.
 
 . *Apply resource quotas per user namespace.*
 +

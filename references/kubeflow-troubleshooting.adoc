@@ -109,8 +109,8 @@ If you pre-created the AuthorizationPolicy with `kubectl` before the first {helm
   meta.helm.sh/release-namespace=kubeflow --overwrite
 ----
 
-{seaweedfs} pod stuck ContainerCreating::
-On K3s 1.34 + cri-dockerd ({ranchera} Desktop), a race between the CNI and the container runtime can leave the {seaweedfs} pod stuck.
+{seaweedfs} pod stuck on ContainerCreating::
+On K3s 1.34 with cri-dockerd ({ranchera} Desktop), a race between the CNI and the container runtime can leave the {seaweedfs} pod stuck.
 {seaweedfs} acquires a LevelDB file lock on startup.
 If the pod is stuck, the lock is held and the next pod will also fail to start.
 To recover, run the following commands:

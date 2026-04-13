@@ -65,7 +65,7 @@ Add the user to your values file and run `helm upgrade`:
   --set "user-namespace.additionalUsers[0].namespace=tux"
 ----
 
-Alternatively, add the user to your values file and re-run the upgrade:
+Alternatively, add the user to your values file and rerun the upgrade:
 
 [source,bash]
 ----
