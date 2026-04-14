@@ -73,13 +73,27 @@ The `metadb` database is created by a post-install hook job. If the job failed, 
 ----
 
 TensorBoard unavailable / controller CrashLoopBackOff::
++
+--
 Check that the `tensorboard-controller-config` ConfigMap contains the following required keys:
+
 * `ISTIO_HOST: "*"`
 * `ISTIO_GATEWAY: kubeflow/kubeflow-gateway` (must be in the `namespace/name` format)
-+
+
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}kubectl get configmap -n kubeflow -l app=tensorboard-controller -o yaml | grep -A5 'data:'
+----
+--
++
+If either the key is wrong or missing, upgrade the chart with the following overrides:
++
+[source,bash,subs="+attributes"]
+----
+tensorboard-controller:  
+  configMapData:  
+    ISTIO_HOST: "*"  
+    ISTIO_GATEWAY: kubeflow/kubeflow-gateway
 ----
 
 KServe InferenceService not progressing::
