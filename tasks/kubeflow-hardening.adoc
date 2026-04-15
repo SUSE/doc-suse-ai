@@ -32,6 +32,7 @@ To suppress this during local development, set `global.demoMode: true` in your o
 
 . *Change all default credentials.*
 The credentials that trigger the render-time security check:
++
 [source,yaml]
 ----
 # in your kubeflow-override-values.yaml
@@ -71,13 +72,15 @@ user-namespace:
 [NOTE]
 .{mariadb} {rootuser} password
 ====
-The chart initializes `mysql-secret` with an empty {rootuser} password on the first installation.
-Set a non-empty password by patching the secret before upgrading:
-
+Both the KFP and Katib {mysql} secrets are *auto-generated* (24-char random password) on the first install.
+They are preserved across upgrades with no action required.
+To rotate them, delete the secret and run `helm upgrade` to regenerate:
++
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl patch secret mysql-secret -n kubeflow \
-  --type='json' -p='[{"op":"replace","path":"/data/password","value":"'$(echo -n "STRONG_PASSWORD" | base64)'"}]'
+{prompt_user}kubectl delete secret mysql-secret -n kubeflow        # for KFP
+{prompt_user}kubectl delete secret katib-mysql-secrets -n kubeflow # for Katib
+{prompt_user}helm upgrade kubeflow . -f kubeflow-override-values.yaml -n kubeflow
 ----
 ====
 
@@ -85,13 +88,17 @@ Set a non-empty password by patching the secret before upgrading:
 Replace Dex static passwords with an LDAP, SAML, or upstream OIDC connector.
 Add a `connectors` block to `dex.config` and remove `staticPasswords` and `enablePasswordDB: true`.
 
-. *Enable NetworkPolicies.*
+. *NetworkPolicies.*
+_NetworkPolicies_ are *disabled by default*.
+They use an 'ingress-only deny-by-default' model where egress is unrestricted so that components can reach external services such as {huggingface}, container registries, etc.
+Such configuration is supported by Calico, Cilium, Canal and any other CNI that enforces NetworkPolicy.
+If your CNI does not enforce NetworkPolicy, enable it:
 +
 [source,yaml]
 ----
 # in your kubeflow-override-values.yaml
 networkPolicies:
-  enabled: true   # requires Calico, Cilium, or Canal CNI
+  enabled: true
 ----
 
 . *Enable TLS.*
@@ -132,6 +139,20 @@ preflightChecks:
 ----
 +
 Runs a hook job before the installation that validates that the default `StorageClass` exists and that {certmanager} CRDs are registered.
+
+. *Enable High Availability.*
+Apply `ha-overrides.yaml` (provided in the repository) on top of your base values to scale the Katib controller, training-operator, and KServe controller to 2 replicas.
+KFP and Dex PodDisruptionBudgets are already enabled by default.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade kubeflow . -f kubeflow-override-values.yaml -f ha-overrides.yaml -n kubeflow
+----
++
+PDBs protect against voluntary disruptions (node drains) but only provide meaningful coverage with 2 or more replicas.
+With a single replica, the PDB allows full eviction.
+See the xref:TODO[Known limitations] section for which controllers support HA.
+// TODO add xref to known limitations ^^^
 
 . *Apply resource quotas per user namespace.*
 +
