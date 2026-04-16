@@ -121,8 +121,7 @@ global:
   imagePullSecrets:
   - application-collection
 servingEngineSpec:
-  runtimeClassName: "nvidia"
-  modelSpec:
+    modelSpec:
   - name: "llama3" <.>
     registry: "dp.apps.rancher.io" <.>
     repository: "containers/vllm-openai" <.>
@@ -263,8 +262,7 @@ global:
   imagePullSecrets:
   - application-collection
 servingEngineSpec:
-  runtimeClassName: "nvidia"
-  modelSpec:
+    modelSpec:
   - name: "llama3"
     registry: "dp.apps.rancher.io"
     repository: "containers/vllm-openai"
@@ -383,8 +381,7 @@ global:
   imagePullSecrets:
   - application-collection
 servingEngineSpec:
-  runtimeClassName: "nvidia"
-  modelSpec:
+    modelSpec:
   - name: "mistral"
     registry: "dp.apps.rancher.io"
     repository: "containers/lmcache-vllm-openai"
@@ -432,8 +429,7 @@ global:
   imagePullSecrets:
   - application-collection
 servingEngineSpec:
-  runtimeClassName: "nvidia"
-  modelSpec:
+    modelSpec:
   - name: "mistral"
     registry: "dp.apps.rancher.io"
     repository: "containers/lmcache-vllm-openai"

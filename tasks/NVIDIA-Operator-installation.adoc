@@ -164,8 +164,7 @@ metadata:
   namespace: default
 spec:
   restartPolicy: OnFailure
-  runtimeClassName: nvidia
-  containers:
+    containers:
   - name: cuda-container
     image: nvcr.io/nvidia/k8s/cuda-sample:nbody
     args: ["nbody", "-gpu", "-benchmark"]

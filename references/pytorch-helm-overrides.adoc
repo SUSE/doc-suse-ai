@@ -11,7 +11,6 @@ include::../snippets/helm-chart-overrides-intro.adoc[]
 [source,yaml]
 ----
 # pytorch_custom_overrides.yaml
-runtimeClassName: nvidia
 global:
   imagePullSecrets:
     - application-collection <.>
@@ -48,7 +47,6 @@ To create a ConfigMap, run the following command:
 [source,yaml]
 ----
 # pytorch_custom_overrides.yaml
-runtimeClassName: nvidia
 global:
   imagePullSecrets:
     - application-collection 
@@ -82,7 +80,6 @@ Move the `entrypoint.sh` file plus any helper files under the `scripts/` directo
 [source,yaml]
 ----
 # pytorch_custom_overrides.yaml
-runtimeClassName: nvidia
 global:
   imagePullSecrets:
     - application-collection <.>
@@ -117,7 +114,6 @@ For production use, we recommend using a storage solution suitable for persisten
 [source,yaml]
 ----
 # pytorch_custom_overrides.yaml
-runtimeClassName: nvidia
 global:
   imagePullSecrets:
     - application-collection <.>
@@ -153,7 +149,6 @@ For production use, we recommend using a storage solution suitable for persisten
 [source,yaml]
 ----
 # pytorch_custom_overrides.yaml
-runtimeClassName: nvidia
 global:
   imagePullSecrets:
     - application-collection <.>

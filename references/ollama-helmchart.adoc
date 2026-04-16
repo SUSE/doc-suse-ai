@@ -36,7 +36,6 @@ global:
 ingress:
   enabled: false
 defaultModel: "gemma:2b"
-runtimeClassName: nvidia
 ollama:
   models:
     pull:

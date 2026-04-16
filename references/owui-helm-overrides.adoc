@@ -450,7 +450,6 @@ Following is an example of the `open-webui-pipelines-values.yaml` override file.
 
 [source,yaml]
 ----
-runtimeClassName: nvidia
 global:
   imagePullSecrets:
     - application-collection
