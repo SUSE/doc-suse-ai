@@ -226,7 +226,8 @@ Single-cluster deployment:: In this setup, the {productname} components are inst
 Multi-cluster deployment:: In this setup, the {productname} cluster is separate.
 Communication relies on externally exposed endpoints of the {sobservability} cluster.
 
-The difference between deployment scenarios affects the *OTEL Collector exporter configuration* and the *{sobservability} Agent URL* as described in the following list.
+The difference between deployment scenarios affects the *OTEL Collector exporter configuration* and the *{sobservability} Agent URL*.
+Adjust the following values to match your {sobservability} configuration.
 
 SUSE_OBSERVABILITY_API_URL::
 The URL of the {sobservability} API.
