@@ -79,6 +79,13 @@ The NVIDIA operator restarts containerd with a hangup call which restarts RKE2.
 The envvars `ACCEPT_NVIDIA_VISIBLE_DEVICES_ENVVAR_WHEN_UNPRIVILEGED`, `ACCEPT_NVIDIA_VISIBLE_DEVICES_AS_VOLUME_MOUNTS` and `DEVICE_LIST_STRATEGY` are required to properly isolate GPU resources as explained in https://docs.google.com/document/d/1zy0key-EL6JH50MZgwg96RPYxxXXnVUdxLZwGiyqLd8/edit?tab=t.0[Preventing unprivileged access to GPUs in Kubernetes].
 ====
 
+[IMPORTANT]
+====
+NVIDIA GPU Operator v25.10.x uses link:https://github.com/cncf-tags/container-device-interface/blob/main/SPEC.md[Container Device Interface (CDI) specification] which simplifies operations.
+It is recommended that you enable CDI (the default) and the NRI plug-in on RKE2.
+With both features enabled, you no longer need to pass extra environment variables for security requirements or set `runtimeClassName: nvidia` in your pod specifications.
+====
+
 [,yaml]
 ----
 # gpu-operator.yaml
