@@ -24,7 +24,7 @@ endif::[]
 
 include::../snippets/ai-rancher-admin-requirement.adoc[]
 
-You can install the extension either from a GitHub branch or from a Github registry (OCI container).
+You can install the extension either from a GitHub branch or from a GitHub registry (OCI container).
 
 [#ai-lifecycle-manager-extension-github-branch]
 == Installation using a GitHub branch (the recommended method)
@@ -63,7 +63,7 @@ Confirm with btn:[Load].
 If not, refresh the connection.
 . Go back to the `Extensions` page and start the installation by clicking btn:[{sailifecyclemanager}].
 . Reload {ranchera} Dashboard by reloading the Web browser window to ensure the extension is loaded in the UI.
-The "SUSE AI Lifecycle Manager" logo will now appear on the left panel of the {ranchera} Dashboard.
+The "`SUSE AI Lifecycle Manager`" logo will now appear on the left panel of the {ranchera} Dashboard.
 
 [NOTE]
 .Points to consider
