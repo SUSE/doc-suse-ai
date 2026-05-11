@@ -360,6 +360,523 @@ Then point your Web browser to `\http://suse-mlflow`.
 .{mlflow} Web UI
 image::mlflow-webui.png[A screenshot showing the {mlflow} Web user interface,width=100%]
 
+[#mlflow-external-database]
+== Configuring {mlflow} with an external database backend
+
+By default, {mlflow} uses a local file-based store for tracking experiments and models.
+For production deployments, it is recommended to use an external database backend such as {postgresql} or {mariadb}.
+This section describes how to configure {mlflow} to use an external database as its backend store.
+
+[#mlflow-postgresql]
+=== Using {postgresql} as the backend store
+
+. Deploy {postgresql} in your {kube} cluster if not already available.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}helm install postgresql oci://dp.apps.rancher.io/charts/postgresql \
+  -n SUSE_AI_NAMESPACE \
+  --set auth.username=mlflow \
+  --set auth.password=POSTGRESQL_PASSWORD \
+  --set auth.database=mlflow
+----
+
+. Update `mlflow/values.yaml` to include the `backendStoreUri` pointing to {postgresql}.
+Add the following lines to your `values.yaml`:
++
+[source,yaml]
+----
+backendStoreUri: postgresql+psycopg2://mlflow:POSTGRESQL_PASSWORD@postgresql.SUSE_AI_NAMESPACE.svc.cluster.local:5432/mlflow
+
+backendStore:
+  databaseMigration: false
+----
+
+. Update `mlflow/templates/deployment.yaml` to pass the `--backend-store-uri` argument.
+In the `args` section of the container spec, add the following lines after the `--port` argument:
++
+[source,yaml]
+----
+          command:
+            - /usr/bin/mlflow
+          args:
+            - server
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "5000"
+            - --allowed-hosts
+            - "suse-mlflow"
+            {{- if .Values.backendStoreUri }}
+            - --backend-store-uri
+            - {{ .Values.backendStoreUri | quote }}
+            {{- end }}
+----
+
+. Upgrade or install {mlflow} with the updated values:
++
+[source,,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install mlflow ./mlflow \
+  -f mlflow.yaml \
+  -n SUSE_AI_NAMESPACE
+----
+
+. Verify {mlflow} is running and connected to {postgresql}:
++
+[source,,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -n SUSE_AI_NAMESPACE | grep mlflow
+mlflow-xxxxxxxxxx-xxxxx   1/1     Running   0          1m
+----
+
+
+[#mlflow-postgresql-helm-walkthrough]
+== Installing {mlflow} with a {postgresql} backend using {helm} on a {kube} cluster
+
+This section provides a detailed, step-by-step walkthrough for deploying {mlflow} with {postgresql} as the backend database store using {helm} charts on a {kube} cluster.
+
+[#mlflow-pg-prepare]
+=== Preparing the {postgresql} database
+
+. Pull the {postgresql} {helm} chart.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}helm pull oci://dp.apps.rancher.io/charts/postgresql --version 0.5.5
+----
+
+. Create a `postgresql-values.yaml` file with the following content:
++
+[source,yaml]
+----
+global:
+  imagePullSecrets:
+    - name: application-collection
+
+images:
+  postgresql:
+    registry: dp.apps.rancher.io
+    repository: containers/postgresql
+    tag: "18.3-9.1"
+    pullPolicy: IfNotPresent
+
+auth:
+  username: appuser
+  database: appdb
+
+persistence:
+  enabled: true
+  storageClassName: longhorn
+  size: 10Gi
+
+podSecurityContext:
+  enabled: true
+  fsGroup: 26
+
+containerSecurityContext:
+  enabled: true
+  runAsUser: 26
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+
+podTemplates:
+  initContainers:
+    volume-permissions:
+      enabled: true
+----
+
+. Deploy {postgresql}.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install postgresql ./postgresql-0.5.5.tgz \
+  -f postgresql-values.yaml \
+  -n SUSE_AI_NAMESPACE
+----
+
+. Verify the {postgresql} pod is running.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -n SUSE_AI_NAMESPACE
+NAME           READY   STATUS    RESTARTS   AGE
+postgresql-0   1/1     Running   0          3m9s
+----
+
+. Check {postgresql} logs.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}kubectl logs postgresql-0 -n SUSE_AI_NAMESPACE
+----
++
+Expected initialization logs include:
++
+----
+Initializing database directory for primary node
+The database cluster will be initialized with locale "en_US.utf8".
+creating directory /mnt/postgresql/data/pgdata ... ok
+----
+
+[#mlflow-pg-validate-db]
+=== Validating the {postgresql} database and user
+
+. Connect to the {postgresql} pod.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}kubectl exec -it postgresql-0 -n SUSE_AI_NAMESPACE -- bash
+----
+
+. Connect to the database and validate the current user and active database.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}PGPASSWORD='POSTGRESQL_PASSWORD' psql -U appuser -d appdb -h localhost
+----
++
+[source,sql]
+----
+SELECT current_user;
+ current_user
+--------------
+ appuser
+
+SELECT current_database();
+ current_database
+------------------
+ appdb
+----
+
+. Verify that no tables exist before {mlflow} initialization.
++
+[source,sql]
+----
+\dt
+
+Did not find any tables.
+----
+
+. Exit the {postgresql} pod.
++
+[source]
+----
+exit
+----
+
+[#mlflow-pg-install]
+=== Installing {mlflow} with {postgresql} as the backend store
+
+. Create the {mlflow} {helm} chart skeleton.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}helm create mlflow
+{prompt_user}cd mlflow
+----
+
+. Create a `mlflow-values.yaml` file with the following content:
++
+[source,yaml]
+----
+replicaCount: 1
+
+image:
+  repository: dp.apps.rancher.io/containers/mlflow
+  pullPolicy: IfNotPresent
+  tag: "3.11.1"
+
+imagePullSecrets:
+  - name: application-collection
+
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  automount: true
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+service:
+  type: ClusterIP
+  port: 5000
+
+ingress:
+  enabled: true
+  hosts:
+    - host: suse-mlflow
+      paths:
+        - path: /
+          pathType: Prefix
+
+resources:
+  limits:
+    cpu: "2"
+    memory: "2Gi"
+  requests:
+    cpu: "1"
+    memory: "1Gi"
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 5000
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 5000
+
+backendStore:
+  databaseMigration: true
+  databaseConnectionCheck: true
+
+backendStoreUri: postgresql+psycopg2://appuser:$(MLFLOW_DB_PASSWORD)@postgresql.SUSE_AI_NAMESPACE.svc.cluster.local:5432/appdb
+
+env:
+  - name: MLFLOW_LOG_LEVEL
+    value: DEBUG
+
+  - name: LOG_LEVEL
+    value: DEBUG
+
+  - name: PYTHONUNBUFFERED
+    value: "1"
+
+  - name: SQLALCHEMY_ECHO
+    value: "true"
+
+  - name: MLFLOW_ENABLE_SYSTEM_METRICS_LOGGING
+    value: "true"
+
+  - name: MLFLOW_DB_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: mlflow-postgres
+        key: password
+----
+
+. Create the {kube} secret containing the {postgresql} credentials.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}kubectl create secret generic mlflow-postgres \
+  -n SUSE_AI_NAMESPACE \
+  --from-literal=username=appuser \
+  --from-literal=password='POSTGRESQL_PASSWORD'
+----
+
+. Replace the generated `templates/deployment.yaml` with the following configuration.
++
+The following updates are included:
++
+--
+* Added hostname support using `--allowed-hosts`
+* Added `--backend-store-uri`
+* Configured {mlflow} server startup arguments
+--
++
+[source,yaml]
+----
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "mlflow.fullname" . }}
+  labels:
+    {{- include "mlflow.labels" . | nindent 4 }}
+
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+
+  selector:
+    matchLabels:
+      {{- include "mlflow.selectorLabels" . | nindent 6 }}
+
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "mlflow.labels" . | nindent 8 }}
+        {{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      serviceAccountName: {{ include "mlflow.serviceAccountName" . }}
+
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+
+      containers:
+        - name: mlflow
+
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          command:
+            - /usr/bin/mlflow
+
+          args:
+            - server
+            - --host
+            - "0.0.0.0"
+            - --port
+            - "5000"
+            - --allowed-hosts
+            - "suse-mlflow"
+            {{- if .Values.backendStoreUri }}
+            - --backend-store-uri
+            - {{ .Values.backendStoreUri | quote }}
+            {{- end }}
+
+          env:
+            {{- toYaml .Values.env | nindent 12 }}
+
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+
+          livenessProbe:
+            {{- toYaml .Values.livenessProbe | nindent 12 }}
+
+          readinessProbe:
+            {{- toYaml .Values.readinessProbe | nindent 12 }}
+
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+----
+
+[#mlflow-pg-deploy-validate]
+=== Deploying {mlflow} and validating database initialization
+
+. Deploy {mlflow}.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install mlflow . \
+  -f ../mlflow-values.yaml \
+  -n SUSE_AI_NAMESPACE
+----
+
+. Verify {mlflow} logs.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}kubectl logs deployment/mlflow -n SUSE_AI_NAMESPACE
+----
++
+Expected output:
++
+----
+Creating initial MLflow database tables...
+Updating database tables
+Uvicorn running on http://0.0.0.0:5000
+Application startup complete.
+----
++
+The logs confirm that the {mlflow} database schema was initialized successfully.
+
+[#mlflow-pg-validate-tables]
+=== Validating {mlflow} database tables
+
+. Connect to the {postgresql} pod.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}kubectl exec -it postgresql-0 -n SUSE_AI_NAMESPACE -- bash
+----
+
+. Connect to {postgresql} using the application user.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}PGPASSWORD='POSTGRESQL_PASSWORD' psql -U appuser -d appdb -h localhost
+----
+
+. List the database tables.
++
+[source,sql]
+----
+\dt
+----
++
+Expected output includes {mlflow}-generated tables such as:
++
+--
+* `alembic_version`
+* `experiments`
+* `experiment_tags`
+* `runs`
+* `datasets`
+* `jobs`
+* `inputs`
+--
++
+This confirms that {mlflow} successfully initialized the backend {postgresql} database schema.
+
+[#mlflow-pg-access-ui]
+=== Accessing the {mlflow} UI via {ingress}
+
+{mlflow} can be accessed via {ingress} host routing.
+
+. Verify the {ingress} configuration.
++
+[source,,subs="+attributes"]
+----
+{prompt_user}kubectl get ingress -n SUSE_AI_NAMESPACE
+NAME     CLASS   HOSTS         ADDRESS          PORTS   AGE
+mlflow   <none>  suse-mlflow   10.0.10.195,...  80      11m
+----
+
+. On your local machine, add an entry to `/etc/hosts` pointing to the public IP address of your cluster.
++
+[source]
+----
+PUBLIC_IP_ADDRESS suse-mlflow
+----
+
+. Access the {mlflow} UI by pointing your Web browser to `\http://suse-mlflow`.
+
 [TIP]
 .For more information
 ====
