@@ -351,7 +351,7 @@ To access {mlflow} via {ingress}, add a corresponding line to your `/etc/hosts`,
 
 [source]
 ----
-10.0.3.184 suse-mflow
+10.0.3.184 suse-mlflow
 ----
 
 Then point your Web browser to `\http://suse-mlflow`.
@@ -360,81 +360,27 @@ Then point your Web browser to `\http://suse-mlflow`.
 .{mlflow} Web UI
 image::mlflow-webui.png[A screenshot showing the {mlflow} Web user interface,width=100%]
 
-[#mlflow-external-database]
-== Configuring {mlflow} with an external database backend
+[#mlflow-postgresql-helm-walkthrough]
+== Installing {mlflow} with a {postgresql} backend using {helm}
 
 By default, {mlflow} uses a local file-based store for tracking experiments and models.
-For production deployments, it is recommended to use an external database backend such as {postgresql} or {mariadb}.
-This section describes how to configure {mlflow} to use an external database as its backend store.
+For production deployments, it is recommended to use an external database backend such as {postgresql}.
+This section provides a step-by-step walkthrough for deploying {mlflow} with {postgresql} as the backend database on a {kube} cluster.
 
-[#mlflow-postgresql]
-=== Using {postgresql} as the backend store
+.Prerequisites
+* A running {kube} cluster with {helm} installed.
+* Access to the {sappco} registry (`dp.apps.rancher.io`).
+* A {kube} namespace for {suse-ai} components (referred to as `SUSE_AI_NAMESPACE` below).
+* A storage class available for persistent volumes (for example, `longhorn`).
 
-. Deploy {postgresql} in your {kube} cluster if not already available.
-+
-[source,,subs="+attributes"]
-----
-{prompt_user}helm install postgresql oci://dp.apps.rancher.io/charts/postgresql \
-  -n SUSE_AI_NAMESPACE \
-  --set auth.username=mlflow \
-  --set auth.password=POSTGRESQL_PASSWORD \
-  --set auth.database=mlflow
-----
+[IMPORTANT]
+====
+Replace the following placeholders with your own values before running the commands:
 
-. Update `mlflow/values.yaml` to include the `backendStoreUri` pointing to {postgresql}.
-Add the following lines to your `values.yaml`:
-+
-[source,yaml]
-----
-backendStoreUri: postgresql+psycopg2://mlflow:POSTGRESQL_PASSWORD@postgresql.SUSE_AI_NAMESPACE.svc.cluster.local:5432/mlflow
-
-backendStore:
-  databaseMigration: false
-----
-
-. Update `mlflow/templates/deployment.yaml` to pass the `--backend-store-uri` argument.
-In the `args` section of the container spec, add the following lines after the `--port` argument:
-+
-[source,yaml]
-----
-          command:
-            - /usr/bin/mlflow
-          args:
-            - server
-            - --host
-            - "0.0.0.0"
-            - --port
-            - "5000"
-            - --allowed-hosts
-            - "suse-mlflow"
-            {{- if .Values.backendStoreUri }}
-            - --backend-store-uri
-            - {{ .Values.backendStoreUri | quote }}
-            {{- end }}
-----
-
-. Upgrade or install {mlflow} with the updated values:
-+
-[source,,subs="+attributes"]
-----
-{prompt_user}helm upgrade --install mlflow ./mlflow \
-  -f mlflow.yaml \
-  -n SUSE_AI_NAMESPACE
-----
-
-. Verify {mlflow} is running and connected to {postgresql}:
-+
-[source,,subs="+attributes"]
-----
-{prompt_user}kubectl get pods -n SUSE_AI_NAMESPACE | grep mlflow
-mlflow-xxxxxxxxxx-xxxxx   1/1     Running   0          1m
-----
-
-
-[#mlflow-postgresql-helm-walkthrough]
-== Installing {mlflow} with a {postgresql} backend using {helm} on a {kube} cluster
-
-This section provides a detailed, step-by-step walkthrough for deploying {mlflow} with {postgresql} as the backend database store using {helm} charts on a {kube} cluster.
+* `SUSE_AI_NAMESPACE` -- the {kube} namespace where {suse-ai} components are deployed.
+* `POSTGRESQL_PASSWORD` -- a strong password for the {postgresql} database user.
+  Do not use the placeholder value in production environments.
+====
 
 [#mlflow-pg-prepare]
 === Preparing the {postgresql} database
@@ -630,6 +576,9 @@ readinessProbe:
   httpGet:
     path: /health
     port: 5000
+
+autoscaling:
+  enabled: false
 
 backendStore:
   databaseMigration: true
@@ -840,17 +789,20 @@ The logs confirm that the {mlflow} database schema was initialized successfully.
 \dt
 ----
 +
-Expected output includes {mlflow}-generated tables such as:
+Expected output includes {mlflow}-generated tables:
 +
---
-* `alembic_version`
-* `experiments`
-* `experiment_tags`
-* `runs`
-* `datasets`
-* `jobs`
-* `inputs`
---
+----
+             List of relations
+ Schema |       Name        | Type  |  Owner
+--------+-------------------+-------+---------
+ public | alembic_version   | table | appuser
+ public | datasets          | table | appuser
+ public | experiment_tags   | table | appuser
+ public | experiments       | table | appuser
+ public | inputs            | table | appuser
+ public | jobs              | table | appuser
+ public | runs              | table | appuser
+----
 +
 This confirms that {mlflow} successfully initialized the backend {postgresql} database schema.
 
