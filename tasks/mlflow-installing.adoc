@@ -468,6 +468,19 @@ creating directory /mnt/postgresql/data/pgdata ... ok
 [#mlflow-pg-validate-db]
 === Validating the {postgresql} database and user
 
+. Retrieve the {postgresql} password from the {kube} secret.
++
+The {postgresql} {helm} chart automatically generates a password and stores it in a {kube} secret.
+Run the following command to retrieve it:
++
+[source,,subs="+attributes"]
+----
+{prompt_user}kubectl get secret -n SUSE_AI_NAMESPACE postgresql \
+  -o jsonpath="{.data.password}" | base64 -d
+----
++
+Note the output value. You will use it as `POSTGRESQL_PASSWORD` in the steps below.
+
 . Connect to the {postgresql} pod.
 +
 [source,,subs="+attributes"]
@@ -476,6 +489,7 @@ creating directory /mnt/postgresql/data/pgdata ... ok
 ----
 
 . Connect to the database and validate the current user and active database.
+Replace `POSTGRESQL_PASSWORD` with the password retrieved in the previous step.
 +
 [source,,subs="+attributes"]
 ----
@@ -776,6 +790,7 @@ The logs confirm that the {mlflow} database schema was initialized successfully.
 ----
 
 . Connect to {postgresql} using the application user.
+Replace `POSTGRESQL_PASSWORD` with the password retrieved from the {kube} secret (see xref:mlflow-pg-validate-db[]).
 +
 [source,,subs="+attributes"]
 ----
