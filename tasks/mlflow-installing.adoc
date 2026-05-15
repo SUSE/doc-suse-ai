@@ -370,7 +370,7 @@ This section provides a step-by-step walkthrough for deploying {mlflow} with {po
 .Prerequisites
 * A running {kube} cluster with {helm} installed.
 * Access to the {sappco} registry (`dp.apps.rancher.io`).
-* A {kube} namespace for {suse-ai} components (referred to as `SUSE_AI_NAMESPACE` below).
+* A {kube} namespace for {productname} components (referred to as `SUSE_AI_NAMESPACE` below).
 * A storage class available for persistent volumes (for example, `longhorn`).
 
 [IMPORTANT]
