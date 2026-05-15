@@ -377,7 +377,7 @@ This section provides a step-by-step walkthrough for deploying {mlflow} with {po
 ====
 Replace the following placeholders with your own values before running the commands:
 
-* `SUSE_AI_NAMESPACE` -- the {kube} namespace where {suse-ai} components are deployed.
+* `SUSE_AI_NAMESPACE` -- the {kube} namespace where {productname} components are deployed.
 * `POSTGRESQL_PASSWORD` -- a strong password for the {postgresql} database user.
   Do not use the placeholder value in production environments.
 ====
