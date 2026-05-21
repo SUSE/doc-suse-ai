@@ -20,6 +20,9 @@ jobs:
   ai_review:
     # This specifies the type of runner the job will run on. 'ubuntu-latest' is a GitHub-hosted runner.
     runs-on: ubuntu-latest
+    # This sets an environment variable for the job to opt into the Node.js 24 runner, addressing future deprecation warnings.
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
     # These are the permissions granted to the GITHUB_TOKEN for this job.
     permissions:
       pull-requests: write # Required to post comments on pull requests.
@@ -30,6 +33,11 @@ jobs:
       # Step 1: Check out the repository code so the workflow can access it.
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # fetch-depth: 0 fetches the entire git history, which is required for the changed-files action to work correctly on pull requests.
+          fetch-depth: 0
+          # submodules: true ensures that repository submodules, like 'ai-prompts', are checked out.
+          submodules: true
 
       # Step 2: Use a third-party action to get a list of files that have changed in the pull request.
       - name: Get changed doc files
