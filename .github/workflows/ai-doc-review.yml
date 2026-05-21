@@ -14,7 +14,7 @@ jobs:
           submodules: recursive
 
       - name: Show changed files
-        run: git diff --name-only origin/main
+        run: git diff --name-only origin/${{ github.base_ref }}
 
       - name: Run AI review placeholder
         run: echo "AI review step goes here"
