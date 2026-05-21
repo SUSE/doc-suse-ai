@@ -2,6 +2,7 @@
 
 This repository contains technical documentation in AsciiDoc files.
 Follow the proovided AI prompts to suggest improvements too the modified document files.
+Do not review other files than AsciiDoc documents.
 
 ---
 
