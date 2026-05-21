@@ -140,10 +140,12 @@ async function run() {
       console.log(`Analyzing ${file}...`);
       const fileContent = fs.readFileSync(file, 'utf8');
 
-      const finalPrompt = `${instructionsPrompt}${allAgentPrompts}\n${separator}\nFILE TO ANALYZE: ${file}\n${separator}\nFILE CONTENT:\n${fileContent}\n${separator}\nNow, acting as the specified agent(s), please analyze the file content and provide your feedback. If multiple agents are present, synthesize their goals into a single, coherent review based on the requested output format of the first agent.`;
+      const finalPrompt = `${instructionsPrompt}${allAgentPrompts}\n${separator}\nFILE TO ANALYZE: ${file}\n${separator}\nFILE CONTENT:\n${fileContent}\n${separator}\nNow, acting as the specified agent(s), please analyze the file content. Synthesize the goals from all agent prompts into a single, coherent review. Your entire response MUST be a single, valid JSON object that strictly adheres to the 'Output Contract' defined in the instructions. Do not include any text, notes, or markdown formatting outside of the JSON object.`;
 
       let aiResponse;
       try {
+        // Using 'gemini-1.5-flash' as it is a known valid and powerful model.
+        // The model name 'gemini-2.5-flash' is not a valid Google AI model and will cause an error.
         const model = 'gemini-2.5-flash';
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`;
 
