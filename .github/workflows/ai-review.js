@@ -144,8 +144,8 @@ async function run() {
 
       let aiResponse;
       try {
-        // Using 'gemini-pro' as it is a stable and widely available model to avoid 404 errors.
-        const model = 'gemini-pro';
+        // Using 'gemini-2.5-flash' as requested.
+        const model = 'gemini-2.5-flash';
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`;
 
         const response = await fetch(url, {
