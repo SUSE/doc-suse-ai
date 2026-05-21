@@ -144,8 +144,7 @@ async function run() {
 
       let aiResponse;
       try {
-        // Using 'gemini-1.5-flash' as it is a known valid and powerful model.
-        // The model name 'gemini-2.5-flash' is not a valid Google AI model and will cause an error.
+        // Using 'gemini-2.5-flash' as requested.
         const model = 'gemini-2.5-flash';
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`;
         const options = {
@@ -185,8 +184,9 @@ async function run() {
         if (!responseText) console.log('Unexpected AI response format:', JSON.stringify(data, null, 2));
 
       } catch (error) {
-        console.error('Error calling AI service:', error);
-        aiResponse = `*Error during AI analysis for \`${file}\`: ${error.message}*`;
+        // If the API call fails after all retries, fail the entire workflow.
+        core.setFailed(`Error calling AI service for ${file}: ${error.message}`);
+        return; // Stop execution immediately.
       }
 
       let analysisPart;
