@@ -145,7 +145,7 @@ async function run() {
       let aiResponse;
       try {
         // Using 'gemini-2.5-flash' as requested.
-        const model = 'gemini-2.5-flash';
+        const model = 'gemini-2.5-flash-lite';
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`;
         const options = {
           method: 'POST',
