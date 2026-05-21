@@ -1,7 +1,20 @@
 # Repository Instructions for GitHub Copilot
 
 This repository contains technical documentation in AsciiDoc files.
-You must follow the AI prompts provided in the `ai-prompts/suse-style-guide/` directory to suggest improvements to the modified document files.
+You must follow the AI prompts provided in the following files:
+
+- ai-prompts/suse-style-guide/00-general.md
+- ai-prompts/suse-style-guide/01-grammar.md
+- ai-prompts/suse-style-guide/02-tone.md
+- ai-prompts/suse-style-guide/03-terminology.md
+- ai-prompts/suse-style-guide/- ai-prompts/suse-style-guide/04-technical-formatting.md
+- ai-prompts/suse-style-guide/05-headings.md
+- ai-prompts/suse-style-guide/06-ui-labels.md
+- ai-prompts/suse-style-guide/07-inclusive-language.md
+- ai-prompts/suse-style-guide/08-web-writing.md
+- ai-prompts/suse-style-guide/09-modular-writing.md
+- ai-prompts/suse-style-guide/10-geo-content-auditor.md
+
 Do not review files other than AsciiDoc documents.
 
 Treat prompts as modular rulesets, not as unrelated documents.
