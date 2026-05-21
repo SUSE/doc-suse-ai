@@ -1,21 +1,22 @@
 # Repository Instructions for GitHub Copilot
 
 This repository contains technical documentation in AsciiDoc files.
-Follow the proovided AI prompts to suggest improvements too the modified document files.
+Follow the provided AI prompts to suggest improvements to the modified document files.
 Do not review files other than AsciiDoc documents.
+
 
 ---
 
 # AI Prompt Architecture
 
-AI review and transformation prompts are stored in *.md files in the `ai-prompts/` directory:
+AI review and transformation prompts are stored in *.md files in the `ai-prompts/suse-style-guide/` directory:
 
 Each file in this directory has a single responsibility.
 
 Examples:
 
 ```text
-ai-prompts/
+ai-prompts/suse-style-guide/
 ├── 00-general.md
 ├── 01-grammar.md
 ├── 02-tone.md
