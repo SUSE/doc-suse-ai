@@ -1,16 +1,13 @@
 # Repository Instructions for GitHub Copilot
 
-This repository contains technical documentation and AI-assisted review workflows.
+This repository contains technical documentation in AsciiDoc files.
+Follow the proovided AI prompts to suggest improvements too the modified document files.
 
 ---
 
 # AI Prompt Architecture
 
-AI review and transformation prompts are stored in:
-
-```text
-ai-prompts/
-```
+AI review and transformation prompts are stored in *.md files in the `ai-prompts/` directory:
 
 Each file in this directory has a single responsibility.
 
@@ -42,14 +39,6 @@ When generating or reviewing content:
 ---
 
 # AI Review Behavior
-
-When reviewing content:
-- identify ambiguity
-- identify passive voice
-- identify redundancy
-- identify missing prerequisites
-- identify inconsistent terminology
-- identify Smart Docs violations
 
 Suggest concrete improvements.
 
