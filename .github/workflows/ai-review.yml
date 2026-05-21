@@ -90,9 +90,10 @@ jobs:
               const instructionsPrompt = fs.readFileSync('ai-prompts/SUSE Style Guide/_INSTRUCTIONS.prompt', 'utf8');
               const geoAuditorPrompt = fs.readFileSync('ai-prompts/GEO-Content-Auditor.md', 'utf8');
 
-              // Initialize the body of the comment that will be posted on the pull request.
-              let fullReview = `### 🤖 AI Content Review\n\n`;
-              fullReview += `This review is automatically generated based on the workflow in \`ai-prompts/SUSE Style Guide/_INSTRUCTIONS.prompt\`.\n\n`;
+              // Initialize objects for the pull request review.
+              // The `reviewBody` will contain the main analysis, and `reviewComments` will hold line-specific suggestions.
+              let reviewBody = `### 🤖 AI Content Review\n\nThis review is automatically generated based on the workflow in \`ai-prompts/SUSE Style Guide/_INSTRUCTIONS.prompt\`.\n\n`;
+              let reviewComments = [];
 
               // Loop through each file that was changed.
               for (const file of changedFiles) {
@@ -119,7 +120,7 @@ jobs:
                 let aiResponse;
                 try {
                   // Use a fast and capable model suitable for this task.
-                  const model = 'gemini-2.5-flash';
+                  const model = 'gemini-1.5-flash';
                   const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
                   const response = await fetch(url, {
@@ -151,15 +152,47 @@ jobs:
                 }
                 // --- End of AI API Call ---
 
-                fullReview += `---\n\n#### Review for \`${file}\`\n\n${aiResponse}\n\n`;
+                // --- Start of Response Parsing and Suggestion Creation ---
+                const rewriteMarker = '**The "GEO Rewrite"**:';
+                const rewriteIndex = aiResponse.indexOf(rewriteMarker);
+
+                let analysisPart = aiResponse;
+
+                if (rewriteIndex !== -1) {
+                  // If a rewrite is found, split the AI response into the analysis and the suggested code.
+                  analysisPart = aiResponse.substring(0, rewriteIndex).trim();
+                  let rewrittenCode = aiResponse.substring(rewriteIndex + rewriteMarker.length).trim();
+
+                  // Clean up the rewritten code block if the AI wraps it in markdown code fences.
+                  rewrittenCode = rewrittenCode.replace(/^```(markdown|adoc)?\s*/, '').replace(/```\s*$/, '').trim();
+
+                  // The prompt asks to rewrite the first 150 words. We'll create a suggestion
+                  // to replace the first few lines of the file with the rewrite.
+                  const numLinesInRewrite = (rewrittenCode.match(/\n/g) || []).length + 1;
+
+                  // Create a review comment object that will become a GitHub suggestion.
+                  const suggestion = {
+                    path: file,
+                    side: 'RIGHT',
+                    start_line: 1, // Start the suggestion on the first line.
+                    line: numLinesInRewrite > 15 ? 15 : numLinesInRewrite, // Cap the suggestion to the first 15 lines to be safe.
+                    body: `**🤖 AI Suggestion: The "GEO Rewrite"**\n\nTo improve "Answer Nugget Density", here is a suggested rewrite of the introduction:\n\n\`\`\`suggestion\n${rewrittenCode}\n\`\`\``
+                  };
+                  reviewComments.push(suggestion);
+                }
+
+                reviewBody += `---\n\n#### Review for \`${file}\`\n\n${analysisPart}\n\n`;
+                // --- End of Response Parsing ---
               }
 
-              // Use the GitHub API to create a new comment on the pull request.
-              await github.rest.issues.createComment({
+              // Use the GitHub API to post the review. This includes the main body and all line-specific suggestions.
+              await github.rest.pulls.createReview({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: fullReview,
+                pull_number: context.issue.number,
+                body: reviewBody,
+                event: 'COMMENT',
+                comments: reviewComments,
               });
             }
 
