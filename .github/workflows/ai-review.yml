@@ -1,0 +1,119 @@
+# This is the name of the GitHub Action workflow. It will be displayed in the GitHub Actions UI.
+name: AI Content Review
+
+# This section defines the triggers for the workflow.
+on:
+  pull_request:
+    paths:
+      # The workflow runs when a pull request modifies any .adoc file in these directories.
+      - 'articles/**.adoc'
+      - 'topics/**.adoc'
+      - 'concepts/**.adoc'
+      - 'references/**.adoc'
+      - 'tasks/**.adoc'
+      - 'snippets/**.adoc'
+      - 'glues/**.adoc'
+
+# This section defines the jobs that will be executed as part of the workflow.
+jobs:
+  # This is the name of the job.
+  ai_review:
+    # This specifies the type of runner the job will run on. 'ubuntu-latest' is a GitHub-hosted runner.
+    runs-on: ubuntu-latest
+    # These are the permissions granted to the GITHUB_TOKEN for this job.
+    permissions:
+      pull-requests: write # Required to post comments on pull requests.
+      contents: read      # Required to check out the repository code.
+
+    # This section defines the sequence of steps that make up the job.
+    steps:
+      # Step 1: Check out the repository code so the workflow can access it.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Use a third-party action to get a list of files that have changed in the pull request.
+      - name: Get changed doc files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            # This list should match the paths in the 'on' trigger section.
+            articles/**.adoc
+            topics/**.adoc
+            concepts/**.adoc
+            references/**.adoc
+            tasks/**.adoc
+            snippets/**.adoc
+            glues/**.adoc
+
+      # Step 3: Run the main review logic using a GitHub script.
+      - name: Run AI Review and Comment
+        # This step only runs if the 'changed-files' step found any modified files.
+        if: steps.changed-files.outputs.any_changed == 'true'
+        uses: actions/github-script@v7
+        with:
+          # The GITHUB_TOKEN is automatically created by Actions and is used to authenticate API requests.
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Import the Node.js file system module to read files.
+            const fs = require('fs');
+
+            // The main asynchronous function that contains the logic.
+            async function run() {
+              // Get the list of changed files from the output of the 'changed-files' step.
+              const changedFiles = '${{ steps.changed-files.outputs.all_changed_files }}'.split(' ').filter(f => f);
+
+              // If no relevant files were changed, log a message and exit.
+              if (changedFiles.length === 0) {
+                console.log('No relevant files changed.');
+                return;
+              }
+
+              // Read the content of the instruction and agent prompt files from the repository.
+              const instructionsPrompt = fs.readFileSync('ai-prompts/SUSE Style Guide/_INSTRUCTIONS.prompt', 'utf8');
+              const geoAuditorPrompt = fs.readFileSync('ai-prompts/GEO-Content-Auditor.md', 'utf8');
+
+              // Initialize the body of the comment that will be posted on the pull request.
+              let fullReview = `### 🤖 AI Content Review\n\n`;
+              fullReview += `This review is automatically generated based on the workflow in \`ai-prompts/SUSE Style Guide/_INSTRUCTIONS.prompt\`.\n\n`;
+
+              // Loop through each file that was changed.
+              for (const file of changedFiles) {
+                console.log(`Analyzing ${file}...`);
+                // Read the content of the current file.
+                const fileContent = fs.readFileSync(file, 'utf8');
+
+                // Construct the final prompt to be sent to the AI model.
+                const finalPrompt = `
+                  ${instructionsPrompt}
+                  ---
+                  AGENT PROMPT:
+                  ${geoAuditorPrompt}
+                  ---
+                  FILE TO ANALYZE: ${file} // Provide context about which file is being analyzed.
+                  ---
+                  FILE CONTENT:
+                  ${fileContent} // The actual content of the file.
+                  ---
+                  Now, acting as the "GEO Content Auditor", please analyze the file content and provide your feedback in the specified output format.
+                `;
+
+                // This is a placeholder for the AI's response. In a real implementation,
+                // you would replace this with an actual API call to an AI service (like Gemini or OpenAI),
+                // passing the 'finalPrompt' as the input.
+                const simulatedAiResponse = `*This is a simulated AI review for \`${file}\`.* The intro needs a stronger answer nugget.`;
+
+                fullReview += `---\n\n#### Review for \`${file}\`\n\n${simulatedAiResponse}\n\n`;
+              }
+
+              // Use the GitHub API to create a new comment on the pull request.
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: fullReview,
+              });
+            }
+
+            // Execute the main function.
+            run();
