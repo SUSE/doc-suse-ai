@@ -148,12 +148,30 @@ async function run() {
         // The model name 'gemini-2.5-flash' is not a valid Google AI model and will cause an error.
         const model = 'gemini-2.5-flash';
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`;
-
-        const response = await fetch(url, {
+        const options = {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ contents: [{ parts: [{ text: finalPrompt }] }] })
-        });
+        };
+
+        let response;
+        const maxRetries = 3;
+        let delay = 2000; // 2 seconds
+
+        for (let i = 0; i < maxRetries; i++) {
+          response = await fetch(url, options);
+          // If the status is not a transient server error (5xx), break the loop.
+          if (response.status < 500 || response.status >= 600) {
+            break;
+          }
+          if (i < maxRetries - 1) {
+            console.log(`API returned ${response.status}. Retrying in ${delay / 1000}s... (Attempt ${i + 1}/${maxRetries})`);
+            await new Promise(res => setTimeout(res, delay));
+            delay *= 2; // Exponential backoff
+          } else {
+            console.log(`API still returning server errors after ${maxRetries} attempts.`);
+          }
+        }
 
         if (!response.ok) {
           const errorBody = await response.text();
