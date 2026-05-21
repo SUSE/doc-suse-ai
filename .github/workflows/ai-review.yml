@@ -75,6 +75,51 @@ jobs:
               throw new Error('GEMINI_API_KEY is not set. Please add it to your repository secrets.');
             }
 
+            /**
+             * Parses a diff text to find the first contiguous block of added lines for a specific file.
+             * @param {string} diffText - The full diff text for the pull request.
+             * @param {string} filePath - The path of the file to search for within the diff.
+             * @returns {{start: number, end: number}|null} An object with start and end line numbers, or null if no added block is found.
+             */
+            function findFirstChangedBlock(diffText, filePath) {
+              const lines = diffText.split('\n');
+              let fileFound = false;
+              let hunkStartLine = 0;
+              let currentLineInFile = 0;
+              let blockStart = -1;
+
+              for (const line of lines) {
+                if (line.startsWith(`+++ b/${filePath}`)) {
+                  fileFound = true;
+                  continue;
+                }
+                if (line.startsWith('--- a/')) {
+                  if (fileFound) break; // Moved to the next file
+                  fileFound = false;
+                }
+                if (fileFound) {
+                  if (line.startsWith('@@')) {
+                    if (blockStart !== -1) break; // Found a block in a previous hunk, use that.
+                    const match = line.match(/\+([0-9]+)/);
+                    hunkStartLine = match ? parseInt(match[1], 10) : 0;
+                    currentLineInFile = hunkStartLine;
+                  } else if (line.startsWith('+')) {
+                    if (blockStart === -1) {
+                      blockStart = currentLineInFile;
+                    }
+                    currentLineInFile++;
+                  } else if (!line.startsWith('-')) {
+                    if (blockStart !== -1) break; // End of the contiguous block of additions
+                    currentLineInFile++;
+                  }
+                }
+              }
+              if (blockStart !== -1) {
+                return { start: blockStart, end: currentLineInFile - 1 };
+              }
+              return null;
+            }
+
             // The main asynchronous function that contains the logic.
             async function run() {
               // Get the list of changed files from the output of the 'changed-files' step.
@@ -85,6 +130,17 @@ jobs:
                 console.log('No relevant files changed.');
                 return;
               }
+
+              // Fetch the diff of the pull request to identify the exact changed lines.
+              const diff_response = await github.rest.pulls.get({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.issue.number,
+                mediaType: {
+                  format: 'diff',
+                },
+              });
+              const diff_text = diff_response.data;
 
               // Read the content of the instruction and agent prompt files from the repository.
               const instructionsPrompt = fs.readFileSync('ai-prompts/SUSE Style Guide/_INSTRUCTIONS.prompt', 'utf8');
@@ -158,7 +214,9 @@ jobs:
 
                 let analysisPart = aiResponse;
 
-                if (rewriteIndex !== -1) {
+                const changedBlock = findFirstChangedBlock(diff_text, file);
+
+                if (rewriteIndex !== -1 && changedBlock) {
                   // If a rewrite is found, split the AI response into the analysis and the suggested code.
                   analysisPart = aiResponse.substring(0, rewriteIndex).trim();
                   let rewrittenCode = aiResponse.substring(rewriteIndex + rewriteMarker.length).trim();
@@ -166,19 +224,17 @@ jobs:
                   // Clean up the rewritten code block if the AI wraps it in markdown code fences.
                   rewrittenCode = rewrittenCode.replace(/^```(markdown|adoc)?\s*/, '').replace(/```\s*$/, '').trim();
 
-                  // The prompt asks to rewrite the first 150 words. We'll create a suggestion
-                  // to replace the first few lines of the file with the rewrite.
-                  const numLinesInRewrite = (rewrittenCode.match(/\n/g) || []).length + 1;
-
                   // Create a review comment object that will become a GitHub suggestion.
                   const suggestion = {
                     path: file,
                     side: 'RIGHT',
-                    start_line: 1, // Start the suggestion on the first line.
-                    line: numLinesInRewrite > 15 ? 15 : numLinesInRewrite, // Cap the suggestion to the first 15 lines to be safe.
+                    start_line: changedBlock.start,
+                    line: changedBlock.end,
                     body: `**🤖 AI Suggestion: The "GEO Rewrite"**\n\nTo improve "Answer Nugget Density", here is a suggested rewrite of the introduction:\n\n\`\`\`suggestion\n${rewrittenCode}\n\`\`\``
                   };
                   reviewComments.push(suggestion);
+                } else if (rewriteIndex !== -1) {
+                  console.log(`Could not find a changed block for file ${file} to anchor the suggestion.`);
                 }
 
                 reviewBody += `---\n\n#### Review for \`${file}\`\n\n${analysisPart}\n\n`;
