@@ -59,12 +59,21 @@ jobs:
         # This step only runs if the 'changed-files' step found any modified files.
         if: steps.changed-files.outputs.any_changed == 'true'
         uses: actions/github-script@v7
+        env:
+          # Pass the Gemini API key from GitHub secrets to the script.
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         with:
           # The GITHUB_TOKEN is automatically created by Actions and is used to authenticate API requests.
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             // Import the Node.js file system module to read files.
             const fs = require('fs');
+
+            // Get the API key from the environment. The workflow fails if the secret is not set.
+            const apiKey = process.env.GEMINI_API_KEY;
+            if (!apiKey) {
+              throw new Error('GEMINI_API_KEY is not set. Please add it to your repository secrets.');
+            }
 
             // The main asynchronous function that contains the logic.
             async function run() {
@@ -106,12 +115,43 @@ jobs:
                   Now, acting as the "GEO Content Auditor", please analyze the file content and provide your feedback in the specified output format.
                 `;
 
-                // This is a placeholder for the AI's response. In a real implementation,
-                // you would replace this with an actual API call to an AI service (like Gemini or OpenAI),
-                // passing the 'finalPrompt' as the input.
-                const simulatedAiResponse = `*This is a simulated AI review for \`${file}\`.* The intro needs a stronger answer nugget.`;
+                // --- Start of AI API Call ---
+                let aiResponse;
+                try {
+                  // Use a fast and capable model suitable for this task.
+                  const model = 'gemini-1.5-flash-latest';
+                  const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-                fullReview += `---\n\n#### Review for \`${file}\`\n\n${simulatedAiResponse}\n\n`;
+                  const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      contents: [{ parts: [{ text: finalPrompt }] }]
+                    })
+                  });
+
+                  if (!response.ok) {
+                    const errorBody = await response.text();
+                    throw new Error(`API call failed with status ${response.status}: ${errorBody}`);
+                  }
+
+                  const data = await response.json();
+                  // Safely access the generated text from the API response.
+                  const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+                  if (!responseText) {
+                    aiResponse = '*AI analysis completed, but the response was empty or in an unexpected format.*';
+                    console.log('Unexpected AI response format:', JSON.stringify(data, null, 2));
+                  } else {
+                    aiResponse = responseText;
+                  }
+                } catch (error) {
+                  console.error('Error calling AI service:', error);
+                  aiResponse = `*Error during AI analysis for \`${file}\`: ${error.message}*`;
+                }
+                // --- End of AI API Call ---
+
+                fullReview += `---\n\n#### Review for \`${file}\`\n\n${aiResponse}\n\n`;
               }
 
               // Use the GitHub API to create a new comment on the pull request.
