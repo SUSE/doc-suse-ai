@@ -1,0 +1,20 @@
+name: AI Doc Review
+
+on:
+  pull_request:
+
+jobs:
+  ai-review:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Show changed files
+        run: git diff --name-only origin/main
+
+      - name: Run AI review placeholder
+        run: echo "AI review step goes here"

@@ -7,7 +7,7 @@ You must follow the AI prompts provided in the following files:
 - ai-prompts/suse-style-guide/01-grammar.md
 - ai-prompts/suse-style-guide/02-tone.md
 - ai-prompts/suse-style-guide/03-terminology.md
-- ai-prompts/suse-style-guide/- ai-prompts/suse-style-guide/04-technical-formatting.md
+- ai-prompts/suse-style-guide/04-technical-formatting.md
 - ai-prompts/suse-style-guide/05-headings.md
 - ai-prompts/suse-style-guide/06-ui-labels.md
 - ai-prompts/suse-style-guide/07-inclusive-language.md
