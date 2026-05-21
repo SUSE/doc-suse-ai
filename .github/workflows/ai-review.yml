@@ -65,4 +65,4 @@ jobs:
           PULL_REQUEST_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           npm install @actions/core @actions/github
-          node .github/scripts/ai-review.js
+          node .github/workflows/ai-review.js
