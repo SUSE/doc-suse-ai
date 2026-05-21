@@ -144,7 +144,6 @@ async function run() {
 
       let aiResponse;
       try {
-        // Using 'gemini-2.5-flash' as requested.
         const model = 'gemini-2.5-flash';
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`;
 
@@ -170,25 +169,36 @@ async function run() {
         aiResponse = `*Error during AI analysis for \`${file}\`: ${error.message}*`;
       }
 
-      const rewriteMarker = '**The "GEO Rewrite"**:';
-      const rewriteIndex = aiResponse.indexOf(rewriteMarker);
-      let analysisPart = aiResponse;
-      const changedBlock = findBestChangedBlock(diff_text, file);
+      let analysisPart;
+      try {
+        // Clean the response to ensure it's valid JSON, removing markdown code fences if present.
+        const cleanedResponse = aiResponse.replace(/^```(json)?\s*/, '').replace(/```\s*$/, '').trim();
+        const aiData = JSON.parse(cleanedResponse);
 
-      if (rewriteIndex !== -1 && changedBlock) {
-        analysisPart = aiResponse.substring(0, rewriteIndex).trim();
-        let rewrittenCode = aiResponse.substring(rewriteIndex + rewriteMarker.length).trim();
-        rewrittenCode = rewrittenCode.replace(/^```(markdown|adoc)?\s*/, '').replace(/```\s*$/, '').trim();
+        // Reconstruct the analysis part of the review from the structured data.
+        analysisPart = `**Summary**: ${aiData.analysis.summary}\n\n**Details**:\n- ${aiData.analysis.details.join('\n- ')}`;
 
-        reviewComments.push({
-          path: file,
-          side: 'RIGHT',
-          start_line: changedBlock.start,
-          line: changedBlock.end,
-          body: `**🤖 AI Suggestion: The "GEO Rewrite"**\n\nTo improve "Answer Nugget Density", here is a suggested rewrite of the introduction:\n\n\`\`\`suggestion\n${rewrittenCode}\n\`\`\``
-        });
-      } else if (rewriteIndex !== -1) {
-        console.log(`Could not find a changed block for file ${file} to anchor the suggestion.`);
+        const rewrite = aiData.rewrite;
+        const changedBlock = findBestChangedBlock(diff_text, file);
+
+        if (rewrite && rewrite.code && changedBlock) {
+          console.log('Conditions met. Creating suggestion comment.');
+          reviewComments.push({
+            path: file,
+            side: 'RIGHT',
+            start_line: changedBlock.start,
+            line: changedBlock.end,
+            body: `**🤖 AI Suggestion: ${rewrite.reason}**\n\n\`\`\`suggestion\n${rewrite.code}\n\`\`\``
+          });
+        } else if (rewrite && rewrite.code) {
+          console.log(`Could not find a changed block for file ${file} to anchor the suggestion.`);
+        }
+
+      } catch (error) {
+        console.error(`Error parsing AI response as JSON for file ${file}:`, error);
+        console.log('Raw AI Response:', aiResponse);
+        // If JSON parsing fails, post the raw response for debugging.
+        analysisPart = `**Error Parsing AI Response**\n\nThe AI returned data that could not be parsed as JSON. Please see the raw output below for debugging.\n\n${separator}\n\n${aiResponse}`;
       }
 
       reviewBody += `${separator}\n\n#### Review for \`${file}\`\n\n${analysisPart}\n\n`;
