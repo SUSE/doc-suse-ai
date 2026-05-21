@@ -1,7 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const core = require('@actions/core');
-const github = require('@actions/github');
 
 /**
  * Parses a diff to find the best block of added lines to anchor a suggestion.
@@ -72,6 +70,9 @@ function findBestChangedBlock(diffText, filePath) {
 
 async function run() {
   try {
+    const core = await import('@actions/core');
+    const github = await import('@actions/github');
+
     // Get inputs from environment variables
     const githubToken = process.env.GITHUB_TOKEN;
     const geminiApiKey = process.env.GEMINI_API_KEY;
@@ -143,7 +144,8 @@ async function run() {
 
       let aiResponse;
       try {
-        const model = 'gemini-2.5-flash';
+        // Using 'gemini-pro' as it is a stable and widely available model to avoid 404 errors.
+        const model = 'gemini-pro';
         const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${geminiApiKey}`;
 
         const response = await fetch(url, {
