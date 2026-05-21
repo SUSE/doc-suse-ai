@@ -76,17 +76,19 @@ jobs:
             }
 
             /**
-             * Parses a diff text to find the first contiguous block of added lines for a specific file.
+             * Parses a diff to find the best block of added lines to anchor a suggestion.
+             * It prefers larger blocks of text, assuming the introduction rewrite is more substantial than other minor changes like a title update.
              * @param {string} diffText - The full diff text for the pull request.
              * @param {string} filePath - The path of the file to search for within the diff.
-             * @returns {{start: number, end: number}|null} An object with start and end line numbers, or null if no added block is found.
+             * @returns {{start: number, end: number}|null} An object with start and end line numbers for the best block.
              */
-            function findFirstChangedBlock(diffText, filePath) {
+            function findBestChangedBlock(diffText, filePath) {
               const lines = diffText.split('\n');
               let fileFound = false;
               let hunkStartLine = 0;
               let currentLineInFile = 0;
-              let blockStart = -1;
+              let currentBlock = null;
+              const allBlocks = [];
 
               for (const line of lines) {
                 if (line.startsWith(`+++ b/${filePath}`)) {
@@ -94,30 +96,49 @@ jobs:
                   continue;
                 }
                 if (line.startsWith('--- a/')) {
-                  if (fileFound) break; // Moved to the next file
+                  if (fileFound) break;
                   fileFound = false;
                 }
+
                 if (fileFound) {
                   if (line.startsWith('@@')) {
-                    if (blockStart !== -1) break; // Found a block in a previous hunk, use that.
+                    if (currentBlock) allBlocks.push(currentBlock);
+                    currentBlock = null;
                     const match = line.match(/\+([0-9]+)/);
                     hunkStartLine = match ? parseInt(match[1], 10) : 0;
                     currentLineInFile = hunkStartLine;
                   } else if (line.startsWith('+')) {
-                    if (blockStart === -1) {
-                      blockStart = currentLineInFile;
+                    if (!currentBlock) {
+                      currentBlock = { start: currentLineInFile, end: 0, lines: [] };
                     }
+                    currentBlock.lines.push(line.substring(1));
                     currentLineInFile++;
                   } else if (!line.startsWith('-')) {
-                    if (blockStart !== -1) break; // End of the contiguous block of additions
+                    if (currentBlock) {
+                      currentBlock.end = currentLineInFile - 1;
+                      allBlocks.push(currentBlock);
+                      currentBlock = null;
+                    }
                     currentLineInFile++;
                   }
                 }
               }
-              if (blockStart !== -1) {
-                return { start: blockStart, end: currentLineInFile - 1 };
+              if (currentBlock) {
+                currentBlock.end = currentLineInFile - 1;
+                allBlocks.push(currentBlock);
               }
-              return null;
+
+              if (allBlocks.length === 0) return null;
+              if (allBlocks.length === 1) return { start: allBlocks[0].start, end: allBlocks[0].end };
+
+              // Heuristic: Filter out blocks that are likely just title changes (single line starting with '=')
+              // and then pick the block with the most characters, assuming it's the introduction.
+              const filteredBlocks = allBlocks.filter(b => !(b.lines.length === 1 && b.lines[0].trim().startsWith('=')));
+              const blocksToConsider = filteredBlocks.length > 0 ? filteredBlocks : allBlocks;
+
+              blocksToConsider.sort((a, b) => b.lines.join('\n').length - a.lines.join('\n').length);
+              const bestBlock = blocksToConsider[0];
+              return { start: bestBlock.start, end: bestBlock.end };
             }
 
             // The main asynchronous function that contains the logic.
@@ -214,7 +235,7 @@ jobs:
 
                 let analysisPart = aiResponse;
 
-                const changedBlock = findFirstChangedBlock(diff_text, file);
+                const changedBlock = findBestChangedBlock(diff_text, file);
 
                 if (rewriteIndex !== -1 && changedBlock) {
                   // If a rewrite is found, split the AI response into the analysis and the suggested code.
