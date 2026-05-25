@@ -47,11 +47,14 @@ async function reviewFile(file, prompts) {
 
   const response = await openai.chat.completions.create({
     model: "gpt-4.1-mini",
+    temperature: 0,
+    response_format: { type: "json_object" },
     messages: [
       {
         role: "system",
         content: `
-You are a strict AsciiDoc documentation reviewer.
+You are a strict AsciiDoc and DocBook XML documentation reviewer.
+If the file is `.xml`, review it as DocBook XML; otherwise review it as AsciiDoc.
 
 Apply all rules from the provided prompts.
 
@@ -82,15 +85,24 @@ ${promptBundle}
     ],
   });
 
-  return JSON.parse(response.choices[0].message.content);
-}
+  try {
+    return JSON.parse(response.choices[0].message.content);
+  } catch (err) {
+    throw new Error(
+      `Failed to parse model response as JSON for ${file}: ${String(err)}\n\nRaw response:\n${response.choices[0].message.content}`
+    );
+  }
 
 // -------------------------
 // Post PR comment
 // -------------------------
 async function postComment(file, comment) {
-  const url = `https://api.github.com/repos/${owner}/${name}/pulls/comments`;
+  const eventPath = process.env.GITHUB_EVENT_PATH;
+  const event = eventPath ? JSON.parse(fs.readFileSync(eventPath, "utf-8")) : {};
+  const pullNumber = event.pull_request?.number;
+  if (!pullNumber) throw new Error("Missing pull_request.number in GitHub event payload.");
 
+  const url = `https://api.github.com/repos/${owner}/${name}/pulls/${pullNumber}/comments`;
   await fetch(url, {
     method: "POST",
     headers: {
@@ -100,7 +112,7 @@ async function postComment(file, comment) {
     },
     body: JSON.stringify({
       body: `🧠 AI Doc Review:\n\n${comment.message}\n\n💡 Suggestion:\n${comment.suggestion}`,
-      commit_id: process.env.GITHUB_SHA,
+      commit_id: event.pull_request?.head?.sha ?? process.env.GITHUB_SHA,
       path: file,
       line: comment.line,
       side: "RIGHT",

@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   ai-review:
+    if: ${{ github.event.pull_request.head.repo.fork == false }}
     runs-on: ubuntu-latest
 
     steps:
@@ -31,8 +32,7 @@ jobs:
 
       # 3. Install dependencies
       - name: Install dependencies
-        run: npm ci
-
+        run: npm install
       # 4. Detect changed documentation files
       - name: Get changed files
         id: changes

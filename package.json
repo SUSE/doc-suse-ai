@@ -4,6 +4,6 @@
   "description": "AI review for SUSE documentation",
   "private": true,
   "dependencies": {
-    "openai": "^4.52.2"
+    "openai": "4.52.2"
   }
 }
