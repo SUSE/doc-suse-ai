@@ -1,0 +1,9 @@
+{
+  "name": "suse-doc-ai-review",
+  "version": "1.0.0",
+  "description": "AI review for SUSE documentation",
+  "private": true,
+  "dependencies": {
+    "openai": "^4.52.2"
+  }
+}
