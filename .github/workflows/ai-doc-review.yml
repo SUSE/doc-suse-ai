@@ -32,7 +32,7 @@ jobs:
 
       # 3. Install dependencies
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       # 4. Detect changed documentation files
       - name: Get changed files
         id: changes

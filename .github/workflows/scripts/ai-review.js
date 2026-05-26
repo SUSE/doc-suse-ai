@@ -48,14 +48,12 @@ async function reviewFile(file, prompts) {
   const response = await openai.chat.completions.create({
     model: "gpt-4.1-mini",
     temperature: 0,
-    response_format: { type: "json_object" },
+    response_format: {type: "json_object"},
     messages: [
       {
         role: "system",
         content: `
-You are a strict AsciiDoc and DocBook XML documentation reviewer.
-If the file is `.xml`, review it as DocBook XML; otherwise review it as AsciiDoc.
-
+You are a professional documentation reviewer.
 Apply all rules from the provided prompts.
 
 Return ONLY JSON in this format:
@@ -92,17 +90,18 @@ ${promptBundle}
       `Failed to parse model response as JSON for ${file}: ${String(err)}\n\nRaw response:\n${response.choices[0].message.content}`
     );
   }
+}
 
 // -------------------------
-// Post PR comment
+// Post PR issue comment
 // -------------------------
-async function postComment(file, comment) {
+async function postIssueComment(body) {
   const eventPath = process.env.GITHUB_EVENT_PATH;
   const event = eventPath ? JSON.parse(fs.readFileSync(eventPath, "utf-8")) : {};
   const pullNumber = event.pull_request?.number;
   if (!pullNumber) throw new Error("Missing pull_request.number in GitHub event payload.");
 
-  const url = `https://api.github.com/repos/${owner}/${name}/pulls/${pullNumber}/comments`;
+  const url = `https://api.github.com/repos/${owner}/${name}/issues/${pullNumber}/comments`;
   await fetch(url, {
     method: "POST",
     headers: {
@@ -110,13 +109,7 @@ async function postComment(file, comment) {
       "Content-Type": "application/json",
       Accept: "application/vnd.github+json",
     },
-    body: JSON.stringify({
-      body: `🧠 AI Doc Review:\n\n${comment.message}\n\n💡 Suggestion:\n${comment.suggestion}`,
-      commit_id: event.pull_request?.head?.sha ?? process.env.GITHUB_SHA,
-      path: file,
-      line: comment.line,
-      side: "RIGHT",
-    }),
+    body: JSON.stringify({ body }),
   });
 }
 
@@ -126,6 +119,7 @@ async function postComment(file, comment) {
 (async () => {
   const prompts = loadPrompts();
   const docs = loadDocs();
+  const allComments = [];
 
   if (!docs.length) {
     console.log("No AsciiDoc files changed.");
@@ -138,7 +132,33 @@ async function postComment(file, comment) {
     const result = await reviewFile(file, prompts);
 
     for (const c of result.comments || []) {
-      await postComment(file, c);
+      allComments.push({ file, ...c });
     }
+  }
+
+  if (allComments.length > 0) {
+    const commentsAsMarkdown = allComments
+      .map(
+        (c) => `**File:** \`${c.file}\`
+**Line:** ${c.line}
+
+**Message:** ${c.message}
+
+**Suggestion:**
+\`\`\`suggestion
+${c.suggestion}
+\`\`\``
+      )
+      .join("\n\n---\n\n");
+
+    const commentBody = `## 🧠 AI Documentation Review
+
+I've reviewed the documentation changes and have the following suggestions:
+
+---
+
+${commentsAsMarkdown}`;
+
+    await postIssueComment(commentBody);
   }
 })();
