@@ -1,9 +1,9 @@
 const fs = require("fs");
 const path = require("path");
-const OpenAI = require("openai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+const genAI = new GoogleGenerativeAI({
+  apiKey: process.env.GEMINI_API_KEY,
 });
 
 const githubToken = process.env.GITHUB_TOKEN;
@@ -45,15 +45,7 @@ async function reviewFile(file, prompts) {
     .map(p => `### ${p.name}\n${p.content}`)
     .join("\n\n");
 
-  const response = await openai.chat.completions.create({
-    model: "gpt-4.1-mini",
-    temperature: 0,
-    response_format: {type: "json_object"},
-    messages: [
-      {
-        role: "system",
-        content: `
-You are a professional documentation reviewer.
+  const systemPrompt = `You are a professional documentation reviewer.
 Apply all rules from the provided prompts.
 
 Return ONLY JSON in this format:
@@ -65,12 +57,9 @@ Return ONLY JSON in this format:
       "suggestion": string
     }
   ]
-}
-        `,
-      },
-      {
-        role: "user",
-        content: `
+}`;
+
+  const userPrompt = `
 FILE: ${file}
 
 CONTENT:
@@ -78,16 +67,27 @@ ${content}
 
 PROMPTS:
 ${promptBundle}
-        `,
-      },
-    ],
+        `;
+
+  const model = genAI.getGenerativeModel({
+    model: "gemini-1.5-flash",
+    systemInstruction: systemPrompt,
   });
 
+  const generationConfig = {
+    temperature: 0,
+    responseMimeType: "application/json",
+  };
+
+  const result = await model.generateContent(userPrompt, generationConfig);
+  const response = result.response;
+  const responseText = response.text();
+
   try {
-    return JSON.parse(response.choices[0].message.content);
+    return JSON.parse(responseText);
   } catch (err) {
     throw new Error(
-      `Failed to parse model response as JSON for ${file}: ${String(err)}\n\nRaw response:\n${response.choices[0].message.content}`
+      `Failed to parse model response as JSON for ${file}: ${String(err)}\n\nRaw response:\n${responseText}`
     );
   }
 }

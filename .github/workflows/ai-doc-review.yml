@@ -49,6 +49,6 @@ jobs:
       # 5. Run AI review script
       - name: Run AI review
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node .github/workflows/scripts/ai-review.js

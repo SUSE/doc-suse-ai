@@ -4,6 +4,7 @@
   "description": "AI review for SUSE documentation",
   "private": true,
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "openai": "4.52.2"
   }
 }
