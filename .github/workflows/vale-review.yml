@@ -1,0 +1,63 @@
+name: Vale Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  checks: write
+
+jobs:
+  vale:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      # -----------------------------
+      # Install Vale
+      # -----------------------------
+      - name: Install Vale
+        run: |
+          curl -L https://github.com/errata-ai/vale/releases/latest/download/vale_Linux_64-bit.tar.gz \
+            -o vale.tar.gz
+          tar -xzf vale.tar.gz
+          sudo mv vale /usr/local/bin/
+
+      # -----------------------------
+      # Install reviewdog
+      # -----------------------------
+      - name: Install reviewdog
+        uses: reviewdog/action-setup@v1
+        with:
+          reviewdog_version: latest
+
+      # -----------------------------
+      # Run Vale on changed docs
+      # -----------------------------
+      - name: Run Vale
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git fetch origin ${{ github.base_ref }}
+
+          FILES=$(git diff --name-only origin/${{ github.base_ref }} \
+            | grep -E '\.(adoc|md|xml)$' || true)
+
+          if [ -z "$FILES" ]; then
+            echo "No documentation files changed."
+            exit 0
+          fi
+
+          vale --output=line $FILES \
+            | reviewdog \
+                -efm="%f:%l:%c: %m" \
+                -name="vale" \
+                -reporter=github-pr-review \
+                -level=warning
