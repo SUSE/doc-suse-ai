@@ -28,7 +28,7 @@ servingEngineSpec:
   - name: "phi3-mini-4k"
     registry: "dp.apps.rancher.io"
     repository: "containers/vllm-openai"
-    tag: "0.13.0"
+    tag: "0.19.0"
     imagePullPolicy: "IfNotPresent"
     modelURL: "microsoft/Phi-3-mini-4k-instruct"
     replicaCount: 1
@@ -134,7 +134,7 @@ servingEngineSpec:
   - name: "llama3" <.>
     registry: "dp.apps.rancher.io" <.>
     repository: "containers/vllm-openai" <.>
-    tag: "0.13.0" <.>
+    tag: "0.19.0" <.>
     imagePullPolicy: "IfNotPresent"
     modelURL: "meta-llama/Llama-3.1-8B-Instruct" <.>
     replicaCount: 1 <.>
@@ -279,7 +279,7 @@ servingEngineSpec:
   - name: "llama3"
     registry: "dp.apps.rancher.io"
     repository: "containers/vllm-openai"
-    tag: "0.13.0"
+    tag: "0.19.0"
     imagePullPolicy: "IfNotPresent"
     modelURL: "/models/llama-3.1-8b-it"
     replicaCount: 1
@@ -342,7 +342,7 @@ servingEngineSpec:
   - name: "llama3"
     registry: "dp.apps.rancher.io"
     repository: "containers/vllm-openai"
-    tag: "0.13.0"
+    tag: "0.19.0"
     imagePullPolicy: "IfNotPresent"
     modelURL: "meta-llama/Llama-3.1-8B-Instruct"
     replicaCount: 1
@@ -358,7 +358,7 @@ servingEngineSpec:
   - name: "mistral"
     registry: "dp.apps.rancher.io"
     repository: "containers/vllm-openai"
-    tag: "0.13.0"
+    tag: "0.19.0"
     imagePullPolicy: "IfNotPresent"
     modelURL: "mistralai/Mistral-7B-Instruct-v0.2"
     replicaCount: 1
@@ -401,7 +401,7 @@ servingEngineSpec:
   - name: "mistral"
     registry: "dp.apps.rancher.io"
     repository: "containers/lmcache-vllm-openai"
-    tag: "0.3.2"
+    tag: "0.3.9"
     imagePullPolicy: "IfNotPresent"
     modelURL: "mistralai/Mistral-7B-Instruct-v0.2"
     replicaCount: 1
@@ -450,7 +450,7 @@ servingEngineSpec:
   - name: "mistral"
     registry: "dp.apps.rancher.io"
     repository: "containers/lmcache-vllm-openai"
-    tag: "0.3.2"
+    tag: "0.3.9"
     imagePullPolicy: "IfNotPresent"
     modelURL: "mistralai/Mistral-7B-Instruct-v0.2"
     replicaCount: 2
@@ -468,7 +468,7 @@ servingEngineSpec:
     hf_token: <HF_TOKEN>
     initContainer:
       name: "wait-for-cache-server"
-      image: "dp.apps.rancher.io/containers/lmcache-vllm-openai:0.3.2"
+      image: "dp.apps.rancher.io/containers/lmcache-vllm-openai:0.3.9"
       command: ["/bin/sh", "-c"]
       args:
         - |
@@ -485,7 +485,7 @@ cacheserverSpec:
   serde: "naive"
   registry: "dp.apps.rancher.io"
   repository: "containers/lmcache-vllm-openai"
-  tag: "0.3.2"
+  tag: "0.3.9"
   resources:
     requests:
       cpu: "4"
