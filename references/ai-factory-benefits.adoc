@@ -12,8 +12,9 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-An introductory paragraph.
+{empty}
 endif::[]
+
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
