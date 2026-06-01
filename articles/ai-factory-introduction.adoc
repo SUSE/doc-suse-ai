@@ -1,0 +1,45 @@
+include::../common/generic-attributes.adoc[]
+= Introduction to {saifactory}
+:docinfo:
+:experimental:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:revdate: 2026-06-01
+:page-revdate: {revdate}
+
+WHAT?::
+  {saifactory} is a management plane for AI platforms, delivered as a {ranchera} Dashboard extension and a {kube} operator.
+  It allows you to discover AI applications and compose them into immutable, version-controlled stacks called Blueprints.
+  You can then deploy these Blueprints across any Rancher-managed cluster.
+  {saifactory} supports air-gapped environments and integrates with {ranchera} Fleet for continuous delivery.
+
+WHY?::
+  Learn how to replace manual deployments with a standardized pipeline for managing AI stacks on {kube} clusters.
+
+EFFORT::
+  Understand the basics and benefits of {saifactory} in less than 30 minutes.
+
+GOAL::
+  To show how {saifactory} creates a reproducible workflow for composing and operating AI workloads in your cluster.
+
+include::../references/AI-intro-benefits.adoc[leveloffset=+1]
+include::../references/AI-intro-scenarios.adoc[leveloffset=+1]
+include::../concepts/AI-intro-how-works.adoc[leveloffset=+1]
+include::../glues/ai-intro-next-steps.adoc[leveloffset=+1]
+
+[appendix]
+include::../references/AI-glossary.adoc[leveloffset=+1]
+
+[appendix]
+include::../common/common_copyright_gfdl.adoc[]
+
+[appendix]
+include::../common/common_license_gfdl1.2.adoc[]
