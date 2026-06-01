@@ -121,7 +121,7 @@ include::../snippets/ai-library-requirement.adoc[]
 +
 [source,bash]
 ----
-for ns in cert-manager istio-system kubeflow kubeflow-user-example-com; do
+for ns in cert-manager istio-system kubeflow; do
   kubectl create namespace "$ns" --dry-run=client -o yaml | kubectl apply -f -
 done
 ----
@@ -130,7 +130,7 @@ done
 +
 [source,bash]
 ----
-for ns in cert-manager istio-system kubeflow kubeflow-user-example-com; do
+for ns in cert-manager istio-system kubeflow; do
   kubectl create secret docker-registry application-collection \
     --docker-server=dp.apps.rancher.io \
     --docker-username=<APPCO-REGISTRY-USERNAME> \
@@ -144,7 +144,7 @@ done
 +
 [source,bash]
 ----
-for ns in cert-manager istio-system kubeflow kubeflow-user-example-com; do
+for ns in cert-manager istio-system kubeflow; do
   kubectl create secret docker-registry suse-ai-registry \
     --docker-server=registry.suse.com \
     --docker-username=regcode \
@@ -158,7 +158,7 @@ done
 +
 [source,bash]
 ----
-for ns in kubeflow kubeflow-user-example-com; do
+for ns in kubeflow; do
   kubectl label namespace "$ns" app.kubernetes.io/managed-by=Helm --overwrite
   kubectl annotate namespace "$ns" \
     meta.helm.sh/release-name=kubeflow \
