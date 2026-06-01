@@ -1,0 +1,46 @@
+[#ai-factory-benefits]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= What are the benefits of using {saifactory}?
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+An introductory paragraph.
+endif::[]
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-01
+:page-revdate: {revdate}
+
+Optimized AI Lifecycle and Scalability::
+AI factories streamline the AI lifecycle, from data ingestion to inference.
+This helps you scale AI deployments and update models in a secure ecosystem.
+
+Accelerated Time-to-Value::
+Use automated workflows and pre-validated blueprints to accelerate your projects.
+Move AI workloads from experiment to production in days, not months.
+
+Predictable Economics and Cost Control::
+Run an AI factory on your own infrastructure to replace unpredictable cloud billing.
+This helps you avoid expensive cloud provider fees and can reduce total AI infrastructure costs.
+
+Absolute Data Sovereignty and Security::
+Maintain full control over your data, intellectual property, and infrastructure.
+Deploy on-premises, in the cloud, or in air-gapped environments to ensure compliance with data privacy mandates like GDPR and the EU AI Act.
+
+Unified Engineering (AI-Ops Bridge)::
+Unify your AI engineering and IT operations teams with a shared management plane.
+Standardized workflows like GitOps and embedded governance can reduce the manual integration burden.
+
+Enhanced Performance and Energy Efficiency::
+AI factories are purpose-built for accelerated computing and integrated with advanced hardware like {nvidia} GPUs.
+This improves performance per watt for compute-intensive AI workloads.

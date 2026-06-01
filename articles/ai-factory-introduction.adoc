@@ -30,10 +30,7 @@ EFFORT::
 GOAL::
   To show how {saifactory} creates a reproducible workflow for composing and operating AI workloads in your cluster.
 
-include::../references/AI-intro-benefits.adoc[leveloffset=+1]
-include::../references/AI-intro-scenarios.adoc[leveloffset=+1]
-include::../concepts/AI-intro-how-works.adoc[leveloffset=+1]
-include::../glues/ai-intro-next-steps.adoc[leveloffset=+1]
+include::../references/ai-factory-benefits.adoc[leveloffset=+1]
 
 [appendix]
 include::../references/AI-glossary.adoc[leveloffset=+1]
