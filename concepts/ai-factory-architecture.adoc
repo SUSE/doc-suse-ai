@@ -12,8 +12,8 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{saifactory} is a {ranchera} Dashboard extension that lets you select and group applications from the {ailibrary} into stacks called _Blueprints_.
-These Blueprints can be deployed and managed across {ranchera}-managed clusters
+{saifactory} consists of a {kube} operator and a {ranchera} Dashboard extension.
+It lets you install and manage individual application from {ailibrary} as well as group them into stacks called _Blueprints_.
 endif::[]
 
 // erase the flag for future overrides
@@ -23,13 +23,27 @@ endif::[]
 :revdate: 2026-06-01
 :page-revdate: {revdate}
 
-[#ai-factory-suseai]
-== Where does {saifactory} fit in the {productname} platform?
-
-Being part of {productname}, {saifactory} has identical requirements.
-It uses all the hardware and software pieces needed to run a {kube} cluster manageed by {ranchermanager}.
-The following schema outlines individual building blocks.
-
 [#ai-factor-schema]
 .Basic schema of {saifactory}
-image::ai-factory-schema.png[An image showing a basic structure of {saifactory}, scaledwidth=100%]
+image::ai-factory-architecture.png[An image showing a basic structure of {saifactory}, scaledwidth=100%]
+
+[#ai-factory-foundation]
+== Foundation
+The base layer of {saifactory} is deployed on bare metal or cloud-hosted nodes, preferably deployed by the {ranchelemental}.
+It consists of the following components:
+
+* a prescribed configuration of the {slsa} 16 operating system
+* {rke2a} {kube} management cluster
+* {ranchermanager} that supports the UI extension and {kube} operator code for {saifactory}
+* optionally, {ssecurity} and {sobservability} work together to provide high security and advanced monitoring capability across all AI workloads
+
+[#ai-factory-itself]
+== AI Factory
+{saifactory} is a {ranchera} Dashboard extension the serves the following purposes:
+
+* discover, install and manage individual applications from {ailibrary}
+* discover, install and manage preconfigured {suse} Blueprints that bundle specific AI applications from {ailibrary} to match a target use-case
+* discover, install and manage preconfigured {nvidia} Blueprints that bundle specific AI applications to match a target use-case
+* create custom Blueprints based on customer's AI application selection
+
+Both running applications and Blueprints can be shared across {ranchera}-managed clusters.
