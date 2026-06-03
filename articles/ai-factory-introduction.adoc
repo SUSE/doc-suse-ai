@@ -16,7 +16,7 @@ endif::[]
 :page-revdate: {revdate}
 
 WHAT?::
-{saifactory} is a management plane for AI platforms, delivered as a {ranchera} Dashboard extension and a {kube} operator.
+{saifactory} is a management plane for AI platforms, delivered as a {ranchera} UI extension and a {kube} operator.
 It allows you to discover AI applications and compose them into immutable, version-controlled stacks called Blueprints.
 You can then deploy these Blueprints across any Rancher-managed cluster.
 {saifactory} supports air-gapped environments and integrates with {ranchera} Fleet for continuous delivery.

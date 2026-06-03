@@ -12,7 +12,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{saifactory} consists of a {kube} operator and a {ranchera} Dashboard extension.
+{saifactory} consists of a {kube} operator and a {ranchera} UI extension.
 It lets you install and manage individual application from {ailibrary} as well as group them into stacks called _Blueprints_.
 endif::[]
 
@@ -39,11 +39,25 @@ It consists of the following components:
 
 [#ai-factory-itself]
 == AI Factory
-{saifactory} is a {ranchera} Dashboard extension the serves the following purposes:
+{saifactory} is a {ranchera} UI extension the serves the following purposes:
 
-* discover, install and manage individual applications from {ailibrary}
-* discover, install and manage preconfigured {suse} Blueprints that bundle specific AI applications from {ailibrary} to match a target use-case
-* discover, install and manage preconfigured {nvidia} Blueprints that bundle specific AI applications to match a target use-case
-* create custom Blueprints based on customer's AI application selection
+* Discover, install and manage individual applications from {ailibrary}.
+* Discover, install and manage preconfigured Blueprints that bundle specific applications to match a target use-case.
+* Create custom Blueprints based on customer's AI application selection.
 
 Both running applications and Blueprints can be shared across {ranchera}-managed clusters.
+
+[#ai-factory-blueprints]
+== Blueprints
+Blueprints are published, immutable and version-controlled stacks of applications required for a specific use-case.
+Because AI workloads require multiple interconnected applications, a Blueprint tightly packages these necessary components into a single unit that can be deployed with one click.
+
+An example of a Blueprint is a RAG (Retrieval-Augmented Generation) workload.
+It typically consists of the following components:
+
+* A *vector database* such as {qdrant} or {milvus}, to store high-dimensional vector embeddings.
+* An *LLM inference engine* such as {ollama} or {vllm} to process both the user's prompt and the retrieved context to generate the final textual response.
+* A *user interface* such as {owui} to provide an interface for end-users to interact with the pipeline.
+
+{saifactory} is delivered with a set of {suse} blueprints as well as blueprints provided by {nvidia}.
+You can also create custom blueprints and select your own set of AI applications.
