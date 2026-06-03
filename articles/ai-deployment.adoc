@@ -13,7 +13,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-02-10
+:revdate: 2026-06-02
 :page-revdate: {revdate}
 
 WHAT?::
@@ -55,11 +55,11 @@ include::../tasks/NVIDIA-GPU-driver-installation-SLMicro.adoc[leveloffset=+3]
 include::../tasks/RKE2-installation-quickstart.adoc[leveloffset=+2]
 // Kube cluster preparation
 include::../tasks/AI-deployment-cluster-preparation.adoc[leveloffset=+1]
-// https://github.com/rancher/rancher-product-docs/commits/main/versions/v2.13/modules/en/pages/installation-and-upgrade/install-rancher.adoc
+// https://github.com/rancher/rancher-product-docs/commits/main/versions/latest/modules/en/pages/installation-and-upgrade/install-rancher.adoc
 include::../tasks/Rancher-installation-quickstart.adoc[leveloffset=+2]
 // https://github.com/rancher/rke2-product-docs/commits/main/versions/latest/modules/en/pages/add-ons/gpu_operators.adoc
 include::../tasks/NVIDIA-Operator-installation.adoc[leveloffset=+2]
-// https://github.com/rancher/rancher-product-docs/commits/main/versions/v2.13/modules/en/pages/cluster-deployment/register-existing-clusters.adoc
+// https://github.com/rancher/rancher-product-docs/commits/main/versions/latest/modules/en/pages/cluster-deployment/register-existing-clusters.adoc
 :override-title: Registering existing clusters
 include::../tasks/Rancher-register-clusters.adoc[leveloffset=+2]
 include::../tasks/AI-gpu-nodes-assigning.adoc[leveloffset=+2]
