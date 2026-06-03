@@ -141,6 +141,31 @@ The following commands identify the {vllm} deployment name and patch its deploym
   -p '{"spec": {"strategy": {"type": "Recreate", "rollingUpdate": null}}}'
 ----
 ====
+
+[WARNING]
+.{vllm} upgrade issue
+====
+While upgrading the {vllm} {helm} chart from version 0.1.9 to 0.1.10, you may encounter the following error due to immutable label selector changes:
+[source]
+----
+Error: UPGRADE FAILED: cannot patch "vllm-deployment-router" with kind Deployment: Deployment.apps "vllm-deployment-router" is invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string{"app.kubernetes.io/component":"router", "app.kubernetes.io/instance":"vllm", "app.kubernetes.io/managed-by":"helm", "app.kubernetes.io/name":"router", "app.kubernetes.io/part-of":"vllm", "environment":"router", "release":"router"}, MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: field is immutable && cannot patch "vllm-phi-3-m-deployment-vllm" with kind Deployment: Deployment.apps "vllm-phi-3-m-deployment-vllm" is invalid: spec.selector: Invalid value: v1.LabelSelector{MatchLabels:map[string]string{"app.kubernetes.io/component":"serving-engine", "app.kubernetes.io/instance":"vllm", "app.kubernetes.io/managed-by":"helm", "app.kubernetes.io/name":"phi-3-m", "app.kubernetes.io/part-of":"vllm", "environment":"test", "helm-release-name":"vllm", "model":"phi-3-m", "release":"test"}, MatchExpressions:[]v1.LabelSelectorRequirement(nil)}: field is immutable
+----
+
+To resolve this issue, delete the affected deployments (this stops the running pods) and then retry the upgrade:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get deployments -n <SUSE_AI_NAMESPACE>
+{prompt_user}kubectl delete deployment vllm-deployment-router -n <SUSE_AI_NAMESPACE>
+{prompt_user}kubectl delete deployment <MODEL_DEPLOYMENT_NAME> -n <SUSE_AI_NAMESPACE>
+----
+
+Replace `<MODEL_DEPLOYMENT_NAME>` with the actual deployment name(s) for your model(s) from the list above (for example, `vllm-phi-3-m-deployment-vllm`).
+
+After deleting the deployments, retry the `helm upgrade` command from the beginning of this section.
+The {helm} chart will recreate the deployments with the correct labels.
+====
+
 endif::[]
 
 [#vllm-uninstalling]
