@@ -19,10 +19,31 @@ ifeval::["{PROF_PRODUCT}" == "suseai"]
 // DOCUMENTATION.SUSE.COM PRODUCT URL
 :doc-url: {dsc}/suse-ai/1.0
 
+:copyrightstart:  2023
+
 // RELEASE NOTES URL
 :rn-url: {sc-rn}/x86_64/suse-ai/1.0
 :installmedia:      {sles-version}-Online-ARCH-GM-media1.iso
 :packagemedia:      {sles-version}-Full-ARCH-GM-media1.iso
+endif::[]
+
+ifeval::["{PROF_PRODUCT}" == "saif"]
+// PRODUCT NAME AND VERSIONS
+:productname:       SUSE AI Factory
+
+:sles-version:   16
+
+// PROJECT REPOSITORY URL
+:repo-url:          https://github.com/SUSE/doc-suse-ai
+:repo-readme:       {repo-url}/blob/main/README.adoc
+
+// DOCUMENTATION.SUSE.COM PRODUCT URL
+:doc-url: {dsc}/suse-ai-factory/1.0
+
+:copyrightstart:  2026
+
+// RELEASE NOTES URL
+:rn-url: {sc-rn}/x86_64/suse-ai-factory/1.0
 endif::[]
 
 ifeval::["{PROF_PRODUCT}" == "sles"]
@@ -31,8 +52,6 @@ ifeval::["{PROF_PRODUCT}" == "sles"]
 :productnameshort:  SLES
 endif::[]
 
-
-// START YEAR OF COPYRIGHT
 :copyrightstart:  2023
 :copyrightholder: SUSE LLC
 

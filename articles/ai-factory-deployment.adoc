@@ -1,0 +1,43 @@
+include::../common/generic-attributes.adoc[]
+= Deploying {productname}
+:docinfo:
+:experimental:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:revdate: 2026-06-01
+:page-revdate: {revdate}
+
+WHAT?::
+{productname} is a {ranchera} UI extension and a {kube} operator that allows you to discover AI applications and compose them into immutable, version-controlled stacks called Blueprints.
+
+WHY?::
+Learn how to deploy {productname} on a {kube} cluster.
+
+EFFORT::
+Understand the process of deploying {productname} in less than 30 minutes.
+
+GOAL::
+By following outlined procedures, you can deploy {productname} in a {ranchera}-enabled {kube} cluster.
+
+
+[#ai-factory-deployment-requirements]
+== What are the requirements for deploying {productname}?
+
+
+
+[appendix]
+include::../references/AI-glossary.adoc[leveloffset=+1]
+
+[appendix]
+include::../common/common_copyright_gfdl.adoc[]
+
+[appendix]
+include::../common/common_license_gfdl1.2.adoc[]

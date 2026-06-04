@@ -1,5 +1,5 @@
 include::../common/generic-attributes.adoc[]
-= Introduction to {saifactory}
+= Introduction to {productname}
 :docinfo:
 :experimental:
 
@@ -16,35 +16,35 @@ endif::[]
 :page-revdate: {revdate}
 
 WHAT?::
-{saifactory} is a management plane for AI platforms, delivered as a {ranchera} UI extension and a {kube} operator.
+{productname} is a management plane for AI platforms, delivered as a {ranchera} UI extension and a {kube} operator.
 It allows you to discover AI applications and compose them into immutable, version-controlled stacks called Blueprints.
 
 WHY?::
 Learn how to replace manual deployments with a standardized pipeline for managing AI stacks on {kube} clusters.
 
 EFFORT::
-Understand the basics and benefits of {saifactory} in less than 30 minutes.
+Understand the basics and benefits of {productname} in less than 30 minutes.
 
 GOAL::
-To show how {saifactory} creates a reproducible workflow for composing and operating AI workloads in your cluster.
+To show how {productname} creates a reproducible workflow for composing and operating AI workloads in your cluster.
 
-== What is {saifactory}?
+== What is {productname}?
 
-{saifactory} is a {ranchera} UI extension and a {kube} operator that transforms {ranchera} into a management plane for enterprise AI platforms.
+{productname} is a {ranchera} UI extension and a {kube} operator that transforms {ranchera} into a management plane for enterprise AI platforms.
 It uses automated workflows and pre-validated blueprints to compose, deploy and scale AI stacks from development to production.
-{saifactory} standardizes this process with immutable, version-controlled templates.
+{productname} standardizes this process with immutable, version-controlled templates.
 This ensures reproducibility and simplifies operations for all environments, including air-gapped locations.
 
-== How is {saifactory} different from {suseai}?
+== How is {productname} different from {suseai}?
 
-{suseai} is the complete, sovereign AI solution, while {saifactory} is the component that builds and manages AI applications on the platform. The relationship can be summarized as: `Infrastructure Platform (like {rancherprime}) + Application Platform ({saifactory}) = {suseai}`.
+{suseai} is the complete, sovereign AI solution, while {productname} is the component that builds and manages AI applications on the platform. The relationship can be summarized as: `Infrastructure Platform (like {rancherprime}) + Application Platform ({productname}) = {suseai}`.
 
 While they are part of the same ecosystem, they serve different functions:
 
-.{suseai} vs. {saifactory}
+.{suseai} vs. {productname}
 [cols="1,2a,2a"]
 |===
-| |*{suseai}* |*{saifactory}*
+| |*{suseai}* |*{productname}*
 
 |*Core Focus*
 |Infrastructure and Security
@@ -59,53 +59,53 @@ While they are part of the same ecosystem, they serve different functions:
 |Provides the tools to build, deploy, and manage AI workloads (the "assembly line").
 |===
 
-== Why use {saifactory}?
+== Why use {productname}?
 
-{saifactory} provides a solution that replaces manual integration of AI applications with pre-validated Blueprints.
+{productname} provides a solution that replaces manual integration of AI applications with pre-validated Blueprints.
 It eliminates inconsistent "snowflake" environments and enforces governance and auditability through centralized controls.
 
 Running individual AI applications often forces teams to manually stitch together multiple open-source tools using fragmented {helm} charts.
 This "do-it-yourself" approach means that teams spend excessive time on integration and maintenance rather than building AI value.
 
-{saifactory} replaces this manual burden with a digital assembly line that offers several advantages:
+{productname} replaces this manual burden with a digital assembly line that offers several advantages:
 
 Pre-validated Blueprints::
-Instead of building complex architectures from scratch, {saifactory} uses Blueprints. These are curated, opinionated "master templates" that bundle multiple apps together and deploy everything needed for a specific use-case (like Retrieval-Augmented Generation or MLOps) in a single action.
+Instead of building complex architectures from scratch, {productname} uses Blueprints. These are curated, opinionated "master templates" that bundle multiple apps together and deploy everything needed for a specific use-case (like Retrieval-Augmented Generation or MLOps) in a single action.
 
 Elimination of "Snowflake" Environments::
-Individual deployments frequently result in inconsistent, fragile setups that are difficult to replicate. {saifactory} standardizes your infrastructure by treating Blueprints as immutable, version-controlled reference stacks. When you deploy a workload via {saifactory}, it strictly records its exact source provenance, allowing platform teams to seamlessly roll out upgrades or deprecate older versions without relying on informal tracking or spreadsheets.
+Individual deployments frequently result in inconsistent, fragile setups that are difficult to replicate. {productname} standardizes your infrastructure by treating Blueprints as immutable, version-controlled reference stacks. When you deploy a workload via {productname}, it strictly records its exact source provenance, allowing platform teams to seamlessly roll out upgrades or deprecate older versions without relying on informal tracking or spreadsheets.
 
 Built-in Governance and Auditability::
 Reproducing individual, manual deployments is often "detective work" with informal governance.
-{saifactory} provides centralized governance with zero-trust security guardrails, continuous vulnerability scanning, and validation data directly into every blueprint.
+{productname} provides centralized governance with zero-trust security guardrails, continuous vulnerability scanning, and validation data directly into every blueprint.
 This ensures that your AI stack is fully auditable and compliant with strict regulations like the EU AI Act.
 
 Reduced Maintenance Burden::
 Because {suse} handles the underlying component selection, integration testing, security patching and lifecycle management, platform teams can reduce their ongoing maintenance burden.
 
 
-== What are {saifactory} building blocks?
+== What are {productname} building blocks?
 
-{saifactory} consists of a {kube} operator and a {ranchera} UI extension.
+{productname} consists of a {kube} operator and a {ranchera} UI extension.
 It lets you install and manage individual application from {ailibrary} as well as group them into stacks called _Blueprints_.
 
 [#ai-factor-schema]
-.Basic schema of {saifactory}
-image::ai-factory-architecture.png[An image showing a basic structure of {saifactory}, scaledwidth=100%]
+.Basic schema of {productname}
+image::ai-factory-architecture.png[An image showing a basic structure of {productname}, scaledwidth=100%]
 
 [#ai-factory-foundation]
 === Foundation
-The base layer of {saifactory} is deployed on bare metal or cloud-hosted nodes, preferably deployed by the {ranchelemental}.
+The base layer of {productname} is deployed on bare metal or cloud-hosted nodes, preferably deployed by the {ranchelemental}.
 It consists of the following components:
 
 * a prescribed configuration of the {slsa} 16 operating system
 * {rke2a} {kube} management cluster
-* {ranchermanager} that supports the UI extension and {kube} operator code for {saifactory}
+* {ranchermanager} that supports the UI extension and {kube} operator code for {productname}
 * optionally, {ssecurity} and {sobservability} work together to provide high security and advanced monitoring capability across all AI workloads
 
 [#ai-factory-itself]
 === AI Factory
-{saifactory} is a {ranchera} UI extension the serves the following purposes:
+{productname} is a {ranchera} UI extension the serves the following purposes:
 
 * Discover, install and manage individual applications from {ailibrary}.
 * Discover, install and manage preconfigured Blueprints that bundle specific applications to match a target use-case.
@@ -125,7 +125,7 @@ It typically consists of the following components:
 * An *LLM inference engine* such as {ollama} or {vllm} to process both the user's prompt and the retrieved context to generate the final textual response.
 * A *user interface* such as {owui} to provide an interface for end-users to interact with the pipeline.
 
-{saifactory} is delivered with a set of {suse} blueprints as well as blueprints provided by {nvidia}.
+{productname} is delivered with a set of {suse} blueprints as well as blueprints provided by {nvidia}.
 You can also create custom blueprints and select your own set of AI applications.
 
 
