@@ -81,7 +81,7 @@ Reproducing individual, manual deployments is often "detective work" with inform
 This ensures that your AI stack is fully auditable and compliant with strict regulations like the EU AI Act.
 
 Reduced Maintenance Burden::
-Because {suse} handles the underlying component selection, integration testing, security patching and lifecycle management, platform teams can significantly reduce their ongoing maintenance burden.
+Because {suse} handles the underlying component selection, integration testing, security patching and lifecycle management, platform teams can reduce their ongoing maintenance burden.
 
 
 == What are {saifactory} building blocks?
