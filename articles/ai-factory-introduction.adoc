@@ -52,7 +52,7 @@ While they are part of the same ecosystem, they serve different functions:
 
 |*Primary Goal*
 |Provides a secure, vendor-agnostic foundation to run and govern AI workloads.
-|Standardizes and automates the deployment of AI applications using pre-configured templates.
+|Standardizes and automates the deployment of AI applications using preconfigured templates.
 
 |*Operational Role*
 |Acts as the stable and manageable environment (the "factory floor").
@@ -61,17 +61,19 @@ While they are part of the same ecosystem, they serve different functions:
 
 == Why use {saifactory}?
 
-{saifactory} provides a turnkey solution for enterprise AI by replacing manual integration with pre-validated Blueprints. It eliminates inconsistent "snowflake" environments, enforces governance and auditability through centralized controls, and significantly reduces the maintenance burden for platform teams by managing the component lifecycle.
+{saifactory} provides a solution that replaces manual integration of AI applications with pre-validated Blueprints.
+It eliminates inconsistent "snowflake" environments and enforces governance and auditability through centralized controls.
 
-Running individual AI applications often forces teams to manually stitch together multiple open-source tools using fragmented {helm} charts. This "do-it-yourself" approach means teams spend excessive time on integration and maintenance rather than building AI value.
+Running individual AI applications often forces teams to manually stitch together multiple open-source tools using fragmented {helm} charts.
+This "do-it-yourself" approach means that teams spend excessive time on integration and maintenance rather than building AI value.
 
 {saifactory} replaces this manual burden with a digital assembly line that offers several advantages:
 
-Pre-Validated Blueprints::
+Pre-validated Blueprints::
 Instead of building complex architectures from scratch, {saifactory} uses Blueprints. These are curated, opinionated "master templates" that bundle multiple apps together and deploy everything needed for a specific use-case (like Retrieval-Augmented Generation or MLOps) in a single action.
 
 Elimination of "Snowflake" Environments::
-Individual deployments frequently result in inconsistent, fragile setups that are difficult to replicate. {saifactory} standardizes your infrastructure by treating Blueprints as immutable, version-controlled reference stacks. When you deploy a Workload via {saifactory}, it strictly records its exact source provenance, allowing platform teams to seamlessly roll out upgrades (e.g., "Upgrade to v2") or deprecate older versions without relying on informal tracking or spreadsheets.
+Individual deployments frequently result in inconsistent, fragile setups that are difficult to replicate. {saifactory} standardizes your infrastructure by treating Blueprints as immutable, version-controlled reference stacks. When you deploy a workload via {saifactory}, it strictly records its exact source provenance, allowing platform teams to seamlessly roll out upgrades or deprecate older versions without relying on informal tracking or spreadsheets.
 
 Built-in Governance and Auditability::
 Reproducing individual, manual deployments is often "detective work" with informal governance.
@@ -79,7 +81,7 @@ Reproducing individual, manual deployments is often "detective work" with inform
 This ensures that your AI stack is fully auditable and compliant with strict regulations like the EU AI Act.
 
 Reduced Maintenance Burden::
-Because SUSE handles the underlying component selection, integration testing, security patching and lifecycle management, platform teams can significantly reduce their ongoing maintenance burden.
+Because {suse} handles the underlying component selection, integration testing, security patching and lifecycle management, platform teams can significantly reduce their ongoing maintenance burden.
 
 
 == What are {saifactory} building blocks?
