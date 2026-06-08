@@ -1,0 +1,37 @@
+[#ai-factory-usage]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {productname} usage
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+An introductory paragraph.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-08
+:page-revdate: {revdate}
+
+A paragraph of text.
+
+.Requirements
+* requirement A
+* requirement B
+* requirement C
+
+--
+.The procedure
+. Step 1
+. Step 2
+. Step 3
+--
