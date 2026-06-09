@@ -24,9 +24,6 @@ endif::[]
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 This procedure includes steps to install {ailibrary} applications.
 endif::[]
-ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
-This procedure includes steps to install {ailibrary} applications in an air-gapped environments.
-endif::[]
 
 ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [NOTE]
@@ -126,7 +123,6 @@ endif::[]
 {owui} supports either xref:opensearch-installing[{opensearch}] or xref:milvus-installing[{milvus}].
 ..  _(Optional)_ Install {ollama} as described in xref:ollama-installing[].
 .. Install {owui} as described in xref:owui-installing[].
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 .. Install {vllm} as described in xref:vllm-installing[].
 .. Install {mcpo} as described in xref:mcpo-installing[].
 .. Install {pytorch} as described in xref:pytorch-installing[].
