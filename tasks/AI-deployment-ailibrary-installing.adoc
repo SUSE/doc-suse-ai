@@ -131,6 +131,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 .. Install {mcpo} as described in xref:mcpo-installing[].
 .. Install {pytorch} as described in xref:pytorch-installing[].
 .. Install {qdrant} as described in xref:qdrant-installing[].
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 .. Install {litellm} as described in xref:litellm-installing[].
 .. Install {mlflow} as described in xref:mlflow-installing[].
 .. Install {kubeflow} as described in xref:kubeflow-installing[].
