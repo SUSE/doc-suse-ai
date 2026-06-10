@@ -22,7 +22,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-27
+:revdate: 2026-06-10
 :page-revdate: {revdate}
 
 [#kubeflow-accessing-portforward]
@@ -67,14 +67,14 @@ Navigate to \http://<EXTERNAL-IP>.
 No Helm values changes are needed for options A, B, or C.
 ====
 
-### Option D: Named host name (HTTP)
+== Option D: Named host name (HTTP)
 
 Set a host name to restrict the gateway to a specific FQDN.
 TLS is not required.
 
 See xref:kubeflow-config-scenarios-http[] for override values.
 
-### Option E — Named host name with TLS (HTTPS)
+== Option E: Named host name with TLS (HTTPS)
 
 See xref:kubeflow-config-scenarios-self-signed-tls[] or xref:kubeflow-config-scenarios-lets-encrypt[] for override values.
 

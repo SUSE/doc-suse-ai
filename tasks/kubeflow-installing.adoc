@@ -20,7 +20,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-26
+:revdate: 2026-06-10
 :page-revdate: {revdate}
 
 [#kubeflow-installing-app-details]
@@ -86,7 +86,7 @@ For single-node clusters, the Local Path Provisioner is sufficient for developme
 For production, Longhorn is recommended as it supports both RWO and RWX.
 
 Cloudflare API token::
-Only required if you want automatic DNS record management via `external-dns`` or Let's Encrypt DNS-01 challenges.
+Only required if you want automatic DNS record management via `external-dns` or Let's Encrypt DNS-01 challenges.
 Not needed for basic installs.
 
 [NOTE]
@@ -204,10 +204,10 @@ Install directly from the OCI registry (no source checkout required):
   oci://registry.suse.com/ai/charts/kubeflow \
   --version 0.3.1 \
   -n kubeflow \
-  --force-conflicts \ <.>
+  --force-conflicts \
   --server-side=true \
   --wait --timeout 15m \
-  -f my-values.yaml
+  -f my-values.yaml <.>
 ----
 <.> `--force-conflicts` is required because cert-manager-cainjector, istiod (pilot-discovery), and the clusterrole-aggregation-controller modify fields (caBundle, webhook failurePolicy, aggregated RBAC rules) that {helm} tracks.
 This flag lets {helm} reclaim ownership of those fields on each upgrade.

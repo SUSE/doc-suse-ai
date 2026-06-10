@@ -12,7 +12,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-The override value chart ships with defaults that are not suitable for production.
+The override values for the chart ship with defaults that are not suitable for production.
 Update these values before exposing the deployment to any network or storing sensitive data.
 endif::[]
 
@@ -20,7 +20,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-30
+:revdate: 2026-06-10
 :page-revdate: {revdate}
 
 [WARNING]

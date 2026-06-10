@@ -20,7 +20,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-31
+:revdate: 2026-06-10
 :page-revdate: {revdate}
 
 Always use `--force-conflicts`::

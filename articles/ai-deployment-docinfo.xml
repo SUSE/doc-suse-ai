@@ -1,5 +1,5 @@
 <revhistory xml:id="rh-deployment">
-  <revision><date>2026-04-01</date>
+  <revision><date>2026-06-10</date>
     <revdescription>
       <para>
         Added topics that describe {kubeflow} installation and operation

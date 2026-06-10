@@ -20,7 +20,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-30
+:revdate: 2026-06-10
 :page-revdate: {revdate}
 
 [#kubeflow-config-scenarios-nodeport]
@@ -109,11 +109,11 @@ kubeflow-istio-resources:
       server: prod                 # prod | staging (use staging first to test)
       solver: cloudflare           # dns01 via Cloudflare
       # Configuring cloudflare since solver is cloudflare
-	    cloudflare:
-	      email: "admin@example.com"
-	      apiTokenSecretRef:
-	        name: cloudflare-api-key
-	        key: apiKey
+      cloudflare:
+        email: "admin@example.com"
+        apiTokenSecretRef:
+          name: cloudflare-api-key
+          key: apiKey
 
 # external-dns — watches the {istio} Gateway and creates/updates DNS records
 externaldns:
@@ -128,11 +128,11 @@ externaldns:
   sources:
     - istio-gateway
   env:
-	    - name: CF_API_TOKEN
-	      valueFrom:
-	        secretKeyRef:
-	          name: cloudflare-api-key
-	          key: apiKey
+    - name: CF_API_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: cloudflare-api-key
+          key: apiKey
 
 # Credentials — change ALL of these
 auth:
@@ -239,7 +239,7 @@ auth:
 
 == Production: Use an existing external-dns and cert-manager
 
-If the existing environment already has `externa-dns` and `cert-manager`, {kubeflow} can make use of them if the following conditions are satisfied:
+If the existing environment already has `external-dns` and `cert-manager`, {kubeflow} can make use of them if the following conditions are satisfied:
 
 * `external-dns` must be configured to watch for the `istio-gateway` source.
 You can check the deployment with the `kubectl` command:

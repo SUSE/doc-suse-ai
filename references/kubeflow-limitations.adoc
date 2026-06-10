@@ -20,7 +20,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-31
+:revdate: 2026-06-10
 :page-revdate: {revdate}
 
 * *Namespace names*, such as `kubeflow`, `knative-serving` or `istio-system`, are *hardcoded* in most templates.
