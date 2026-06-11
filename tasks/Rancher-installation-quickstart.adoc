@@ -6,7 +6,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-01-29
+:revdate: 2026-06-10
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
@@ -131,6 +131,81 @@ There are three recommended options for the source of the certificate used for T
 [#install-cert-manager]
 === 4. Install cert-manager
 
+[tabs]
+=======
+Using SUSE Application Collection::
++
+--
+https://docs.apps.rancher.io/[SUSE Application Collection] provides a cert-manager chart that is compatible with Rancher. If you are using SUSE Application Collection, we recommend installing cert-manager using this option. 
+
+. Log in to the secure SUSE Application Collection registry:
++
+Before installing, https://docs.apps.rancher.io/get-started/authentication[authenticate your Helm CLI] against the Application Collection OCI registry using your enterprise credentials:
++
+[source,shell]
+----
+helm registry login dp.apps.rancher.io -u <username-or-service-account-username> -p <access-token-or-service-account-token>
+----
+
+. Create the target namespace `cert-manager`:
++
+[source,shell]
+----
+kubectl create namespace cert-manager
+----
+
+. Create the Image Pull Secret:
++
+Because the Application Collection is a private registry, your cluster's nodes need a secret to pull the images. Generate this secret in the `cert-manager` namespace:
++
+[source,shell]
+----
+kubectl create secret docker-registry application-collection \
+  --namespace cert-manager \
+  --docker-server=dp.apps.rancher.io \
+  --docker-username=<YOUR_APPCO_USERNAME> \
+  --docker-password=<YOUR_APPCO_TOKEN>
+----
+
+. Install cert-manager via the OCI chart path:
++
+Deploy the chart directly from the OCI registry path. Ensure you pass the `global.imagePullSecrets` flag so the pods can authenticate:
++
+[source,shell]
+----
+helm install <cert-manager-release-version> oci://dp.apps.rancher.io/charts/cert-manager \
+    --namespace cert-manager \
+    --set global.imagePullSecrets={application-collection} \
+    --set crds.enabled=true
+----
++
+[NOTE]
+====
+If you are deploying in a cluster that requires FIPS cryptography compliance, you can substitute the chart path with `oci://dp.apps.rancher.io/charts/cert-manager-fips`.
+====
+
+. Verify the Installation
++
+Once you've installed cert-manager, you can verify it is deployed correctly by checking the `cert-manager` namespace for running pods:
++
+[source,shell]
+----
+kubectl get pods --namespace cert-manager
+----
++
+[source,shell]
+----
+NAME                                       READY   STATUS    RESTARTS   AGE
+cert-manager-56cc584bd4-nhjx7              1/1     Running   0          3m
+cert-manager-cainjector-7cfc74b84b-kg7m2   1/1     Running   0          3m
+cert-manager-webhook-784f6dd68-69dvn       1/1     Running   0          3m
+----
+
+--
+
+Using Upstream Jetstack Helm Repository::
++
+--
 ____
 You should skip this step if you are bringing your own certificate files (option `ingress.tls.source=secret`), or if you use link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/installation-and-upgrade/references/helm-chart-options.html#_external_tls_termination[External TLS Termination].
 ____
@@ -187,6 +262,9 @@ cert-manager-webhook-787858fcdb-nlzsq      1/1     Running   0          2m
 ----
 
 ======
+
+--
+=======
 
 === 5. Install Rancher with Helm and Your Chosen Certificate Option
 
