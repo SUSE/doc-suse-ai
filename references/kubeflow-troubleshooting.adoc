@@ -1,0 +1,154 @@
+[#kubeflow-troubleshooting]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {kubeflow} troubleshooting
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Learn about solutions for common issues encountered when using {kubeflow}.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-10
+:page-revdate: {revdate}
+
+[role=qanda]
+Pods are not starting — too many open files::
+Run on each cluster node:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_sudo}sysctl -w fs.inotify.max_user_watches=524288
+{prompt_sudo}sysctl -w fs.inotify.max_user_instances=512
+
+# Persist across reboots
+{prompt_user}echo "fs.inotify.max_user_watches=524288" | \
+  sudo tee -a /etc/sysctl.d/99-kubeflow.conf
+{prompt_user}echo "fs.inotify.max_user_instances=512"  | \
+  sudo tee -a /etc/sysctl.d/99-kubeflow.conf
+----
+
+Pods are stuck pending — storage issues::
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get pvc -n kubeflow
+{prompt_user}kubectl describe pvc -n kubeflow <PVC_NAME>
+----
++
+Ensure the default StorageClass exists:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get storageclass
+----
++
+If none is marked as default, patch one:
++
+[source,bash,subs="+attributes"]
+----
+kubectl patch storageclass <NAME> \
+  -p '{"metadata": {"annotations":{"storageclass.kubernetes.io/is-default-class":"true"}}}'
+----
+
+`metadata-grpc` CrashLoopBackOff (MLMD)::
+The `metadb` database is created by a post-install hook job. If the job failed, rerun it:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl delete job metadb-init -n kubeflow --ignore-not-found
+{prompt_user}helm template kubeflow charts/kubeflow -n kubeflow \
+  --show-only 'charts/pipelines/templates/Job/metadb-init-kubeflow-Job.yaml' \
+  | kubectl apply -n kubeflow -f -
+----
+
+TensorBoard unavailable / controller CrashLoopBackOff::
++
+--
+Check that the `tensorboard-controller-config` ConfigMap contains the following required keys:
+
+* `ISTIO_HOST: "*"`
+* `ISTIO_GATEWAY: kubeflow/kubeflow-gateway` (must be in the `namespace/name` format)
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get configmap -n kubeflow -l app=tensorboard-controller -o yaml | grep -A5 'data:'
+----
+--
++
+If either the key is wrong or missing, upgrade the chart with the following overrides:
++
+[source,bash,subs="+attributes"]
+----
+tensorboard-controller:  
+  configMapData:  
+    ISTIO_HOST: "*"  
+    ISTIO_GATEWAY: kubeflow/kubeflow-gateway
+----
+
+KServe InferenceService not progressing::
+Verify that the `ClusterStorageContainer` CRD and a default object exist:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get crd clusterstoragecontainers.serving.kserve.io
+{prompt_user}kubectl get clusterstoragecontainer default
+----
++
+If either is missing, rerun `helm upgrade` to install them.
+
+"RBAC: access denied" for user namespace traffic::
+{ranchera} {istio} uses the `istio` ServiceAccount (not `istio-ingressgateway-service-account`).
+The `rancher-ingressgateway-access` AuthorizationPolicy in each user namespace handles this.
++
+If you pre-created the AuthorizationPolicy with `kubectl` before the first {helm} install, you need to add {helm} ownership labels/annotations before upgrading:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl label authorizationpolicy rancher-ingressgateway-access \
+  -n kubeflow-user-example-com app.kubernetes.io/managed-by=Helm --overwrite
+{prompt_user}kubectl annotate authorizationpolicy rancher-ingressgateway-access \
+  -n kubeflow-user-example-com \
+  meta.helm.sh/release-name=kubeflow \
+  meta.helm.sh/release-namespace=kubeflow --overwrite
+----
+
+{seaweedfs} pod stuck on ContainerCreating::
+On K3s 1.34 with cri-dockerd ({ranchera} Desktop), a race between the CNI and the container runtime can leave the {seaweedfs} pod stuck.
+{seaweedfs} acquires a LevelDB file lock on startup.
+If the pod is stuck, the lock is held and the next pod will also fail to start.
+To recover, run the following commands:
++
+[source,bash,subs="+attributes"]
+----
+# Find the Docker container ID for the stuck pod
+{prompt_user}docker ps | grep seaweedfs
+
+# Release the lock
+{prompt_user}docker kill <container-id>
+
+# Delete the stuck pod — a new pod will start cleanly
+{prompt_user}kubectl delete pod -n kubeflow -l app=seaweedfs
+----
+
+Dex login loop (infinite redirect)::
+This usually means that oauth2-proxy is receiving a 403 from an Istio AuthorizationPolicy rather than from oauth2-proxy itself.
+The Lua-redirect filter only converts 403 → 302 when the response includes a `set-cookie` header; AuthorizationPolicy 403 messages do not have one.
++
+Check for sidecar-level AuthorizationPolicy denials:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl logs -n istio-system -l app=istiod | grep "RBAC"
+{prompt_user}kubectl get authorizationpolicy -A
+----

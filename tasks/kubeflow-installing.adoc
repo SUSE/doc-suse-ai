@@ -1,0 +1,253 @@
+[#kubeflow-installing]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Installing {kubeflow}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{kubeflow} is an end-to-end machine learning platform on {kube}, packaged as a single {helm} umbrella chart.
+It targets {ranchera} / {rke2a} clusters using charts and containers from the {suse} {ailibrary}.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-10
+:page-revdate: {revdate}
+
+[#kubeflow-installing-app-details]
+== Details about the application
+
+Before deploying {kubeflow}, it is important to know more about the supported configurations and documentation.
+The following command provides the corresponding details:
+
+[source,subs="+attributes"]
+----
+{prompt_user}helm show values oci://dp.apps.rancher.io/charts/kubeflow
+----
+
+Alternatively, you can also refer to the {kubeflow} {helm} chart page on the {sappco} site at link:https://apps.rancher.io/applications/kubeflow[].
+It contains {kubeflow} dependencies, available versions and the link to pull the {kubeflow} container image.
+
+[TIP]
+.{kubeflow} repository
+====
+Referenced files, such as the `runMe.sh` script, are located in the link:https://github.com/SUSE/suse-ai-charts/tree/main/kubeflow[{kubeflow} repository].
+====
+
+[#kubeflow-installing-requirements]
+== Prerequisites
+
+|===
+| Requirement | Version | Notes
+
+| {kube}
+| >= 1.30
+| Tested on {rke2a} / K3s
+
+| {helm}
+| >= 4.0
+| Required for OCI chart support
+
+| {certmanager}
+| 1.19.3
+| Installed by the `runMe.sh` script or pre-installed manually
+
+| Istio
+| 1.1.3
+| Installed by the `runMe.sh` script or pre-installed manually
+
+| Default StorageClass
+| —
+| Local Path Provisioner (development) or Longhorn (production)
+
+| {sappco} credentials
+| —
+| User name + token for `dp.apps.rancher.io` (application-collection secret)
+
+| {sregistry} credentials
+| —
+| User name + token for `registry.suse.com` (suse-registry secret) — required when sub-charts pull from {sregistry}
+|===
+
+Storage class::
+All PVCs use the cluster default StorageClass unless `global.storageClass` is set.  
+Most components only require RWO (ReadWriteOnce).
+The exception is the Katib PBT hyperparameter tuning algorithm, which requires RWX (ReadWriteMany) to share model checkpoints across trial pods.  
+For single-node clusters, the Local Path Provisioner is sufficient for development (PBT will only work if all trial pods are scheduled on the same node).
+For production, Longhorn is recommended as it supports both RWO and RWX.
+
+Cloudflare API token::
+Only required if you want automatic DNS record management via `external-dns` or Let's Encrypt DNS-01 challenges.
+Not needed for basic installs.
+
+[NOTE]
+====
+We recommend using the latest versions of the {helm} charts.
+====
+
+[#kubeflow-installing-kubernetes]
+== Installation procedure
+
+include::../snippets/ai-library-requirement.adoc[]
+
+. Log in to {sappco} registry
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm registry login dp.apps.rancher.io \
+  --username=<APPCO-REGISTRY-USERNAME> \
+  --password=<APPCO-REGISTRY-TOKEN>
+----
+
+. Log in to {sregistry}
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm registry login registry.suse.com \
+  --username=regcode \
+  --password=<SUSE-AI-REGISTRY-TOKEN>
+----
+
+. Create namespaces.
++
+[source,bash]
+----
+for ns in cert-manager istio-system kubeflow; do
+  kubectl create namespace "$ns" --dry-run=client -o yaml | kubectl apply -f -
+done
+----
+
+. Create {sappco} image pull secrets.
++
+[source,bash]
+----
+for ns in cert-manager istio-system kubeflow; do
+  kubectl create secret docker-registry application-collection \
+    --docker-server=dp.apps.rancher.io \
+    --docker-username=<APPCO-REGISTRY-USERNAME> \
+    --docker-password=<APPCO-REGISTRY-TOKEN> \
+    -n "$ns" \
+    --dry-run=client -o yaml | kubectl apply -f -
+done
+----
+
+. Create {sregistry} image pull secrets.
++
+[source,bash]
+----
+for ns in cert-manager istio-system kubeflow; do
+  kubectl create secret docker-registry suse-ai-registry \
+    --docker-server=registry.suse.com \
+    --docker-username=regcode \
+    --docker-password=<SUSE-AI-REGISTRY-TOKEN> \
+    -n "$ns" \
+    --dry-run=client -o yaml | kubectl apply -f -
+done
+----
+
+. Label namespaces for {helm}.
++
+[source,bash]
+----
+for ns in kubeflow; do
+  kubectl label namespace "$ns" app.kubernetes.io/managed-by=Helm --overwrite
+  kubectl annotate namespace "$ns" \
+    meta.helm.sh/release-name=kubeflow \
+    meta.helm.sh/release-namespace=kubeflow \
+    --overwrite
+done
+----
+
+. Install {certmanager}.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install cert-manager oci://dp.apps.rancher.io/charts/cert-manager \
+  --version 1.19.3 \
+  --namespace cert-manager \
+  --set crds.enabled=true \
+  --set crds.keep=true \
+  --set global.imagePullSecrets[0].name=application-collection \
+  --wait --timeout 5m
+----
+
+. Install {istio} (required by Kubeflow).
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install istio oci://dp.apps.rancher.io/charts/istio \
+  --version 1.1.3 \
+  --namespace istio-system \
+  --set global.imagePullSecrets[0].name=application-collection \
+  --set gateway.enabled=true \
+  --force-conflicts \
+  --server-side=true \
+  --wait --timeout 5m
+----
+
+. Install {kubeflow}.
++
+Install directly from the OCI registry (no source checkout required):
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install kubeflow \
+  oci://registry.suse.com/ai/charts/kubeflow \
+  --version 0.3.1 \
+  -n kubeflow \
+  --force-conflicts \
+  --server-side=true \
+  --wait --timeout 15m \
+  -f my-values.yaml <.>
+----
+<.> `--force-conflicts` is required because cert-manager-cainjector, istiod (pilot-discovery), and the clusterrole-aggregation-controller modify fields (caBundle, webhook failurePolicy, aggregated RBAC rules) that {helm} tracks.
+This flag lets {helm} reclaim ownership of those fields on each upgrade.
+
++
+To apply a values override file, for example the `demo-overrides.yaml` provided in the link:https://github.com/SUSE/suse-ai-charts/tree/main/kubeflow[repo], run the following command.
+**Never use `demo-overrides.yaml` in production**:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install kubeflow \
+  oci://registry.suse.com/ai/charts/kubeflow \
+  --version 0.3.1 \
+  -n kubeflow \
+  --force-conflicts \
+  --server-side=true \
+  --wait --timeout 15m \
+  -f demo-overrides.yaml
+----
+
+ifdef::deployment_standard[]
+[#kubeflow-upgrading]
+== Upgrading {kubeflow}
+
+You can upgrade {kubeflow} to a specific version by running the following command:
+
+[source,subs="+attributes"]
+----
+{prompt_user}helm upgrade kubeflow \
+  oci://registry.suse.com/ai/charts/kubeflow \
+  -n kubeflow \
+  --version VERSION_NUMBER \
+  --wait --timeout 15m \
+  --force-conflicts <.>
+----
+<.> Always use the `--force-conflicts` option during upgrades.
+This flag lets {helm} reclaim ownership of modified fields on each upgrade.
+
+[TIP]
+====
+If you omit the `--version` option, {kubeflow} gets upgraded to the latest available version.
+====
+endif::[]

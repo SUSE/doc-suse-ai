@@ -1,0 +1,168 @@
+[#kubeflow-hardening-production]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Hardening {kubeflow} for production
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The override values for the chart ship with defaults that are not suitable for production.
+Update these values before exposing the deployment to any network or storing sensitive data.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-10
+:page-revdate: {revdate}
+
+[WARNING]
+.Demo credentials
+====
+By default (`global.demoMode: false`), the chart *fails at render time* with a security error if any well-known demo credential is still present.
+To suppress this during local development, set `global.demoMode: true` in your override values file but *never set this in production*.
+====
+
+. *Change all default credentials.*
+The credentials that trigger the render-time security check:
++
+[source,yaml]
+----
+# in your kubeflow-override-values.yaml
+auth:
+  oidc:
+    clientSecret: "<STRONG-RANDOM-SECRET>"
+    cookieSecret: "<STRONG-RANDOM-32-BYTE-BASE64>"  # generate: openssl rand -base64 32
+
+dex:
+  config:
+    staticClients:
+      - id: kubeflow-oidc-authservice
+        redirectURIs:
+          - /oauth2/callback
+        name: kubeflow-oidc-authservice
+        secret: "<STRONG-RANDOM-SECRET>"   # must match auth.oidc.clientSecret above
+    staticPasswords:
+      - email: "admin@yourcompany.com"
+        # Generate: htpasswd -nbBC 12 "" 'YourPassword' | tr -d ':\n' | sed 's/$2y/$2a/'
+        hash: "<BCRYPT-HASH>"
+        username: admin
+        userID: "1"
+    enablePasswordDB: true
+
+pipelines:
+  seaweedfs:
+    accessKey: "<STRONG-ACCESS-KEY>"
+    secretKey: "<STRONG-SECRET-KEY>"
+
+user-namespace:
+  pipelines:
+    seaweedfs:
+      accessKey: "<STRONG-ACCESS-KEY>"    # must match pipelines.seaweedfs.accessKey
+      secretKey: "<STRONG-SECRET-KEY>"    # must match pipelines.seaweedfs.secretKey
+----
++
+[NOTE]
+.{mariadb} {rootuser} password
+====
+Both the KFP and Katib {mysql} secrets are *auto-generated* (24-char random password) on the first install.
+They are preserved across upgrades with no action required.
+To rotate them, delete the secret and run `helm upgrade` to regenerate:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl delete secret mysql-secret -n kubeflow        # for KFP
+{prompt_user}kubectl delete secret katib-mysql-secrets -n kubeflow # for Katib
+{prompt_user}helm upgrade kubeflow . -f kubeflow-override-values.yaml -n kubeflow
+----
+====
+
+. *Use an external identity provider.*
+Replace Dex static passwords with an LDAP, SAML, or upstream OIDC connector.
+Add a `connectors` block to `dex.config` and remove `staticPasswords` and `enablePasswordDB: true`.
+
+. *NetworkPolicies.*
+_NetworkPolicies_ are *disabled by default*.
+They use an 'ingress-only deny-by-default' model where egress is unrestricted so that components can reach external services such as {huggingface} and container registries.
+Such configurations are supported by Calico, Cilium, Canal, and any other CNI that enforces NetworkPolicy.
+If your CNI does not enforce NetworkPolicy, enable it:
++
+[source,yaml]
+----
+# in your kubeflow-override-values.yaml
+networkPolicies:
+  enabled: true
+----
+
+. *Enable TLS.*
+Refer to xref:kubeflow-config-scenarios-lets-encrypt[] or xref:kubeflow-config-scenarios-byo-cert[] for more details.
+
+. *Enable database backups.*
++
+[source,yaml]
+----
+# in your kubeflow-override-values.yaml
+pipelines:
+  mariadb:
+    backup:
+      enabled: true
+      schedule: "0 2 * * *"   # daily at 02:00 UTC
+      storageSize: 20Gi
+----
++
+To restore the backup:
++
+[source,bash,subs="+attributes"]
+----
+# List available backups
+{prompt_user}kubectl exec -n kubeflow sts/mysql -- ls /backup/
+
+# Restore
+{prompt_user}kubectl exec -n kubeflow sts/mysql -- \
+  sh -c "mariadb --ssl=false -u root < /backup/<filename>.sql"
+----
+
+. *Enable pre-install validation.*
++
+[source,yaml]
+----
+# in your kubeflow-override-values.yaml
+preflightChecks:
+  enabled: true
+----
++
+Runs a hook job before the installation that validates that the default `StorageClass` exists and that {certmanager} CRDs are registered.
+
+. *Enable High Availability.*
+Apply `ha-overrides.yaml` (provided in the repository) on top of your base values to scale the Katib controller, training-operator, and KServe controller to 2 replicas.
+KFP and Dex PodDisruptionBudgets are already enabled by default.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade kubeflow . -f kubeflow-override-values.yaml -f ha-overrides.yaml -n kubeflow
+----
++
+PDBs protect against voluntary disruptions (node drains) but only provide meaningful coverage with 2 or more replicas.
+With a single replica, the PDB allows full eviction.
+See xref:kubeflow-limitations[Known limitations] for supported HA controllers.
+
+. *Apply resource quotas per user namespace.*
++
+[source,yaml]
+----
+# in your kubeflow-override-values.yaml
+additionalUsers:
+  - email: alice@example.com
+    namespace: alice
+    resourceQuota:
+      requests.cpu: "4"
+      requests.memory: "8Gi"
+      requests.nvidia.com/gpu: "1"
+----

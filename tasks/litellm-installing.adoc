@@ -66,16 +66,6 @@ ifeval::["{PROF_DEPLOYMENT}" == "standard"]
   -f litellm_custom_overrides.yaml
 ----
 endif::[]
-ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
-[source,subs="+attributes"]
-----
-{prompt_user}helm upgrade --install \
-  litellm litellm-<X.Y.Z>.tgz \
-  -n SUSE_AI_NAMESPACE \
-  --version <X.Y.Z> \
-  -f litellm_custom_overrides.yaml
-----
-endif::[]
 
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [#litellm-upgrading]

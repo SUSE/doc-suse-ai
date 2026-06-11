@@ -91,11 +91,14 @@ The {mcp}-to-OpenAPI proxy server provided by {owui}.
 link:https://pytorch.org/[{pytorch}]::
 An open source machine learning framework. 
 
-link:https://mlflow.org/[{mlflow}]::
-An open source platform to manage the machine learning lifecycle, including experimentation, reproducibility, deployment and a central model registry. 
-
 link:https://qdrant.tech/[{qdrant}]::
 A vector database and similarity search engine for storing, searching and managing high-dimensional vectors.
 
 link:https://docs.litellm.ai/docs/[{litellm}]::
 An open source LLM proxy and abstraction layer that lets you interact with many large language model providers through a single, OpenAI-compatible API.
+
+link:https://mlflow.org/[{mlflow}]::
+An open source platform to manage the machine learning lifecycle, including experimentation, reproducibility, deployment and a central model registry. 
+
+link:https://www.kubeflow.org/[{kubeflow}]::
+An end-to-end machine learning platform on {kube}, packaged as a single {helm} umbrella chart.

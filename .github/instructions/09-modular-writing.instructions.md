@@ -3,7 +3,6 @@ applyTo: "**/*.adoc"
 ---
 
 # Structural and Modular Writing
-
 Treat every topic as independently reusable documentation.
 
 Use:

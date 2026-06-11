@@ -1,0 +1,64 @@
+[#kubeflow-limitations]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Known {kubeflow} limitations
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The current {kubeflow} distribution has the following known limitations.
+Understanding these limitations is crucial for successful deployment and operation.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-10
+:page-revdate: {revdate}
+
+* *Namespace names*, such as `kubeflow`, `knative-serving` or `istio-system`, are *hardcoded* in most templates.
+Deploying to a non-standard namespace requires template modifications.
+
+* *Argo workflow executor image pull secrets* must be set via the `workflow-controller-configmap`
+  `workflowDefaults` field.
+They cannot be set via {helm} values at runtime because the configmap is rendered at pod-create time, not {helm} time.
+
+* *`knativeServing.enabled` must be `true`* for KServe to function.
+*Disabling Knative Serving* will cause KServe InferenceService resources to remain in a *non-Ready state*.
+
+* Only the *Cloudflare provider* is supported for external-dns out of the box.
+Other providers (AWS Route53, Azure, GCP) require additional `externaldns.env` configuration.
+
+* *{seaweedfs} is single-node, non-replicated.*
+Pipeline artifact storage has no HA. A {seaweedfs} pod restart causes a brief (~10–60s) S3 outage.
+For production HA, replace {seaweedfs} with an external S3-compatible store.
+
+* *Not all {kubeflow} controllers support multiple replicas.*
+Leader election is confirmed for katib-controller (v0.17+), training-operator, kserve-controller-manager, pvcviewer-controller, and model-registry-controller.
+These are safe to scale via `ha-overrides.yaml`.
+It is not confirmed for notebook-controller, profiles-controller, tensorboard-controller, and several KFP background workers.
+Setting `replicaCount > 1` for these controllers causes undefined behavior, such as duplicate reconciliation or data corruption.
+
+* *CRDs are not automatically upgraded by `helm upgrade`.* {kubeflow} CRDs are placed in `crds/` subdirectories.
+{helm} intentionally skips them on upgrade.
+After a chart version bump, run:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}find charts -path '*/crds/*.yaml' | xargs -I{} kubectl apply -f {}
+----
+
+* *Dex must be v0.23.0 (dex 2.42.0).*
+v0.24.0 (dex 2.44.0) uses Go 1.25, which introduced strict IPv6 URL parsing.
+{kube} API server addresses like `[10.43.0.1]:443` are rejected, crashing Dex on startup.
+The chart pins v0.23.0.
+
+* *{seaweedfs} image is pulled from {dhub}* (`chrislusf/seaweedfs:4.00`).
+Air-gapped clusters or environments with {dhub} pull-rate limits will fail to start {kubeflow} Pipelines. Mirror the image to a private registry and set `pipelines.seaweedfs.image.registry` to override.

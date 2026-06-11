@@ -3,7 +3,6 @@ applyTo: "**/*.adoc"
 ---
 
 # Writing for the Web, SEO and GEO
-
 Optimize content for AI-driven search, scanning and fast comprehension:
 
 Structure: 

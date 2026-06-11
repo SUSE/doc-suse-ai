@@ -1,0 +1,297 @@
+[#kubeflow-configuration-scenarios]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {kubeflow} configuration scenarios
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Following is a set of common configuration scenarios for deploying {kubeflow}.
+They range from simple non-production setups for development and testing to production-ready configurations with TLS and automated DNS.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-10
+:page-revdate: {revdate}
+
+[#kubeflow-config-scenarios-nodeport]
+== Non-production: NodePort access (zero-configuration)
+
+No values override file is needed.
+Install with the default values and access via NodePort or port-forward as described in xref:kubeflow-accessing[].
+
+Default credentials:
+[source]
+----
+Email:    user@example.com
+Password: 12341234
+----
+
+[#kubeflow-config-scenarios-http]
+== Non-production: Named host name over HTTP
+
+Use this if you want a stable URL for a shared development cluster.
+You can point `/etc/hosts` at the cluster IP or use `external-dns` to automate DNS.
+
+[source,yaml]
+----
+# kubeflow-override-values.yaml
+kubeflow-istio-resources:
+  hostname: "kubeflow.dev.example.com"
+  externalDNSEnabled: false
+----
+
+After the installation, obtain the cluster IP and add a local DNS entry:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get svc istio -n istio-system
+
+# /etc/hosts entry (on your local machine or in the cluster)
+192.168.1.100  kubeflow.dev.example.com
+----
+
+Navigate to: http://kubeflow.dev.example.com.
+
+[#kubeflow-config-scenarios-self-signed-tls]
+== Non-production: Self-signed TLS
+
+Suitable for shared development clusters where you can distribute the self-signed CA manually.
+Requires {certmanager}, which was installed by the `runMe.sh` script in xref:kubeflow-installing-kubernetes[].
+
+[source,yaml]
+----
+# kubeflow-override-values.yaml
+kubeflow-istio-resources:
+  hostname: "kubeflow.dev.example.com"
+  externalDNSEnabled: false
+  tls:
+    source: "selfSigned"
+    credentialName: kubeflow-gateway-tls
+    httpsRedirect: true
+----
+
+The chart creates a self-signed `ClusterIssuer` and requests a `Certificate` automatically.
+No `kubectl` steps are required beyond the {helm} install.
+
+Add the self-signed CA to your Web browser trust store to avoid certificate warnings.
+
+[#kubeflow-config-scenarios-lets-encrypt]
+== Production: Let's Encrypt TLS + external-dns
+
+Recommended for Internet-facing production deployments.
+Uses DNS-01 challenge via Cloudflare, so HTTP-01 port requirements are avoided.
+Requires a Cloudflare API token with DNS edit access.
+
+[source,yaml]
+----
+# kubeflow-override-values.yaml
+
+# Access
+kubeflow-istio-resources:
+  hostname: "kubeflow.example.com"
+  externalDNSEnabled: true
+  tls:
+    source: "letsEncrypt"
+    credentialName: kubeflow-gateway-tls
+    httpsRedirect: true
+    letsEncrypt:
+      email: "admin@example.com"   # your ACME account email
+      server: prod                 # prod | staging (use staging first to test)
+      solver: cloudflare           # dns01 via Cloudflare
+      # Configuring cloudflare since solver is cloudflare
+      cloudflare:
+        email: "admin@example.com"
+        apiTokenSecretRef:
+          name: cloudflare-api-key
+          key: apiKey
+
+# external-dns — watches the {istio} Gateway and creates/updates DNS records
+externaldns:
+  enabled: true
+  provider:
+    name: cloudflare
+  cloudflare:
+    apiToken: "<YOUR-CLOUDFLARE-API-TOKEN>"  # chart creates the Secret automatically
+  domainFilters:
+    - "example.com"
+  txtOwnerId: "kubeflow"   # unique per cluster — prevents conflicts
+  sources:
+    - istio-gateway
+  env:
+    - name: CF_API_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: cloudflare-api-key
+          key: apiKey
+
+# Credentials — change ALL of these
+auth:
+  oidc:
+    clientSecret: "<STRONG-RANDOM-32-CHAR-SECRET>"
+  initialUser:
+    email: "admin@example.com"
+
+dex:
+  config:
+    staticClients:
+      - id: kubeflow-oidc-authservice
+        redirectURIs:
+          - /oauth2/callback
+        name: kubeflow-oidc-authservice
+        secret: "<STRONG-RANDOM-32-CHAR-SECRET>"   # must match auth.oidc.clientSecret
+    staticPasswords:
+      - email: "admin@example.com"
+        # Generate: htpasswd -nbBC 12 "" 'YourPassword' | tr -d ':\n' | sed 's/$2y/$2a/'
+        hash: "<BCRYPT-HASH-OF-YOUR-PASSWORD>"
+        username: admin
+        userID: "1"
+    enablePasswordDB: true
+
+# Storage credentials — change these
+pipelines:
+  seaweedfs:
+    accessKey: "<STRONG-ACCESS-KEY>"
+    secretKey: "<STRONG-SECRET-KEY>"
+  mariadb:
+    backup:
+      enabled: true        # recommended for production
+      schedule: "0 2 * * *"
+      storageSize: 20Gi
+
+# User namespace must use the same SeaweedFS credentials
+user-namespace:
+  pipelines:
+    seaweedfs:
+      accessKey: "<STRONG-ACCESS-KEY>"    # same as pipelines.seaweedfs.accessKey
+      secretKey: "<STRONG-SECRET-KEY>"    # same as pipelines.seaweedfs.secretKey
+
+# Optional hardening
+networkPolicies:
+  enabled: false   # (Experimental) set to 'true' when using CNI that enforces NetworkPolicy (Calico, Cilium, Canal)
+
+monitoring:
+  enabled: false  # Leave this to 'false' as monitoring is not implemented yet
+----
+
+Installation:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install kubeflow \
+  oci://registry.suse.com/ai/charts/kubeflow \
+  --version 0.3.1 \
+  -n kubeflow \
+  --force-conflicts \
+  --wait --timeout 15m \
+  -f kubeflow-override-values.yaml
+----
+
+[IMPORTANT]
+.Using `staging` first is strongly recommended
+====
+Let's Encrypt rate-limits production certificate issuance.
+Test with `server: staging` until the certificate is issued, then switch to `server: prod` and run `helm upgrade` again.
+====
+
+[#kubeflow-config-scenarios-byo-cert]
+== Production: Bring-your-own certificate
+
+Use this if your organization manages TLS certificates through an existing PKI or secret manager.
+Create your TLS Secret in the `istio-system` namespace before installing:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl create secret tls my-kubeflow-tls \
+  --cert=path/to/tls.crt \
+  --key=path/to/tls.key \
+  -n istio-system
+----
+
+Then reference it in your override values file:
+
+[source,yaml]
+----
+# kubeflow-override-values.yaml
+kubeflow-istio-resources:
+  hostname: "kubeflow.example.com"
+  externalDNSEnabled: false   # manage DNS separately
+  tls:
+    source: "secret"
+    existingSecret: "my-kubeflow-tls"
+    httpsRedirect: true
+
+# Change credentials as shown in the Let's Encrypt scenario above
+auth:
+  oidc:
+    clientSecret: "<STRONG-RANDOM-32-CHAR-SECRET>"
+[...] # (rest of credentials)
+----
+
+== Production: Use an existing external-dns and cert-manager
+
+If the existing environment already has `external-dns` and `cert-manager`, {kubeflow} can make use of them if the following conditions are satisfied:
+
+* `external-dns` must be configured to watch for the `istio-gateway` source.
+You can check the deployment with the `kubectl` command:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get deployment external-dns -n external-dns -o yaml | grep source=
+  - --source=service
+  - --source=ingress
+  - --source=istio-gateway
+----
+
+* A cluster issuer must exist in the environment and be configured to issue certificates from a production public CA such as Let's Encrypt.
+You can check the deployment with the `kubectl` command:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get clusterissuer
+
+NAME                     READY   AGE
+letsencrypt-production   True    75m
+----
++
+To configure {kubeflow} to use existing `external-dns` and `cert-manager`, reference it in your values:
+
+[source,yaml]
+----
+# kubeflow-override-values.yaml
+kubeflow-istio-resources:
+  hostname: "kubeflow.example.com"
+  externalDNSEnabled: true
+  tls:
+    source: "issuerRef"
+    httpsRedirect: true
+
+    issuerRef:
+      name: letsencrypt-production
+
+externaldns:
+  enabled: false
+
+# Change credentials as shown in the Let's Encrypt scenario above
+auth:
+  oidc:
+    clientSecret: "<STRONG-RANDOM-32-CHAR-SECRET>"
+[...] # (rest of credentials)
+----
+
+[NOTE]
+.Verify {istio} CRDs installation
+====
+When adding `istio-gateway` as a source to `external-dns`, make sure the {istio} CRDs are installed.
+Otherwise, `external-dns` pod may keep crashing with an error indicating a failure to list the {istio} gateway resource.
+However, the error will eventually resolve after {istio} is installed by {kubeflow}.
+====

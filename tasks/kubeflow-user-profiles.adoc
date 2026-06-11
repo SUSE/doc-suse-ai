@@ -1,0 +1,93 @@
+[#kubeflow-user-profiles]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Managing {kubeflow} user profile and namespaces
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{kubeflow} uses a profile-per-user model.
+The default user namespace that {kubeflow} creates during the installation is `kubeflow-user-example-com`.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-10
+:page-revdate: {revdate}
+
+[#kubeflow-user-profile-at-install]
+== Adding users during installation
+
+Insert or update the following snippet in your `kubeflow-override-values.yaml` file:
+
+[source,yaml]
+----
+# in your kubeflow-override-values.yaml
+user-namespace:
+  additionalUsers:
+    - email: tux@example.com
+      namespace: tux
+      resourceQuota:
+        requests.cpu: "4"
+        requests.memory: 8Gi
+    - email: geeko@example.com
+      namespace: geeko
+----
+
+[IMPORTANT]
+.Use an explicit namespace
+====
+The `namespace` field is optional but strongly recommended.
+Without it, the namespace is auto-generated from the e-mail by replacing `@` with `--` and `.` with `-`.
+E-mails that differ only by `.` vs `-` -- such as `tux.geeko@example.com` and `tux-geeko@example.com` -- produce the same auto-generated namespace.
+Use an explicit `namespace` to disambiguate.
+====
+
+[#kubeflow-user-profile-after-install]
+== Adding users after installation
+
+Add the user to your values file and run `helm upgrade`:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade kubeflow oci://registry.suse.com/ai/charts/kubeflow \
+  --version <VERSION> \
+  -n kubeflow --reuse-values \
+  --set "user-namespace.additionalUsers[0].email=tux@example.com" \
+  --set "user-namespace.additionalUsers[0].namespace=tux"
+----
+
+Alternatively, add the user to your values file and rerun the upgrade:
+
+[source,bash]
+----
+# in your kubeflow-override-values.yaml
+user-namespace:
+  additionalUsers:
+    - email: tux@example.com
+      namespace: tux
+----
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade kubeflow oci://registry.suse.com/ai/charts/kubeflow \
+  --version <VERSION> \
+  -n kubeflow -f kubeflow-override-values.yaml
+----
+
+This creates the Profile CR and deploys all required KFP per-namespace resources (pipeline artifact server, visualization server, credentials, authorization policies) in a single step.
+
+[NOTE]
+====
+Do not add users by applying a `Profile` CR directly with `kubectl`.
+The profiles controller only creates namespace-level RBAC -- it does not deploy the KFP per-namespace resources that pipelines depend on.
+Users added this way will have an incomplete environment and the pipeline runs will fail.
+====

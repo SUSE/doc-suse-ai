@@ -1,0 +1,94 @@
+[#kubeflow-upgrade-notes]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {kubeflow} upgrade notes
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Following are important considerations and specific instructions for managing and upgrading your {kubeflow} deployment.
+They cover critical aspects like configuration conflicts, credential rotation, and potential service interruptions.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-10
+:page-revdate: {revdate}
+
+Always use `--force-conflicts`::
+The `--force-conflicts` flag is required for `helm upgrade`.
+Certain components, such as `cert-manager-cainjector` and `istiod`, modify fields that {helm} also manages.
+This flag tells {helm} to overwrite these external changes and reclaim ownership.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade kubeflow \
+  oci://registry.suse.com/ai/charts/kubeflow \
+  --version 0.3.1 \
+  -n kubeflow --force-conflicts --wait --timeout 15m
+----
+Switching database engines or changing StorageClass::
+PVCs with the option `helm.sh/resource-policy: keep` are not deleted by {helm}.
+When switching database images or StorageClasses, delete the PVC manually first:
++
+[source,bash,subs="+attributes"]
+----
+# For KFP MariaDB (Rancher MariaDB StatefulSet)
+{prompt_user}kubectl delete pvc -n kubeflow data-mysql-0
+
+# For Katib MariaDB (standalone Deployment, not StatefulSet)
+{prompt_user}kubectl delete pvc -n kubeflow katib-mysql
+----
+
+Training operator webhook secret migration (auto)::
+On upgrade from chart versions prior to 0.3.0, a pre-upgrade hook automatically migrates the `training-operator-webhook-cert` Secret from type `kubernetes.io/tls` to `Opaque`.
+No manual action is required.
+If the `kubectl get jobs -n kubeflow` command reports a hook failure, delete the secret manually and rerun `helm upgrade`:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl delete secret training-operator-webhook-cert -n kubeflow --ignore-not-found
+{prompt_user}helm upgrade kubeflow charts/kubeflow -n kubeflow --force-conflicts --wait --timeout 15m
+----
+
+Credential rotation ({seaweedfs})::
+Changing `pipelines.seaweedfs.accessKey` and `secretKey` requires restarting all KFP Deployments that read those credentials.
+Pods do not automatically restart when a Secret changes:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl rollout restart deployment -n kubeflow \
+  ml-pipeline ml-pipeline-ui ml-pipeline-persistenceagent ml-pipeline-scheduledworkflow
+{prompt_user}kubectl rollout restart deployment -n kubeflow-user-example-com \
+  ml-pipeline-ui-artifact
+----
++
+{seaweedfs} IAM accumulates credentials across restarts (the `postStart` hook adds, never removes).
+To clean stale entries after a rotation:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl exec -n kubeflow deploy/seaweedfs -- \
+  sh -c "printf 's3.configure -user <OLD_USER> -access_key <OLD_KEY> -delete -apply\n' \
+    | weed shell -master 127.0.0.1:9333"
+----
+
+{seaweedfs} upgrade downtime::
+{seaweedfs} uses a `Recreate` deployment strategy (single-node S3 store backed by a PVC).
+During `helm upgrade`, the old pod is terminated before the new pod starts.
+Expect a brief window of 10s to 60s where S3 artifact uploads and downloads are unavailable.
+In-flight pipeline runs may stall.
++
+We recommend temporarily disabling active pipeline runs in the GUI before upgrading.
+
+Supply the full values file on upgrade::
+Running `helm upgrade --reuse-values` does not update the `user-namespace` Secret with new {seaweedfs} credentials.
+Always supply the full values file on upgrade, or patch the Secret manually after upgrade.

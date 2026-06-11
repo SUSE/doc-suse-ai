@@ -1,0 +1,87 @@
+[#kubeflow-accessing]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Accessing {kubeflow}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Once {kubeflow} is deployed, the next step is choosing how to access its Web interface.
+The right method depends on your environment — whether you are running a local cluster, working inside a private network, or exposing {kubeflow} externally.
+
+The following options cover common access patterns, from simple local port forwarding to fully configured external endpoints with custom host names and TLS.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-10
+:page-revdate: {revdate}
+
+[#kubeflow-accessing-portforward]
+== Option A: Port-forward (local dev)
+
+If NodePorts are not directly reachable, use port-forward instead:
+
+[source,bash,subs="+attributes"]
+----
+# Run in a separate terminal and keep it open
+{prompt_user}kubectl port-forward svc/istio -n istio-system 8080:80
+----
+
+Navigate to \http://localhost:8080.
+
+[#kubeflow-accessing-nodeport]
+== Option B: NodePort (standard Linux cluster)
+
+The {istio} gateway Service is of type `LoadBalancer` and always has NodePorts assigned, even without a load balancer controller:
+
+[source,bash]
+----
+NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
+HTTP_PORT=$(kubectl get svc istio -n istio-system -o jsonpath='{.spec.ports[?(@.port==80)].nodePort}')
+echo "http://${NODE_IP}:${HTTP_PORT}"
+----
+
+[#kubeflow-accessing-external-ip]
+== Option C: LoadBalancer external IP
+
+If your cluster has MetalLB or a cloud load-balancer controller, the Service receives an external IP:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get svc istio -n istio-system   # wait for EXTERNAL-IP
+----
+
+Navigate to \http://<EXTERNAL-IP>.
+
+[TIP]
+====
+No Helm values changes are needed for options A, B, or C.
+====
+
+== Option D: Named host name (HTTP)
+
+Set a host name to restrict the gateway to a specific FQDN.
+TLS is not required.
+
+See xref:kubeflow-config-scenarios-http[] for override values.
+
+== Option E: Named host name with TLS (HTTPS)
+
+See xref:kubeflow-config-scenarios-self-signed-tls[] or xref:kubeflow-config-scenarios-lets-encrypt[] for override values.
+
+[NOTE]
+.`external-dns` is required for the Let's Encrypt issuer
+====
+When using Let's Encrypt as the issuer for Gateway TLS certificates, `external-dns` is required for DNS-01 challenges.
+Furthermore, a load balancer (i.e. MetalLB) must be used with `external-dns`.
+This ensures that `external-dns` can properly obtain an external IP from the load balancer to create the DNS record.
+====
