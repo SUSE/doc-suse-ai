@@ -1,0 +1,31 @@
+[#ai-factory-deployment-prepare]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Preparing for {productname} deployment
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+To make {productname} installation a smooth experience, verify that the following tasks are fulfilled.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-08
+:page-revdate: {revdate}
+
+. Purchase the {productname} entitlement.
+It is a separate entitlement from {rancherprime}.
+. Visit link:https://apps.rancher.io/[] to perform the check for the {productname} entitlement.
+If the entitlement check is successful, you are given access to the {productname}-related {helm} charts and container images.
+. Visit the {sappco}, sign in, crate and save the user access token as described in link:https://docs.apps.rancher.io/get-started/authentication/.
+. Visit {scc}, select the organization with an active {productname} subscription from the left sidebar, and save the registration code for the {productname} subscription.
+. (_Optional_) To use {nvidia} applications and blueprints, visit {scc} and save the {nvidia} registration code for the {productname} subscription.

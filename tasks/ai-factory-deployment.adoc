@@ -12,7 +12,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-An introductory paragraph.
+You can install {productname} in the {ranchera}-enabled {kube} cluster on the command-line using {helm}.
 endif::[]
 
 // erase the flag for future overrides
@@ -22,16 +22,21 @@ endif::[]
 :revdate: 2026-06-08
 :page-revdate: {revdate}
 
-A paragraph of text.
+[IMPORTANT]
+====
+For multi-cluster deployments, install the {saifoperator} to the same cluster where the main {ranchera} server runs.
+====
 
-.Requirements
-* requirement A
-* requirement B
-* requirement C
+[#ai-factory-deployment-helm]
+== Installation using {saifoperator}
 
---
-.The procedure
-. Step 1
-. Step 2
-. Step 3
---
+. Install the {saioperator}:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm install aif-operator \ <.>
+  oci://ghcr.io/suse/chart/aif-operator:0.1.0-dev.1 \
+  --namespace aif-operator \
+  --create-namespace
+----
+<.> Modify the namespace to match your needs.

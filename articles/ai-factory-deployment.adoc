@@ -28,10 +28,13 @@ GOAL::
 By following outlined procedures, you can deploy {productname} in a {ranchera}-enabled {kube} cluster.
 
 
-:override-title: What are the requirements {productname}?
+:override-title: What are the requirements for {productname}?
 include::../references/ai-factory-requirements.adoc[leveloffset=+1]
 
-:override-title: What are the steps to deploy {productname}?
+:override-title: How do I prepare for {productname} installation?
+include::../tasks/ai-factory-deployment-prepare.adoc[leveloffset=+1]
+
+:override-title: How do I deploy {productname}?
 include::../tasks/ai-factory-deployment.adoc[leveloffset=+1]
 
 
