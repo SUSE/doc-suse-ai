@@ -36,7 +36,12 @@ include::../tasks/ai-factory-deployment-prepare.adoc[leveloffset=+1]
 
 :override-title: How do I deploy {productname}?
 include::../tasks/ai-factory-deployment.adoc[leveloffset=+1]
-
+:override-title: Installation using Rancher UI
+//include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
+:override-title: Installation using Helm chart
+//include::../tasks/ai-factory-deployment-operator.adoc[leveloffset=+2]
+:override-title: How do I uninstall {productname}?
+//include::../tasks/ai-factory-uninstall.adoc[leveloffset=+2]
 
 [appendix]
 include::../references/AI-glossary.adoc[leveloffset=+1]
