@@ -33,16 +33,13 @@ By following the described procedures, you will be able to discover applications
 
 :override-title: How do I install applications?
 //include::../references/ai-factory-applications-install.adoc[leveloffset=+2]
-
 :override-title: How do I manage application instances?
 //include::../references/ai-factory-applications-manage.adoc[leveloffset=+2]
-
 :override-title: How do I uninstall applications?
 //include::../references/ai-factory-applications-uninstall.adoc[leveloffset=+2]
 
 :override-title: Managing blueprints
 //include::../references/ai-factory-blueprints.adoc[leveloffset=+1]
-
 :override-title: How do I install prebuilt blueprints?
 //include::../references/ai-factory-usage-blueprints.adoc[leveloffset=+2]
 :override-title: How do I create custom blueprints?
