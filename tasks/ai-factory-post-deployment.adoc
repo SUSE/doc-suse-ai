@@ -1,0 +1,41 @@
+[#ai-factory-post-deployment]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Steps after installing {productname}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+AI applications and blueprint images are stored across multiple services accessible via network.
+After the deployment of {productname} is successfully finished, you must provide the extension with access to the services.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+== How do I access applications from {sappco}?
+
+. Enter {sappco} secrets to the {ranchera} _local_ cluster.
+.. From the main left panel, click menu:local[Storage > Secrets]
+.. Click btn:[Create] in the top right and select btn:[Opaque]
+.. Select the btn:[aif-operator] namespace and enter name for the secrets.
+.. In the btn:[Data] tab, add key `user` with the value of your {sappco} username and `token` for your {sappco} token.
+.. Confirm with btn:[Create] in the bottom right corner.
+. Assign {sappco} secrets to {saifactory}.
+.. From the main left panel, click menu:SUSE AI Factory[Settings].
+.. In the `SUSE Application Collection` section, select the secrets name in the `Secret name` drop-down lists.
+.. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
+.. Confirm with btn:[Apply] in the bottom right corner.
+. Navigate to menu:SUSE AI Factory[Apps] and select btn:[SUSE AI Library] from the drop-down list in the top center of the screen.
+. Click the btn:[Refresh] button in the top right.
+The list of available applications from the {sappco} appears.
+

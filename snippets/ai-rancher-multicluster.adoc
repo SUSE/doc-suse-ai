@@ -1,0 +1,4 @@
+[IMPORTANT]
+====
+For multi-cluster deployments, install the {app} to the same cluster where the main {ranchera} server runs.
+====

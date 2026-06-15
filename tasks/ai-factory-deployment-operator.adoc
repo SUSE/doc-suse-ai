@@ -1,34 +1,25 @@
-[#ai-factory-deployment-procedure]
+[#ai-factory-deployment-helm]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
-= {productname} deployment procedure
+= Installing {productname} using {saifoperator}
 endif::[]
 // overridden abstract?
 ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-You can install {productname} in the {ranchera}-enabled {kube} cluster on the command-line using {helm}.
+To install {saifactory} on the command line, follow these steps:
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
-
-:revdate: 2026-06-08
-:page-revdate: {revdate}
-
-[IMPORTANT]
-====
-For multi-cluster deployments, install the {saifoperator} to the same cluster where the main {ranchera} server runs.
-====
-
-[#ai-factory-deployment-helm]
-== Installation using {saifoperator}
 
 . Install the {saioperator}:
 +
