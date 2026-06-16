@@ -22,7 +22,8 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-== How do I access applications from {sappco}?
+[#ai-factory-sappco]
+== How do I access images from {sappco}?
 
 . Enter {sappco} secrets to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
@@ -39,3 +40,66 @@ endif::[]
 . Click the btn:[Refresh] button in the top right.
 The list of available applications from the {sappco} appears.
 
+[#ai-factory-sregistry]
+== How do I access images from {sregistry}?
+
+. Enter {sregistry} secrets to the {ranchera} _local_ cluster.
+.. From the main left panel, click menu:local[Storage > Secrets]
+.. Click btn:[Create] in the top right and select btn:[Opaque]
+.. Select the btn:[aif-operator] namespace and enter name for the secrets.
+.. In the btn:[Data] tab, add key `user` with the value `regcode` and `token` for your {sregistry} token.
+.. Confirm with btn:[Create] in the bottom right corner.
+. Assign {sregistry} secrets to {saifactory}.
+.. From the main left panel, click menu:SUSE AI Factory[Settings].
+.. In the `SUSE Registry` section, select the secrets name in the `Secret name` drop-down lists.
+.. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
+.. Confirm with btn:[Apply] in the bottom right corner.
+. Navigate to menu:SUSE AI Factory[Apps] and select btn:[SUSE AI Library] from the drop-down list in the top center of the screen.
+. Click the btn:[Refresh] button in the top right.
+The list of available applications from the {sregistry} appears.
+
+[#ai-factory-nvidia-registry]
+== How do I access images from {nvidia} registry?
+
+. Enter {nvidia} registry secrets to the {ranchera} _local_ cluster.
+.. From the main left panel, click menu:local[Storage > Secrets]
+.. Click btn:[Create] in the top right and select btn:[Opaque]
+.. Select the btn:[aif-operator] namespace and enter name for the secrets.
+//TODO replace with NVIDIA username
+.. In the btn:[Data] tab, add key `user` with the value `ADDME` and `token` for your {nvidia} registry token.
+.. Confirm with btn:[Create] in the bottom right corner.
+. Assign {nvidia} registry secrets to {saifactory}.
+.. From the main left panel, click menu:SUSE AI Factory[Settings].
+.. In the `NVIDIA` section, select the secrets name in the `Secret name` drop-down lists.
+.. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
+.. Confirm with btn:[Apply] in the bottom right corner.
+. Navigate to menu:SUSE AI Factory[Apps] and select btn:[NVIDIA Library] from the drop-down list in the top center of the screen.
+. Click the btn:[Refresh] button in the top right.
+The list of available applications from the {nvidia} registry appears.
+
+[#ai-factory-fleet-gitops]
+== How do I access a Git repository to store applications configuration?
+
+. Enter Git authentication credentials to the {ranchera} _local_ cluster.
+.. From the main left panel, click menu:local[Storage > Secrets]
+//TODO add auth type
+.. Click btn:[Create] in the top right and select btn:[ADDME]
+.. Select the btn:[aif-operator] namespace and enter name for the secrets.
+//TODO not sure this applies
+.. In the btn:[Data] tab, add key `user` with the value `ADDME` and `token` for your {nvidia} registry token.
+.. Confirm with btn:[Create] in the bottom right corner.
+. Add Git  secrets to {saifactory}.
+.. From the main left panel, click menu:SUSE AI Factory[Settings].
+.. In the `Fleet/GitOps` section, enter the Git repository URL and specify which branch to use.
+.. Select authentication type and corresponding credentials and secret key.
+.. Confirm with btn:[Apply] in the bottom right corner.
+
+[#ai-factory-airgapped]
+== How do I access image registries in air-gapped environments?
+
+In air-gapped environments, you must create a local offline repository for each image registry that you want to use to install applications.
+Then, specify endpoints for these repositories.
+
+. From the main left panel, click menu:SUSE AI Factory[Settings].
+. In the menu:Advanced[Registry Endpoints] section, enter endpoint URLs for local {sappco}, {sregistry} or {nvidia} registry.
+. Confirm with btn:[Apply] in the bottom right corner.
