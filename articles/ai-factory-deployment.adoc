@@ -49,7 +49,7 @@ include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
 include::../tasks/ai-factory-deployment-operator.adoc[leveloffset=+2]
 
 :override-title: Are there any post-deployment steps?
-include::../tasks/ai-factory-post-deployment.adoc[leveloffset=+1`]
+include::../tasks/ai-factory-post-deployment.adoc[leveloffset=+1]
 
 :override-title: How do I upgrade {productname}?
 //include::../tasks/ai-factory-upgrade.adoc[leveloffset=+1`]

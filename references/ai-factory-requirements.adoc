@@ -12,7 +12,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-For successful operation of {productname}, fullfil all the recommendations below.
+For successful operation of {productname}, fulfill all the recommendations below.
 endif::[]
 
 // erase the flag for future overrides

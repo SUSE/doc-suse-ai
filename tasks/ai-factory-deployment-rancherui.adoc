@@ -52,10 +52,10 @@ This method is provided for environments where Git-based repositories cannot be 
 It does not support in-place upgrades.
 
 . In {ranchera}, navigate to menu:Extensions[Manage Extensions Catalog]
-. Import the extension catalog from GitHub.
-Enter `ghcr.io/suse/suse-ai-factory:<VERSION>` in the btn:[Catalog Image Reference] input field.
-Replace `<VERSION>` with a tag published in the GitHub Container Registry.
-Confirm with btn:[Load].
+. Import the extension catalog from GitHub:
+.. Enter `ghcr.io/suse/suse-ai-factory:<VERSION>` in the btn:[Catalog Image Reference] input field.
+.. Replace `<VERSION>` with a tag published in the GitHub Container Registry.
+.. Confirm with btn:[Load].
 . From the `Manage Repositories` page, verify if the {saifactory} repository has the `Active` state.
 If not, refresh the connection.
 . Go back to the `Extensions` page and start the installation by clicking btn:[{saifactory}].

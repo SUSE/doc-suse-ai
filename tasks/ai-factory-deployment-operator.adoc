@@ -21,7 +21,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-. Install the {saioperator}:
+. Install the {saifoperator}:
 +
 [source,bash,subs="+attributes"]
 ----

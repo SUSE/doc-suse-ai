@@ -52,7 +52,9 @@ ifeval::["{PROF_PRODUCT}" == "sles"]
 :productnameshort:  SLES
 endif::[]
 
+ifndef::copyrightstart[]
 :copyrightstart:  2023
+endif::copyrightstart[]
 :copyrightholder: SUSE LLC
 
 

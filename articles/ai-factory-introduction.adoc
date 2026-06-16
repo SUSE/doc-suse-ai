@@ -87,9 +87,9 @@ Because {suse} handles the underlying component selection, integration testing, 
 == What are {productname} building blocks?
 
 {productname} consists of a {kube} operator and a {ranchera} UI extension.
-It lets you install and manage individual application from {ailibrary} as well as group them into stacks called _Blueprints_.
+It lets you install and manage individual applications from {ailibrary} as well as group them into stacks called _Blueprints_.
 
-[#ai-factor-schema]
+[#ai-factory-schema]
 .Basic schema of {productname}
 image::ai-factory-architecture.png[An image showing a basic structure of {productname}, scaledwidth=100%]
 
@@ -105,7 +105,7 @@ It consists of the following components:
 
 [#ai-factory-itself]
 === AI Factory
-{productname} is a {ranchera} UI extension the serves the following purposes:
+{productname} is a {ranchera} UI extension that serves the following purposes:
 
 * Discover, install and manage individual applications from {ailibrary}.
 * Discover, install and manage preconfigured Blueprints that bundle specific applications to match a target use-case.

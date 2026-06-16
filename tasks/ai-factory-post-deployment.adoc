@@ -14,8 +14,8 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-AI applications and blueprint images are stored across multiple services accessible via network.
-After the deployment of {productname} is successfully finished, you must provide the extension with access to the services.
+AI applications and blueprint images are stored across multiple network-accessible services.
+After you deploy {productname}, provide the extension with access to these services.
 endif::[]
 
 // erase the flag for future overrides
