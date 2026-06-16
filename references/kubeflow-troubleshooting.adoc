@@ -67,7 +67,7 @@ The `metadb` database is created by a post-install hook job. If the job failed, 
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}kubectl delete job metadb-init -n kubeflow --ignore-not-found
-{prompt_user}helm template kubeflow charts/kubeflow -n kubeflow \
+{prompt_user}helm template kubeflow oci://registry.suse.com/ai/charts/kubeflow --version <VERSION> -n kubeflow \
   --show-only 'charts/pipelines/templates/Job/metadb-init-kubeflow-Job.yaml' \
   | kubectl apply -n kubeflow -f -
 ----

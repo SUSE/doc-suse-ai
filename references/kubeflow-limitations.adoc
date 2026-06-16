@@ -52,7 +52,7 @@ After a chart version bump, run:
 +
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}find charts -path '*/crds/*.yaml' | xargs -I{} kubectl apply -f {}
+{prompt_user}helm show crds oci://registry.suse.com/ai/charts/kubeflow --version <VERSION> | kubectl apply -f -
 ----
 
 * *Dex must be v0.23.0 (dex 2.42.0).*
