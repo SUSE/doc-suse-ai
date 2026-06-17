@@ -1,0 +1,32 @@
+[#ai-factory-deployment-helm]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Installing {productname} using {saifoperator}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{empty  }
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+To install {productname}, identify the operator chart version number and run the following command:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm install aif-operator \
+  oci://ghcr.io/suse/chart/aif-operator:<VERSION_NUMBER> \
+  --namespace aif-operator \
+  --create-namespace
+----

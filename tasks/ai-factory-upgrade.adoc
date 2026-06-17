@@ -1,0 +1,36 @@
+[#ai-factory-deployment-upgrade]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Upgrading {productname} using the {helm} command
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The {productname} chart receives application updates and updates of the {helm} chart templates.
+New versions may include changes that require manual steps.
+These steps are listed in the corresponding `README` file.
+All {productname} dependencies are updated automatically during upgrade.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+To upgrade {productname}, identify the new version number and run the following command below:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  aif-operator oci://ghcr.io/suse/chart/aif-operator \
+  -n aif-operator \
+  --version <VERSION_NUMBER> \
+  -f aif-operator_custom_overrides.yaml
+----

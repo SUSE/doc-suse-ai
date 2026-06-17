@@ -25,7 +25,7 @@ EFFORT::
 Learn the core features of {productname} in less than 30 minutes.
 
 GOAL::
-By following the described procedures, you will be able to discover applications or create your first Blueprint.
+By following the described procedures, you will be able to discover AI applications, create custom Blueprints or create your own Blueprints.
 
 
 :override-title: Managing applications
