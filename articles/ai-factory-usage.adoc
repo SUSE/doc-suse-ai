@@ -31,10 +31,6 @@ By following the described procedures, you will be able to discover AI applicati
 :override-title: Managing AI applications
 include::../tasks/ai-factory-managing-apps.adoc[leveloffset=+1]
 
-:override-title: How do I manage application instances?
-//include::../references/ai-factory-applications-manage.adoc[leveloffset=+2]
-:override-title: How do I uninstall applications?
-//include::../references/ai-factory-applications-uninstall.adoc[leveloffset=+2]
 
 :override-title: Managing blueprints
 //include::../references/ai-factory-blueprints.adoc[leveloffset=+1]
