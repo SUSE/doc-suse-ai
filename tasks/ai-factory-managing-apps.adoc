@@ -21,9 +21,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:override-title: What deployment types are available?
-include::../references/ai-factory-apps-deployment-types.adoc[leveloffset=+1]
-
 [#ai-factory-apps-install]
 == How do I install AI applications?
 

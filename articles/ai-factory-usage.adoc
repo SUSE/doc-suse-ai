@@ -28,20 +28,18 @@ GOAL::
 By following the described procedures, you will be able to discover AI applications, create custom Blueprints or create your own Blueprints.
 
 
-:override-title: Managing AI applications
+:override-title: What deployment types are available?
+include::../references/ai-factory-apps-deployment-types.adoc[leveloffset=+1]
+
+:override-title: How do I manage AI applications?
+:override-abstract: {productname} helps you manage the whole lifecycle of AI applications and related workloads on your {kube} cluster.
 include::../tasks/ai-factory-managing-apps.adoc[leveloffset=+1]
 
 
-:override-title: Managing blueprints
-//include::../references/ai-factory-blueprints.adoc[leveloffset=+1]
-:override-title: How do I install prebuilt blueprints?
-//include::../references/ai-factory-usage-blueprints.adoc[leveloffset=+2]
-:override-title: How do I create custom blueprints?
-//include::../references/ai-factory-blueprints-create.adoc[leveloffset=+2]
-:override-title: How do I manage blueprint instances?
-//include::../references/ai-factory-blueprints-manage.adoc[leveloffset=+2]
-:override-title: How do I uninstall blueprints?
-//include::../references/ai-factory-blueprints-uninstall.adoc[leveloffset=+2]
+:override-title: How do I manage AI blueprints
+:override-abstract: {productname} helps you manage the whole lifecycle of custom and pre-built AI blueprints and related workloads on your {kube} cluster.
+include::../tasks/ai-factory-managing-blueprints.adoc[leveloffset=+1]
+
 
 [appendix]
 include::../references/AI-glossary.adoc[leveloffset=+1]

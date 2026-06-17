@@ -1,0 +1,27 @@
+[#ai-factory-managing-blueprints]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Managing AI blueprints using {productname}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{productname} is a {ranchera} user interface extension and {kube} operator that helps you manage the entire lifecycle of AI applications and workloads. Implementing this tool simplifies the deployment, configuration and scaling of AI workloads on {kube}, providing a streamlined experience for administering cluster-based artificial intelligence services.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+== How do I install prebuilt blueprints?
+== How do I create custom blueprints?
+== How do I manage blueprint instances?
+== How do I delete blueprint instances?
