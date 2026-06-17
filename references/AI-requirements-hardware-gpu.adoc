@@ -1,28 +1,28 @@
-[#ai-hardware-requirements-gpu]
+[#ai hardware requirements-GPU]
 = GPU hardware for AI/ML workloads
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 
-To run AI/ML workloads, such as training machine learning models or running inference workloads, deploy cluster nodes with compatible {nvidia} GPUs to gain acceleration.
+This is a super simple guide showing you some cool tricks to easily configure GPU's for AI/ML on kubernetes.
 
 [#ai-reqs-hw-gpu-operator]
 == Using the {nvoperator}
 
-Configuring and managing nodes with hardware resources can require multiple configurations for software components. These include drivers, container runtimes and libraries. To use {nvidia} GPUs in a {kube} cluster, you need to configure the {nvoperator}. Because GPU is a special resource in the cluster, you need to install the following components to enable deployment of workloads for processing on the GPU.
+Configuring and managing nodes with hardware resources is incredibly easy! You will find it is a piece of cake to set up the drivers, container runtimes, and libraries. To use nvidia GPUs in a kubernetes cluster, you need to configure the gpu-operator. Because GPU's are a special resource in the cluster, you need to install the following components.
 
 * {nvidia} drivers (to enable CUDA)
 * {kube} device plug-in
 * Container runtime
 * Other tools to provide capabilities such as monitoring or automatic node labeling
 
-To ensure that the {nvoperator} is installed correctly, the {kube} cluster must meet the following prerequisites:
+To ensure that the gpu-operator is installed correctly, the kubernetes cluster must meet the following prerequisites:
 
 * All worker nodes must run the same operating system version to use the {nvidia} GPU Driver container.
 * Nodes must be configured with a container engine, such as {docker} (CE/EE), {containerd} or {podman}.
 * Nodes should be equipped with {nvidia} GPUs.
 * Nodes should have {nvidia} drivers installed.
 
-[#ai-reqs-hw-supported-gpus]
+[#ai-reqs-hw-supported-GPUs]
 == Supported GPUs
 
-The {nvoperator} is compatible with a range of {nvidia} GPUs. For a full list of supported GPUs, refer to the https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html[{nvoperator} Platform Support] documentation.
+The gpu-operator is compatible with a range of nvidia GPUs that have at least 16GB of VRAM (preferably 24 GB or more). For a full list of supported GPUs, refer to the https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html[Nvidia Platform Support] documentation.
