@@ -80,18 +80,17 @@ The list of available applications from the {nvidia} registry appears.
 [#ai-factory-fleet-gitops]
 == How do I access a Git repository to store applications configuration?
 
-. Enter Git authentication credentials to the {ranchera} _local_ cluster.
+. Enter Git Personal Access Token (PAT) to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
-//TODO add auth type
-.. Click btn:[Create] in the top right and select btn:[ADDME]
+.. Click btn:[Create] in the top right and select btn:[Opaque]
 .. Select the btn:[aif-operator] namespace and enter name for the secrets.
-//TODO not sure this applies
-.. In the btn:[Data] tab, add key `user` with the value `ADDME` and `token` for your {nvidia} registry token.
+.. In the btn:[Data] tab, add the key `token` and paste your PAT as a value.
 .. Confirm with btn:[Create] in the bottom right corner.
-. Add Git  secrets to {saifactory}.
+. Add the Git PAT to {saifactory}.
 .. From the main left panel, click menu:SUSE AI Factory[Settings].
 .. In the `Fleet/GitOps` section, enter the Git repository URL and specify which branch to use.
-.. Select authentication type and corresponding credentials and secret key.
+.. Select authentication type and the PAT secrets name from the `Credential Secret` drop-down lists.
+.. Select `token` for menu:Secret Key.
 .. Confirm with btn:[Apply] in the bottom right corner.
 
 [#ai-factory-airgapped]
