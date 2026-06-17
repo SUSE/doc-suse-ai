@@ -1,0 +1,36 @@
+[#ai-factory-apps-deployment-types]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= What deployment types are available for AI applications and blueprints?
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+You can deploy AI applications and blueprints in several ways.
+Specify one of these deployment types during the application or blueprint installation process.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-08
+:page-revdate: {revdate}
+
+*{fleeta} Bundle*::
+Deploy the application directly as a {fleeta} bundle managed by {rancherfleet} (https://fleet.rancher.io/0.12/).
+Suitable for users who want to use {fleeta} without maintaining a separate Git repository.
+
+*Publish to {fleeta} Git*::
+Publish the application configuration to a Git repository monitored by {fleeta}.
+{fleeta} automatically deploys and reconciles the application using a GitOps workflow.
+
+*{helm}*::
+Deploy the application using {helm} commands or the {ranchera} Apps UI.
+Suitable for direct installation and manual lifecycle management.

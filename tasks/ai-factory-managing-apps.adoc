@@ -1,0 +1,37 @@
+[#ai-factory-managing-apps]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Managing AI applications using {productname}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{productname} helps you manage te whole lifecycle of AI applications and related workloads on your {kube} cluster.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:override-title: What deployment types are available?
+include::../references/ai-factory-apps-deployment-types.adoc[leveloffset=+1]
+
+[#ai-factory-apps-install]
+== How do I install AI applications?
+
+. From the main left panel, click menu:SUSE AI Factory[Apps].
+. Select btn:[SUSE AI Library] or btn:[NVIDIA Library] depending on the publisher of the application to install and click the application's tile.
+You can also limit the number of displayed applications by entering a search string.
+. The `Basic Information` screen of the installation wizard lets you update the application's instance name, namespace and version.
+. On the `Target Cluster` screen, you can review hardware requirements for the workload, specify the deployment type, and which cluster to deploy  the application to.
+. The `Configuration` screen lets you change individual settings in the application's {helm} chart.
+. The `Review` screen summarizes the basic information about the deployment. Start the deployment by clicking the btn:[Install] button.
+. After the installation progress bar reaches 100%, you can check the workload status by selecting btn:[Workloads] from the left menu.

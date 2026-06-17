@@ -14,7 +14,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{empty  }
+{empty}
 endif::[]
 
 // erase the flag for future overrides
