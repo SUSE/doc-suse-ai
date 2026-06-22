@@ -28,12 +28,25 @@ endif::[]
 . Enter {sappco} secrets to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
 .. Click btn:[Create] in the top right and select btn:[Opaque]
-.. Select the btn:[aif-operator] namespace and enter your preferred name to identify the secrets.
+.. Select the btn:[aif-operator] namespace and enter your preferred secrets name--see `<APPCO_SECRETS_NAME>` in the command-line example--to identify the secrets.
 .. In the btn:[Data] tab, add key `user` with the value of your {sappco} username and `token` for your {sappco} token.
 .. Confirm with btn:[Create] in the bottom right corner.
+
++
+[TIP]
+.Creating the secrets on the command line
+====
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl create secret generic <APPCO_SECRETS_NAME> \
+  --from-literal=user=<APPCO_USERNAME> \
+  --from-literal=token=<APPCO_USER_TOKEN> \
+  -n aif-operator
+----
+====
 . Assign {sappco} secrets to {saifactory}.
 .. From the main left panel, click menu:SUSE AI Factory[Settings].
-.. In the `SUSE Application Collection` section, select the secrets name in the `Secret name` drop-down lists.
+.. In the `SUSE Application Collection` section, select the secrets name--that corresponds to the previously specified `<APPCO_SECRETS_NAME>`--from the `Secret name` drop-down lists.
 .. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
 .. Confirm with btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[SUSE AI Library] from the drop-down list in the top center of the screen.
@@ -46,12 +59,25 @@ The list of available applications from the {sappco} appears.
 . Enter {sregistry} secrets to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
 .. Click btn:[Create] in the top right and select btn:[Opaque]
-.. Select the btn:[aif-operator] namespace and enter your preferred name to identify the secrets.
+.. Select the btn:[aif-operator] namespace and enter your preferred secrets name--see `<REGISTRY_SECRETS_NAME>` in the command-line example--to identify the secrets.
 .. In the btn:[Data] tab, add key `user` with the value `regcode` and `token` for your {sregistry} token.
 .. Confirm with btn:[Create] in the bottom right corner.
+
++
+[TIP]
+.Creating the secrets on the command line
+====
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl create secret generic <REGISTRY_SECRETS_NAME> \
+  --from-literal=user=regcode \
+  --from-literal=token=<REGISTRY_USER_TOKEN> \
+  -n aif-operator
+----
+====
 . Assign {sregistry} secrets to {saifactory}.
 .. From the main left panel, click menu:SUSE AI Factory[Settings].
-.. In the `SUSE Registry` section, select the secrets name in the `Secret name` drop-down lists.
+.. In the `SUSE Registry` section, select the secrets name--that corresponds to the previously specified `<REGISTRY_SECRETS_NAME>`--from the `Secret name` drop-down lists.
 .. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
 .. Confirm with btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[SUSE AI Library] from the drop-down list in the top center of the screen.
@@ -64,13 +90,25 @@ The list of available applications from the {sregistry} appears.
 . Enter {nvidia} registry secrets to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
 .. Click btn:[Create] in the top right and select btn:[Opaque]
-.. Select the btn:[aif-operator] namespace and enter your preferred name to identify the secrets.
-//TODO replace with NVIDIA username
+.. Select the btn:[aif-operator] namespace and enter your preferred secrets name--see `<NVIDIA_SECRETS_NAME>` in the command-line example--to identify the secrets.
 .. In the btn:[Data] tab, add key `user` with the value `$oauthtoken` and `token` for your {nvidia} registry token.
 .. Confirm with btn:[Create] in the bottom right corner.
+
++
+[TIP]
+.Creating {nvidia} secrets on the command line
+====
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl create secret generic <NVIDIA_SECRETS_NAME> \
+  --from-literal=user=$oauthtoken \
+  --from-literal=token=<NVIDIA_USER_TOKEN> \
+  -n aif-operator
+----
+====
 . Assign {nvidia} registry secrets to {saifactory}.
 .. From the main left panel, click menu:SUSE AI Factory[Settings].
-.. In the `NVIDIA` section, select the secrets name in the `Secret name` drop-down lists.
+.. In the `NVIDIA` section, select the secrets name--that corresponds to the previously specified `<NVIDIA_SECRETS_NAME>`--from the `Secret name` drop-down lists.
 .. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
 .. Confirm with btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[NVIDIA Library] from the drop-down list in the top center of the screen.
@@ -83,13 +121,25 @@ The list of available applications from the {nvidia} registry appears.
 . Enter Git Personal Access Token (PAT) to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
 .. Click btn:[Create] in the top right and select btn:[Opaque]
-.. Select the btn:[aif-operator] namespace and enter your preferred name to identify the secrets.
+.. Select the btn:[aif-operator] namespace and enter your preferred secrets name--see `<GIT_SECRETS_NAME>` in the command-line example--to identify the secrets.
 .. In the btn:[Data] tab, add the key `token` and paste your PAT as a value.
 .. Confirm with btn:[Create] in the bottom right corner.
+
++
+[TIP]
+.Creating {nvidia} secrets on the command line
+====
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl create secret generic <GIT_SECRETS_NAME> \
+  --from-literal=token=<NVIDIA_PAT_TOKEN> \
+  -n aif-operator
+----
+====
 . Add the Git PAT to {saifactory}.
 .. From the main left panel, click menu:SUSE AI Factory[Settings].
 .. In the `Fleet/GitOps` section, enter the Git repository URL and specify which branch to use.
-.. Select authentication type and the PAT secrets name from the `Credential Secret` drop-down lists.
+.. Select authentication type and the PAT secrets name--that corresponds to the previously specified `<GIT_SECRETS_NAME>`--from the `Credential Secret` drop-down lists.
 .. Select `token` for menu:Secret Key.
 .. Confirm with btn:[Apply] in the bottom right corner.
 
