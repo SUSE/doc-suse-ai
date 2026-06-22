@@ -28,7 +28,7 @@ endif::[]
 . Enter {sappco} secrets to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
 .. Click btn:[Create] in the top right and select btn:[Opaque]
-.. Select the btn:[aif-operator] namespace and enter name for the secrets.
+.. Select the btn:[aif-operator] namespace and enter your preferred name to identify the secrets.
 .. In the btn:[Data] tab, add key `user` with the value of your {sappco} username and `token` for your {sappco} token.
 .. Confirm with btn:[Create] in the bottom right corner.
 . Assign {sappco} secrets to {saifactory}.
@@ -46,7 +46,7 @@ The list of available applications from the {sappco} appears.
 . Enter {sregistry} secrets to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
 .. Click btn:[Create] in the top right and select btn:[Opaque]
-.. Select the btn:[aif-operator] namespace and enter name for the secrets.
+.. Select the btn:[aif-operator] namespace and enter your preferred name to identify the secrets.
 .. In the btn:[Data] tab, add key `user` with the value `regcode` and `token` for your {sregistry} token.
 .. Confirm with btn:[Create] in the bottom right corner.
 . Assign {sregistry} secrets to {saifactory}.
@@ -64,9 +64,9 @@ The list of available applications from the {sregistry} appears.
 . Enter {nvidia} registry secrets to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
 .. Click btn:[Create] in the top right and select btn:[Opaque]
-.. Select the btn:[aif-operator] namespace and enter name for the secrets.
+.. Select the btn:[aif-operator] namespace and enter your preferred name to identify the secrets.
 //TODO replace with NVIDIA username
-.. In the btn:[Data] tab, add key `user` with the value `ADDME` and `token` for your {nvidia} registry token.
+.. In the btn:[Data] tab, add key `user` with the value `$oauthtoken` and `token` for your {nvidia} registry token.
 .. Confirm with btn:[Create] in the bottom right corner.
 . Assign {nvidia} registry secrets to {saifactory}.
 .. From the main left panel, click menu:SUSE AI Factory[Settings].
@@ -83,7 +83,7 @@ The list of available applications from the {nvidia} registry appears.
 . Enter Git Personal Access Token (PAT) to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
 .. Click btn:[Create] in the top right and select btn:[Opaque]
-.. Select the btn:[aif-operator] namespace and enter name for the secrets.
+.. Select the btn:[aif-operator] namespace and enter your preferred name to identify the secrets.
 .. In the btn:[Data] tab, add the key `token` and paste your PAT as a value.
 .. Confirm with btn:[Create] in the bottom right corner.
 . Add the Git PAT to {saifactory}.
