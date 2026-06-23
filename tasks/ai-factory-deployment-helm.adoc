@@ -14,14 +14,12 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{empty}
+To install {productname} on the command line using {helm}, identify the operator chart version number and run the following command:
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
-
-To install {productname}, identify the operator chart version number and run the following command:
 
 [source,bash,subs="+attributes"]
 ----
