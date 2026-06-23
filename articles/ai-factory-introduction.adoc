@@ -134,7 +134,7 @@ You can also create custom blueprints and select your own set of AI applications
 The workflow is defined by a user role and is different for a user and an administrator.
 
   * *Admin Users* install and configure the extension.
-  * *Cluster Owners* and *{ranchera} Admin Users* discover, deploy and manage AI applications and blueprints from {suse} image registries, such as xref:ai-lifecycle-manager-clusterrepo-sappco[{sappco}] and xref:ai-lifecycle-manager-clusterrepo-sregistry[{sregistry}].
+  * *Cluster Owners* and *{ranchera} Admin Users* discover, deploy and manage AI applications and blueprints from {suse} image registries, such as {sappco}, {sregistry} or {nvidia} registry.
 
 [appendix]
 include::../references/AI-glossary.adoc[leveloffset=+1]
