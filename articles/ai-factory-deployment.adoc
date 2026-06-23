@@ -35,13 +35,16 @@ include::../references/ai-factory-requirements.adoc[leveloffset=+1]
 include::../tasks/ai-factory-deployment-prepare.adoc[leveloffset=+1]
 
 == How do I deploy {productname}?
-You can install {productname} in the {ranchera}-enabled {kube} cluster on the command line by using the {helm} command.
+You can install {productname} on the {ranchera}-enabled {kube} cluster in the following ways:
+
+* on the command line by using the {helm} command
+* using {ranchera} UI
 
 :app: {saifoperator}
 include::../snippets/ai-rancher-multicluster.adoc[]
 
-//:override-title: Installation using Rancher UI
-//include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
+:override-title: Installation using Rancher UI
+include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
 :override-title: Installation using Helm chart
 include::../tasks/ai-factory-deployment-helm.adoc[leveloffset=+2]
 

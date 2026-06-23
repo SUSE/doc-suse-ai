@@ -14,7 +14,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-You can install the extension either from a GitHub branch or from a GitHub registry (OCI container).
+To install {productname} using {ranchera} UI, follow these steps:
 endif::[]
 
 // erase the flag for future overrides
@@ -23,51 +23,18 @@ endif::[]
 
 include::../snippets/ai-rancher-admin-requirement.adoc[]
 
-[#ai-factory-extension-github-branch]
-== Installation using a GitHub branch (the recommended method)
-
-The {saifactory} extension is primarily distributed via a GitHub branch (gh-pages).
-This is the default and recommended installation method because it *enables seamless, in-place upgrades* directly from the {ranchera} UI.
-
-. In {ranchera}, navigate to menu:Extensions[Manage Repositories]
-. Click btn:[Create], enter a name for the repository and select `Git repository containing Helm chart or cluster template definitions`.
-. Enter `https://github.com/SUSE/suse-ai-factory` as the Git repository URL and `gh-pages` as the Git branch.
-Confirm with btn:[Create].
-. Wait until the {saifactory} repository has the Active state.
-. Go back to the `Extensions` page and install {saifactory}.
-. Reload {ranchera} Dashboard by reloading the Web browser window to ensure the extension is loaded in the UI.
-. The "SUSE AI Factory" logo will now appear on the left panel of the {ranchera} Dashboard.
-
-[NOTE]
-.Points to consider
-====
-* Using the GitHub branch method allows seamless updates without reinstallation.
-* If the extension does not appear after installation, try clearing the browser cache and reloading again.
-====
-
-[#ai-factory-extension-github-registry]
-== Installation using a GitHub registry (an alternative method)
-
-This method is provided for environments where Git-based repositories cannot be used.
-It does not support in-place upgrades.
-
-. In {ranchera}, navigate to menu:Extensions[Manage Extensions Catalog]
-. Import the extension catalog from GitHub:
-.. Enter `ghcr.io/suse/suse-ai-factory:<VERSION>` in the btn:[Catalog Image Reference] input field.
-.. Replace `<VERSION>` with a tag published in the GitHub Container Registry.
-.. Confirm with btn:[Load].
-. From the `Manage Repositories` page, verify if the {saifactory} repository has the `Active` state.
-If not, refresh the connection.
-. Go back to the `Extensions` page and start the installation by clicking btn:[{saifactory}].
-. Reload {ranchera} Dashboard by reloading the Web browser window to ensure the extension is loaded in the UI.
-The "`SUSE AI Factory`" logo will now appear on the left panel of the {ranchera} Dashboard.
-
-[NOTE]
-.Points to consider
-====
-* To upgrade to a newer version of the extension, you must *reinstall the container* with the updated version tag.
-In-place upgrades are not supported with this method.
-* Replace `<VERSION>` with a valid tag published in the GitHub Container Registry.
-* Newly published catalogs are not always available immediately.
-If the catalog does not show up after publishing, navigate to menu:Extensions[Manage Repositories] and manually refresh the repository to force a re-sync.
-====
+. *Add a new repository for {productname}.*
+.. From the main left panel, click menu:local[Apps > Repositories].
+.. Select btn:[OCI Repository] and enter your preferred repositor name, for example, `suse-aif-operator`.
+.. Enter `oci://ghcr.io/suse/chart/suse-ai-operator` as an OCI repository URL.
+.. Leave `None` for authentication type and confirm with btn:[Create].
+. *Install the `SUSE AI Operator` application.*
+.. Navigate to menu:Apps[Charts] and activate the new `suse-aif-operator` filter in the left repository filter.
+.. Click btn:[Refresh all repositories] and the `SUSE AI Operator` application tile appears.
+.. Click the application's tile and then the btn:[Install this version] button.
+.. Select the `aif-operator` namespace and specify name for the workload.
+.. To customize detailed installation options, activate btn:[Customize Helm options before install].
+Confirm with btn:[Next].
+.. Review or update the installation chart and install the application with the btn:[Install] button in the bottom right.
+You can watch the installation progress in the newly opened log window.
+.. Verify that the application is listed in menu:Apps[Installed Apps].

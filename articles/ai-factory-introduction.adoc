@@ -128,6 +128,13 @@ It typically consists of the following components:
 {productname} is delivered with a set of {suse} blueprints as well as blueprints provided by {nvidia}.
 You can also create custom blueprints and select your own set of AI applications.
 
+[#ai-factory-manager-roles]
+== What are the workflows and responsibilities?
+
+The workflow is defined by a user role and is different for a user and an administrator.
+
+  * *Admin Users* install and configure the extension.
+  * *Cluster Owners* and *{ranchera} Admin Users* discover, deploy and manage AI applications and blueprints from {suse} image registries, such as xref:ai-lifecycle-manager-clusterrepo-sappco[{sappco}] and xref:ai-lifecycle-manager-clusterrepo-sregistry[{sregistry}].
 
 [appendix]
 include::../references/AI-glossary.adoc[leveloffset=+1]
