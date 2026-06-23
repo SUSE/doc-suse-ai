@@ -14,17 +14,29 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-To install {productname} on the command line using {helm}, identify the operator chart version number and run the following command:
+To install {productname} on the command line using {helm},  and run the following command:
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
+. Identify the operator chart version number that you want to install.
+. Install {saifoperator}. The installation can take a few minutes.
++
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm install aif-operator \
   oci://ghcr.io/suse/chart/aif-operator:<VERSION_NUMBER> \
   --namespace aif-operator \
   --create-namespace
+----
+. Verify that the operator is correctly installed and related pods running.
+The output should be similar to the following:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -A | grep aif \
+aif-operator                aif-operator-7bf464987-mnrw5
+cattle-ui-plugin-system     aif-ui-server-865c7fc84c-bmf7w
 ----
