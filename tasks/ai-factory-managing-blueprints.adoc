@@ -21,7 +21,8 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-== How do I install prebuilt blueprints?
-== How do I create custom blueprints?
-== How do I manage blueprint instances?
-== How do I delete blueprint instances?
+
+// == How do I install prebuilt blueprints?
+// == How do I create custom blueprints?
+// == How do I manage blueprint instances?
+// == How do I delete blueprint instances?

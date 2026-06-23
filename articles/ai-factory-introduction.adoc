@@ -17,7 +17,7 @@ endif::[]
 
 WHAT?::
 {productname} is a management plane for AI platforms, delivered as a {ranchera} UI extension and a {kube} operator.
-It allows you to discover AI applications and compose them into immutable, version-controlled stacks called Blueprints.
+It allows you to discover AI applications and compose them into immutable, version-controlled stacks called blueprints.
 
 WHY?::
 Learn how to replace manual deployments with a standardized pipeline for managing AI stacks on {kube} clusters.
