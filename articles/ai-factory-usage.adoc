@@ -15,18 +15,16 @@ endif::[]
 :revdate: 2026-06-08
 :page-revdate: {revdate}
 
-WHAT?::
-{productname} is a {ranchera} UI extension and a {kube} operator that allows you to discover AI applications and compose them into immutable, version-controlled stacks called Blueprints.
+[abstract]
+--
+{productname} is a {ranchera} user interface (UI) extension and a {kube} operator that manages the entire lifecycle of artificial intelligence (AI) workloads.
+Using the {ranchera} UI, you can focus on multiple tasks, for example:
 
-WHY?::
-Use {productname} to simplify the management and deployment of AI applications on your {kube} cluster.
-
-EFFORT::
-Learn the core features of {productname} in less than 30 minutes.
-
-GOAL::
-By following the described procedures, you will be able to discover AI applications, create custom Blueprints or create your own Blueprints.
-
+* installing and configuring AI applications
+* creating and installing custom AI blueprints
+* installing existing {suse} and {nvidia} blueprints
+* managing running workloads
+--
 
 :override-title: What deployment types are available?
 include::../references/ai-factory-apps-deployment-types.adoc[leveloffset=+1]

@@ -21,8 +21,19 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
+[#ai-factory-managing-blueprints-install]
+== How do I install prebuilt blueprints?
+{productname} is shipped with pre-built {suse} and {nvidia} blueprints that match specific use cases.
+Each blueprint already includes the related applications, dependencies and configurations which simplifies the whole deployment process.
 
-// == How do I install prebuilt blueprints?
+. From the main left panel, click menu:SUSE AI Factory[Blueprints].
+. From the list of blueprints, select the one that you want to install and click its btn:[Install] button.
+. On the `Basic Info` screen, you can modify the default name and the target namespace for the workload. Confirm with btn:[Next].
+. On the `Target` screen, specify the deployment type and the cluster that you want to deploy the workload to.
+You can also review estimated hardware requirements for the workload. Confirm with btn:[Next].
+. On the `Review` screen, verify that the entered information is correct and start the deployment with btn:[Install].
+. Switch to menu:Workloads[] to verify that the workload deployment has started and watch the status of the deployment.
+
 // == How do I create custom blueprints?
 // == How do I manage blueprint instances?
 // == How do I delete blueprint instances?
