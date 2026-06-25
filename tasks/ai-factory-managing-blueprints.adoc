@@ -112,7 +112,7 @@ Confirm with btn:[Delete].
 Consider the following use-case:
 You have a {litellm} blueprint and want to install it on a development and production cluster using different configurations.
 Due to reduced hardware resources on the development cluster, you need different LLM models, {ingress} values or GPU resource settings.
-For clarity, the blueprints will be named `blueprint-litellm-dev` and `blueprint-litellm-prod`.
+For clarity, the blueprints are named `blueprint-litellm-dev` and `blueprint-litellm-prod`.
 To achieve this task with {productname}, follow these steps:
 
 . Use a prebuilt blueprint or create a custom blueprint as described in xref:ai-factory-managing-blueprints-create[].
