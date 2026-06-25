@@ -18,7 +18,7 @@ endif::[]
 
 [abstract]
 --
-The deployment and operation of {productname} needs the following requirements be fulfilled.
+The deployment and operation of {productname} require the following prerequisites.
 --
 include::../references/AI-requirements-hardware.adoc[leveloffset=+1]
 include::../references/AI-requirements-hardware-gpu.adoc[leveloffset=+1]
