@@ -34,12 +34,22 @@ Confirm with btn:[Next].
 . On the `Configuration` screen, review and optionally update the blueprint's deployment {helm} chart. Confirm with btn:[Next].
 . On the `Review & Create` screen, verify that the entered information is correct and confirm with btn:[Create].
 
+[#ai-factory-managing-blueprints-modify]
+== How do I modify blueprints?
+
+To modify a blueprint, follow these steps:
+
+. From the main left panel, click menu:SUSE AI Factory[Blueprints].
+. From the list of existing blueprints, select the one to modify, click its three-dot menu and select btn:[Edit].
+. On the `Basic Info` screen, update the version number and description. Confirm with btn:[Next].
+. On the `Select Apps` screen, update the list of blueprint's applications by adding new applications or removing existing ones.
+Confirm with btn:[Next].
+. On the `Configuration` screen, review and optionally update the blueprint applications' {helm} charts. Confirm with btn:[Next].
+. On the `Review & Create` screen, verify that the entered information is correct and confirm with btn:[Save as New Version].
+
 
 [#ai-factory-managing-blueprints-install]
 == How do I install blueprints?
-
-//{productname} is shipped with pre-built {suse} and {nvidia} blueprints that match specific use cases.
-//Each blueprint already includes the related applications, dependencies and configurations which simplifies the whole deployment process.
 
 To install a blueprint, follow these steps:
 
@@ -95,4 +105,27 @@ To delete a blueprint, follow these steps:
 . From the list of existing blueprints, select the one to delete and specify the version to delete.
 . Click the blueprint's three-dot menu and select btn:[Delete].
 Confirm with btn:[Delete].
+
+[#ai-factory-managing-blueprints-multiple-envs]
+== How do I manage environment-specific configurations with blueprints?
+
+Consider the following use-case:
+You have a {litellm} blueprint and want to install it on a development and production cluster using different configurations.
+Due to reduced hardware resources on the development cluster, you need different LLM models, {ingress} values or GPU resource settings.
+For clarity, the blueprints will be named `blueprint-litellm-dev` and `blueprint-litellm-prod`.
+To achieve this task with {productname}, follow these steps:
+
+. Use a prebuilt blueprint or create a custom blueprint as described in xref:ai-factory-managing-blueprints-create[].
+This blueprint will be deployed in production, therefore update its name to `blueprint-litellm-prod`.
+. Create a new version of the blueprint with the desired configurations as described in xref:ai-factory-managing-blueprints-modify[].
+. Clone the blueprint as described in xref:ai-factory-managing-blueprints-copy[] and name it `blueprint-litellm-dev`.
+. Deploy the blueprints as described in xref:ai-factory-managing-blueprints-install[]. Specify the correct version for each deployment.
+.. blueprint `blueprint-litellm-prod` on the production cluster
+.. blueprint `blueprint-litellm-dev` on the development cluster
+
+[TIP]
+====
+If you need to apply a new version of a blueprint during future maintenance, go to menu:SUSE AI Factory[Workloads] and click the corresponding btn:[Upgrade] button.
+====
+
 
