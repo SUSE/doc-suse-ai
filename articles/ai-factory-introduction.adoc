@@ -12,28 +12,16 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-06-01
+:revdate: 2026-06-25
 :page-revdate: {revdate}
 
-WHAT?::
-{productname} is a management plane for AI platforms, delivered as a {ranchera} UI extension and a {kube} operator.
-It allows you to discover AI applications and compose them into immutable, version-controlled stacks called blueprints.
-
-WHY?::
-Learn how to replace manual deployments with a standardized pipeline for managing AI stacks on {kube} clusters.
-
-EFFORT::
-Understand the basics and benefits of {productname} in less than 30 minutes.
-
-GOAL::
-To show how {productname} creates a reproducible workflow for composing and operating AI workloads in your cluster.
-
-== What is {productname}?
-
-{productname} is a {ranchera} UI extension and a {kube} operator that transforms {ranchera} into a management plane for enterprise AI platforms.
-It uses automated workflows and pre-validated blueprints to compose, deploy and scale AI stacks from development to production.
-{productname} standardizes this process with immutable, version-controlled templates.
-This ensures reproducibility and simplifies operations for all environments, including air-gapped locations.
+[abstract]
+--
+{productname} is a {ranchera} user interface (UI) extension and a {kube} operator.
+It serves as a unified management plane for enterprise artificial intelligence (AI) platforms.
+The tool replaces manual, fragmented application integration with pre-validated, version-controlled blueprints.
+This establishes a standardized and reproducible pipeline for deploying and scaling complex AI workloads on {kube} clusters.
+--
 
 == How is {productname} different from {suseai}?
 
