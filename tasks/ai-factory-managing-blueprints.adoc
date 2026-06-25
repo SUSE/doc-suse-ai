@@ -21,19 +21,78 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
+[#ai-factory-managing-blueprints-create]
+== How do I create custom blueprints?
+
+To create a custom blueprint, follow these steps:
+
+. From the main left panel, click menu:SUSE AI Factory[Blueprints > Create].
+. On the `Basic Info` screen, enter the blueprint's name, version and optionally a description. Confirm with btn:[Next].
+. On the `Select Apps` screen, search for an application to add to the blueprint, click its name ans specify the version to install.
+Repeat for all applications that you want to include in the blueprint.
+Confirm with btn:[Next].
+. On the `Configuration` screen, review and optionally update the blueprint's deployment {helm} chart. Confirm with btn:[Next].
+. On the `Review & Create` screen, verify that the entered information is correct and confirm with btn:[Create].
+
+
 [#ai-factory-managing-blueprints-install]
-== How do I install prebuilt blueprints?
-{productname} is shipped with pre-built {suse} and {nvidia} blueprints that match specific use cases.
-Each blueprint already includes the related applications, dependencies and configurations which simplifies the whole deployment process.
+== How do I install blueprints?
+
+//{productname} is shipped with pre-built {suse} and {nvidia} blueprints that match specific use cases.
+//Each blueprint already includes the related applications, dependencies and configurations which simplifies the whole deployment process.
+
+To install a blueprint, follow these steps:
 
 . From the main left panel, click menu:SUSE AI Factory[Blueprints].
-. From the list of blueprints, select the one that you want to install and click its btn:[Install] button.
+. From the list of existing blueprints, select the one to install, specify the version to install, and click its btn:[Install] button.
 . On the `Basic Info` screen, you can modify the default name and the target namespace for the workload. Confirm with btn:[Next].
 . On the `Target` screen, specify the deployment type and the cluster that you want to deploy the workload to.
 You can also review estimated hardware requirements for the workload. Confirm with btn:[Next].
 . On the `Review` screen, verify that the entered information is correct and start the deployment with btn:[Install].
 . Switch to menu:Workloads[] to verify that the workload deployment has started and watch the status of the deployment.
 
-// == How do I create custom blueprints?
-// == How do I manage blueprint instances?
-// == How do I delete blueprint instances?
+[#ai-factory-managing-blueprints-copy]
+== How do I base a blueprint on an existing one?
+
+To base a blueprint on an existing one, follow these steps:
+
+. From the main left panel, click menu:SUSE AI Factory[Blueprints].
+. From the list of existing blueprints, select the one to clone, specify its version, click its three-dot menu and select btn:[Copy].
+. On the `Basic Info` screen, you can modify the suggested name, version and description. Confirm with btn:[Next].
+. On the `Select Apps` screen, update the list of blueprint's applications by adding new applications or removing existing ones.
+Confirm with btn:[Next].
+. On the `Configuration` screen, review and optionally update the blueprint's deployment {helm} chart. Confirm with btn:[Next].
+. On the `Review & Create` screen, verify that the entered information is correct and confirm with btn:[Create].
+
+[#ai-factory-managing-blueprints-deprecate]
+== How do I deprecate blueprints?
+
+To deprecate a blueprint and hide it from the list of blueprints, follow these steps:
+
+. From the main left panel, click menu:SUSE AI Factory[Blueprints].
+. From the list of existing blueprints, select the one to deprecate.
+. Specify the version to deprecate, click its three-dot menu and select btn:[Deprecate].
+. Confirm with btn:[Deprecate].
+
+[#ai-factory-managing-blueprints-undeprecate]
+== How do I restore deprecated blueprints?
+
+To restore a deprecated blueprint and make it appear in the list of blueprints, follow these steps:
+
+. From the main left panel, click menu:SUSE AI Factory[Blueprints].
+. A deprecated blueprint is hidden from the list of blueprints.
+To make it appear again, activate the btn:[Show deprecated] check box.
+. Select the blueprint to restore and specify its deprecated version.
+. Click the blueprint's three-dot menu and select btn:[Undeprecate].
+. Confirm with btn:[Undeprecate].
+
+[#ai-factory-managing-blueprints-delete]
+== How do I delete blueprints?
+
+To delete a blueprint, follow these steps:
+
+. From the main left panel, click menu:SUSE AI Factory[Blueprints].
+. From the list of existing blueprints, select the one to delete and specify the version to delete.
+. Click the blueprint's three-dot menu and select btn:[Delete].
+Confirm with btn:[Delete].
+
