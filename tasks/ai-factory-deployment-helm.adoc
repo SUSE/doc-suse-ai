@@ -14,7 +14,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-To install {productname} on the command line using {helm},  and run the following command:
+To install {productname} on the command line using {helm}, proceed as follows.
 endif::[]
 
 // erase the flag for future overrides
@@ -22,6 +22,13 @@ endif::[]
 :override-title!:
 
 . Identify the operator chart version number that you want to install.
+. Review the `aif-operator` {helm} chart values.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm show values oci://ghcr.io/suse/chart/aif-operator \
+  --version <VERSION_NUMBER>
+----
 . Install {saifoperator}. The installation can take a few minutes.
 +
 [source,bash,subs="+attributes"]
