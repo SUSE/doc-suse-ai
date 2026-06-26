@@ -22,7 +22,7 @@ endif::[]
 :override-title!:
 
 . Identify the operator chart version number that you want to install.
-. Before running the installation, review the aif-operator {helm} chart values.
+. Review the `aif-operator` {helm} chart values.
 +
 [source,bash,subs="+attributes"]
 ----
