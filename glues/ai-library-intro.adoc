@@ -45,8 +45,8 @@ You can install the required {ailibrary} component {helm} charts using one of th
 * Install each AI application manually using the {helm} CLI as described in xref:suse-ai-deploy-suse-ai[].
 * Use a meta {helm} chart called {saideployer} to include all the dependencies specific to your use case.
   Refer to xref:ailibrary-installing-deployer[] for more details.
-* Use {sailifecyclemanager} GUI to install individual AI applications.
-  Refer to xref:ai-lifecycle-manager[] for more details.
+* Use {saifactory} to install AI applications _blueprints_.
+  Refer to link:https://documentation.suse.com/suse-ai-factory/latest/[{saifactory} docum,entation] for more details.
 +
 [IMPORTANT]
 .The ClusterRepo repository

@@ -119,7 +119,7 @@ This includes the following methods:
 * Preparing and configuring {suse}-based servers for AI workloads.
   This includes deployment of {rke2a}, {ranchera} or {rancherprime}, and {nvidia} GPU driver and {nvoperator} using xref:ai-node-installer[{sainodeinstaller}].
 * Deploying {productname} workloads using xref:ailibrary-installing-deployer[{saideployer}].
-* Deploying {productname} workloads using xref:ai-lifecycle-manager[{sailifecyclemanager}].
+//* Deploying {productname} workloads using xref:ai-lifecycle-manager[{sailifecyclemanager}].
 
 :override-title: Node installer
 include::../concepts/ai-node-installer.adoc[leveloffset=+2]
@@ -128,9 +128,9 @@ include::../tasks/ai-node-installer.adoc[leveloffset=+3]
 
 :override-title: {ailibrary} deployer
 include::../tasks/ai-deployment-ailibrary-deployer.adoc[leveloffset=+2]
-:override-title: Lifecycle manager
 
-include::../concepts/ai-lifecycle-manager.adoc[leveloffset=+2]
+//:override-title: Lifecycle manager
+//include::../concepts/ai-lifecycle-manager.adoc[leveloffset=+2]
 :override-title: Installation using {ranchera} UI
 :override-abstract: {empty}
 include::../tasks/ai-lifecycle-manager-installing-rancher-ui.adoc[leveloffset=+3]
