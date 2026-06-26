@@ -19,7 +19,7 @@ endif::[]
 --
 {productname} is a {ranchera} user interface (UI) extension and a {kube} operator.
 It serves as a unified management plane for enterprise artificial intelligence (AI) platforms.
-The tool replaces manual, fragmented application integration with pre-validated, version-controlled blueprints.
+It replaces manual, fragmented application integration with pre-validated, version-controlled Blueprints.
 This establishes a standardized and reproducible pipeline for deploying and scaling complex AI workloads on {kube} clusters.
 --
 
