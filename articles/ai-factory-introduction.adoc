@@ -12,28 +12,16 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-06-01
+:revdate: 2026-06-25
 :page-revdate: {revdate}
 
-WHAT?::
-{productname} is a management plane for AI platforms, delivered as a {ranchera} UI extension and a {kube} operator.
-It allows you to discover AI applications and compose them into immutable, version-controlled stacks called blueprints.
-
-WHY?::
-Learn how to replace manual deployments with a standardized pipeline for managing AI stacks on {kube} clusters.
-
-EFFORT::
-Understand the basics and benefits of {productname} in less than 30 minutes.
-
-GOAL::
-To show how {productname} creates a reproducible workflow for composing and operating AI workloads in your cluster.
-
-== What is {productname}?
-
-{productname} is a {ranchera} UI extension and a {kube} operator that transforms {ranchera} into a management plane for enterprise AI platforms.
-It uses automated workflows and pre-validated blueprints to compose, deploy and scale AI stacks from development to production.
-{productname} standardizes this process with immutable, version-controlled templates.
-This ensures reproducibility and simplifies operations for all environments, including air-gapped locations.
+[abstract]
+--
+{productname} is a {ranchera} user interface (UI) extension and a {kube} operator.
+It serves as a unified management plane for enterprise artificial intelligence (AI) platforms.
+It replaces manual, fragmented application integration with pre-validated, version-controlled blueprints.
+This establishes a standardized and reproducible pipeline for deploying and scaling complex AI workloads on {kube} clusters.
+--
 
 == How is {productname} different from {suseai}?
 
@@ -61,7 +49,7 @@ While they are part of the same ecosystem, they serve different functions:
 
 == Why use {productname}?
 
-{productname} provides a solution that replaces manual integration of AI applications with pre-validated Blueprints.
+{productname} provides a solution that replaces manual integration of AI applications with pre-validated blueprints.
 It eliminates inconsistent "snowflake" environments and enforces governance and auditability through centralized controls.
 
 Running individual AI applications often forces teams to manually stitch together multiple open-source tools using fragmented {helm} charts.
@@ -69,25 +57,25 @@ This "do-it-yourself" approach means that teams spend excessive time on integrat
 
 {productname} replaces this manual burden with a digital assembly line that offers several advantages:
 
-Pre-validated Blueprints::
-Instead of building complex architectures from scratch, {productname} uses Blueprints. These are curated, opinionated "master templates" that bundle multiple apps together and deploy everything needed for a specific use-case (like Retrieval-Augmented Generation or MLOps) in a single action.
+Pre-validated blueprints::
+Instead of building complex architectures from scratch, {productname} uses blueprints. These are curated, opinionated "master templates" that bundle multiple apps together and deploy everything needed for a specific use-case (like Retrieval-Augmented Generation or MLOps) in a single action.
 
-Elimination of "Snowflake" Environments::
-Individual deployments frequently result in inconsistent, fragile setups that are difficult to replicate. {productname} standardizes your infrastructure by treating Blueprints as immutable, version-controlled reference stacks. When you deploy a workload via {productname}, it strictly records its exact source provenance, allowing platform teams to seamlessly roll out upgrades or deprecate older versions without relying on informal tracking or spreadsheets.
+Elimination of "snowflake" environments::
+Individual deployments frequently result in inconsistent, fragile setups that are difficult to replicate. {productname} standardizes your infrastructure by treating blueprints as immutable, version-controlled reference stacks. When you deploy a workload via {productname}, it strictly records its exact source provenance, allowing platform teams to seamlessly roll out upgrades or deprecate older versions without relying on informal tracking or spreadsheets.
 
-Built-in Governance and Auditability::
+Built-in governance and auditability::
 Reproducing individual, manual deployments is often "detective work" with informal governance.
 {productname} provides centralized governance with zero-trust security guardrails, continuous vulnerability scanning, and validation data directly into every blueprint.
 This ensures that your AI stack is fully auditable and compliant with strict regulations like the EU AI Act.
 
-Reduced Maintenance Burden::
+Reduced maintenance burden::
 Because {suse} handles the underlying component selection, integration testing, security patching and lifecycle management, platform teams can reduce their ongoing maintenance burden.
 
 
 == What are {productname} building blocks?
 
 {productname} consists of a {kube} operator and a {ranchera} UI extension.
-It lets you install and manage individual applications from {ailibrary} as well as group them into stacks called _Blueprints_.
+It lets you install and manage individual applications from {ailibrary} as well as group them into stacks called _blueprints_.
 
 [#ai-factory-schema]
 .Basic schema of {productname}
@@ -108,10 +96,10 @@ It consists of the following components:
 {productname} is a {ranchera} UI extension that serves the following purposes:
 
 * Discover, install and manage individual applications from {ailibrary}.
-* Discover, install and manage preconfigured Blueprints that bundle specific applications to match a target use-case.
-* Create custom Blueprints based on customer's AI application selection.
+* Discover, install and manage preconfigured blueprints that bundle specific applications to match a target use-case.
+* Create custom blueprints based on customer's AI application selection.
 
-Both running applications and Blueprints can be shared across {ranchera}-managed clusters.
+Both running applications and blueprints can be shared across {ranchera}-managed clusters.
 
 [#ai-factory-blueprints]
 === Blueprints

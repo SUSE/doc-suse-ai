@@ -15,18 +15,10 @@ endif::[]
 :revdate: 2026-06-01
 :page-revdate: {revdate}
 
-WHAT?::
-{productname} is a {ranchera} UI extension and a {kube} operator that allows you to discover AI applications and compose them into immutable, version-controlled stacks called Blueprints.
-
-WHY?::
-Learn how to deploy {productname} on a {kube} cluster.
-
-EFFORT::
-Understand the process of deploying {productname} in less than 30 minutes.
-
-GOAL::
-By following outlined procedures, you can deploy {productname} in a {ranchera}-enabled {kube} cluster.
-
+[abstract]
+--
+Deploying {productname} on a {kube} cluster standardizes artificial intelligence (AI) platform management, replacing manual integration with version-controlled, reproducible blueprints to streamline enterprise workloads.
+--
 
 :override-title: What are the requirements for {productname}?
 include::../references/ai-factory-requirements.adoc[leveloffset=+1]
