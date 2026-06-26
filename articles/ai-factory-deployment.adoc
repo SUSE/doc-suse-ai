@@ -17,7 +17,7 @@ endif::[]
 
 [abstract]
 --
-Deploying {productname} on a {kube} cluster standardizes AI platform management, replacing manual integration with version-controlled, reproducible blueprints to streamline enterprise workloads.
+Deploying {productname} on a {kube} cluster standardizes artificial intelligence (AI) platform management, replacing manual integration with version-controlled, reproducible blueprints to streamline enterprise workloads.
 --
 
 :override-title: What are the requirements for {productname}?
