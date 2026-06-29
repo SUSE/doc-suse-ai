@@ -18,6 +18,10 @@ You also need to configure OCI-compliant local registries to host {helm} charts 
 Secure TLS endpoints protect internal network communication.
 endif::[]
 
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
 :revdate: 2026-06-26
 :page-revdate: {revdate}
 :description: Understand the local infrastructure, staging environment, and OCI-compliant registry requirements for deploying {productname} in an air-gapped environment.
@@ -40,8 +44,8 @@ Mirror all artifacts from a specific source registry into the same destination r
 You can mirror multiple source registries into a single destination registry if you use unique subpaths or namespaces to distinguish them.
 
 * *Preserve repository paths*. 
-For example, mirror the repository `foo/bar:1.0.0` from `\oci://acme.com/foo/bar:1.0.0` to your local registry `\mylocal.registry.com`. 
-You can place the mirrored repository under a subpath, such as `\oci://mylocal.registry.com/mysubpath/foo/bar:1.0.0`. 
+For example, mirror the repository `foo/bar:1.0.0` from `oci://acme.com/foo/bar:1.0.0` to your local registry `oci://mylocal.registry.com`.
+You can place the mirrored repository under a subpath, such as `oci://mylocal.registry.com/mysubpath/foo/bar:1.0.0`.
 However, you must preserve the original repository name and tag, `foo/bar:1.0.0`.
 
 [#ai-factory-deployment-airgapped-requirements-distributed-storage]

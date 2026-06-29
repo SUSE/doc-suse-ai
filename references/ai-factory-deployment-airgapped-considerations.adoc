@@ -11,10 +11,14 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-Deploying {saifactory} in an air-gapped environment requires local artifact registries, a local model cache, and secure TLS endpoints. 
+Deploying {productname} in an air-gapped environment requires local artifact registries, a local model cache, and secure TLS endpoints.
 These local resources ensure that you can deploy and run AI applications securely without external internet connectivity. 
 When planning your deployment, ensure that you consider the following:
 endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
 
 :revdate: 2026-06-26
 :page-revdate: {revdate}
