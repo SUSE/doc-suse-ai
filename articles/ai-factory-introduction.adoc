@@ -22,7 +22,7 @@ It replaces manual, fragmented application integration with pre-validated, versi
 This establishes a standardized and reproducible pipeline for deploying and scaling complex AI workloads on {kube} clusters.
 
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
-{productname} brings customers the ability to install and manage {nvidia} applications and blueprints {nvidia} GPU Cloud (NGC) in {ranchera} environment.
+{productname} lets you install and manage {nvidia} applications and blueprints from {nvidia} GPU Cloud (NGC) in a {ranchera} environment.
 endif::[]
 
 --
@@ -117,8 +117,7 @@ ifeval::["{PROF_PRODUCT}" == "saif"]
 * Discover, install and manage preconfigured blueprints that bundle specific applications to match a target use-case.
 endif::[]
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
-* Discover, install and manage individual applications from {nvidia} library.
-* Discover, install and manage preconfigured {nvidia} blueprints that bundle specific applications to match a target use-case.
+* Discover, install and manage individual applications from the {nvidia} GPU Cloud (NGC) catalog.
 endif::[]
 * Create custom blueprints based on customer's AI application selection.
 
@@ -150,7 +149,7 @@ You can also create custom blueprints and select your own set of AI applications
 The workflow is defined by a user role and is different for a user and an administrator.
 
   * *Admin Users* install and configure the extension.
-  * *Cluster Owners* and *{ranchera} Admin Users* discover, deploy and manage AI applications and blueprints from {suse} image registries, such as {sappco}, {sregistry} or {nvidia} catalog.
+  * *Cluster Owners* and *{ranchera} Admin Users* discover, deploy and manage AI applications and blueprints from {suse} image registries, such as {sappco} and {sregistry}, and from the {nvidia} GPU Cloud (NGC) catalog.
 
 [appendix]
 include::../references/AI-glossary.adoc[leveloffset=+1]
