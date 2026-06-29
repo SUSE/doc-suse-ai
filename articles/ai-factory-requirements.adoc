@@ -20,7 +20,13 @@ endif::[]
 --
 The deployment and operation of {productname} require the following prerequisites.
 --
+
+[#ai-hardware-requirements]
+:override-title: Hardware
 include::../references/AI-requirements-hardware.adoc[leveloffset=+1]
+
+[#ai-hardware-requirements-gpu]
+:override-title: GPU
 include::../references/AI-requirements-hardware-gpu.adoc[leveloffset=+1]
 
 [#ai-requirements-hardware-apps]

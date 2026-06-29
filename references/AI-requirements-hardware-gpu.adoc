@@ -1,14 +1,33 @@
-[#ai-hardware-requirements-gpu]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = GPU hardware for AI/ML workloads
-:revdate: 2025-12-22
-:page-revdate: {revdate}
-
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
 To run AI/ML workloads, such as training machine learning models or running inference workloads, deploy cluster nodes with compatible {nvidia} GPUs to gain acceleration.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-29
+:page-revdate: {revdate}
 
 [#ai-reqs-hw-gpu-operator]
 == Using the {nvoperator}
 
-Configuring and managing nodes with hardware resources can require multiple configurations for software components. These include drivers, container runtimes and libraries. To use {nvidia} GPUs in a {kube} cluster, you need to configure the {nvoperator}. Because GPU is a special resource in the cluster, you need to install the following components to enable deployment of workloads for processing on the GPU.
+Configuring and managing nodes with hardware resources can require multiple configurations for software components.
+These include drivers, container runtimes and libraries.
+To use {nvidia} GPUs in a {kube} cluster, you need to configure the {nvoperator}.
+Because GPU is a special resource in the cluster, you need to install the following components to enable deployment of workloads for processing on the GPU.
 
 * {nvidia} drivers (to enable CUDA)
 * {kube} device plug-in

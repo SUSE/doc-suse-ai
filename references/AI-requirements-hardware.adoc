@@ -1,14 +1,30 @@
-[#ai-hardware-requirements]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = {productname} hardware requirements
-:revdate: 2026-01-19
-:page-revdate: {revdate}
-
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
 For successful deployment and operation, {productname} has the same hardware prerequisites as an https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/requirements/requirements.html#_suse_rancher_prime_rke2_kubernetes[{rke2} cluster].
 For requirements of individual applications, refer to xref:ai-requirements-hardware-apps[].
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-29
+:page-revdate: {revdate}
+
 
 [#ai-reqs-hw-basic]
 == Recommended hardware (basic functionality)
-
 
 RAM:: At least 32{nbsp}GB of RAM per node. This is the minimum recommendation for the control plane node. Additional resources may be needed for the worker nodes based on workload.
 CPU:: A multicore processor with a minimum of 4 cores. 8 cores or more may be necessary depending on the cluster scale and application demands.
