@@ -27,7 +27,7 @@ endif::[]
 . Set up or use existing OCI-compliant local registries in the air-gapped environment to mirror the {helm} charts and container images as described in xref:ai-factory-deployment-airgapped-workflow-setup-registries[].
 . Upload the {helm} charts and container images from the data store to the local registries as described in xref:ai-factory-deployment-airgapped-workflow-upload-artifacts[].
 . Update the {rke2a} private registry configuration so that the repositories are properly mirrored as described in link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/private_registry.html[RKE2 private registry configuration].
-. Create a model cache PVC in {rke2a} as decribed in xref:ai-factory-deployment-airgapped-workflow-create-pvc[].
+. Create a model cache PVC in {rke2a} as described in xref:ai-factory-deployment-airgapped-workflow-create-pvc[].
 . Copy the model cache from the local data store into the PVC as described in xref:ai-factory-deployment-airgapped-workflow-transfer-cache[].
 . Configure the charts with the model cache PVC as described in xref:ai-factory-deployment-airgapped-workflow-configure-charts[].
 
