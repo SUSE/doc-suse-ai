@@ -14,7 +14,8 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{productname} is a {ranchera} user interface extension and {kube} operator that helps you manage the entire lifecycle of AI applications and workloads. Implementing this tool simplifies the deployment, configuration and scaling of AI workloads on {kube}, providing a streamlined experience for administering cluster-based artificial intelligence services.
+{productname} is a {ranchera} user interface extension and {kube} operator that helps you manage the entire lifecycle of AI applications and workloads.
+It simplifies the deployment, configuration and scaling of AI workloads on {kube}, providing a streamlined experience for administering cluster-based artificial intelligence services.
 endif::[]
 
 // erase the flag for future overrides
@@ -25,12 +26,18 @@ endif::[]
 == How do I install AI applications?
 
 . From the main left panel, click menu:SUSE AI Factory[Apps].
-. Select btn:[SUSE AI Library] or btn:[NVIDIA Library] depending on the publisher of the application to install and click the application's tile.
+ifeval::["{PROF_PRODUCT}" == "saif"]
+. Select btn:[SUSE AI Library] and click the application's tile.
+endif::
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+. Select btn:[NVIDIA Library] and click the application's tile.
+endif::
 You can also limit the number of displayed applications by entering a search string.
 . The `Basic Information` screen of the installation wizard lets you update the application's instance name, namespace and version.
 . On the `Target Cluster` screen, you can review hardware requirements for the workload, specify the deployment type, and which cluster to deploy the application to.
 . The `Configuration` screen lets you change individual settings in the application's {helm} chart.
-. The `Review` screen summarizes the basic information about the deployment. Start the deployment by clicking the btn:[Install] button.
+. The `Review` screen summarizes the basic information about the deployment.
+Start the deployment by clicking the btn:[Install] button.
 . After the installation progress bar reaches 100%, you can check the workload status by selecting menu:SUSE AI Factory[Workloads] from the left menu.
 
 

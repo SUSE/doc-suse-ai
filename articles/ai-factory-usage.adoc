@@ -20,9 +20,13 @@ endif::[]
 {productname} is a {ranchera} user interface (UI) extension and a {kube} operator that manages the entire lifecycle of artificial intelligence (AI) workloads.
 Using the {ranchera} UI, you can focus on multiple tasks, for example:
 
-* installing and configuring AI applications
-* creating and installing custom AI blueprints
-* installing existing {suse} and {nvidia} blueprints
+ifeval::["{PROF_PRODUCT}" == "saif"]
+* installing and managing AI applications and blueprints from {ailibrary}
+endif::[]
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+* installing and managing AI applications and blueprints from {nvidia} catalog
+endif::[]
+* creating and managing custom blueprints
 * managing running workloads
 --
 

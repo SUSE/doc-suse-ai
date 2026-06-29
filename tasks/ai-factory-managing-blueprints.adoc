@@ -3,8 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-01-26
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Managing AI blueprints using {productname}
@@ -14,12 +12,16 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{productname} is a {ranchera} user interface extension and {kube} operator that helps you manage the entire lifecycle of AI applications and workloads. Implementing this tool simplifies the deployment, configuration and scaling of AI workloads on {kube}, providing a streamlined experience for administering cluster-based artificial intelligence services.
+{productname} is a {ranchera} user interface extension and {kube} operator that helps you manage the entire lifecycle of AI applications and workloads.
+It simplifies the deployment, configuration and scaling of AI workloads on {kube}, providing a streamlined experience for administering cluster-based artificial intelligence services.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
+
+:revdate: 2026-01-26
+:page-revdate: {revdate}
 
 [#ai-factory-managing-blueprints-create]
 == How do I create custom blueprints?
@@ -49,12 +51,21 @@ Confirm with btn:[Next].
 
 
 [#ai-factory-managing-blueprints-install]
+ifeval::["{PROF_PRODUCT}" == "saif"]
 == How do I install blueprints?
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+== How do I install {nvidia} blueprints?
+endif::[]
 
 To install a blueprint, follow these steps:
 
 . From the main left panel, click menu:SUSE AI Factory[Blueprints].
+ifeval::["{PROF_PRODUCT}" == "saif"]
 . From the list of existing blueprints, select the one to install, specify the version to install, and click its btn:[Install] button.
+endif::[]
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+. From the list of existing blueprints, select the {nvidia} blueprint to install, specify the version to install, and click its btn:[Install] button.
+endif::[]
 . On the `Basic Info` screen, you can modify the default name and the target namespace for the workload. Confirm with btn:[Next].
 . On the `Target` screen, specify the deployment type and the cluster that you want to deploy the workload to.
 You can also review estimated hardware requirements for the workload. Confirm with btn:[Next].
