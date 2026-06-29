@@ -28,10 +28,10 @@ endif::[]
 . From the main left panel, click menu:SUSE AI Factory[Apps].
 ifeval::["{PROF_PRODUCT}" == "saif"]
 . Select btn:[SUSE AI Library] and click the application's tile.
-endif::
+endif::[]
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
 . Select btn:[NVIDIA Library] and click the application's tile.
-endif::
+endif::[]
 You can also limit the number of displayed applications by entering a search string.
 . The `Basic Information` screen of the installation wizard lets you update the application's instance name, namespace and version.
 . On the `Target Cluster` screen, you can review hardware requirements for the workload, specify the deployment type, and which cluster to deploy the application to.
