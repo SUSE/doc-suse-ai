@@ -18,14 +18,19 @@ endif::[]
 [abstract]
 --
 {productname} is a {ranchera} user interface (UI) extension and a {kube} operator.
-It serves as a unified management plane for enterprise artificial intelligence (AI) platforms.
 It replaces manual, fragmented application integration with pre-validated, version-controlled blueprints.
 This establishes a standardized and reproducible pipeline for deploying and scaling complex AI workloads on {kube} clusters.
+
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+{productname} brings customers the ability to install and manage {nvidia} applications and blueprints {nvidia} GPU Cloud (NGC) in {ranchera} environment.
+endif::[]
+
 --
 
 == How is {productname} different from {suseai}?
 
-{suseai} is the complete, sovereign AI solution, while {productname} is the component that builds and manages AI applications on the platform. The relationship can be summarized as: `Infrastructure Platform (like {rancherprime}) + Application Platform ({productname}) = {suseai}`.
+{suseai} is the complete, sovereign AI solution, while {productname} is the component that builds and manages AI applications and blueprints on the platform.
+The relationship can be summarized as: `Infrastructure Platform (like {rancherprime}) + Application Platform ({productname}) = {suseai}`.
 
 While they are part of the same ecosystem, they serve different functions:
 
@@ -35,8 +40,8 @@ While they are part of the same ecosystem, they serve different functions:
 | |*{suseai}* |*{productname}*
 
 |*Core Focus*
-|Infrastructure and Security
-|Workflows and Blueprints
+|Infrastructure and security
+|Workflows and blueprints
 
 |*Primary Goal*
 |Provides a secure, vendor-agnostic foundation to run and govern AI workloads.
@@ -45,6 +50,13 @@ While they are part of the same ecosystem, they serve different functions:
 |*Operational Role*
 |Acts as the stable and manageable environment (the "factory floor").
 |Provides the tools to build, deploy, and manage AI workloads (the "assembly line").
+
+|*NVIDIA Support*
+|Does not directly enable or manage {nvidia} applications.
+|
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+Enables you to deploy and manage {nvidia} applications and blueprints from the NGC.
+endif::[]
 |===
 
 == Why use {productname}?
@@ -57,7 +69,12 @@ This "do-it-yourself" approach means that teams spend excessive time on integrat
 
 {productname} replaces this manual burden with a digital assembly line that offers several advantages:
 
+ifeval::["{PROF_PRODUCT}" == "saif"]
 Pre-validated blueprints::
+endif::[]
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+Pre-validated {nvidia} blueprints::
+endif::[]
 Instead of building complex architectures from scratch, {productname} uses blueprints. These are curated, opinionated "master templates" that bundle multiple apps together and deploy everything needed for a specific use-case (like Retrieval-Augmented Generation or MLOps) in a single action.
 
 Elimination of "snowflake" environments::
@@ -95,8 +112,14 @@ It consists of the following components:
 === AI Factory
 {productname} is a {ranchera} UI extension that serves the following purposes:
 
+ifeval::["{PROF_PRODUCT}" == "saif"]
 * Discover, install and manage individual applications from {ailibrary}.
 * Discover, install and manage preconfigured blueprints that bundle specific applications to match a target use-case.
+endif::[]
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+* Discover, install and manage individual applications from {nvidia} library.
+* Discover, install and manage preconfigured {nvidia} blueprints that bundle specific applications to match a target use-case.
+endif::[]
 * Create custom blueprints based on customer's AI application selection.
 
 Both running applications and blueprints can be shared across {ranchera}-managed clusters.
@@ -113,7 +136,12 @@ It typically consists of the following components:
 * An *LLM inference engine* such as {ollama} or {vllm} to process both the user's prompt and the retrieved context to generate the final textual response.
 * A *user interface* such as {owui} to provide an interface for end-users to interact with the pipeline.
 
-{productname} is delivered with a set of {suse} blueprints as well as blueprints provided by {nvidia}.
+ifeval::["{PROF_PRODUCT}" == "saif"]
+{productname} is delivered with a set of prebuilt {suse} blueprints.
+endif::[]
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+{productname} is delivered with a set of prebuilt {nvidia} blueprints.
+endif::[]
 You can also create custom blueprints and select your own set of AI applications.
 
 [#ai-factory-manager-roles]
@@ -122,7 +150,7 @@ You can also create custom blueprints and select your own set of AI applications
 The workflow is defined by a user role and is different for a user and an administrator.
 
   * *Admin Users* install and configure the extension.
-  * *Cluster Owners* and *{ranchera} Admin Users* discover, deploy and manage AI applications and blueprints from {suse} image registries, such as {sappco}, {sregistry} or {nvidia} registry.
+  * *Cluster Owners* and *{ranchera} Admin Users* discover, deploy and manage AI applications and blueprints from {suse} image registries, such as {sappco}, {sregistry} or {nvidia} catalog.
 
 [appendix]
 include::../references/AI-glossary.adoc[leveloffset=+1]
