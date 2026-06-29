@@ -1,0 +1,71 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Requirements for {productname} air-gapped deployments
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+
+Deploying {productname} in an air-gapped environment requires specific local infrastructure components. 
+You must prepare a connected staging environment to download resources. 
+You also need to configure OCI-compliant local registries to host {helm} charts and container images. 
+Secure TLS endpoints protect internal network communication.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-26
+:page-revdate: {revdate}
+:description: Understand the local infrastructure, staging environment, and OCI-compliant registry requirements for deploying {productname} in an air-gapped environment.
+
+[#ai-factory-deployment-airgapped-requirements-connected]
+== Connected environment with adequate storage
+Mirroring OCI artifacts and models requires a connected environment with sufficient storage. 
+Use this connected environment to download all required files.
+
+[#ai-factory-deployment-airgapped-requirements-oci-registries]
+== OCI-compliant artifact registries
+You must set up one or more OCI-compliant artifact registries inside the air-gapped environment. 
+These registries host mirrored artifacts such as {helm} charts and container images. 
+Configure these registries with production TLS certificates to secure the connection endpoints.
+
+When mirroring artifacts, apply the following rules:
+
+* Use *one-to-one mirroring*. 
+Mirror all artifacts from a specific source registry into the same destination registry. 
+You can mirror multiple source registries into a single destination registry if you use unique subpaths or namespaces to distinguish them.
+
+* *Preserve repository paths*. 
+For example, mirror the repository `foo/bar:1.0.0` from `oci://acme.com/foo/bar:1.0.0` to your local registry `oci://mylocal.registry.com`.
+You can place the mirrored repository under a subpath, such as `oci://mylocal.registry.com/mysubpath/foo/bar:1.0.0`.
+However, you must preserve the original repository name and tag, `foo/bar:1.0.0`.
+
+[#ai-factory-deployment-airgapped-requirements-distributed-storage]
+== Distributed storage provisioner
+Persistent Volume Claims (PVCs) facilitate the model cache.
+For multi-node cluster deployments, the storage provisioner must support distributed storage, such as Longhorn or NFS.
+These PVCs require ReadWriteMany (RWX) access.
+
+[#ai-factory-deployment-airgapped-requirements-mirroring-tooling]
+== Registry mirroring tooling
+To mirror OCI artifacts, you require mirroring tools such as regsync, {skopeo} or crane.
+These tools pull artifacts from source registries and push them to destination registries.
+You can also use artifact-specific tools, such as {helm} to mirror {helm} charts, and {docker} or {podman} to mirror container images.
+
+[#ai-factory-deployment-airgapped-requirements-container-runtime]
+== Container runtime environment
+Caching {nvidia} NIM models from the NGC catalog requires NIM model puller containers.
+You must run the model puller container in a connected environment using {docker} or {podman}.
+This environment downloads and caches the model data locally.
+
+[#ai-factory-deployment-airgapped-requirements-hugging-face-cli]
+== {huggingface} CLI (optional)
+If you require {huggingface} models, use the {huggingface} CLI to download the models to the local cache.

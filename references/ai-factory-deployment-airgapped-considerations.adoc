@@ -1,0 +1,38 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Considerations for {productname} air-gapped deployments
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Deploying {productname} in an air-gapped environment requires local artifact registries, a local model cache, and secure TLS endpoints.
+These local resources ensure that you can deploy and run AI applications securely without external internet connectivity. 
+When planning your deployment, ensure that you consider the following:
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-26
+:page-revdate: {revdate}
+
+
+* *OCI artifact repositories.* In a connected environment, {productname} pulls artifacts from external sources to deploy AI applications.
+These artifacts include {helm} charts and container images.
+In an air-gapped environment, you must host these artifacts locally because external network access is prohibited.
+Mirror or import these artifacts to local OCI-compliant repositories.
+Configure the local repositories similarly to the external sources to ensure a seamless transition.
+
+* *Model cache.* AI applications can consume AI models from external sources, such as {huggingface} or {nvidia} NGC.
+AI models consist of binary files arranged in specific directory layouts.
+To use a model cache, store model data in Persistent Volume Claims (PVCs) attached to the application pods.
+For multi-node or multi-cluster deployments, the PVC provisioner must support distributed storage, such as NFS or Longhorn.
+
+* *Endpoint security.* Although you can use self-signed TLS certificates for local OCI-compliant repositories, we recommend using certificates signed by your organization's certificate authority (CA).

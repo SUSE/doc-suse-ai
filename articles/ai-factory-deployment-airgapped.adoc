@@ -1,0 +1,44 @@
+include::../common/generic-attributes.adoc[]
+= Deploying {productname} in air-gapped environments
+:description: Deploy {productname} in air-gapped environments securely to manage AI platform workloads using reproducible, version-controlled blueprints without external internet.
+:docinfo:
+:experimental:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:revdate: 2026-06-26
+:page-revdate: {revdate}
+
+[abstract]
+--
+{productname} standardizes AI platform management, replacing manual integration with version-controlled, reproducible blueprints to streamline enterprise workloads.
+Deploying {productname} in air-gapped environments allows organizations to install and run artificial intelligence (AI) workloads securely within restricted networks without external internet connectivity. 
+--
+
+[#ai-factory-deployment-airgapped-considerations]
+:override-title: Considerations
+include::../references/ai-factory-deployment-airgapped-considerations.adoc[leveloffset=+1]
+
+[#ai-factory-deployment-airgapped-requirements]
+:override-title: Requirements
+include::../references/ai-factory-deployment-airgapped-requirements.adoc[leveloffset=+1]
+
+[#ai-factory-deployment-airgapped-workflow]
+:override-title: Workflow
+include::../tasks/ai-factory-deployment-airgapped-workflow.adoc[leveloffset=+1]
+
+[appendix]
+include::../references/AI-glossary.adoc[leveloffset=+1]
+
+[appendix]
+include::../common/common_copyright_gfdl.adoc[]
+
+[appendix]
+include::../common/common_license_gfdl1.2.adoc[]
