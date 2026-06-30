@@ -33,11 +33,12 @@ endif::[]
 :override-title: What deployment types are available?
 include::../references/ai-factory-apps-deployment-types.adoc[leveloffset=+1]
 
+[#ai-factory-managing-apps]
 :override-title: How do I manage AI applications?
 :override-abstract: {productname} helps you manage the whole lifecycle of AI applications and related workloads on your {kube} cluster.
 include::../tasks/ai-factory-managing-apps.adoc[leveloffset=+1]
 
-
+[#ai-factory-managing-blueprints]
 :override-title: How do I manage AI blueprints
 :override-abstract: {productname} helps you manage the whole lifecycle of custom and pre-built AI blueprints and related workloads on your {kube} cluster.
 include::../tasks/ai-factory-managing-blueprints.adoc[leveloffset=+1]

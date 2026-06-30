@@ -1,4 +1,3 @@
-[#ai-factory-managing-apps]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
@@ -22,6 +21,10 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
+[#fig-aif-apps]
+.List of AI applications
+image::aif-apps.png[Screenshot showing a list of AI applications,scaledwidth=100%]
+
 [#ai-factory-apps-install]
 == How do I install AI applications?
 
@@ -34,15 +37,37 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 endif::[]
 You can also limit the number of displayed applications by entering a search string.
 . The `Basic Information` screen of the installation wizard lets you update the application's instance name, namespace and version.
++
+[#fig-aif-apps-install-basic]
+.Basic screen of the application installation wizard
+image::aif-apps-install1.png[Screenshot showing basic information about the installed application,width=50%]
++
 . On the `Target Cluster` screen, you can review hardware requirements for the workload, specify the deployment type, and which cluster to deploy the application to.
++
+[#fig-aif-apps-install-target]
+.Target Cluster screen of the application installation wizard
+image::aif-apps-install2.png[Screenshot showing information about the installation target of an application,width=50%]
++
 . The `Configuration` screen lets you change individual settings in the application's {helm} chart.
++
+[#fig-aif-apps-install-config]
+.Configuration screen of the application installation wizard
+image::aif-apps-install3.png[Screenshot showing information about application configuration,width=50%]
++
 . The `Review` screen summarizes the basic information about the deployment.
 Start the deployment by clicking the btn:[Install] button.
++
+[#fig-aif-apps-install-review]
+.Configuration screen of the application installation wizard
+image::aif-apps-install4.png[Screenshot reviewing the installation,width=50%]
++
 . After the installation progress bar reaches 100%, you can check the workload status by selecting menu:SUSE AI Factory[Workloads] from the left menu.
 
-
-[#ai-factory-apps-manage]
 == How do I manage application instances?
+
+[#fig-aif-apps-manage]
+.List of AI workloads to manage
+image::aif-apps-manage.png[Screenshot showing a list of AI workloads to manage,scaledwidth=100%]
 
 . From the main left panel, click menu:SUSE AI Factory[Workloads].
 . Click the btn:[Manage] button pertaining to the application you want to manage.

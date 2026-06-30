@@ -1,4 +1,3 @@
-[#ai-factory-managing-blueprints]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
@@ -23,18 +22,38 @@ endif::[]
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 
+[#fig-aif-bps]
+.List of AI blueprints
+image::aif-blueprints.png[Screenshot showing a list of AI blueprints,scaledwidth=100%]
+
 [#ai-factory-managing-blueprints-create]
 == How do I create custom blueprints?
 
-To create a custom blueprint, follow these steps:
-
 . From the main left panel, click menu:SUSE AI Factory[Blueprints > Create].
-. On the `Basic Info` screen, enter the blueprint's name, version and optionally a description. Confirm with btn:[Next].
+. On the `Basic Info` screen, enter the blueprint's name, version and optionally a description.
++
+[#fig-aif-bps-create-basic]
+.Basic information about a blueprint
+image::aif-bp-create1.png[Screenshot showing basic information about a blueprint,scaledwidth=50%]
++
 . On the `Select Apps` screen, search for an application to add to the blueprint, click its name ans specify the version to install.
 Repeat for all applications that you want to include in the blueprint.
-Confirm with btn:[Next].
-. On the `Configuration` screen, review and optionally update the blueprint's deployment {helm} chart. Confirm with btn:[Next].
++
+[#fig-aif-bps-create-selapps]
+.Selecting applications of a blueprint
+image::aif-bp-create2.png[Screenshot showing how to add applications to a blueprint,scaledwidth=50%]
++
+. On the `Configuration` screen, review and optionally update the blueprint's deployment {helm} chart.
++
+[#fig-aif-bps-create-config]
+.Custom applications configuration
+image::aif-bp-create3.png[Screenshot showing how to modify configuration of applications belonging to a blueprint,scaledwidth=50%]
++
 . On the `Review & Create` screen, verify that the entered information is correct and confirm with btn:[Create].
++
+[#fig-aif-bps-create-review]
+.Review the blueprint configuration
+image::aif-bp-create4.png[Screenshot showing a summary of the blueprint configuration,scaledwidth=50%]
 
 [#ai-factory-managing-blueprints-modify]
 == How do I modify blueprints?
@@ -43,10 +62,10 @@ To modify a blueprint, follow these steps:
 
 . From the main left panel, click menu:SUSE AI Factory[Blueprints].
 . From the list of existing blueprints, select the one to modify, click its three-dot menu and select btn:[Edit].
-. On the `Basic Info` screen, update the version number and description. Confirm with btn:[Next].
+. On the `Basic Info` screen, update the version number and description.
 . On the `Select Apps` screen, update the list of blueprint's applications by adding new applications or removing existing ones.
 Confirm with btn:[Next].
-. On the `Configuration` screen, review and optionally update the blueprint applications' {helm} charts. Confirm with btn:[Next].
+. On the `Configuration` screen, review and optionally update the blueprint applications' {helm} charts.
 . On the `Review & Create` screen, verify that the entered information is correct and confirm with btn:[Save as New Version].
 
 
@@ -66,9 +85,9 @@ endif::[]
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
 . From the list of existing blueprints, select the {nvidia} blueprint to install, specify the version to install, and click its btn:[Install] button.
 endif::[]
-. On the `Basic Info` screen, you can modify the default name and the target namespace for the workload. Confirm with btn:[Next].
+. On the `Basic Info` screen, you can modify the default name and the target namespace for the workload.
 . On the `Target` screen, specify the deployment type and the cluster that you want to deploy the workload to.
-You can also review estimated hardware requirements for the workload. Confirm with btn:[Next].
+You can also review estimated hardware requirements for the workload.
 . On the `Review` screen, verify that the entered information is correct and start the deployment with btn:[Install].
 . Switch to menu:Workloads[] to verify that the workload deployment has started and watch the status of the deployment.
 
@@ -79,10 +98,10 @@ To base a blueprint on an existing one, follow these steps:
 
 . From the main left panel, click menu:SUSE AI Factory[Blueprints].
 . From the list of existing blueprints, select the one to clone, specify its version, click its three-dot menu and select btn:[Copy].
-. On the `Basic Info` screen, you can modify the suggested name, version and description. Confirm with btn:[Next].
+. On the `Basic Info` screen, you can modify the suggested name, version and description.
 . On the `Select Apps` screen, update the list of blueprint's applications by adding new applications or removing existing ones.
 Confirm with btn:[Next].
-. On the `Configuration` screen, review and optionally update the blueprint's deployment {helm} chart. Confirm with btn:[Next].
+. On the `Configuration` screen, review and optionally update the blueprint's deployment {helm} chart.
 . On the `Review & Create` screen, verify that the entered information is correct and confirm with btn:[Create].
 
 [#ai-factory-managing-blueprints-deprecate]

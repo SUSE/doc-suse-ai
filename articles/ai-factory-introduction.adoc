@@ -24,7 +24,6 @@ This establishes a standardized and reproducible pipeline for deploying and scal
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
 {productname} lets you install and manage {nvidia} applications and blueprints from {nvidia} GPU Cloud (NGC) in a {ranchera} environment.
 endif::[]
-
 --
 
 == How is {productname} different from {suseai}?
@@ -88,7 +87,7 @@ This helps organizations maintain an auditable AI stack and meet regulatory requ
 Reduced maintenance burden::
 Because {suse} handles the underlying component selection, integration testing, security patching and lifecycle management, platform teams can reduce their ongoing maintenance burden.
 
-== What are {productname} building blocks?
+== What are the building blocks of {productname}?
 
 {productname} consists of a {kube} operator and a {ranchera} UI extension.
 It lets you install and manage individual applications from {ailibrary} as well as group them into stacks called _blueprints_.
