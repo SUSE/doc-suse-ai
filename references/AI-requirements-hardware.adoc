@@ -32,6 +32,7 @@ Disk space::
 * 50{nbsp}GB or more is recommended for control plane nodes.
 * Additional space for data storage, such as application data or log files, is required depending on the deployment scale and the workloads running on the cluster.
 * SSDs or high-speed storage are preferred for faster data access and efficient operation of containerized workloads.
+* Distributed storage, such as  Longhorn or NFS, is required for multi-node or multi-node-multi-cluster deployment.
 Networking::
 * A reliable and stable network connection between all nodes in the cluster.
 * Cluster nodes must have valid DNS A records following the `*.apps.<CLUSTER_DOMAIN>` pattern. The nodes must be able to communicate with each other and access external resources, such as container images or software updates.

@@ -41,7 +41,7 @@ While they are part of the same ecosystem, they serve different functions:
 
 |*Core Focus*
 |Infrastructure and security
-|Workflows and blueprints
+|AI application deployment and lifecycle management
 
 |*Primary Goal*
 |Provides a secure, vendor-agnostic foundation to run and govern AI workloads.
@@ -82,12 +82,11 @@ Individual deployments frequently result in inconsistent, fragile setups that ar
 
 Built-in governance and auditability::
 Reproducing individual, manual deployments is often "detective work" with informal governance.
-{productname} provides centralized governance with zero-trust security guardrails, continuous vulnerability scanning, and validation data directly into every blueprint.
-This ensures that your AI stack is fully auditable and compliant with strict regulations like the EU AI Act.
+{productname} provides centralized governance with zero-trust security guardrails and continuous vulnerability scanning to support secure and compliant AI deployments.
+This helps organizations maintain an auditable AI stack and meet regulatory requirements such as the EU AI Act.
 
 Reduced maintenance burden::
 Because {suse} handles the underlying component selection, integration testing, security patching and lifecycle management, platform teams can reduce their ongoing maintenance burden.
-
 
 == What are {productname} building blocks?
 
