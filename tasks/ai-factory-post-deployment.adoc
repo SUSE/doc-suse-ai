@@ -14,7 +14,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-AI applications and blueprint images are stored across multiple network-accessible services.
+AI applications and blueprint images are stored across multiple network-accessible registries.
 After the {productname} installation is finished, it pre-configures default access to all image registries.
 To use different credentials to access the registries, run the following procedures.
 endif::[]
