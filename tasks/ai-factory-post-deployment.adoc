@@ -128,7 +128,7 @@ The list of available applications from the {nvidia} registry appears.
 
 +
 [TIP]
-.Creating {nvidia} secrets on the command line
+.Creating GIT secrets on the command line
 ====
 [source,bash,subs="+attributes"]
 ----
