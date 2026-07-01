@@ -133,7 +133,7 @@ The list of available applications from the {nvidia} registry appears.
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}kubectl create secret generic <GIT_SECRETS_NAME> \
-  --from-literal=token=<NVIDIA_PAT_TOKEN> \
+  --from-literal=token=<GIT_PAT_TOKEN> \
   -n aif-operator
 ----
 ====
