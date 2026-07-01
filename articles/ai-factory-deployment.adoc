@@ -12,16 +12,13 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-06-01
+:revdate: 2026-07-01
 :page-revdate: {revdate}
 
 [abstract]
 --
 Deploying {productname} on a {kube} cluster standardizes artificial intelligence (AI) platform management, replacing manual integration with version-controlled, reproducible blueprints to streamline enterprise workloads.
 --
-
-:override-title: How do I prepare for {productname} installation?
-include::../tasks/ai-factory-deployment-prepare.adoc[leveloffset=+1]
 
 == How do I deploy {productname}?
 You can install {productname} on the {ranchera}-enabled {kube} cluster in the following ways:
@@ -38,7 +35,7 @@ include::../tasks/ai-factory-deployment-helm.adoc[leveloffset=+2]
 include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
 
 :override-title: Are there any post-deployment steps?
-include::../tasks/ai-factory-post-deployment.adoc[leveloffset=+1]
+include::../tasks/ai-factory-registries-access.adoc[leveloffset=+1]
 
 :override-title: How do I upgrade {productname}?
 include::../tasks/ai-factory-upgrade.adoc[leveloffset=+1]

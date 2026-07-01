@@ -15,22 +15,36 @@ ifdef::override-abstract[]
 endif::[]
 ifndef::override-abstract[]
 AI applications and blueprint images are stored across multiple network-accessible registries.
-After the {productname} installation is finished, it pre-configures default access to all image registries.
-To use different credentials to access the registries, run the following procedures.
+To access these registries, you need to obtain a valid set of credentials for each registry.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
+[#fig-aif-rancher-secrets]
+.{ranchera} secrets
+image::aif-rancher-secrets.png[Screenshot showing list of {ranchera} secrets,scaledwidth=100%]
+
 [#ai-factory-sappco]
 == How do I access images from {sappco}?
 
+. Visit link:https://apps.rancher.io/[{sappco}], sign in, create and save the user access token as described in the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
 . Enter {sappco} secrets to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
 .. Click btn:[Create] in the top right and select btn:[Opaque]
++
+[#fig-aif-rancher-secrets-opaque]
+.{ranchera} secrets types
+image::aif-rancher-secrets-opaque.png[Screenshot showing list of {ranchera} secrets types,scaledwidth=50%]
++
 .. Select the btn:[aif-operator] namespace and enter your preferred secrets name--see `<APPCO_SECRETS_NAME>` in the command-line example--to identify the secrets.
 .. In the btn:[Data] tab, add key `user` with the value of your {sappco} username and `token` for your {sappco} token.
++
+[#fig-aif-rancher-secrets-keys]
+.{ranchera} secrets types
+image::aif-rancher-secrets-keys.png[Screenshot showing how to add new opaque secrets,scaledwidth=50%]
++
 .. Confirm with btn:[Create] in the bottom right corner.
 
 +
@@ -49,6 +63,11 @@ endif::[]
 .. From the main left panel, click menu:SUSE AI Factory[Settings].
 .. In the `SUSE Application Collection` section, select the secrets name--that corresponds to the previously specified `<APPCO_SECRETS_NAME>`--from the `Secret name` drop-down lists.
 .. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
++
+[#fig-aif-secrets-sappco]
+.{sappco} secrets
+image::aif-secrets-sappco.png[Screenshot showing how to add secrets for {sappco},scaledwidth=50%]
++
 .. Confirm with btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[SUSE AI Library] from the drop-down list in the top center of the screen.
 . Click the btn:[Refresh] button in the top right.
@@ -57,6 +76,7 @@ The list of available applications from the {sappco} appears.
 [#ai-factory-sregistry]
 == How do I access images from {sregistry}?
 
+. Visit link:https://scc.suse.com/[{scc}], select the organization with an active {productname} subscription from the left sidebar, and save the registration code for the {productname} subscription.
 . Enter {sregistry} secrets to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
 .. Click btn:[Create] in the top right and select btn:[Opaque]
@@ -86,8 +106,9 @@ The list of available applications from the {sappco} appears.
 The list of available applications from the {sregistry} appears.
 
 [#ai-factory-nvidia-registry]
-== How do I access images from {nvidia} registry?
+== How do I access images from {nvidia} catalog?
 
+. Visit {scc} and save the {nvidia} registration code for the {productname} subscription.
 . Enter {nvidia} registry secrets to the {ranchera} _local_ cluster.
 .. From the main left panel, click menu:local[Storage > Secrets]
 .. Click btn:[Create] in the top right and select btn:[Opaque]
@@ -128,7 +149,7 @@ The list of available applications from the {nvidia} registry appears.
 
 +
 [TIP]
-.Creating GIT secrets on the command line
+.Creating Git secrets on the command line
 ====
 [source,bash,subs="+attributes"]
 ----
