@@ -1,0 +1,27 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {nvidia} requirements
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+For {nvidia} GPU-enabled deployments, additional {nvidia} components may be required or recommended to support AI application deployment and optimize GPU utilization across the {kube} cluster.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-06-29
+:page-revdate: {revdate}
+
+*NIM Operator*:: Required for deploying NIM-based applications and RAG blueprints.
+For more details, refer to link:https://docs.nvidia.com/nim-operator/latest/index.html[NVIDIA NIM operator documentation].
+*Network Operator*:: (_Optional_) Provides advanced networking features to optimize GPU communication and utilization across the cluster.
+For more details, refer to link:https://docs.nvidia.com/networking/display/kubernetes2410/nvidia+network+operator[NVIDIA network operator documentation].

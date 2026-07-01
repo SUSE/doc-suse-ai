@@ -37,6 +37,12 @@ include::../references/AI-requirements-rancher.adoc[leveloffset=+2]
 include::../references/AI-requirements-security.adoc[leveloffset=+2]
 include::../references/AI-requirements-observability.adoc[leveloffset=+2]
 
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+[#aif-requirements-nvidia]
+:override-title: {nvidia} requirements
+include::../references/AI-requirements-nvidia.adoc[leveloffset=+2]
+endif::[]
+
 [appendix]
 include::../references/AI-glossary.adoc[leveloffset=+1]
 

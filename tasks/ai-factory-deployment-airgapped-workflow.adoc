@@ -56,6 +56,11 @@ To pull the {owui} container image from the {sappco} OCI registry:
 {prompt_user}docker pull dp.apps.rancher.io/containers/open-webui:0.6.41-14.80
 ----
 
+[TIP]
+====
+For mirroring container images, we recommend using the `SUSE-AI-get-images.sh` and `SUSE-AI-load-images.sh` scripts from the link:https://github.com/SUSE/suse-ai-stack/tree/main/air-gapped-install[{suseai} air-gapped] repository.
+====
+
 === Models
 
 To cache {nvidia} NIM or {huggingface} models, refer to the link:https://docs.nvidia.com/nim/large-language-models/latest/deployment/air-gap-deployment.html#air-gap-deployment[NVIDIA NIM air-gap deployment documentation].
@@ -72,6 +77,19 @@ Ensure one or more OCI-compliant private registries are available inside the air
 If your organization does not have an existing registry, you can use any commercially supported option, such as link:https://apps.rancher.io/applications/harbor[Harbor].
 Refer to the documentation of the specific registry you plan to deploy for more details.
 We strongly recommend configuring endpoint protection with production TLS certificates.
+
+[#ai-factory-deployment-airgapped-workflow-setup-registries-access]
+=== Configure {productname} to access image registries?
+
+After air-gapped offline registries exist, configure {productname} to access them by specifying endpoints for their repositories:
+
+. From the main left panel, click menu:SUSE AI Factory[Settings].
+. In the menu:Advanced[Registry Endpoints] section, enter endpoint URLs for local {sappco}, {sregistry} or {nvidia} registry.
+. Confirm with btn:[Apply] in the bottom right corner.
+
+[#fig-aif-airgapped-endpoints]
+Air-gapped registry endpoints
+image::aif-airgapped-endpoints.png[Screenshot showing how to configure registry endpoints for air-gapped deployment,width=100%]
 
 [#ai-factory-deployment-airgapped-workflow-upload-artifacts]
 == Upload {helm} charts and containers

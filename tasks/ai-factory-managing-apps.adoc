@@ -21,6 +21,8 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
+include::../snippets/aif-important-secrets.adoc[]
+
 [#fig-aif-apps]
 .List of AI applications
 image::aif-apps.png[Screenshot showing a list of AI applications,scaledwidth=100%]

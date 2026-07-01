@@ -34,3 +34,8 @@ Publish the application configuration to a Git repository monitored by {fleeta}.
 *{helm}*::
 Deploy the application using {helm} commands or the {ranchera} Apps UI.
 Suitable for direct installation and manual lifecycle management.
++
+[NOTE]
+====
+ For specific large blueprints, {helm} deployment options may not be available and will be disabled from {ranchera} user interface.
+====

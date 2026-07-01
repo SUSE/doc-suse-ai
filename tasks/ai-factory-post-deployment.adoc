@@ -143,13 +143,3 @@ The list of available applications from the {nvidia} registry appears.
 .. Select authentication type and the PAT secrets name--that corresponds to the previously specified `<GIT_SECRETS_NAME>`--from the `Credential Secret` drop-down lists.
 .. Select `token` for menu:Secret Key.
 .. Confirm with btn:[Apply] in the bottom right corner.
-
-[#ai-factory-airgapped]
-== How do I access image registries in air-gapped environments?
-
-In air-gapped environments, you must create a local offline repository for each image registry that you want to use to install applications.
-Then, specify endpoints for these repositories.
-
-. From the main left panel, click menu:SUSE AI Factory[Settings].
-. In the menu:Advanced[Registry Endpoints] section, enter endpoint URLs for local {sappco}, {sregistry} or {nvidia} registry.
-. Confirm with btn:[Apply] in the bottom right corner.

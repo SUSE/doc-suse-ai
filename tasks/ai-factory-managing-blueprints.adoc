@@ -22,6 +22,8 @@ endif::[]
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 
+include::../snippets/aif-important-secrets.adoc[]
+
 [#fig-aif-bps]
 .List of AI blueprints
 image::aif-blueprints.png[Screenshot showing a list of AI blueprints,scaledwidth=100%]
