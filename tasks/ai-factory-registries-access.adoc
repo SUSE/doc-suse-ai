@@ -42,8 +42,8 @@ image::aif-rancher-secrets-opaque.png[Screenshot showing list of {ranchera} secr
 .. In the btn:[Data] tab, add key `user` with the value of your {sappco} username and `token` for your {sappco} token.
 +
 [#fig-aif-rancher-secrets-keys]
-.{ranchera} secrets types
-image::aif-rancher-secrets-keys.png[Screenshot showing how to add new opaque secrets,scaledwidth=50%]
+.{sappco} secrets
+image::aif-rancher-secrets-keys.png[Screenshot showing how to add secrets to {sappco},scaledwidth=50%]
 +
 .. Confirm with btn:[Create] in the bottom right corner.
 
@@ -66,7 +66,7 @@ image::aif-rancher-secrets-keys.png[Screenshot showing how to add new opaque sec
 +
 [#fig-aif-secrets-sappco]
 .{sappco} secrets
-image::aif-secrets-sappco.png[Screenshot showing how to add secrets for {sappco},scaledwidth=50%]
+image::aif-secrets-sappco.png[Screenshot showing how to assign secrets for {sappco},scaledwidth=50%]
 +
 .. Confirm with btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[SUSE AI Library] from the drop-down list in the top center of the screen.
@@ -82,6 +82,11 @@ The list of available applications from the {sappco} appears.
 .. Click btn:[Create] in the top right and select btn:[Opaque]
 .. Select the btn:[aif-operator] namespace and enter your preferred secrets name--see `<REGISTRY_SECRETS_NAME>` in the command-line example--to identify the secrets.
 .. In the btn:[Data] tab, add key `user` with the value `regcode` and `token` for your {sregistry} token.
++
+[#fig-rancher-secrets-sregistry]
+.{sregistry} secrets
+image::aif-rancher-secrets-sregistry.png[Screenshot showing how to add secrets for {sregistry},scaledwidth=50%]
++
 .. Confirm with btn:[Create] in the bottom right corner.
 
 +
@@ -100,6 +105,11 @@ The list of available applications from the {sappco} appears.
 .. From the main left panel, click menu:SUSE AI Factory[Settings].
 .. In the `SUSE Registry` section, select the secrets name--that corresponds to the previously specified `<REGISTRY_SECRETS_NAME>`--from the `Secret name` drop-down lists.
 .. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
++
+[#fig-aif-secrets-sregistry]
+.Assign {sregistry} secrets
+image::aif-secrets-sregistry.png[Screenshot showing how to assign secrets for {sregistry},scaledwidth=50%]
++
 .. Confirm with btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[SUSE AI Library] from the drop-down list in the top center of the screen.
 . Click the btn:[Refresh] button in the top right.
@@ -114,6 +124,11 @@ The list of available applications from the {sregistry} appears.
 .. Click btn:[Create] in the top right and select btn:[Opaque]
 .. Select the btn:[aif-operator] namespace and enter your preferred secrets name--see `<NVIDIA_SECRETS_NAME>` in the command-line example--to identify the secrets.
 .. In the btn:[Data] tab, add key `user` with the value `$oauthtoken` and `token` for your {nvidia} registry token.
++
+[#fig-rancher-secrets-nvidia]
+.{nvidia} secrets
+image::aif-rancher-secrets-nvidia.png[Screenshot showing how to add secrets for {nvidia},scaledwidth=50%]
++
 .. Confirm with btn:[Create] in the bottom right corner.
 
 +
@@ -132,6 +147,11 @@ The list of available applications from the {sregistry} appears.
 .. From the main left panel, click menu:SUSE AI Factory[Settings].
 .. In the `NVIDIA` section, select the secrets name--that corresponds to the previously specified `<NVIDIA_SECRETS_NAME>`--from the `Secret name` drop-down lists.
 .. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
++
+[#fig-aif-secrets-nvidia]
+.Assign {nvidia} secrets
+image::aif-secrets-nvidia.png[Screenshot showing how to assign secrets for {nvidia},scaledwidth=50%]
++
 .. Confirm with btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[NVIDIA Library] from the drop-down list in the top center of the screen.
 . Click the btn:[Refresh] button in the top right.
@@ -145,6 +165,11 @@ The list of available applications from the {nvidia} registry appears.
 .. Click btn:[Create] in the top right and select btn:[Opaque]
 .. Select the btn:[aif-operator] namespace and enter your preferred secrets name--see `<GIT_SECRETS_NAME>` in the command-line example--to identify the secrets.
 .. In the btn:[Data] tab, add the key `token` and paste your PAT as a value.
++
+[#fig-rancher-secrets-git]
+.Git secrets
+image::aif-rancher-secrets-git.png[Screenshot showing how to add secrets for Git,scaledwidth=50%]
++
 .. Confirm with btn:[Create] in the bottom right corner.
 
 +
@@ -163,4 +188,9 @@ The list of available applications from the {nvidia} registry appears.
 .. In the `Fleet/GitOps` section, enter the Git repository URL and specify which branch to use.
 .. Select authentication type and the PAT secrets name--that corresponds to the previously specified `<GIT_SECRETS_NAME>`--from the `Credential Secret` drop-down lists.
 .. Select `token` for menu:Secret Key.
++
+[#fig-aif-secrets-git]
+.Assign Git secrets
+image::aif-secrets-git.png[Screenshot showing how to assign secrets for Git,scaledwidth=50%]
++
 .. Confirm with btn:[Apply] in the bottom right corner.
