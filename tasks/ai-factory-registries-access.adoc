@@ -7,15 +7,14 @@ ifdef::override-title[]
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
-= Steps after installing {productname}
+= How do I configure registry access after installing {productname}?
 endif::[]
 // overridden abstract?
 ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-AI applications and blueprint images are stored across multiple network-accessible registries.
-To access these registries, you need to obtain a valid set of credentials for each registry.
+To run AI applications and blueprints, you must configure access credentials for multiple network registries. This guide walks you through acquiring user tokens, creating Kubernetes secrets in the local cluster, and mapping those secrets in {saifactory}.
 endif::[]
 
 // erase the flag for future overrides
@@ -30,22 +29,22 @@ image::aif-rancher-secrets.png[Screenshot showing list of {ranchera} secrets,sca
 == How do I access images from {sappco}?
 
 . Visit link:https://apps.rancher.io/[{sappco}], sign in, create and save the user access token as described in the link:https://docs.apps.rancher.io/get-started/authentication/[official documentation].
-. Enter {sappco} secrets to the {ranchera} _local_ cluster.
-.. From the main left panel, click menu:local[Storage > Secrets]
-.. Click btn:[Create] in the top right and select btn:[Opaque]
+. Add the {sappco} credentials to the {ranchera} _local_ cluster.
+.. From the main left panel, select menu:local[Storage > Secrets].
+.. Select btn:[Create] in the top right and select btn:[Opaque].
 +
 [#fig-aif-rancher-secrets-opaque]
 .{ranchera} secrets types
 image::aif-rancher-secrets-opaque.png[Screenshot showing list of {ranchera} secrets types,scaledwidth=50%]
 +
-.. Select the btn:[aif-operator] namespace and enter your preferred secrets name--see `<APPCO_SECRETS_NAME>` in the command-line example--to identify the secrets.
-.. In the btn:[Data] tab, add key `user` with the value of your {sappco} username and `token` for your {sappco} token.
+.. Select the btn:[aif-operator] namespace and enter your preferred secret name (referenced as `<APPCO_SECRETS_NAME>` in command line tasks) to identify the resource.
+.. In the btn:[Data] tab, add the key `user` with the value of your {sappco} username and `token` with your {sappco} token.
 +
 [#fig-aif-rancher-secrets-keys]
 .{sappco} secrets
 image::aif-rancher-secrets-keys.png[Screenshot showing how to add secrets to {sappco},scaledwidth=50%]
 +
-.. Confirm with btn:[Create] in the bottom right corner.
+.. Confirm by selecting btn:[Create] in the bottom right corner.
 
 +
 [TIP]
@@ -60,34 +59,34 @@ image::aif-rancher-secrets-keys.png[Screenshot showing how to add secrets to {sa
 ----
 ====
 . Assign {sappco} secrets to {saifactory}.
-.. From the main left panel, click menu:SUSE AI Factory[Settings].
-.. In the `SUSE Application Collection` section, select the secrets name--that corresponds to the previously specified `<APPCO_SECRETS_NAME>`--from the `Secret name` drop-down lists.
+.. From the main left panel, select menu:SUSE AI Factory[Settings].
+.. In the `SUSE Application Collection` section, select the secret name corresponding to your `<APPCO_SECRETS_NAME>` from the `Secret name` drop-down list.
 .. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
 +
 [#fig-aif-secrets-sappco]
 .{sappco} secrets
 image::aif-secrets-sappco.png[Screenshot showing how to assign secrets for {sappco},scaledwidth=50%]
 +
-.. Confirm with btn:[Apply] in the bottom right corner.
+.. Confirm by selecting btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[SUSE AI Library] from the drop-down list in the top center of the screen.
-. Click the btn:[Refresh] button in the top right.
+. Select the btn:[Refresh] button in the top right.
 The list of available applications from the {sappco} appears.
 
 [#ai-factory-sregistry]
 == How do I access images from {sregistry}?
 
 . Visit link:https://scc.suse.com/[{scc}], select the organization with an active {productname} subscription from the left sidebar, and save the registration code for the {productname} subscription.
-. Enter {sregistry} secrets to the {ranchera} _local_ cluster.
-.. From the main left panel, click menu:local[Storage > Secrets]
-.. Click btn:[Create] in the top right and select btn:[Opaque]
-.. Select the btn:[aif-operator] namespace and enter your preferred secrets name--see `<REGISTRY_SECRETS_NAME>` in the command-line example--to identify the secrets.
-.. In the btn:[Data] tab, add key `user` with the value `regcode` and `token` for your {sregistry} token.
+. Add the {sregistry} credentials to the {ranchera} _local_ cluster.
+.. From the main left panel, select menu:local[Storage > Secrets].
+.. Select btn:[Create] in the top right and select btn:[Opaque].
+.. Select the btn:[aif-operator] namespace and enter your preferred secret name (referenced as `<REGISTRY_SECRETS_NAME>` in command line tasks) to identify the resource.
+.. In the btn:[Data] tab, add the key `user` with the value `regcode` and `token` with your {sregistry} token.
 +
 [#fig-rancher-secrets-sregistry]
 .{sregistry} secrets
 image::aif-rancher-secrets-sregistry.png[Screenshot showing how to add secrets for {sregistry},scaledwidth=50%]
 +
-.. Confirm with btn:[Create] in the bottom right corner.
+.. Confirm by selecting btn:[Create] in the bottom right corner.
 
 +
 [TIP]
@@ -102,34 +101,34 @@ image::aif-rancher-secrets-sregistry.png[Screenshot showing how to add secrets f
 ----
 ====
 . Assign {sregistry} secrets to {saifactory}.
-.. From the main left panel, click menu:SUSE AI Factory[Settings].
-.. In the `SUSE Registry` section, select the secrets name--that corresponds to the previously specified `<REGISTRY_SECRETS_NAME>`--from the `Secret name` drop-down lists.
+.. From the main left panel, select menu:SUSE AI Factory[Settings].
+.. In the `SUSE Registry` section, select the secret name corresponding to your `<REGISTRY_SECRETS_NAME>` from the `Secret name` drop-down list.
 .. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
 +
 [#fig-aif-secrets-sregistry]
 .Assign {sregistry} secrets
 image::aif-secrets-sregistry.png[Screenshot showing how to assign secrets for {sregistry},scaledwidth=50%]
 +
-.. Confirm with btn:[Apply] in the bottom right corner.
+.. Confirm by selecting btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[SUSE AI Library] from the drop-down list in the top center of the screen.
-. Click the btn:[Refresh] button in the top right.
+. Select the btn:[Refresh] button in the top right.
 The list of available applications from the {sregistry} appears.
 
 [#ai-factory-nvidia-registry]
 == How do I access images from {nvidia} catalog?
 
 . Visit {scc} and save the {nvidia} registration code for the {productname} subscription.
-. Enter {nvidia} registry secrets to the {ranchera} _local_ cluster.
-.. From the main left panel, click menu:local[Storage > Secrets]
-.. Click btn:[Create] in the top right and select btn:[Opaque]
-.. Select the btn:[aif-operator] namespace and enter your preferred secrets name--see `<NVIDIA_SECRETS_NAME>` in the command-line example--to identify the secrets.
-.. In the btn:[Data] tab, add key `user` with the value `$oauthtoken` and `token` for your {nvidia} registry token.
+. Add the {nvidia} registry credentials to the {ranchera} _local_ cluster.
+.. From the main left panel, select menu:local[Storage > Secrets].
+.. Select btn:[Create] in the top right and select btn:[Opaque].
+.. Select the btn:[aif-operator] namespace and enter your preferred secret name (referenced as `<NVIDIA_SECRETS_NAME>` in command line tasks) to identify the resource.
+.. In the btn:[Data] tab, add the key `user` with the value `$oauthtoken` and `token` with your {nvidia} registry token.
 +
 [#fig-rancher-secrets-nvidia]
 .{nvidia} secrets
 image::aif-rancher-secrets-nvidia.png[Screenshot showing how to add secrets for {nvidia},scaledwidth=50%]
 +
-.. Confirm with btn:[Create] in the bottom right corner.
+.. Confirm by selecting btn:[Create] in the bottom right corner.
 
 +
 [TIP]
@@ -144,33 +143,33 @@ image::aif-rancher-secrets-nvidia.png[Screenshot showing how to add secrets for 
 ----
 ====
 . Assign {nvidia} registry secrets to {saifactory}.
-.. From the main left panel, click menu:SUSE AI Factory[Settings].
-.. In the `NVIDIA` section, select the secrets name--that corresponds to the previously specified `<NVIDIA_SECRETS_NAME>`--from the `Secret name` drop-down lists.
+.. From the main left panel, select menu:SUSE AI Factory[Settings].
+.. In the `NVIDIA` section, select the secret name corresponding to your `<NVIDIA_SECRETS_NAME>` from the `Secret name` drop-down list.
 .. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
 +
 [#fig-aif-secrets-nvidia]
 .Assign {nvidia} secrets
 image::aif-secrets-nvidia.png[Screenshot showing how to assign secrets for {nvidia},scaledwidth=50%]
 +
-.. Confirm with btn:[Apply] in the bottom right corner.
+.. Confirm by selecting btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[NVIDIA Library] from the drop-down list in the top center of the screen.
-. Click the btn:[Refresh] button in the top right.
+. Select the btn:[Refresh] button in the top right.
 The list of available applications from the {nvidia} registry appears.
 
 [#ai-factory-fleet-gitops]
 == How do I access a Git repository to store applications configuration?
 
-. Enter Git Personal Access Token (PAT) to the {ranchera} _local_ cluster.
-.. From the main left panel, click menu:local[Storage > Secrets]
-.. Click btn:[Create] in the top right and select btn:[Opaque]
-.. Select the btn:[aif-operator] namespace and enter your preferred secrets name--see `<GIT_SECRETS_NAME>` in the command-line example--to identify the secrets.
+. Add your Git Personal Access Token (PAT) to the {ranchera} _local_ cluster.
+.. From the main left panel, select menu:local[Storage > Secrets].
+.. Select btn:[Create] in the top right and select btn:[Opaque].
+.. Select the btn:[aif-operator] namespace and enter your preferred secret name (referenced as `<GIT_SECRETS_NAME>` in command line tasks) to identify the resource.
 .. In the btn:[Data] tab, add the key `token` and paste your PAT as a value.
 +
 [#fig-rancher-secrets-git]
 .Git secrets
 image::aif-rancher-secrets-git.png[Screenshot showing how to add secrets for Git,scaledwidth=50%]
 +
-.. Confirm with btn:[Create] in the bottom right corner.
+.. Confirm by selecting btn:[Create] in the bottom right corner.
 
 +
 [TIP]
@@ -184,13 +183,13 @@ image::aif-rancher-secrets-git.png[Screenshot showing how to add secrets for Git
 ----
 ====
 . Add the Git PAT to {saifactory}.
-.. From the main left panel, click menu:SUSE AI Factory[Settings].
+.. From the main left panel, select menu:SUSE AI Factory[Settings].
 .. In the `Fleet/GitOps` section, enter the Git repository URL and specify which branch to use.
-.. Select authentication type and the PAT secrets name--that corresponds to the previously specified `<GIT_SECRETS_NAME>`--from the `Credential Secret` drop-down lists.
+.. Select the authentication type and the PAT secret name corresponding to your `<GIT_SECRETS_NAME>` from the `Credential Secret` drop-down list.
 .. Select `token` for menu:Secret Key.
 +
 [#fig-aif-secrets-git]
 .Assign Git secrets
 image::aif-secrets-git.png[Screenshot showing how to assign secrets for Git,scaledwidth=50%]
 +
-.. Confirm with btn:[Apply] in the bottom right corner.
+.. Confirm by selecting btn:[Apply] in the bottom right corner.

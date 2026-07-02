@@ -11,8 +11,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-For successful deployment and operation, {productname} has the same hardware prerequisites as an https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/requirements/requirements.html#_suse_rancher_prime_rke2_kubernetes[{rke2} cluster].
-For requirements of individual applications, refer to xref:ai-requirements-hardware-apps[].
+To successfully deploy and operate {productname}, your system must meet the same hardware prerequisites as a standard {rke2} Kubernetes cluster. This guide outlines the minimum requirements for basic deployments and recommended specifications for high-availability production environments.
 endif::[]
 
 // erase the flag for future overrides
@@ -22,12 +21,13 @@ endif::[]
 :revdate: 2026-06-29
 :page-revdate: {revdate}
 
+For requirements of individual applications, refer to xref:ai-requirements-hardware-apps[].
 
 [#ai-reqs-hw-basic]
-== Recommended hardware (basic functionality)
+== What are the hardware requirements for basic functionality?
 
 RAM:: At least 32{nbsp}GB of RAM per node. This is the minimum recommendation for the control plane node. Additional resources may be needed for the worker nodes based on workload.
-CPU:: A multicore processor with a minimum of 4 cores. 8 cores or more may be necessary depending on the cluster scale and application demands.
+CPU:: A multicore processor with a minimum of four cores. Eight cores or more may be necessary depending on the cluster scale and application demands.
 Disk space::
 * 50{nbsp}GB or more is recommended for control plane nodes.
 * Additional space for data storage, such as application data or log files, is required depending on the deployment scale and the workloads running on the cluster.
@@ -39,16 +39,15 @@ Networking::
 * Ensure that all nodes have public IP addresses or are accessible via VPN or other private network if deploying across multiple data centers.
 
 [#ai-reqs-hw-ha]
-== Recommended hardware (for {ha})
+== What are the hardware requirements for high availability?
 
 [IMPORTANT]
 ====
 While 32{nbsp}GB of RAM is the minimum for basic functionality, a production-grade deployment with high availability, multi-node clusters, or running resource-intensive applications like AI/ML workloads might require more.
 ====
 
-
 RAM:: 64{nbsp}GB or more per node is recommended for larger clusters or to run applications with high resource demands.
-CPU:: At least 8 cores, ideally 16 or more cores, depending on the expected load.
+CPU:: At least eight cores, ideally 16 or more cores, depending on the expected load.
 Disk space::
 * For larger-scale clusters or persistent storage applications, 100{nbsp}GB or more of disk space per node might be required.
 * Using high-performance SSDs is recommended, especially for workloads with high I/O requirements, such as databases or AI/ML model training.

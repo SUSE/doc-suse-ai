@@ -12,8 +12,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-You can deploy AI applications and blueprints in several ways.
-Specify one of these deployment types during the application or blueprint installation process.
+You can deploy AI applications and blueprints using three primary methods: direct Fleet bundles, GitOps-driven Fleet publishing, or manual Helm installations. Select your preferred deployment type during the application installation wizard.
 endif::[]
 
 // erase the flag for future overrides
@@ -24,18 +23,18 @@ endif::[]
 :page-revdate: {revdate}
 
 *{fleeta} Bundle*::
-Deploy the application directly as a {fleeta} bundle managed by {rancherfleet} (https://fleet.rancher.io/0.12/).
-Suitable for users who want to use {fleeta} without maintaining a separate Git repository.
+Deploy the application directly as a {fleeta} bundle managed by {rancherfleet}.
+This option is ideal if you want to use {fleeta} without maintaining a separate Git repository. For more details, see the link:https://fleet.rancher.io/0.12/[Rancher Fleet documentation].
 
 *Publish to {fleeta} Git*::
-Publish the application configuration to a Git repository monitored by {fleeta}.
-{fleeta} automatically deploys and reconciles the application using a GitOps workflow.
+Publish the application configuration to an external Git repository monitored by {fleeta}.
+{fleeta} automatically deploys, monitors, and reconciles the application using a GitOps workflow.
 
 *{helm}*::
 Deploy the application using {helm} commands or the {ranchera} Apps UI.
-Suitable for direct installation and manual lifecycle management.
+Use this method for direct installation and manual lifecycle management.
 +
 [NOTE]
 ====
- For specific large blueprints, {helm} deployment options may not be available and will be disabled from {ranchera} user interface.
+For specific large blueprints, {helm} deployment options are unavailable and are disabled in the {ranchera} user interface.
 ====

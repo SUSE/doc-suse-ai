@@ -42,7 +42,7 @@ To ensure that the {nvoperator} is installed correctly, the {kube} cluster must 
 * Nodes should have {nvidia} drivers installed.
 
 [#ai-reqs-hw-supported-gpus]
-== Recommended ans supported GPUs
+== Recommended and supported GPUs
 
 We highly recommend one or more GPUs with ample of VRAM for the worker nodes.
 The required number of GPUs and the VRAM capacity per GPU depend mainly on the size of the AI model that your workload uses.
