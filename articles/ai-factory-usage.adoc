@@ -48,6 +48,9 @@ include::../tasks/ai-factory-managing-blueprints.adoc[leveloffset=+1]
 include::../references/AI-glossary.adoc[leveloffset=+1]
 
 [appendix]
+include::../references/AI-product-support-lifecycle.adoc[leveloffset=+1]
+
+[appendix]
 include::../common/common_copyright_gfdl.adoc[]
 
 [appendix]

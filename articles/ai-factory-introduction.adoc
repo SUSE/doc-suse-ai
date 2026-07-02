@@ -153,6 +153,9 @@ The workflow is defined by a user role and is different for a user and an admini
 include::../references/AI-glossary.adoc[leveloffset=+1]
 
 [appendix]
+include::../references/AI-product-support-lifecycle.adoc[leveloffset=+1]
+
+[appendix]
 include::../common/common_copyright_gfdl.adoc[]
 
 [appendix]
