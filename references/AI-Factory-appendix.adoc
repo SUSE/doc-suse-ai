@@ -21,10 +21,11 @@ endif::[]
 :revdate: 2026-07-03
 :page-revdate: {revdate}
 
-== Product Support Lifecycle
+== Product support lifecycle
 
-Unless explicitly stated, all components listed are considered Generally Available (GA), and are covered by {suse}'s standard scope of support. Certain components may be listed as "Technology Preview," where {suse} is providing customers with access to early pre-GA features and functionality for evaluation, but are not subject to the standard support policies and are not recommended for production use cases.
-{suse} welcomes feedback and suggestions on the improvements that can be made to Technology Preview components, but {suse} reserves the right to deprecate a Technology Preview feature before it becomes Generally Available if it does not meet the needs of our customers or does not reach a state of maturity that we require.
+Unless explicitly stated, all listed components are Generally Available (GA) and are covered by the standard scope of support from {suse}.
+Some components are Technology Preview. {suse} provides them for evaluation, but they are not covered by standard support policies and are not recommended for production use cases.
+{suse} welcomes feedback and suggestions on improvements to Technology Preview components, but {suse} reserves the right to deprecate a Technology Preview feature before it becomes Generally Available if it does not meet customer needs or does not reach the required maturity.
 
 {suse} must occasionally deprecate features or change API specifications.
 Reasons for feature deprecation or API change could include a feature being updated or replaced by a new implementation, a new feature set, upstream technology is no longer available, or the upstream community has introduced incompatible changes.
@@ -36,7 +37,7 @@ It is not intended that this will ever happen within a given minor release (x.z)
 {productname} and related products are updated with a regular cadence, and support for a particular release will be delivered according to the relevant release lifecycle.
 Over time, new releases become generally available, new products may be added, and older products will move through the lifecycle and reach end of life where the customer may continue to use the product within the terms of product licensing agreement.
 For the current lifecycle, please refer to our link:https://www.suse.com/lifecycle[Lifecycle Page].
-If you have any questions about raising a support case, how {suse} classifies severity levels, or the scope of support, see the link:https://www.suse.com/support/handbook/[Technical Support Handbook] and link:https://www.suse.com/support/policy.html[Support Policy] .
+If you have any questions about raising a support case, how {suse} classifies severity levels, or the scope of support, see the link:https://www.suse.com/support/handbook/[Technical Support Handbook] and link:https://www.suse.com/support/policy.html[Support Policy].
 
 == Obtaining source code
 

@@ -1,6 +1,6 @@
 [#ai-requirements-rancher]
 = {ranchermanager} requirements
-:revdate: 2026-01-19
+:revdate: 2026-07-03
 :page-revdate: {revdate}
 
 ifeval::["{PROF_PRODUCT}" != "suseai"]

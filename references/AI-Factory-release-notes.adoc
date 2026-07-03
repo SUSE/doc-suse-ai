@@ -75,7 +75,7 @@ This extension requires an active link:https://www.suse.com/products/ai/[{suse} 
 === Known issues and behaviors
 
 ==== Installation and deployment
-- {fleeta} must be installed before deploying the AIF operator, otherwise {fleeta} resource creation fails.
+- {fleeta} must be installed before deploying {saifoperator}, otherwise {fleeta} resource creation fails.
 - Standalone UI extension installation through {ranchera} Extensions interface is not supported; use combined {helm} installation method.
 - Images are distributed via GitHub Container Registry (ghcr.io).
 
