@@ -17,6 +17,8 @@ endif::[]
 
 [abstract]
 --
+include::../snippets/aif-tip-suseai-docs.adoc[]
+
 {productname} is a {ranchera} user interface (UI) extension and a {kube} operator that manages the entire lifecycle of artificial intelligence (AI) workloads.
 Using the {ranchera} UI, you can focus on multiple tasks, for example:
 

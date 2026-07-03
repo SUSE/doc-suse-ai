@@ -23,21 +23,6 @@ endif::[]
 
 == Product Support Lifecycle
 
-{productname} is backed by award-winning support from {suse}, an established technology leader with a proven history of delivering enterprise-quality support services.
-For more information, see https://www.suse.com/lifecycle[Lifecycle Dates by Product] and https://www.suse.com/support/policy.html[Support Policy] pages.
-If you have any questions about raising a support case, how {suse} classifies severity levels, or the scope of support, see the at https://www.suse.com/support/handbook/[Technical Support Handbook].
-
-{productname} is supported for 18-months of production support, with an initial 6-months of "full support," followed by 12-months of "maintenance support."
-After these support phases, the product reaches "end of life" (EOL) and is no longer supported.
-More information about the lifecycle phases can be found in the table below:
-
-|======
-| *Full Support (6 months)* | Urgent and selected high-priority bug fixes will be released during the full support window, and all other patches (non-urgent, enhancements, new capabilities) will be released via the regular release schedule.
-| *Maintenance Support (12 months)* | During this period, only critical fixes will be released via patches. Other bug fixes may be released at {suse}'s discretion but should not be expected.
-| *End of Life (EOL)*  | Once a product release reaches its End of Life date, the customer may continue to use the product within the terms of product licensing agreement.
-Support Plans from {suse} do not apply to product releases past their EOL date.
-|======
-
 Unless explicitly stated, all components listed are considered Generally Available (GA), and are covered by {suse}'s standard scope of support. Certain components may be listed as "Technology Preview," where {suse} is providing customers with access to early pre-GA features and functionality for evaluation, but are not subject to the standard support policies and are not recommended for production use cases.
 {suse} welcomes feedback and suggestions on the improvements that can be made to Technology Preview components, but {suse} reserves the right to deprecate a Technology Preview feature before it becomes Generally Available if it does not meet the needs of our customers or does not reach a state of maturity that we require.
 
@@ -45,6 +30,13 @@ Unless explicitly stated, all components listed are considered Generally Availab
 Reasons for feature deprecation or API change could include a feature being updated or replaced by a new implementation, a new feature set, upstream technology is no longer available, or the upstream community has introduced incompatible changes.
 It is not intended that this will ever happen within a given minor release (x.z), and so all z-stream releases will maintain API compatibility and feature functionality.
 {suse} will endeavor to provide deprecation warnings with plenty of notice within the release notes, along with workarounds, suggestions and mitigations to minimize service disruption.
+
+=== Updates
+
+{productname} and related products are updated with a regular cadence, and support for a particular release will be delivered according to the relevant release lifecycle.
+Over time, new releases become generally available, new products may be added, and older products will move through the lifecycle and reach end of life where the customer may continue to use the product within the terms of product licensing agreement.
+For the current lifecycle, please refer to our link:https://www.suse.com/lifecycle[Lifecycle Page].
+If you have any questions about raising a support case, how {suse} classifies severity levels, or the scope of support, see the link:https://www.suse.com/support/handbook/[Technical Support Handbook] and link:https://www.suse.com/support/policy.html[Support Policy] .
 
 == Obtaining source code
 

@@ -3,6 +3,12 @@
 :revdate: 2026-01-19
 :page-revdate: {revdate}
 
+ifeval::["{PROF_PRODUCT}" != "suseai"]
+[#ai-factory-requirements-rancher-version]
+== Supported {ranchera} version
+{productname} requires {ranchera} version 2.14.x.
+endif::[]
+
 [#ai-reqs-rancher-hw]
 == Minimum hardware requirements
 
@@ -16,6 +22,5 @@ Disk space:: At least 200{nbsp}GB of storage, preferably SSD.
 
 For more detailed recommendations, refer to the following official documentation:
 
-
-* https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/installation-and-upgrade/requirements/requirements.html[{ranchermanager} installation requirements]
-* https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/about-rancher/architecture/recommendations.html[{ranchermanager} architecture recommendations]
+* https://documentation.suse.com/cloudnative/rancher-manager/v2.14/en/installation-and-upgrade/requirements/requirements.html[{ranchermanager} installation requirements]
+* https://documentation.suse.com/cloudnative/rancher-manager/v2.14/en/about-rancher/architecture/recommendations.html[{ranchermanager} architecture recommendations]

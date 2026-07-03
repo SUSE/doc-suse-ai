@@ -17,6 +17,8 @@ endif::[]
 
 [abstract]
 --
+include::../snippets/aif-tip-suseai-docs.adoc[]
+
 {productname} is a {ranchera} user interface (UI) extension and a {kube} operator.
 It replaces manual, fragmented application integration with pre-validated, version-controlled blueprints.
 This establishes a standardized and reproducible pipeline for deploying and scaling complex AI workloads on {kube} clusters.

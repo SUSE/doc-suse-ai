@@ -17,6 +17,8 @@ endif::[]
 
 [abstract]
 --
+include::../snippets/aif-tip-suseai-docs.adoc[]
+
 Deploying {productname} on a {kube} cluster standardizes artificial intelligence (AI) platform management, replacing manual integration with version-controlled, reproducible blueprints to streamline enterprise workloads.
 --
 

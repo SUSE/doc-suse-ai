@@ -1,0 +1,6 @@
+[TIP]
+.The original {suseai} documentation
+====
+Using {productname} is now the only supported way to deploy and manage AI applications and blueprints.
+If you are looking for the original {suseai} documentation, refer to the link:https://documentation.suse.com/suse-ai/[{suseai} Documentation].
+====
