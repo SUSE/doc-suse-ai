@@ -1,0 +1,95 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {productname} release notes
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{empty}
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-07-03
+:page-revdate: {revdate}
+
+== Release 2.2607.0
+
+This is the *first official release* of {productname}, bringing comprehensive AI workload management capabilities to {ranchera}.
+
+{saifactory} is a {ranchera} UI Extension for managing AI workloads and applications across {kube} clusters.
+This extension provides a unified interface for installing, managing and monitoring AI applications in {ranchera}-managed clusters.
+
+[NOTE]
+====
+This extension requires an active link:https://www.suse.com/products/ai/[{suse} AI Factory] subscription to access the application catalog.
+====
+
+=== What's new in 2.2607.0
+
+==== Core features
+
+===== AI workload management
+- *Multi-cluster AI workload deployment*: Deploy and manage AI applications across multiple {ranchera}-managed {kube} clusters from a single interface
+- *Blueprint-based application templates*: Preconfigured application blueprints for common AI use cases:
+* Simple Chatbot with RAG (Retrieval-Augmented Generation)
+* Simple Chatbot with RAG using {vllm}
+* {nvidia} RAG Minimal deployment
+* {suse} Inference Endpoint
+- *Declarative workload definition*: Kubernetes-native Custom Resource Definitions (CRDs) for AI workloads, blueprints, and settings
+- *GitOps integration*: Fleet-based GitOps workflow support for managing AI workload configurations
+
+===== User interface
+- *Unified dashboard*: Overview page with at-a-glance statistics and recent activity
+- *Application catalog*: Browse and install AI applications from {suse} AI Factory and {nvidia} {ailibrary}
+- *Multi-step installation wizard*: Guided workflows for deploying applications and blueprints
+- *Application instance management*: Monitor and manage deployed AI workloads and their metrics
+- *Blueprint management*: Create, edit, and manage custom blueprints
+- *Settings management*: {helm} and Git repositories configuration
+
+===== Operator and backend
+- *{suse} AI operator*: {kube} operator managing the lifecycle of AI extensions and workloads
+- *Custom resource definitions*:
+* `AIWorkload`: Defines AI application instances
+* `Blueprint`: Defines reusable application templates
+* `InstallAIExtension`: Manages UI extension installation
+* `Settings`: Centralized configuration management
+- *Multiple deployment strategies*: {helm} for simple deployments to local clusters, {fleeta} integration for GitOps for downstream and multi-cluster deployments
+- *Multi-vendor support*: Seamless integration with both {suse} and {nvidia} AI components
+- *Credential management*: Automatic injection of registry credentials and pull secrets
+
+===== Integration and connectivity
+- *{suse} application collection integration*: Access to curated AI application catalog
+- *{nvidia} NGC integration*: Direct access to {nvidia} AI applications and models
+- *{fleeta} integration*: GitOps-based deployment workflows
+- *Multi-cluster support*: Deploy to local and downstream {ranchera} clusters
+
+=== Known issues and behaviors
+
+==== Installation and deployment
+- {fleeta} must be installed before deploying the AIF operator, otherwise {fleeta} resource creation fails.
+- Standalone UI extension installation through {ranchera} Extensions interface is not supported; use combined {helm} installation method.
+- Images are distributed via GitHub Container Registry (ghcr.io).
+
+==== {nvidia} blueprint issues
+- **RAG v2.5.1+**: rag-server image version 2.5.1 does not exist in the registry. See link:https://github.com/{nvidia}-AI-Blueprints/rag/issues/618[#618].
+- **RAG v2.5.0+**: nv-ingest deployment renders duplicate `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable, causing Fleet/ArgoCD deployments to fail. See link:https://github.com/{nvidia}-AI-Blueprints/rag/issues/687[#687].
+- **RAG v2.6.0**: NIM embedding and reranking charts do not pass `model.profiles` to NIMCache, causing all profiles (~11) to download instead of the selected one. See link:https://github.com/{nvidia}-AI-Blueprints/rag/issues/681[#681].
+- **RAG v2.5.1+**: Service names use hardcoded `nvidia-blueprint-rag` prefix and ignore `nameOverride`/`fullnameOverride` values. See link:https://github.com/{nvidia}-AI-Blueprints/rag/issues/662[#662].
+- **RAG v2.6.0**: *Critical* - NIMs cannot be deployed in air-gapped environments; chart missing `spec.storage.pvc.name` field to use existing PVC. See link:https://github.com/{nvidia}-AI-Blueprints/rag/issues/693[#693].
+- **AIQ v2.1.0**: Chart hardcodes `ns-aiq` namespace, ignoring release namespace; incompatible with Fleet/ArgoCD. See link:https://github.com/{nvidia}-AI-Blueprints/aiq/issues/290[#290].
+- **AIQ v2.1.0+**: Local inference configuration requires manual ConfigMap creation; not documented or exposed via {helm} values. See link:https://github.com/{nvidia}-AI-Blueprints/aiq/issues/302[#302].
+
+==== {nvidia} {ailibrary}
+- Not all {nvidia} {helm} charts in the catalog are {nvidia} AI Enterprise supported; verify support status at the link:https://catalog.ngc.nvidia.com/search?resourceType=helm_chart&label={nvidia}+AI+Enterprise+Supported[NGC Helm catalog].
+
+==== Blueprint customization
+- Bundled blueprints cannot be modified directly during the deployment; users must create a copy to customize configuration or component versions.

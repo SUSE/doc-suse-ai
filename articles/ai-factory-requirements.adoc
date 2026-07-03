@@ -43,14 +43,16 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 include::../references/AI-requirements-nvidia.adoc[leveloffset=+2]
 endif::[]
 
-[appendix]
+[glossary]
+[#ai-factory-glossary]
 include::../references/AI-glossary.adoc[leveloffset=+1]
 
 [appendix]
-include::../references/AI-product-support-lifecycle.adoc[leveloffset=+1]
+[#ai-factory-release-notes]
+:override-title: Release notes
+include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]
 
 [appendix]
-include::../common/common_copyright_gfdl.adoc[]
+[#ai-factory-appendix]
+include::../references/AI-Factory-appendix.adoc[leveloffset=+1]
 
-[appendix]
-include::../common/common_license_gfdl1.2.adoc[]

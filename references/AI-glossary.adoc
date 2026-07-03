@@ -1,12 +1,9 @@
-
 :sectnums!:
 
-[glossary]
 = Glossary
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 
-[glossary]
 Air gap::
   
         A security measure where a computer network is physically isolated from
