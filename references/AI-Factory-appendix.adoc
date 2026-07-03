@@ -53,7 +53,7 @@ Further, {suse} makes no representations or warranties with regard to any softwa
 
 Any products or technical information provided under this Agreement may be subject to U.S. export controls and the trade laws of other countries. You agree to comply with all export control regulations and to obtain any required licenses or classifications to export, re-export, or import deliverables. You agree not to export or re-export to entities on the current U.S. export exclusion lists or to any embargoed or terrorist countries as specified in U.S. export laws. You agree to not use deliverables for prohibited nuclear, missile, or chemical/biological weaponry end uses. Refer to https://www.suse.com/company/legal/[https://www.suse.com/company/legal/] for more information on exporting {suse} software. {suse} assumes no responsibility for your failure to obtain any necessary export approvals.
 
-*Copyright © 2024 {suse} LLC.*
+*Copyright © 2026 {suse} LLC.*
 
 This document is licensed under a Creative Commons Attribution-NoDerivatives 4.0 International License (CC-BY-ND-4.0). You should have received a copy of the license along with this document. If not, see https://creativecommons.org/licenses/by-nd/4.0/[https://creativecommons.org/licenses/by-nd/4.0/].
 

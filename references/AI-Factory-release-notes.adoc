@@ -75,11 +75,13 @@ This extension requires an active link:https://www.suse.com/products/ai/[{suse} 
 === Known issues and behaviors
 
 ==== Installation and deployment
-- {fleeta} must be installed before deploying {saifoperator}, otherwise {fleeta} resource creation fails.
-- Standalone UI extension installation through {ranchera} Extensions interface is not supported; use combined {helm} installation method.
+- {fleeta} must be installed before deploying the AIF operator, the installation of the AIF operator may fail.
+- Standalone UI extension installation through {ranchera} Extensions interface is not supported.
+Use the AIF operator default values to install it.
 - Images are distributed via GitHub Container Registry (ghcr.io).
+In the following releases, images will be distributed via the {suseregistry}.
 
-==== {nvidia} blueprint issues
+==== {nvidia} blueprints
 - **RAG v2.5.1+**: rag-server image version 2.5.1 does not exist in the registry. See link:https://github.com/{nvidia}-AI-Blueprints/rag/issues/618[#618].
 - **RAG v2.5.0+**: nv-ingest deployment renders duplicate `OTEL_EXPORTER_OTLP_ENDPOINT` environment variable, causing Fleet/ArgoCD deployments to fail. See link:https://github.com/{nvidia}-AI-Blueprints/rag/issues/687[#687].
 - **RAG v2.6.0**: NIM embedding and reranking charts do not pass `model.profiles` to NIMCache, causing all profiles (~11) to download instead of the selected one. See link:https://github.com/{nvidia}-AI-Blueprints/rag/issues/681[#681].
@@ -92,4 +94,10 @@ This extension requires an active link:https://www.suse.com/products/ai/[{suse} 
 - Not all {nvidia} {helm} charts in the catalog are {nvidia} AI Enterprise supported; verify support status at the link:https://catalog.ngc.nvidia.com/search?resourceType=helm_chart&label={nvidia}+AI+Enterprise+Supported[NGC Helm catalog].
 
 ==== Blueprint customization
-- Bundled blueprints cannot be modified directly during the deployment; users must create a copy to customize configuration or component versions.
+- Bundled blueprints cannot be modified directly during the deployment.
+Users must create a copy to customize configuration or component versions.
+
+==== Deprecations
+link:https://documentation.suse.com/suse-ai/1.0/html/AI-deployment/ai-alternative-deployments.html#ailibrary-installing-deployer[{saideployer}] and link:https://documentation.suse.com/suse-ai/1.0/html/AI-deployment/ai-alternative-deployments.html#ai-lifecycle-manager[{sailifecyclemanager}] are now superseded by {saifactory}.
+Update as soon as possible.
+
