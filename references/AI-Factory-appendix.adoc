@@ -54,7 +54,7 @@ Any products or technical information provided under this Agreement may be subje
 
 *Copyright © 2024 {suse} LLC.*
 
-This release notes document is licensed under a Creative Commons Attribution-NoDerivatives 4.0 International License (CC-BY-ND-4.0). You should have received a copy of the license along with this document. If not, see https://creativecommons.org/licenses/by-nd/4.0/[https://creativecommons.org/licenses/by-nd/4.0/].
+This document is licensed under a Creative Commons Attribution-NoDerivatives 4.0 International License (CC-BY-ND-4.0). You should have received a copy of the license along with this document. If not, see https://creativecommons.org/licenses/by-nd/4.0/[https://creativecommons.org/licenses/by-nd/4.0/].
 
 {suse} has intellectual property rights relating to technology embodied in the product that is described in this document. In particular, and without limitation, these intellectual property rights may include one or more of the U.S. patents listed at https://www.suse.com/company/legal/[https://www.suse.com/company/legal/] and one or more additional patents or pending patent applications in the U.S. and other countries.
 
