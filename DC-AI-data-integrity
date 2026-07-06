@@ -15,6 +15,7 @@ FALLBACK_STYLEROOT="/usr/share/xml/docbook/stylesheet/suse-ns"
 # DocBook Validation
 DOCBOOK5_RNG_URI="http://docbook.org/xml/5.2/rng/docbookxi.rng"
 
+# Enable post-processing
 ADOC_POST="yes"
 ADOC_POST_STYLE="./postprocess.xsl"
 
