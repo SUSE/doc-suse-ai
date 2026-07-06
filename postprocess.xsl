@@ -177,6 +177,10 @@
       <xsl:with-param name="text" select="."/>
     </xsl:call-template>
   </xsl:template>
+  
+  <xsl:template match="d:link">
+    <xsl:copy-of select="."/>
+  </xsl:template>
 
   <xsl:template match="d:footnoteref">
     <xsl:element name="xref" namespace="&db5ns;">
@@ -420,8 +424,11 @@
     </para>
   </xsl:template>
 
-  <xsl:template match="d:preface[normalize-space(d:title) = '']/d:title" mode="book-preface" />
+  <xsl:template match="d:link" mode="book-preface">
+    <xsl:apply-templates select="."/>
+  </xsl:template>
 
+  <xsl:template match="d:preface[normalize-space(d:title) = '']/d:title" mode="book-preface" />
 
   <xsl:template match="d:preface/d:variablelist | d:preface/d:abstract/d:variablelist" mode="book-preface">
     <xsl:copy>
