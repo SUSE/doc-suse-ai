@@ -393,9 +393,11 @@
       <info>
         <xsl:apply-templates select="d:info/node()"/>
         <xsl:comment> Abstract:</xsl:comment>
+        <abstract>
         <xsl:apply-templates select="d:preface/d:variablelist
                                      |d:preface/d:abstract/d:variablelist
                                      |d:preface/d:abstract" mode="book-preface" />
+        </abstract>
       </info>
       <xsl:apply-templates select="node()[not(self::d:info)]" />
     </xsl:copy>
@@ -408,7 +410,9 @@
     </xsl:copy>
   </xsl:template>
 
-  
+  <xsl:template match="d:preface/d:abstract" mode="book-preface">
+    <xsl:apply-templates mode="book-preface"/>
+  </xsl:template>
 
   <xsl:template match="d:simpara" mode="book-preface">
     <para>
@@ -418,19 +422,11 @@
 
   <xsl:template match="d:preface[normalize-space(d:title) = '']/d:title" mode="book-preface" />
 
-  <xsl:template match="d:preface/d:abstract" mode="book-preface">
-    <abstract>
-      <xsl:apply-templates mode="book-preface"/>
-    </abstract>
-  </xsl:template>
-
 
   <xsl:template match="d:preface/d:variablelist | d:preface/d:abstract/d:variablelist" mode="book-preface">
-     <abstract>
-       <xsl:copy>
-        <xsl:apply-templates select="@*|node()" mode="book-preface" />
-       </xsl:copy>
-    </abstract>
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()" mode="book-preface" />
+    </xsl:copy>
   </xsl:template>
 
   <xsl:template match="d:book/d:preface[normalize-space(d:title) = '']" >
