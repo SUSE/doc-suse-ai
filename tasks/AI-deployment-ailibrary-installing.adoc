@@ -115,13 +115,9 @@ Set `DST_REGISTRY_USERNAME` and `DST_REGISTRY_PASSWORD` environment variables if
 endif::[]
 . Install {certmanager} as described in xref:cert-manager-installing[].
 . Install {ailibrary} components.
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-You can either install each component separately, or use the {saideployer} chart to install the components together as described in xref:ailibrary-installing-deployer[].
-endif::[]
-
 .. Install an application with vector database capabilities.
 {owui} supports either xref:opensearch-installing[{opensearch}] or xref:milvus-installing[{milvus}].
-..  _(Optional)_ Install {ollama} as described in xref:ollama-installing[].
+.. _(Optional)_ Install {ollama} as described in xref:ollama-installing[].
 .. Install {owui} as described in xref:owui-installing[].
 .. Install {vllm} as described in xref:vllm-installing[].
 .. Install {mcpo} as described in xref:mcpo-installing[].

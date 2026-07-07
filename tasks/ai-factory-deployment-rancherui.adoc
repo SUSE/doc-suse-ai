@@ -24,7 +24,7 @@ endif::[]
 include::../snippets/ai-rancher-admin-requirement.adoc[]
 
 . *Add a new repository for {productname}.*
-.. From the main left panel, select menu:local[Apps > Repositories].
+.. From the main left panel, select menu:local[Apps > Repositories > Create].
 .. Select btn:[OCI Repository] and enter your preferred repository name, for example, `suse-aif-operator`.
 .. Enter `oci://ghcr.io/suse/chart/aif-operator` as an OCI repository URL.
 .. Leave `None` for authentication type and confirm with btn:[Create].

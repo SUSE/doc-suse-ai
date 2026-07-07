@@ -18,10 +18,10 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-07-03
+:revdate: 2026-07-07
 :page-revdate: {revdate}
 
-== Release 2.2607.0
+== Release 2.0.0
 
 This is the *first official release* of {productname}, bringing comprehensive AI workload management capabilities to {ranchera}.
 
@@ -33,7 +33,7 @@ This extension provides a unified interface for installing, managing and monitor
 This extension requires an active link:https://www.suse.com/products/ai/[{suse} AI Factory] subscription to access the application catalog.
 ====
 
-=== What's new in 2.2607.0
+=== What's new
 
 ==== Core features
 
@@ -98,6 +98,6 @@ In the following releases, images will be distributed via the {suseregistry}.
 Users must create a copy to customize configuration or component versions.
 
 ==== Deprecations
-link:https://documentation.suse.com/suse-ai/1.0/html/AI-deployment/ai-alternative-deployments.html#ailibrary-installing-deployer[{saideployer}] and link:https://documentation.suse.com/suse-ai/1.0/html/AI-deployment/ai-alternative-deployments.html#ai-lifecycle-manager[{sailifecyclemanager}] are now superseded by {saifactory}.
+{saideployer} and {sailifecyclemanager} are now superseded by {saifactory}.
 Update as soon as possible.
 

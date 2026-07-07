@@ -42,17 +42,9 @@ endif::[]
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 You can install the required {ailibrary} component {helm} charts using one of the following methods:
 
-* Install each AI application manually using the {helm} CLI as described in xref:suse-ai-deploy-suse-ai[].
-* Use a meta {helm} chart called {saideployer} to include all the dependencies specific to your use case.
-  Refer to xref:ailibrary-installing-deployer[] for more details.
 * Use {saifactory} to install AI applications _blueprints_.
   Refer to link:https://documentation.suse.com/suse-ai-factory/latest/[{saifactory} docum,entation] for more details.
-+
-[IMPORTANT]
-.The ClusterRepo repository
-====
-{helm} charts of AI applications are hosted in the private {suse} registries: {sappco} and {sregistry}.
-Therefore, {sailifecyclemanager} requires a ClusterRepo repository as the source of AI application charts.
-The ClusterRepo name is used by the extension to identify and select the chart source.
-====
+* Install each AI application manually using the {helm} CLI as described in xref:suse-ai-deploy-suse-ai[].
+//* Use a meta {helm} chart called {saideployer} to include all the dependencies specific to your use case.
+//  Refer to xref:ailibrary-installing-deployer[] for more details.
 endif::[]
