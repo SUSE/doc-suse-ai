@@ -114,7 +114,7 @@ include::../tasks/ai-library-apps-verifying.adoc[leveloffset=+2]
 == Alternative deployment
 
 You can automate key parts of your {productname} configuration and deployment.
-This includes preparing {suse}-based servers for AI workloads by deploying {rke2a}, {ranchera}, {rancherprime}, {nvidia} GPU drivers, and {nvoperator} using xref:ai-node-installer[{sainodeinstaller}].
+This includes preparing {suse}-based servers for AI workloads by deploying {rke2a}, {ranchera}, {rancherprime}, {nvidia} GPU drivers and {nvoperator} using xref:ai-node-installer[{sainodeinstaller}].
 //* Deploying {productname} workloads using xref:ailibrary-installing-deployer[{saideployer}].
 //* Deploying {productname} workloads using xref:ai-lifecycle-manager[{sailifecyclemanager}].
 

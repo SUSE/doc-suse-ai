@@ -43,7 +43,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 You can install the required {ailibrary} component {helm} charts using one of the following methods:
 
 * Use {saifactory} to install AI applications _blueprints_.
-  Refer to link:https://documentation.suse.com/suse-ai-factory/latest/[{saifactory} docum,entation] for more details.
+  Refer to link:https://documentation.suse.com/suse-ai-factory/latest/[{saifactory} documentation] for more details.
 * Install each AI application manually using the {helm} CLI as described in xref:suse-ai-deploy-suse-ai[].
 //* Use a meta {helm} chart called {saideployer} to include all the dependencies specific to your use case.
 //  Refer to xref:ailibrary-installing-deployer[] for more details.
