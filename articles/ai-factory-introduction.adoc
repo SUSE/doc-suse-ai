@@ -118,7 +118,7 @@ It lets you install and manage individual applications from {ailibrary} as well 
 
 [#ai-factory-schema]
 .Basic schema of {productname}
-image::ai-factory-architecture.png[An image showing a basic structure of {productname}, scaledwidth=100%]
+image::ai-factory-architecture.png[An image showing a basic structure of {productname}, scaledwidth=100 %]
 
 [#ai-factory-foundation]
 === Foundation
@@ -142,7 +142,7 @@ endif::[]
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
 * Discover, install and manage individual applications from the {nvidia} GPU Cloud (NGC) catalog.
 endif::[]
-* Create custom blueprints based on customer's AI application selection.
+* Create custom blueprints based on the user's AI application selection.
 
 Both running applications and blueprints can be shared across {ranchera}-managed clusters.
 
@@ -159,10 +159,10 @@ It typically consists of the following components:
 * A *user interface* such as {owui} to provide an interface for end-users to interact with the pipeline.
 
 ifeval::["{PROF_PRODUCT}" == "saif"]
-{productname} is delivered with a set of prebuilt {suse} blueprints.
+The {productname} software includes a set of prebuilt {suse} blueprints.
 endif::[]
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
-{productname} is delivered with a set of prebuilt {nvidia} blueprints.
+The {productname} software includes a set of prebuilt {nvidia} blueprints.
 endif::[]
 You can also create custom blueprints and select your own set of AI applications.
 
