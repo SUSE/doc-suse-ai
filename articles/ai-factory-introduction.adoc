@@ -12,7 +12,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-06-29
+:revdate: 2026-07-01
 :page-revdate: {revdate}
 
 [#aif-overview]
@@ -45,7 +45,8 @@ endif::[]
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
 Pre-validated {nvidia} blueprints::
 endif::[]
-Instead of building complex architectures from scratch, {productname} uses blueprints. These are curated, opinionated "master templates" that bundle multiple apps together and deploy everything needed for a specific use-case (like Retrieval-Augmented Generation or MLOps) in a single action.
+Instead of building complex architectures from scratch, {productname} uses blueprints.
+These are curated, opinionated "master templates" that bundle multiple apps together and deploy everything needed for a specific use-case (like Retrieval-Augmented Generation or MLOps) in a single action.
 
 Elimination of "snowflake" environments::
 Individual deployments frequently result in inconsistent, fragile setups that are difficult to replicate. {productname} standardizes your infrastructure by treating blueprints as immutable, version-controlled reference stacks. When you deploy a workload via {productname}, it strictly records its exact source provenance, allowing platform teams to seamlessly roll out upgrades or deprecate older versions without relying on informal tracking or spreadsheets.
@@ -102,7 +103,7 @@ Embedded Components:: The standard {saifactory} provides the core automated soft
 Available Blueprints:: {saifactory} includes SUSE-built reference blueprints for common enterprise use cases.
 The {nvidia} variant provides additional, specialized blueprints pulled directly from NVAIE--such as NVIDIA-validated RAG and AI-Q blueprints--for customers who purchase the add-on.
 
-Support Model:: The {nvidia} variant includes a unified "single hand to shake" enterprise support structure.
+Support Model:: The {nvidia} variant includes a unified, single-point-of-contact enterprise support structure.
 {suse} manages L1 and L2 support for all embedded {nvidia} components, while {nvidia} provides L3 escalations, eliminating multi-vendor support conflicts.
 
 Operational Focus:: {saifactory} is designed to establish repeatability and standardize the AI pipeline.
