@@ -28,38 +28,6 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 endif::[]
 --
 
-== How is {productname} different from {suseai}?
-
-{suseai} is the complete, sovereign AI solution, while {productname} is the component that builds and manages AI applications and blueprints on the platform.
-The relationship can be summarized as: `Infrastructure Platform (like {rancherprime}) + Application Platform ({productname}) = {suseai}`.
-
-While they are part of the same ecosystem, they serve different functions:
-
-.{suseai} vs. {productname}
-[cols="1,2a,2a"]
-|===
-| |*{suseai}* |*{productname}*
-
-|*Core Focus*
-|Infrastructure and security
-|AI application deployment and lifecycle management
-
-|*Primary Goal*
-|Provides a secure, vendor-agnostic foundation to run and govern AI workloads.
-|Standardizes and automates the deployment of AI applications using preconfigured templates.
-
-|*Operational Role*
-|Acts as the stable and manageable environment (the "factory floor").
-|Provides the tools to build, deploy, and manage AI workloads (the "assembly line").
-
-|*NVIDIA Support*
-|Does not directly enable or manage {nvidia} applications.
-|
-ifeval::["{PROF_PRODUCT}" == "saifnv"]
-Enables you to deploy and manage {nvidia} applications and blueprints from the NGC.
-endif::[]
-|===
-
 == Why use {productname}?
 
 {productname} provides a solution that replaces manual integration of AI applications with pre-validated blueprints.
@@ -88,6 +56,52 @@ This helps organizations maintain an auditable AI stack and meet regulatory requ
 
 Reduced maintenance burden::
 Because {suse} handles the underlying component selection, integration testing, security patching and lifecycle management, platform teams can reduce their ongoing maintenance burden.
+
+== How is {productname} different from {suseai}?
+
+{suseai} is the complete, sovereign AI solution, while {productname} is the component that builds and manages AI applications and blueprints on the platform.
+The relationship can be summarized as: `Infrastructure Platform (like {rancherprime}) + Application Platform ({productname}) = {suseai}`.
+
+While they are part of the same ecosystem, they serve different functions:
+
+.{suseai} vs. {productname}
+[cols="1,2a,2a"]
+|===
+| |*{suseai}* |*{productname}*
+
+|*Core Focus*
+|Infrastructure and security
+|AI application deployment and lifecycle management
+
+|*Primary Goal*
+|Provides a secure, vendor-agnostic foundation to run and govern AI workloads.
+|Standardizes and automates the deployment of AI applications using preconfigured templates.
+
+|*Operational Role*
+|Acts as the stable and manageable environment (the "factory floor").
+|Provides the tools to build, deploy, and manage AI workloads (the "assembly line").
+
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+|*NVIDIA Support*
+|Does not directly enable or manage {nvidia} applications.
+|Enables you to deploy and manage {nvidia} applications and blueprints from the NGC.
+endif::[]
+|===
+
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+== How is {productname} different from {saifactory}?
+
+Although both variants share the exact same user experience and automated workflows, the key differences are embedded software, blueprint availability and support structures.
+
+*Embedded Components*:: The standard {saifactory} provides the core automated software stack and GitOps foundations needed to manage AI lifecycles.
+{saifactory} with {nvidia} is a specialized add-on that natively embeds {nvidia} AI Enterprise (NVAIE) components into the product, enabling accelerated inference and agentic control via tools like {nvidia} NIM and NeMo.
+*Available Blueprints*: {saifactory} includes SUSE-built reference blueprints for common enterprise use cases.
+The {nvidia} variant provides additional, specialized blueprints pulled directly from NVAIE--such as NVIDIA-validated RAG and AI-Q blueprints--for customers who purchase the add-on.
+*Support Model*: The {nvidia} variant includes a unified "single hand to shake" enterprise support structure.
+{suse} manages L1 and L2 support for all embedded {nvidia} components, while {nvidia} provides L3 escalations, eliminating multi-vendor support conflicts.
+*Operational Focus*: {saifactory} is designed to establish repeatability and standardize the AI pipeline.
+The {nvidia} variant is designed for performance and velocity, providing an optimized stack that maximizes advanced GPU computing power for mission-critical or highly complex workloads.
+endif::[]
 
 == What are the building blocks of {productname}?
 
