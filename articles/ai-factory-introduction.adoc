@@ -15,9 +15,7 @@ endif::[]
 :revdate: 2026-06-29
 :page-revdate: {revdate}
 
-[abstract]
---
-include::../snippets/aif-tip-suseai-docs.adoc[]
+== What is {productname}?
 
 {productname} consists of a {kube} operator and its {ranchera} UI extension.
 It replaces manual, fragmented application integration with pre-validated, version-controlled blueprints.
@@ -26,7 +24,8 @@ This establishes a standardized and reproducible pipeline for deploying and scal
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
 {productname} lets you install and manage {nvidia} applications and blueprints from {nvidia} GPU Cloud (NGC) in a {ranchera} environment.
 endif::[]
---
+
+include::../snippets/aif-tip-suseai-docs.adoc[]
 
 == Why use {productname}?
 
@@ -93,13 +92,16 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 
 Although both variants share the exact same user experience and automated workflows, the key differences are embedded software, blueprint availability and support structures.
 
-*Embedded Components*:: The standard {saifactory} provides the core automated software stack and GitOps foundations needed to manage AI lifecycles.
+Embedded Components:: The standard {saifactory} provides the core automated software stack and GitOps foundations needed to manage AI lifecycles.
 {saifactory} with {nvidia} is a specialized add-on that natively embeds {nvidia} AI Enterprise (NVAIE) components into the product, enabling accelerated inference and agentic control via tools like {nvidia} NIM and NeMo.
-*Available Blueprints*: {saifactory} includes SUSE-built reference blueprints for common enterprise use cases.
+
+Available Blueprints:: {saifactory} includes SUSE-built reference blueprints for common enterprise use cases.
 The {nvidia} variant provides additional, specialized blueprints pulled directly from NVAIE--such as NVIDIA-validated RAG and AI-Q blueprints--for customers who purchase the add-on.
-*Support Model*: The {nvidia} variant includes a unified "single hand to shake" enterprise support structure.
+
+Support Model:: The {nvidia} variant includes a unified "single hand to shake" enterprise support structure.
 {suse} manages L1 and L2 support for all embedded {nvidia} components, while {nvidia} provides L3 escalations, eliminating multi-vendor support conflicts.
-*Operational Focus*: {saifactory} is designed to establish repeatability and standardize the AI pipeline.
+
+Operational Focus:: {saifactory} is designed to establish repeatability and standardize the AI pipeline.
 The {nvidia} variant is designed for performance and velocity, providing an optimized stack that maximizes advanced GPU computing power for mission-critical or highly complex workloads.
 endif::[]
 
