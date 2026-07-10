@@ -26,27 +26,24 @@ endif::[]
 [WARNING]
 .Technology preview
 ====
-{kubeflow} is currently available as a Technical Preview in the {productname} stack.
+{kubeflow} is currently available as a Technology Preview.
 ====
 
 [#kubeflow-installing-app-details]
 == Details about the application
 
 Before deploying {kubeflow}, it is important to know more about the supported configurations and documentation.
-The following command provides the corresponding details:
+The following command provides the corresponding details, assuming you have already executed the `helm registry login` command as described in xref:suse-ai-deploy-suse-ai[].
 
 [source,subs="+attributes"]
 ----
-{prompt_user}helm show values oci://dp.apps.rancher.io/charts/kubeflow
+{prompt_user}helm show values oci://registry.suse.com/ai/charts/kubeflow
 ----
-
-Alternatively, you can also refer to the {kubeflow} {helm} chart page on the {sappco} site at link:https://apps.rancher.io/applications/kubeflow[].
-It contains {kubeflow} dependencies, available versions and the link to pull the {kubeflow} container image.
 
 [TIP]
 .{kubeflow} repository
 ====
-Referenced files, such as the `runMe.sh` script, are located in the link:https://github.com/SUSE/suse-ai-charts/tree/main/kubeflow[{kubeflow} repository].
+The source code for the {helm} chart is available in the link:https://github.com/SUSE/suse-ai-charts/tree/main/kubeflow[{kubeflow} repository].
 ====
 
 [#kubeflow-installing-requirements]
@@ -65,11 +62,11 @@ Referenced files, such as the `runMe.sh` script, are located in the link:https:/
 
 | {certmanager}
 | 1.19.3
-| Installed by the `runMe.sh` script or pre-installed manually
+| Refer to xref:kubeflow-installing-kubernetes[].
 
 | Istio
 | 1.1.3
-| Installed by the `runMe.sh` script or pre-installed manually
+| Refer to xref:kubeflow-installing-kubernetes[].
 
 | Default StorageClass
 | —
