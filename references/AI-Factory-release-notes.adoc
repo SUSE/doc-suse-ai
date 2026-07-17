@@ -21,7 +21,22 @@ endif::[]
 :revdate: 2026-07-07
 :page-revdate: {revdate}
 
+
 == Release {aif-latest-version}
+
+This is the {aif-latest-version} release of {productname}, bringing comprehensive AI workload management capabilities to {ranchera}.
+
+=== Key Improvements & Fixes
+- Fixed pull secrets not being delivered to some downstream clusters, which left workloads stuck in ImagePullBackOff. The pull-secret bundle now targets the downstream cluster by the `management.cattle.io/cluster-name` label instead of clusterName link:https://github.com/SUSE/aif/pull/107[#107].
+- Published simple-chatbot-with-rag and simple-chatbot-with-rag-vllm 1.0.1 with updated image revisions link:https://github.com/SUSE/aif/pull/132[#132]:
+    * open-webui: 0.6.41-14.20 → 0.6.41-15.2
+    * vllm-openai: 0-19.0 → 0.19.0-5.29
+- Reduced resource requests for the Phi-3-mini-4k-instruct model.
+- Marked the 1.0.0 simple-chatbot-with-rag, simple-chatbot-with-rag-vllm, and suse-inference-endpoint blueprints as deprecated as their 1.0.0 have blocking issues.
+
+Full Changelog: link:https://github.com/SUSE/aif/compare/aif-operator-2.0.0...aif-operator-2.0.1[aif-operator-2.0.0...aif-operator-2.0.1]
+
+== Release {aif-previous-version}
 
 This is the *first official release* of {productname}, bringing comprehensive AI workload management capabilities to {ranchera}.
 

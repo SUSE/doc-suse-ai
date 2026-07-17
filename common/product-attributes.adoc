@@ -75,7 +75,8 @@ ifndef::copyrightstart[]
 :copyrightstart:  2023
 endif::copyrightstart[]
 
-:aif-latest-version: 2.0.0
+:aif-previous-version: 2.0.0
+:aif-latest-version: 2.0.1
 
 :copyrightholder: SUSE LLC
 
