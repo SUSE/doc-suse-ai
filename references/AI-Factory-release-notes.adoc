@@ -26,7 +26,7 @@ endif::[]
 
 This is the {aif-latest-version} release of {productname}, bringing comprehensive AI workload management capabilities to {ranchera}.
 
-=== Key Improvements & Fixes
+=== Key improvements and fixes
 - Fixed pull secrets not being delivered to some downstream clusters, which left workloads stuck in ImagePullBackOff. The pull-secret bundle now targets the downstream cluster by the `management.cattle.io/cluster-name` label instead of clusterName link:https://github.com/SUSE/aif/pull/107[#107].
 - Published `simple-chatbot-with-rag` and `simple-chatbot-with-rag-vllm` 1.0.1 with updated image revisions (link:https://github.com/SUSE/aif/pull/132[#132]):
     * `open-webui`: 0.6.41-14.20 to 0.6.41-15.2
