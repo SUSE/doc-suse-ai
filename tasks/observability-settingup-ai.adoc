@@ -390,8 +390,8 @@ config:
     topology:
       endpoint: http://<SUSE_OBSERVABILITY_ROUTER_ENDPOINT>:8080 <.>
       api_key: ${env:API_KEY}
-      instance_url: ${env:K8S_CLUSTER_NAME}
       namespace: ${env:SUSE_AI_NAMESPACE}
+      cluster_name: ${env:K8S_CLUSTER_NAME}
       tls: <.>
         insecure_skip_verify: true
     otlp:
@@ -739,8 +739,8 @@ config:
     topology:
       endpoint: http://<SUSE_OBSERVABILITY_ROUTER_ENDPOINT>:8080 <.>
       api_key: ${env:API_KEY}
-      instance_url: ${env:K8S_CLUSTER_NAME}
       namespace: ${env:SUSE_AI_NAMESPACE}
+      cluster_name: ${env:K8S_CLUSTER_NAME}
       tls: <.>
         insecure_skip_verify: true
     otlp:
