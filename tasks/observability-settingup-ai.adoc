@@ -326,7 +326,7 @@ clusterRole:
 image:
   registry: registry.suse.com
   repository: ai/containers/suse-ai-opentelemetry-collector
-  tag: 0.149.0
+  tag: 0.156.0
   pullPolicy: IfNotPresent
 ports:
   metrics:
@@ -675,7 +675,7 @@ clusterRole:
 image:
   registry: <LOCAL_DOCKER_REGISTRY_URL>:5043
   repository: suse-ai-opentelemetry-collector
-  tag: 0.149.0
+  tag: 0.156.0
   pullPolicy: IfNotPresent
 ports:
   metrics:
