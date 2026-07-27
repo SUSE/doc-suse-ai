@@ -1,0 +1,123 @@
+
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Pre-built blueprints shipped with {productname}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{productname} includes the following pre-built AI blueprints:
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-07-27
+:page-revdate: {revdate}
+
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+[#bp-nvidia-ai-q-with-rag]
+== {nvidia} AI-Q with RAG
+
+This blueprint deploys the {nvidia} retrieval-augmented generation (RAG) blueprint with the `nvidia/llama-3.3-nemotron-super-49b-v1.5` model.
+It also configures the {nvidia} AI-Q profile with deep-research agent for Foundational RAG (FRAG).
+
+We support deploying AI-Q integrated with RAG using local NIMs.
+Although the blueprint page includes complete and validated integration steps, we summarize them for a quick reference here:
+
+. *Create a custom ConfigMap.*
+Create a ConfigMap in the `ns-aiq` namespace holding the updated configuration, pointing AI-Q at the locally hosted NIMs:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl create configmap aiq-web-frag-config \
+  -n ns-aiq \
+  --from-file=config_web_frag.yml=config_web_frag_2_1_0_updated.yaml
+----
++
+[TIP]
+====
+You can download the`config_web_frag_2_1_0_updated.yaml` file from the link:https://github.com/SUSE/aif/blob/main/examples/config_web_frag_2_1_0_updated.yaml[{productname} examples repository].
+====
+
+. *Override the AI-Q {helm} values.*
+Override the AI-Q backend to load the custom configuration and talk to the RAG services.
+Replace `<RAG_NAMESPACE>` with the namespace where RAG is deployed.
+It is `ns-aiq` if RAG and AI-Q are deployed together by this blueprint.
+In such case the short service names--such as `http://rag-server:8081/v1`--also work.
+With the following configuration, the AI-Q backend uses the custom file `config_web_frag.yml`
+defined in the ConfigMap.
++
+[source,yaml]
+----
+aiq:
+  apps:
+    backend:
+      env:
+        CONFIG_FILE: configs/config_web_frag.yml
+        RAG_SERVER_URL: http://rag-server.<RAG_NAMESPACE>.svc.cluster.local:8081/v1
+        RAG_INGEST_URL: http://ingestor-server.<RAG_NAMESPACE>.svc.cluster.local:8082/v1
+        EMBED_BASE_URL: http://nemotron-vlm-embedding-ms.<RAG_NAMESPACE>.svc.cluster.local:8000/v1
+        EMBED_MODEL: nvidia/llama-nemotron-embed-vl-1b-v2
+      volumes:
+        # Stock volume — must be kept, the chart replaces the whole list.
+        - name: postgres-init
+          configMap:
+            name: aiq-postgres-init
+        # Override the default config with our custom ConfigMap.
+        - name: aiq-web-frag-config
+          configMap:
+            name: aiq-web-frag-config
+      volumeMounts:
+        # Replace only the bundled config file while leaving the rest of
+        # /app/configs unchanged (subPath mounts just the single file).
+        - name: aiq-web-frag-config
+          mountPath: /app/configs/config_web_frag.yml
+          subPath: config_web_frag.yml 
+----
+
+[#bp-nvidia-rag]
+== {nvidia} RAG (minimal, low-GPU)
+
+This is a minimal {nvidia} RAG blueprint for low-GPU footprints.
+
+* It replaces the default 49B Nemotron model with the Llama 3.2 3B model. It also disables structural optical character recognition (OCR), table and chart extraction to reclaim approximately 18 GB of VRAM.
+* It forces CPU vector search and indexing.
+* It drops chart resource bounds to fit a single node and pins {milvus} standalone (text-only RAG).
+
+This blueprint is not recommended for production use.
+The tracing and observability stack is disabled, and the token budget is tuned for small large language models (LLMs) instead of high throughput.
+endif::[]
+
+ifeval::["{PROF_PRODUCT}" == "saif"]
+[#bp-suse-simple-rag]
+== Simple chatbot with RAG
+
+This blueprint features a simple chatbot with retrieval-augmented generation (RAG) using {ollama}, {owui} and {owui}-mcpo.
+It uses CPU inference and is suitable for proofs of concept (PoCs) and quick explorations.
+RAG uses the {chromadb} vector store embedded in {owui}.
+
+[#bp-suse-simple-rag-vllm]
+== Simple chatbot with RAG ({vllm} and {milvus})
+
+This blueprint features a simple chatbot with RAG using {vllm}, {owui}, {milvus} and {owui}-mcpo.
+It is suitable for proofs of concept (PoCs) and beyond.
+RAG uses the {chromadb} vector store embedded in {owui}.
+{vllm} serves the large language model (LLM) over an OpenAI-compatible API and requires {nvidia} GPU
+nodes.
+The serving engine requests one GPU and uses the {nvidia} runtime class.
+
+[#bp-suse-inference]
+== Simple inference endpoint
+
+This blueprint is a turnkey production inference LLM gateway that fronts one or more {vllm} model backends behind a single OpenAI-compatible API.
+It adds authentication, role-based access control (RBAC) and optional prompt-injection guardrails.
+All components run on {suse} images.
+endif::[]
