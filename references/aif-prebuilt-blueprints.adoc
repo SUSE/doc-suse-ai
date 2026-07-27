@@ -27,7 +27,7 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 == {nvidia} AI-Q with RAG
 
 This blueprint deploys the {nvidia} retrieval-augmented generation (RAG) blueprint with the `nvidia/llama-3.3-nemotron-super-49b-v1.5` model.
-It also configures the {nvidia} AI-Q profile with deep-research agent for Foundational RAG (FRAG).
+It also configures the {nvidia} AI-Q profile with a deep-research agent for Foundational RAG (FRAG).
 
 We support deploying AI-Q integrated with RAG using local NIMs.
 Although the blueprint page includes complete and validated integration steps, we summarize them for a quick reference here:
@@ -48,11 +48,11 @@ You can download the `config_web_frag_2_1_0_updated.yaml` file from the link:htt
 ====
 
 . *Override the AI-Q {helm} values.*
-Override the AI-Q backend to load the custom configuration and talk to the RAG services.
+Override the AI-Q back-end to load the custom configuration and talk to the RAG services.
 Replace `<RAG_NAMESPACE>` with the namespace where RAG is deployed.
 It is `ns-aiq` if RAG and AI-Q are deployed together by this blueprint.
-In such case the short service names--such as `http://rag-server:8081/v1`--also work.
-With the following configuration, the AI-Q backend uses the custom file `config_web_frag.yml`
+In such cases, short service names (for example, `http://rag-server:8081/v1`) also work.
+With the following configuration, the AI-Q back-end uses the custom file `config_web_frag.yml`
 defined in the ConfigMap.
 +
 [source,yaml]
@@ -88,7 +88,7 @@ aiq:
 
 This is a minimal {nvidia} RAG blueprint for low-GPU footprints.
 
-* It replaces the default 49B Nemotron model with the Llama 3.2 3B model. It also disables structural optical character recognition (OCR), table and chart extraction to reclaim approximately 18 GB of VRAM.
+* It replaces the default 49B Nemotron model with the Llama 3.2 3B model. It also disables structural optical character recognition (OCR) and table and chart extraction to reclaim approximately 18 GB of VRAM.
 * It forces CPU vector search and indexing.
 * It drops chart resource bounds to fit a single node and pins {milvus} standalone (text-only RAG).
 
@@ -109,7 +109,6 @@ RAG uses the {chromadb} vector store embedded in {owui}.
 
 This blueprint features a simple chatbot with RAG using {vllm}, {owui}, {milvus} and {owui}-mcpo.
 It is suitable for proofs of concept (PoCs) and beyond.
-RAG uses the {chromadb} vector store embedded in {owui}.
 {vllm} serves the large language model (LLM) over an OpenAI-compatible API and requires {nvidia} GPU
 nodes.
 The serving engine requests one GPU and uses the {nvidia} runtime class.
@@ -117,7 +116,7 @@ The serving engine requests one GPU and uses the {nvidia} runtime class.
 [#bp-suse-inference]
 == Simple inference endpoint
 
-This blueprint is a turnkey production inference LLM gateway that fronts one or more {vllm} model backends behind a single OpenAI-compatible API.
+This blueprint is a turnkey production inference LLM gateway that fronts one or more {vllm} model back-ends behind a single OpenAI-compatible API.
 It adds authentication, role-based access control (RBAC) and optional prompt-injection guardrails.
 All components run on {suse} images.
 endif::[]
