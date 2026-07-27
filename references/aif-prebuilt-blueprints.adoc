@@ -44,7 +44,7 @@ Create a ConfigMap in the `ns-aiq` namespace holding the updated configuration, 
 +
 [TIP]
 ====
-You can download the`config_web_frag_2_1_0_updated.yaml` file from the link:https://github.com/SUSE/aif/blob/main/examples/config_web_frag_2_1_0_updated.yaml[{productname} examples repository].
+You can download the `config_web_frag_2_1_0_updated.yaml` file from the link:https://github.com/SUSE/aif/blob/main/examples/config_web_frag_2_1_0_updated.yaml[{productname} examples repository].
 ====
 
 . *Override the AI-Q {helm} values.*
@@ -80,7 +80,7 @@ aiq:
         # /app/configs unchanged (subPath mounts just the single file).
         - name: aiq-web-frag-config
           mountPath: /app/configs/config_web_frag.yml
-          subPath: config_web_frag.yml 
+          subPath: config_web_frag.yml
 ----
 
 [#bp-nvidia-rag]
