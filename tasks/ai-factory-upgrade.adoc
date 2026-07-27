@@ -23,16 +23,21 @@ endif::[]
 
 [IMPORTANT]
 ====
-New releases may include breaking changes that require manual intervention. Always review the companion `README` file for release-specific instructions before upgrading.
+New releases may include breaking changes that require manual intervention.
+Always review the companion `README` file for release-specific instructions before upgrading.
 ====
 
-To upgrade {productname}, identify the target version number and execute the upgrade command:
+To upgrade {productname} on the command line, follow these steps:
 
+. Identify the operator chart version number that you want to upgrade to.
+The latest version is {aif-latest-version}.
+. Upgrade {saifoperator}. The upgrade can take a few minutes.
++
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
   aif-operator oci://ghcr.io/suse/chart/aif-operator \
   -n aif-operator \
-  --version <VERSION_NUMBER> \
+  --version {aif-latest-version} \
   -f aif-operator_custom_overrides.yaml
 ----

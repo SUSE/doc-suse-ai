@@ -39,6 +39,8 @@ Over time, new releases become generally available, new products may be added, a
 For the current lifecycle, please refer to our link:https://www.suse.com/lifecycle[Lifecycle Page].
 If you have any questions about raising a support case, how {suse} classifies severity levels, or the scope of support, see the link:https://www.suse.com/support/handbook/[Technical Support Handbook] and link:https://www.suse.com/support/policy.html[Support Policy].
 
+Refer to the link:https://docs.nvidia.com/ai-enterprise/support-matrix/latest/index.html[NVIDIA AI Enterprise Infrastructure Support Matrix] for compatibility details of {productname}. 
+
 == Obtaining source code
 
 This {suse} product includes materials licensed to {suse} under the GNU General Public License (GPL) and various other open source licenses.

@@ -22,19 +22,20 @@ endif::[]
 :override-title!:
 
 . Identify the operator chart version number that you want to install.
+The latest version is {aif-latest-version}.
 . Review the `aif-operator` {helm} chart values.
 +
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm show values oci://ghcr.io/suse/chart/aif-operator \
-  --version <VERSION_NUMBER>
+  --version {aif-latest-version}
 ----
 . Install {saifoperator}. The installation can take a few minutes.
 +
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm install aif-operator \
-  oci://ghcr.io/suse/chart/aif-operator:<VERSION_NUMBER> \
+  oci://ghcr.io/suse/chart/aif-operator:{aif-latest-version} \
   --namespace aif-operator \
   --create-namespace
 ----

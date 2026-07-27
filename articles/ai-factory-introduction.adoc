@@ -91,6 +91,25 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 endif::[]
 |===
 
+<<<<<<< HEAD
+=======
+== Why use {productname}?
+
+{productname} provides a solution that replaces manual integration of AI applications with pre-validated blueprints.
+It eliminates inconsistent "snowflake" environments and enforces governance and auditability through centralized controls.
+
+Refer to the link:https://docs.nvidia.com/ai-enterprise/support-matrix/latest/index.html[NVIDIA AI Enterprise Infrastructure Support Matrix] for compatibility details of {productname}. 
+
+Running individual AI applications often forces teams to manually stitch together multiple open-source tools using fragmented {helm} charts.
+This "do-it-yourself" approach means that teams spend excessive time on integration and maintenance rather than building AI value.
+
+
+{productname} replaces this manual burden with a digital assembly line that offers several advantages:
+
+ifeval::["{PROF_PRODUCT}" == "saif"]
+Pre-validated blueprints::
+endif::[]
+>>>>>>> origin/main
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
 [#aif-difference-from-suse-ai-factory]
 == How is {productname} different from {saifactory}?
