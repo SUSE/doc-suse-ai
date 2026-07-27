@@ -15,9 +15,7 @@ endif::[]
 :revdate: 2026-06-08
 :page-revdate: {revdate}
 
-[abstract]
---
-include::../snippets/aif-tip-suseai-docs.adoc[]
+== Overview
 
 {productname} is a {ranchera} user interface (UI) extension and a {kube} operator that manages the entire lifecycle of artificial intelligence (AI) workloads.
 Using the {ranchera} UI, you can focus on multiple tasks, for example:
@@ -30,10 +28,15 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 endif::[]
 * creating and managing custom blueprints
 * managing running workloads
---
+
+include::../snippets/aif-tip-suseai-docs.adoc[]
 
 :override-title: What deployment types are available?
 include::../references/ai-factory-apps-deployment-types.adoc[leveloffset=+1]
+
+[#aif-prebuilt-blueprints]
+:override-title: What pre-built AI blueprints are included?
+include::../references/aif-prebuilt-blueprints.adoc[leveloffset=+1]
 
 [#ai-factory-managing-apps]
 :override-title: How do I manage AI applications?
