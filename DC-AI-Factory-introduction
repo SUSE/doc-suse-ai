@@ -7,7 +7,7 @@ ADOC_POST=yes
 ADOC_TYPE=book
 ADOC_ATTRIBUTES=" --attribute env-daps=1"
 ADOC_ATTRIBUTES+=" --attribute PROF_PRODUCT=saif"
-ADOC_POST_STYLE="./postprocess.xsl"
+#ADOC_POST_STYLE="./postprocess.xsl"
 
 
 STYLEROOT="/usr/share/xml/docbook/stylesheet/suse2022-ns"
