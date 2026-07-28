@@ -326,7 +326,7 @@ clusterRole:
 image:
   registry: registry.suse.com
   repository: ai/containers/suse-ai-opentelemetry-collector
-  tag: 0.149.0
+  tag: 0.156.0
   pullPolicy: IfNotPresent
 ports:
   metrics:
@@ -390,8 +390,8 @@ config:
     topology:
       endpoint: http://<SUSE_OBSERVABILITY_ROUTER_ENDPOINT>:8080 <.>
       api_key: ${env:API_KEY}
-      instance_url: ${env:K8S_CLUSTER_NAME}
       namespace: ${env:SUSE_AI_NAMESPACE}
+      cluster_name: ${env:K8S_CLUSTER_NAME}
       tls: <.>
         insecure_skip_verify: true
     otlp:
@@ -537,6 +537,7 @@ config:
             - set(attributes["suse.ai.managed"], "true")
             - set(attributes["suse.ai.component.type"], "application")
             - set(attributes["suse.ai.component.name"], attributes["service.name"])
+            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}")
     # Create provider -> model relations from GenAI trace spans.
     filter/genai-spans:
       error_mode: ignore
@@ -675,7 +676,7 @@ clusterRole:
 image:
   registry: <LOCAL_DOCKER_REGISTRY_URL>:5043
   repository: suse-ai-opentelemetry-collector
-  tag: 0.149.0
+  tag: 0.156.0
   pullPolicy: IfNotPresent
 ports:
   metrics:
@@ -739,8 +740,8 @@ config:
     topology:
       endpoint: http://<SUSE_OBSERVABILITY_ROUTER_ENDPOINT>:8080 <.>
       api_key: ${env:API_KEY}
-      instance_url: ${env:K8S_CLUSTER_NAME}
       namespace: ${env:SUSE_AI_NAMESPACE}
+      cluster_name: ${env:K8S_CLUSTER_NAME}
       tls: <.>
         insecure_skip_verify: true
     otlp:
@@ -886,6 +887,7 @@ config:
             - set(attributes["suse.ai.managed"], "true")
             - set(attributes["suse.ai.component.type"], "application")
             - set(attributes["suse.ai.component.name"], attributes["service.name"])
+            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}")
     # Create provider -> model relations from GenAI trace spans.
     filter/genai-spans:
       error_mode: ignore
