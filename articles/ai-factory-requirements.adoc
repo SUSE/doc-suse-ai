@@ -18,7 +18,7 @@ endif::[]
 
 [abstract]
 --
-include::../snippets/aif-tip-suseai-docs.adoc[]
+// include::../snippets/aif-tip-suseai-docs.adoc[]
 
 The deployment and operation of {productname} require the following prerequisites.
 --

@@ -29,7 +29,7 @@ endif::[]
 * creating and managing custom blueprints
 * managing running workloads
 
-include::../snippets/aif-tip-suseai-docs.adoc[]
+// include::../snippets/aif-tip-suseai-docs.adoc[]
 
 :override-title: What deployment types are available?
 include::../references/ai-factory-apps-deployment-types.adoc[leveloffset=+1]

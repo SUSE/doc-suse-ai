@@ -18,7 +18,7 @@ endif::[]
 
 [abstract]
 --
-include::../snippets/aif-tip-suseai-docs.adoc[]
+// include::../snippets/aif-tip-suseai-docs.adoc[]
 
 {productname} standardizes AI platform management, replacing manual integration with version-controlled, reproducible blueprints to streamline enterprise workloads.
 Deploying {productname} in air-gapped environments allows organizations to install and run artificial intelligence (AI) workloads securely within restricted networks without external internet connectivity.

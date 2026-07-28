@@ -26,7 +26,7 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 {productname} lets you install and manage {nvidia} applications and blueprints from {nvidia} GPU Cloud (NGC) in a {ranchera} environment.
 endif::[]
 
-include::../snippets/aif-tip-suseai-docs.adoc[]
+// include::../snippets/aif-tip-suseai-docs.adoc[]
 
 [#aif-why-use]
 == Why use {productname}?
