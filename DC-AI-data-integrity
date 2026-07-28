@@ -20,7 +20,7 @@ ADOC_POST="yes"
 ADOC_POST_STYLE="./postprocess.xsl"
 
 
-#PROFOS="suseai"
-#PROFARCH="x86-64"
 #XSLTPARAM+=' --param toc.section.depth=2'
 #XSLTPARAM+=' --param bubbletoc.section.depth=3 --param bubbletoc.max.depth=3'
+#XSLTPARAM+=' --stringparam generate.toc="book title" '
+XSLTPARAM+="--param generate.revhistory=0"
