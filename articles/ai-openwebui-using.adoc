@@ -35,7 +35,7 @@ REQUIREMENTS::
   The descriptions and procedures in this article assume
   that the following requirements are already fulfilled:
 
-  ** You have successfully deployed the SUSE AI.
+  ** You have successfully deployed the {productname}.
   ** You can access the Open WebUI interface in your Web browser.
   ** Your Open WebUI user account has been created, and you have
   received the login credentials.

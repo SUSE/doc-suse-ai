@@ -21,7 +21,7 @@
 <meta name="architecture"><phrase>{x86-64}</phrase><phrase>{power}</phrase>
 </meta>
 <!-- enter one or more product names and version -->
-<meta name="productname" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"><productname version="1.0">{productname}</productname>
+<meta name="productname" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"><productname>{productname}</productname>
 </meta>
 <meta name="title" its:translate="yes" xmlns:its="http://www.w3.org/2005/11/its">{owui} Administration</meta>
 <meta name="description" its:translate="yes" xmlns:its="http://www.w3.org/2005/11/its">{owui} is a Web-based application that allows you to interact with AI models</meta>
