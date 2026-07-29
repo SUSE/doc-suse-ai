@@ -72,7 +72,7 @@ While they are part of the same ecosystem, they serve different functions:
 .{suseai} vs. {productname}
 [cols="1,2a,2a"]
 |===
-| |*SUSE AI* |*SUSE AI Factory*
+| |*{suseai}* |*{productname}*
 
 |*Core Focus*
 |Infrastructure and security
