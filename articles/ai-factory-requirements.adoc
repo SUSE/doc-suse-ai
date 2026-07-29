@@ -13,15 +13,13 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-06-26
+:revdate: 2026-07-29
 :page-revdate: {revdate}
 
-[abstract]
---
-// include::../snippets/aif-tip-suseai-docs.adoc[]
-
-The deployment and operation of {productname} require the following prerequisites.
---
+== Overview
+The deployment and operation of {productname} require several prerequisites to ensure a stable, secure and performant environment.
+These requirements span physical or virtual hardware resources, accelerated compute infrastructure (such as compatible GPUs), and specific configuration guidelines for core stack applications like cluster management, security and observability.
+Review the following sections to prepare your cluster infrastructure before initiating the installation.
 
 [#ai-hardware-requirements]
 :override-title: Hardware
@@ -57,4 +55,3 @@ include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]
 [appendix]
 [#ai-factory-appendix]
 include::../references/AI-Factory-appendix.adoc[leveloffset=+1]
-

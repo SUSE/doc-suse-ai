@@ -49,3 +49,9 @@ The required number of GPUs and the VRAM capacity per GPU depend mainly on the s
 Furthermore, for high availability (HA) deployments, we recommend all the worker nodes to have the same GPU configuration so that PODs can be rescheduled when necessary.
 
 For a full list of supported GPUs, refer to the https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html[{nvoperator} Platform Support] documentation.
+
+[#ai-reqs-hw-supported-gpus-nv-matrix]
+== {nvidia} AI Enterprise Infrastructure Support Matrix
+
+Use the link:https://docs.nvidia.com/ai-enterprise/support-matrix/latest/index.html[reference tables] for software versions and hardware compatibility.
+Find your configuration by starting with your GPU or your deployment environment.

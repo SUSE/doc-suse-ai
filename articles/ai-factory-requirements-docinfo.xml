@@ -1,4 +1,11 @@
 <revhistory xml:id="rh-ai-factory-requirements">
+  <revision><date>2026-07-29</date>
+    <revdescription>
+      <para>
+        Added a linkk to {nvidia} AI Enterprise Infrastructure Support Matrix
+      </para>
+    </revdescription>
+  </revision>
   <revision><date>2026-06-25</date>
     <revdescription>
       <para>
@@ -10,7 +17,7 @@
 <!-- add author's e-mail -->
 <meta name="maintainer" content="tbazant@suse.com" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
 <!-- ISO date of last update as YYYY-MM-DD -->
-<meta name="updated" content="2026-06-25" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
+<meta name="updated" content="2026-07-29" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
 <meta name="architecture"><phrase>{x86-64}</phrase><phrase>{power}</phrase>
 </meta>
 <!-- enter one or more product names and version -->
