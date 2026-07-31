@@ -137,6 +137,14 @@ To make it visible again, check the btn:[Show deprecated] box.
 [#ai-factory-managing-blueprints-delete]
 == How do I delete blueprints?
 
+[NOTE]
+.Bundled blueprints cannot be deleted
+====
+Bundled blueprints shipped with {productname} are protected and cannot be deleted.
+The btn:[Delete] action is not shown for them, and any deletion request is rejected.
+To customize a bundled blueprint, clone it as described in xref:ai-factory-managing-blueprints-copy[] and edit the copy.
+====
+
 . From the main left panel, select menu:SUSE AI Factory[Blueprints].
 . From the list of existing templates, select the blueprint to delete and specify the target version.
 . Open the three-dot action menu for the blueprint, select btn:[Delete], and confirm the deletion.

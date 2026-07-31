@@ -41,3 +41,12 @@ The latest version is {aif-latest-version}.
   --version {aif-latest-version} \
   -f aif-operator_custom_overrides.yaml
 ----
+
+[NOTE]
+.Custom resource definitions on upgrade
+====
+By default, the operator chart applies and upgrades its custom resource definitions (CRDs) through a pre-upgrade job (`crds.manageWithJob=true`).
+The job only creates or updates CRDs; it never deletes them.
+
+In restricted environments where the job cannot run, set `crds.manageWithJob=false` and apply the CRDs from the chart's `crds/` directory manually before upgrading.
+====

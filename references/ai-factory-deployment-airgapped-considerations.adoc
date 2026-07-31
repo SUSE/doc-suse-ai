@@ -24,6 +24,9 @@ endif::[]
 :page-revdate: {revdate}
 
 
+* *Application catalog.* By default, the {kube} operator serves a built-in application catalog, so you can browse and install applications without the management cluster reaching out to live chart repositories.
+Keep this default in air-gapped environments; only enable runtime catalog discovery if you host the corresponding chart repositories locally.
+
 * *OCI artifact repositories.* In a connected environment, {productname} pulls artifacts from external sources to deploy AI applications.
 These artifacts include {helm} charts and container images.
 In an air-gapped environment, you must host these artifacts locally because external network access is prohibited.
@@ -36,3 +39,8 @@ To use a model cache, store model data in Persistent Volume Claims (PVCs) attach
 For multi-node or multi-cluster deployments, the PVC provisioner must support distributed storage, such as NFS or Longhorn.
 
 * *Endpoint security.* Although you can use self-signed TLS certificates for local OCI-compliant repositories, we recommend using certificates signed by your organization's certificate authority (CA).
+
+* *UI extension chart source.* The UI extension chart can be pulled from an authenticated, TLS-enabled local registry.
+Configure the registry credentials and TLS settings through the `aiExtension.source.helm` values of the `aif-operator` chart.
+For a private CA, provide the CA certificate rather than skipping verification.
+Restrict which registry hosts the operator may pull from by setting an allowlist (`manager.allowedRegistryHosts`); leaving it empty allows all hosts.

@@ -18,13 +18,55 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-07-17
+:revdate: 2026-08-03
 :page-revdate: {revdate}
 
 
 == Release {aif-latest-version}
 
-This is the {aif-latest-version} release of {productname}, bringing comprehensive AI workload management capabilities to {ranchera}.
+This release builds on the 2.0.x line with an operator-served application catalog that is now the default, git-backed Rancher catalog support, expanded NVIDIA integration, hardened extension chart delivery, and a range of workload/UI reliability fixes.
+
+=== What's new
+
+==== Application catalog
+- *Operator-served catalog, now the default*: The operator serves the application catalog through a static catalog configuration and a CRD lifecycle job, and the UI now loads applications from this bundled catalog by default (`useStaticCatalog=true`). Runtime discovery from live chart repositories remains available by setting the flag to `false` link:https://github.com/SUSE/aif/pull/145[#145], link:https://github.com/SUSE/aif/pull/172[#172].
+- *{nvidia} AI Enterprise library*: The {nvidia} {ailibrary} is populated with {nvidia} AI Enterprise-supported {helm} charts, and the default catalog ships the org-level {nvidia} repositories out of the box link:https://github.com/SUSE/aif/pull/155[#155], link:https://github.com/SUSE/aif/pull/172[#172].
+- *Application sorting and support labels*: The `Apps` page sorts supported applications first (default) or by name, shows {nvidia} support status through labels, and defaults the library filter to all libraries. The sort control is shared across the `Apps`, `Blueprints`, and `Workloads` screens link:https://github.com/SUSE/aif/pull/155[#155], link:https://github.com/SUSE/aif/pull/172[#172].
+- *NGC team repositories*: The operator supports {nvidia} NGC team repositories with gated authentication. The default catalog currently ships only the org-level {nvidia} repositories, so team-repository provisioning is dormant until the catalog expands link:https://github.com/SUSE/aif/pull/163[#163].
+
+==== Git-backed {ranchera} catalogs and Rancher API access
+- *Git-backed `ClusterRepo` support*: Blueprint components and application workloads can now be deployed from git-backed {ranchera} `ClusterRepo` resources (`spec.gitRepo`/`spec.gitBranch`), including the built-in `rancher-charts` and `rancher-ui-plugins` repositories, which previously failed. The operator fetches the chart from the {ranchera} catalog API on the management cluster and ships it as an embedded {fleeta} `Bundle`, so air-gapped downstream clusters deploy without each cluster needing to reach {ranchera} or hold an API token. Identical reconciles are skipped through a chart fingerprint link:https://github.com/SUSE/aif/pull/156[#156].
+- *Rancher API access settings*: A new *Settings > Rancher API Access* section manages the {ranchera} catalog credential end to end. Selecting btn:[Authorize] mints a {ranchera} API token as the signed-in user, btn:[Test] validates a token before saving, and the section shows the granted expiry and warns before it lapses. When the token expires, select btn:[Authorize] again to renew it. The {ranchera} CA certificate is discovered automatically when none is configured, so TLS verification stays enabled by default. The configuration is hot-reloaded without an operator restart link:https://github.com/SUSE/aif/pull/156[#156].
+- *Oversized git charts fail fast*: Charts whose unpacked {fleeta} `Bundle` would exceed the {kube} object-size limit fail terminally with `ChartTooLarge` and guidance to host them in an OCI or HTTP `ClusterRepo` instead, rather than retrying indefinitely link:https://github.com/SUSE/aif/pull/156[#156].
+
+==== Extension delivery and security
+- *Authenticated and TLS registries*: `InstallAIExtension` can pull the UI extension chart from authenticated and TLS-enabled registries. The `aif-operator` {helm} chart exposes the corresponding {helm} authentication and TLS settings for the bundled extension link:https://github.com/SUSE/aif/pull/162[#162].
+- *Registry hardening*: A registry-host allowlist guards against confused-deputy requests (with a startup warning when the allowlist is empty), insecure registry TLS is gated behind two explicit opt-ins, plain-HTTP OCI chart pulls are no longer performed, and `https+tls` chart URLs that are not a direct `.tgz` are rejected. Terminal reconcile failures now correctly set `Ready=False` link:https://github.com/SUSE/aif/pull/162[#162].
+
+==== Workload and blueprint management
+- *Pre-flight credential checks*: Blueprint credentials are validated before installation, so missing credentials are reported up front instead of surfacing as a failed deployment link:https://github.com/SUSE/aif/pull/148[#148].
+- *Clearer failure reporting*: Workload failure reasons are shown on the `AI Workloads` list, and `ClusterRepo` resolution failures are surfaced on the `AIWorkload` status link:https://github.com/SUSE/aif/pull/148[#148].
+- *Protected bundled blueprints*: Deletion of bundled blueprints is rejected by the API, and the delete action is hidden for them in the UI link:https://github.com/SUSE/aif/pull/122[#122].
+- *Updated blueprint*: The `simple-chatbot-with-rag` blueprint is updated to version 1.0.2. The default model changes from `gemma:2b` to `qwen2.5:3b` (larger context window); `qwen2.5:3b` is provided for research use only under the Qwen Research License link:https://github.com/SUSE/aif/pull/154[#154].
+
+=== Key fixes
+- Rancher and operator index caches are refreshed when the extension version changes, self-healing a stale index cache after an extension upgrade link:https://github.com/SUSE/aif/pull/152[#152].
+- `InstallAIExtension` status is patched to avoid `resourceVersion` conflicts link:https://github.com/SUSE/aif/pull/140[#140].
+- The family label is preserved when saving an edited blueprint as a new version link:https://github.com/SUSE/aif/pull/139[#139].
+- Pull-secret namespaces are no longer created on the management cluster for downstream-only workloads link:https://github.com/SUSE/aif/pull/130[#130].
+- The UI clarifies that the blueprint installation namespace is only a default link:https://github.com/SUSE/aif/pull/141[#141].
+- Deployment type cards are aligned to equal height link:https://github.com/SUSE/aif/pull/129[#129].
+
+=== Upgrade notes
+- *CRD lifecycle on upgrade*: The operator chart applies and upgrades its custom resource definitions (CRDs) through a pre-upgrade job (`crds.manageWithJob=true`), which only creates or updates CRDs and never deletes them. In restricted environments where the job cannot run, set `crds.manageWithJob=false` and apply the CRDs from the chart's `crds/` directory manually before upgrading link:https://github.com/SUSE/aif/pull/145[#145].
+- *Git-backed catalogs require a {ranchera} token*: To deploy from git-backed `ClusterRepo` resources, authorize a {ranchera} API token under *Settings > Rancher API Access* after upgrading. Charts too large to ship as a {fleeta} `Bundle` fail with `ChartTooLarge`; host those in an OCI or HTTP `ClusterRepo` instead link:https://github.com/SUSE/aif/pull/156[#156].
+- *Chatbot default model change*: After upgrading `simple-chatbot-with-rag` to 1.0.2, new chats default to `qwen2.5:3b` (`gemma:2b` is removed); existing chats remain readable link:https://github.com/SUSE/aif/pull/154[#154].
+
+Full Changelog: link:https://github.com/SUSE/aif/compare/aif-operator-2.0.1...aif-operator-2.1.0[aif-operator-2.0.1...aif-operator-2.1.0]
+
+== Release {aif-previous-version}
+
+This is the {aif-previous-version} release of {productname}, bringing comprehensive AI workload management capabilities to {ranchera}.
 
 === Key improvements and fixes
 - Fixed pull secrets not being delivered to some downstream clusters, which left workloads stuck in ImagePullBackOff. The pull-secret bundle now targets the downstream cluster by the `management.cattle.io/cluster-name` label instead of clusterName link:https://github.com/SUSE/aif/pull/107[#107].
@@ -36,7 +78,7 @@ This is the {aif-latest-version} release of {productname}, bringing comprehensiv
 
 Full Changelog: link:https://github.com/SUSE/aif/compare/aif-operator-2.0.0...aif-operator-2.0.1[aif-operator-2.0.0...aif-operator-2.0.1]
 
-== Release {aif-previous-version}
+== Release 2.0.0
 
 This is the *first official release* of {productname}, bringing comprehensive AI workload management capabilities to {ranchera}.
 

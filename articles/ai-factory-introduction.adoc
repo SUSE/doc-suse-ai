@@ -148,6 +148,10 @@ endif::[]
 
 Both running applications and blueprints can be shared across {ranchera}-managed clusters.
 
+The {kube} operator serves a built-in application catalog that the UI loads by default.
+Because this catalog ships with {productname}, you can browse and install applications without the management cluster reaching out to live chart repositories, which also makes the catalog available in air-gapped environments.
+Administrators can optionally enable runtime discovery to populate the catalog from live chart repositories instead.
+
 [#ai-factory-blueprints]
 === Blueprints
 Blueprints are published, immutable and version-controlled stacks of applications required for a specific use-case.
