@@ -2,7 +2,7 @@
   <revision><date>2026-07-31</date>
     <revdescription>
       <para>
-        Added section on providing registry credentials during installation.
+        Added section on providing registry credentials during installation
       </para>
     </revdescription>
   </revision>
