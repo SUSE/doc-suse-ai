@@ -167,7 +167,7 @@ The list of available applications from the {nvidia} registry appears.
 +
 [#fig-rancher-secrets-Git]
 .Git secrets
-image::aif-rancher-secrets-Git.png[Screenshot showing how to add secrets for Git,scaledwidth=50%]
+image::aif-rancher-secrets-git.png[Screenshot showing how to add secrets for Git,scaledwidth=50%]
 +
 .. Confirm by selecting btn:[Create] in the bottom right corner.
 
