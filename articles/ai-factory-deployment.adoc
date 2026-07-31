@@ -31,10 +31,17 @@ You can install {productname} on the {ranchera}-enabled {kube} cluster in the fo
 :app: {saifoperator}
 include::../snippets/ai-rancher-multicluster.adoc[]
 
-:override-title: Installation using Helm chart
+[#ai-factory-deployment-helm]
+:override-title: How do I install {productname} using the {helm} CLI?
 include::../tasks/ai-factory-deployment-helm.adoc[leveloffset=+2]
-:override-title: Installation using Rancher UI
+
+[#ai-factory-deployment-rancher-ui]
+:override-title: How do I install {productname} using Rancher?
 include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
+
+[#aif-helm-credentials]
+:override-title: Can I provide repositories credentials during {productname} installation?
+include::../tasks/aif-credentials-helm.adoc[leveloffset=+1]
 
 :override-title: Are there any post-deployment steps?
 include::../tasks/ai-factory-registries-access.adoc[leveloffset=+1]

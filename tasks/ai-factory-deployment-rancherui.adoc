@@ -1,4 +1,3 @@
-[#ai-factory-deployment-rancher-ui]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
