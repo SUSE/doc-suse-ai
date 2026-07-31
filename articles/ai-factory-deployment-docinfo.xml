@@ -1,4 +1,12 @@
 <revhistory xml:id="rh-ai-deployment">
+  <revision><date>2026-07-31</date>
+    <revdescription>
+      <para>
+        Added section on providing registry credentials during installation.
+      </para>
+    </revdescription>
+  </revision>
+</revhistory>
   <revision><date>2026-06-01</date>
     <revdescription>
       <para>
