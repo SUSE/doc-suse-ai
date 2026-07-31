@@ -156,7 +156,7 @@ image::aif-secrets-nvidia.png[Screenshot showing how to assign secrets for {nvid
 . Select the btn:[Refresh] button in the top right.
 The list of available applications from the {nvidia} registry appears.
 
-[#ai-factory-fleet-Gitops]
+[#ai-factory-fleet-gitops]
 == How do I access a Git repository to store applications configuration?
 
 . Add your Git Personal Access Token (PAT) to the {ranchera} _local_ cluster.
