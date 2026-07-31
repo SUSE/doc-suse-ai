@@ -192,7 +192,7 @@ image::aif-rancher-secrets-git.png[Screenshot showing how to add secrets for Git
 .Assign Git secrets
 image::aif-secrets-Git.png[Screenshot showing how to assign secrets for Git,scaledwidth=50%]
 +
-.. Confirm by selecting btn:[Apply] in the bottom right corner.
+.. Confirm by selecting btn:[Apply] in the bottom-right corner.
 
 [#ai-factory-rancher-api-access]
 == How do I authorize access to Git-backed {ranchera} catalogs?
@@ -204,7 +204,7 @@ To resolve charts from these repositories, {saifactory} needs a {ranchera} API t
 . In the `Rancher API Access` section, select btn:[Authorize].
 This mints a {ranchera} API token as the signed-in user.
 . (Optional) Select btn:[Test] to validate the token before saving.
-. Confirm by selecting btn:[Apply] in the bottom right corner.
+. Confirm by selecting btn:[Apply] in the bottom-right corner.
 
 [NOTE]
 .Token expiry
