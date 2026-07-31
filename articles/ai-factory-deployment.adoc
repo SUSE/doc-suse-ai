@@ -12,7 +12,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-07-01
+:revdate: 2026-08-31
 :page-revdate: {revdate}
 
 [abstract]
@@ -39,7 +39,7 @@ include::../tasks/ai-factory-deployment-helm.adoc[leveloffset=+2]
 :override-title: How do I install {productname} using Rancher?
 include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
 
-[#aif-helm-credentials]
+[#aif-credentials-install]
 :override-title: Can I provide repositories credentials during {productname} installation?
 include::../tasks/aif-credentials-helm.adoc[leveloffset=+1]
 
