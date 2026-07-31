@@ -165,7 +165,7 @@ The list of available applications from the {nvidia} registry appears.
 .. Select the btn:[aif-operator] namespace and enter your preferred secret name (referenced as `<GIT_SECRETS_NAME>` in command line tasks) to identify the resource.
 .. In the btn:[Data] tab, add the key `token` and paste your PAT as a value.
 +
-[#fig-rancher-secrets-Git]
+[#fig-rancher-secrets-git]
 .Git secrets
 image::aif-rancher-secrets-git.png[Screenshot showing how to add secrets for Git,scaledwidth=50%]
 +
@@ -188,9 +188,9 @@ image::aif-rancher-secrets-git.png[Screenshot showing how to add secrets for Git
 .. Select the authentication type and the PAT secret name corresponding to your `<GIT_SECRETS_NAME>` from the `Credential Secret` drop-down list.
 .. Select `token` for menu:Secret Key.
 +
-[#fig-aif-secrets-Git]
+[#fig-aif-secrets-git]
 .Assign Git secrets
-image::aif-secrets-Git.png[Screenshot showing how to assign secrets for Git,scaledwidth=50%]
+image::aif-secrets-git.png[Screenshot showing how to assign secrets for Git,scaledwidth=50%]
 +
 .. Confirm by selecting btn:[Apply] in the bottom-right corner.
 
