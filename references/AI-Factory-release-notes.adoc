@@ -24,7 +24,7 @@ endif::[]
 
 == Release {aif-latest-version}
 
-This release builds on the 2.0.x line with an operator-served application catalog that is now the default, git-backed Rancher catalog support, expanded NVIDIA integration, hardened extension chart delivery, and a range of workload/UI reliability fixes.
+This release builds on the 2.0.x line with an operator-served application catalog that is now the default, git-backed {ranchera} catalog support, expanded {nvidia} integration, hardened extension chart delivery, and a range of workload/UI reliability fixes.
 
 === What's new
 
@@ -34,9 +34,9 @@ This release builds on the 2.0.x line with an operator-served application catalo
 - *Application sorting and support labels*: The `Apps` page sorts supported applications first (default) or by name, shows {nvidia} support status through labels, and defaults the library filter to all libraries. The sort control is shared across the `Apps`, `Blueprints`, and `Workloads` screens link:https://github.com/SUSE/aif/pull/155[#155], link:https://github.com/SUSE/aif/pull/172[#172].
 - *NGC team repositories*: The operator supports {nvidia} NGC team repositories with gated authentication. The default catalog currently ships only the org-level {nvidia} repositories, so team-repository provisioning is dormant until the catalog expands link:https://github.com/SUSE/aif/pull/163[#163].
 
-==== Git-backed {ranchera} catalogs and Rancher API access
+==== Git-backed {ranchera} catalogs and {ranchera} API access
 - *Git-backed `ClusterRepo` support*: Blueprint components and application workloads can now be deployed from git-backed {ranchera} `ClusterRepo` resources (`spec.gitRepo`/`spec.gitBranch`), including the built-in `rancher-charts` and `rancher-ui-plugins` repositories, which previously failed. The operator fetches the chart from the {ranchera} catalog API on the management cluster and ships it as an embedded {fleeta} `Bundle`, so air-gapped downstream clusters deploy without each cluster needing to reach {ranchera} or hold an API token. Identical reconciles are skipped through a chart fingerprint link:https://github.com/SUSE/aif/pull/156[#156].
-- *Rancher API access settings*: A new *Settings > Rancher API Access* section manages the {ranchera} catalog credential end to end. Selecting btn:[Authorize] mints a {ranchera} API token as the signed-in user, btn:[Test] validates a token before saving, and the section shows the granted expiry and warns before it lapses. When the token expires, select btn:[Authorize] again to renew it. The {ranchera} CA certificate is discovered automatically when none is configured, so TLS verification stays enabled by default. The configuration is hot-reloaded without an operator restart link:https://github.com/SUSE/aif/pull/156[#156].
+- *{*ranchera*} API access settings*: A new *Settings > Rancher API Access* section manages the {ranchera} catalog credential end to end. Selecting btn:[Authorize] mints a {ranchera} API token as the signed-in user, btn:[Test] validates a token before saving, and the section shows the granted expiry and warns before it lapses. When the token expires, select btn:[Authorize] again to renew it. The {ranchera} CA certificate is discovered automatically when none is configured, so TLS verification stays enabled by default. The configuration is hot-reloaded without an operator restart link:https://github.com/SUSE/aif/pull/156[#156].
 - *Oversized git charts fail fast*: Charts whose unpacked {fleeta} `Bundle` would exceed the {kube} object-size limit fail terminally with `ChartTooLarge` and guidance to host them in an OCI or HTTP `ClusterRepo` instead, rather than retrying indefinitely link:https://github.com/SUSE/aif/pull/156[#156].
 
 ==== Extension delivery and security
@@ -50,7 +50,7 @@ This release builds on the 2.0.x line with an operator-served application catalo
 - *Updated blueprint*: The `simple-chatbot-with-rag` blueprint is updated to version 1.0.2. The default model changes from `gemma:2b` to `qwen2.5:3b` (larger context window); `qwen2.5:3b` is provided for research use only under the Qwen Research License link:https://github.com/SUSE/aif/pull/154[#154].
 
 === Key fixes
-- Rancher and operator index caches are refreshed when the extension version changes, self-healing a stale index cache after an extension upgrade link:https://github.com/SUSE/aif/pull/152[#152].
+- {ranchera} and operator index caches are refreshed when the extension version changes, self-healing a stale index cache after an extension upgrade link:https://github.com/SUSE/aif/pull/152[#152].
 - `InstallAIExtension` status is patched to avoid `resourceVersion` conflicts link:https://github.com/SUSE/aif/pull/140[#140].
 - The family label is preserved when saving an edited blueprint as a new version link:https://github.com/SUSE/aif/pull/139[#139].
 - Pull-secret namespaces are no longer created on the management cluster for downstream-only workloads link:https://github.com/SUSE/aif/pull/130[#130].
@@ -64,12 +64,12 @@ This release builds on the 2.0.x line with an operator-served application catalo
 
 Full Changelog: link:https://github.com/SUSE/aif/compare/aif-operator-2.0.1...aif-operator-2.1.0[aif-operator-2.0.1...aif-operator-2.1.0]
 
-== Release {aif-previous-version}
+== Release 2.0.1
 
 This is the {aif-previous-version} release of {productname}, bringing comprehensive AI workload management capabilities to {ranchera}.
 
 === Key improvements and fixes
-- Fixed pull secrets not being delivered to some downstream clusters, which left workloads stuck in ImagePullBackOff. The pull-secret bundle now targets the downstream cluster by the `management.cattle.io/cluster-name` label instead of clusterName link:https://github.com/SUSE/aif/pull/107[#107].
+- Fixed pull secrets not being delivered to certain downstream clusters, which left workloads stuck in ImagePullBackOff. The pull-secret bundle now targets the downstream cluster by the `management.cattle.io/cluster-name` label instead of clusterName link:https://github.com/SUSE/aif/pull/107[#107].
 - Published `simple-chatbot-with-rag` and `simple-chatbot-with-rag-vllm` 1.0.1 with updated image revisions (link:https://github.com/SUSE/aif/pull/132[#132]):
     * `open-webui`: 0.6.41-14.20 to 0.6.41-15.2
     * `vllm-openai`: 0.19.0 to 0.19.0-5.29

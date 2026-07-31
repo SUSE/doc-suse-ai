@@ -156,7 +156,7 @@ image::aif-secrets-nvidia.png[Screenshot showing how to assign secrets for {nvid
 . Select the btn:[Refresh] button in the top right.
 The list of available applications from the {nvidia} registry appears.
 
-[#ai-factory-fleet-gitops]
+[#ai-factory-fleet-Gitops]
 == How do I access a Git repository to store applications configuration?
 
 . Add your Git Personal Access Token (PAT) to the {ranchera} _local_ cluster.
@@ -165,9 +165,9 @@ The list of available applications from the {nvidia} registry appears.
 .. Select the btn:[aif-operator] namespace and enter your preferred secret name (referenced as `<GIT_SECRETS_NAME>` in command line tasks) to identify the resource.
 .. In the btn:[Data] tab, add the key `token` and paste your PAT as a value.
 +
-[#fig-rancher-secrets-git]
+[#fig-rancher-secrets-Git]
 .Git secrets
-image::aif-rancher-secrets-git.png[Screenshot showing how to add secrets for Git,scaledwidth=50%]
+image::aif-rancher-secrets-Git.png[Screenshot showing how to add secrets for Git,scaledwidth=50%]
 +
 .. Confirm by selecting btn:[Create] in the bottom right corner.
 
@@ -188,16 +188,16 @@ image::aif-rancher-secrets-git.png[Screenshot showing how to add secrets for Git
 .. Select the authentication type and the PAT secret name corresponding to your `<GIT_SECRETS_NAME>` from the `Credential Secret` drop-down list.
 .. Select `token` for menu:Secret Key.
 +
-[#fig-aif-secrets-git]
+[#fig-aif-secrets-Git]
 .Assign Git secrets
-image::aif-secrets-git.png[Screenshot showing how to assign secrets for Git,scaledwidth=50%]
+image::aif-secrets-Git.png[Screenshot showing how to assign secrets for Git,scaledwidth=50%]
 +
 .. Confirm by selecting btn:[Apply] in the bottom right corner.
 
 [#ai-factory-rancher-api-access]
-== How do I authorize access to git-backed {ranchera} catalogs?
+== How do I authorize access to Git-backed {ranchera} catalogs?
 
-Applications and blueprint components can be deployed from git-backed {ranchera} `ClusterRepo` resources, including the built-in `rancher-charts` and `rancher-ui-plugins` repositories.
+Applications and blueprint components can be deployed from Git-backed {ranchera} `ClusterRepo` resources, including the built-in `rancher-charts` and `rancher-ui-plugins` repositories.
 To resolve charts from these repositories, {saifactory} needs a {ranchera} API token so that the operator can read the {ranchera} catalog on the management cluster.
 
 . From the main left panel, select menu:SUSE AI Factory[Settings].
@@ -223,7 +223,7 @@ The {ranchera} CA certificate is discovered automatically, so TLS verification o
 [TIP]
 .Chart size limit
 ====
-Charts resolved from a git-backed `ClusterRepo` are delivered as an embedded {fleeta} `Bundle` and are subject to the {kube} object-size limit.
+Charts resolved from a Git-backed `ClusterRepo` are delivered as an embedded {fleeta} `Bundle` and are subject to the {kube} object-size limit.
 A chart that is too large fails to deploy with a clear error.
 Host oversized charts in an OCI or HTTP `ClusterRepo` instead.
 ====
