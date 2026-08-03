@@ -39,6 +39,7 @@ include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
 :override-title: Are there any post-deployment steps?
 include::../tasks/ai-factory-registries-access.adoc[leveloffset=+1]
 
+[#ai-factory-deployment-uninstall]
 :override-title: How do I upgrade {productname}?
 include::../tasks/ai-factory-upgrade.adoc[leveloffset=+1]
 
