@@ -2,7 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-01-26
+:revdate: 2026-08-03
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
@@ -26,7 +26,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-== How od I uninstall {productname} using {helm}?
+== Uninstall using {helm}?
 
 
 . *Uninstall {saifoperator}*
@@ -66,7 +66,7 @@ endif::[]
   settings.ai-factory.suse.com
 ----
 
-== How od I uninstall {productname} using {ranchera}?
+== Uninstall using {ranchera}?
 
 . *Uninstall the {saifactory} extension and the operator.*
 .. From the main left panel, select the cluster you want to uninstall from, then menu:Apps[Installed Apps].
