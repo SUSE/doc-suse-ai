@@ -14,12 +14,18 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-To run AI applications and blueprints, you must configure access credentials for multiple network registries. This guide walks you through acquiring user tokens, creating Kubernetes secrets in the local cluster, and mapping those secrets in {saifactory}.
+To run AI applications and blueprints, you must configure access credentials for multiple network registries. This guide walks you through acquiring user tokens, creating {kube} secrets in the local cluster, and mapping those secrets in {saifactory}.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
+
+[IMPORTANT]
+====
+If you already provided credentials for specific registries during the {productname} installation as described in xref:aif-credentials-install[], you can skip adding those credentials as described in this section.
+====
+
 
 [#fig-aif-rancher-secrets]
 .{ranchera} secrets
