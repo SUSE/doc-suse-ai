@@ -1,4 +1,11 @@
 <revhistory xml:id="rh-ai-deployment">
+  <revision><date>2026-08-04</date>
+    <revdescription>
+      <para>
+        Added section on uninstalling AI operator including leftover files
+      </para>
+    </revdescription>
+  </revision>
   <revision><date>2026-07-31</date>
     <revdescription>
       <para>
