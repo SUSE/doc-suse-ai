@@ -44,7 +44,7 @@ include::../references/aif-prebuilt-blueprints.adoc[leveloffset=+1]
 include::../tasks/ai-factory-managing-apps.adoc[leveloffset=+1]
 
 [#ai-factory-managing-blueprints]
-:override-title: How do I manage AI blueprints
+:override-title: How do I manage AI blueprints?
 :override-abstract: {productname} helps you manage custom and preconfigured AI blueprints on your {kube} cluster.
 include::../tasks/ai-factory-managing-blueprints.adoc[leveloffset=+1]
 
