@@ -49,8 +49,8 @@ include::../tasks/ai-factory-managing-apps.adoc[leveloffset=+1]
 include::../tasks/ai-factory-managing-blueprints.adoc[leveloffset=+1]
 
 [#ai-factory-managing-workloads]
-:override-title: How do I manage AI workloads
-:override-abstract: {productname} helps you manage the whole lifecycle workloads installed on your {kube} cluster.
+:override-title: How do I manage AI workloads?
+:override-abstract: {productname} helps you manage the lifecycle of workloads that you install on your {kube} cluster.
 include::../tasks/ai-factory-managing-workloads.adoc[leveloffset=+1]
 
 [glossary]
