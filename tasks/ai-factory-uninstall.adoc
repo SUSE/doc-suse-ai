@@ -26,7 +26,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-== Uninstall using {helm}?
+== Uninstall using {helm}
 
 
 . *Uninstall {saifoperator}*
@@ -66,7 +66,7 @@ endif::[]
   settings.ai-factory.suse.com
 ----
 
-== Uninstall using {ranchera}?
+== Uninstall using {ranchera}
 
 . *Uninstall the {saifactory} extension and the operator.*
 .. From the main left panel, select the cluster you want to uninstall from, then menu:Apps[Installed Apps].
