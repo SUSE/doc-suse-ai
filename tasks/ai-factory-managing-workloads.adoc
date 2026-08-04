@@ -49,8 +49,12 @@ image::aif-app-workload-upgrade.png[Screenshot showing a progress bar of the upg
 . From the main left panel, select menu:SUSE AI Factory[Workloads].
 If a blueprint workload has an upgrade candidate, a corresponding btn:[Upgrade] button will appear on its row.
 . Select the btn:[Upgrade] button pertaining to the blueprint workload you want to upgrade.
-
-
+After confirming the upgrade, the workload transitions through a `Pending` state while the updated applications are redeployed.
+Once the rollout completes, the workload returns to `Running`` state at the new version.
++
+[#fig-aif-bp-workloads-upgrade]
+.Upgrade of blueprint workloads
+image::aif-manage-workload-upgrade.png[Screenshot showing an upgrade drop-down list,scaledwidth=100%]
 
 
 [#aif-workloads-delete]
