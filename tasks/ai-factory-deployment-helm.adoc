@@ -1,4 +1,3 @@
-[#ai-factory-deployment-helm]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]

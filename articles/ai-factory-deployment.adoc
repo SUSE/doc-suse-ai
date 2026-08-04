@@ -12,7 +12,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-07-01
+:revdate: 2026-08-31
 :page-revdate: {revdate}
 
 [abstract]
@@ -31,10 +31,17 @@ You can install {productname} on the {ranchera}-enabled {kube} cluster in the fo
 :app: {saifoperator}
 include::../snippets/ai-rancher-multicluster.adoc[]
 
-:override-title: Installation using Helm chart
+[#ai-factory-deployment-helm]
+:override-title: How do I install {productname} using the {helm} CLI?
 include::../tasks/ai-factory-deployment-helm.adoc[leveloffset=+2]
-:override-title: Installation using Rancher UI
+
+[#ai-factory-deployment-rancher-ui]
+:override-title: How do I install {productname} using Rancher?
 include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
+
+[#aif-credentials-install]
+:override-title: Can I provide repository credentials during the {productname} installation?
+include::../tasks/aif-credentials-helm.adoc[leveloffset=+1]
 
 :override-title: Are there any post-deployment steps?
 include::../tasks/ai-factory-registries-access.adoc[leveloffset=+1]
