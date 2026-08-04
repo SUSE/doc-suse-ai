@@ -35,19 +35,23 @@ endif::[]
 include::../references/ai-factory-apps-deployment-types.adoc[leveloffset=+1]
 
 [#aif-prebuilt-blueprints]
-:override-title: What pre-built AI blueprints are included?
+:override-title: What preconfigured AI blueprints are included?
 include::../references/aif-prebuilt-blueprints.adoc[leveloffset=+1]
 
 [#ai-factory-managing-apps]
 :override-title: How do I manage AI applications?
-:override-abstract: {productname} helps you manage the whole lifecycle of AI applications and related workloads on your {kube} cluster.
+:override-abstract: {productname} helps you manage AI applications on your {kube} cluster.
 include::../tasks/ai-factory-managing-apps.adoc[leveloffset=+1]
 
 [#ai-factory-managing-blueprints]
 :override-title: How do I manage AI blueprints
-:override-abstract: {productname} helps you manage the whole lifecycle of custom and pre-built AI blueprints and related workloads on your {kube} cluster.
+:override-abstract: {productname} helps you manage custom and preconfigured AI blueprints on your {kube} cluster.
 include::../tasks/ai-factory-managing-blueprints.adoc[leveloffset=+1]
 
+[#ai-factory-managing-workloads]
+:override-title: How do I manage AI workloads
+:override-abstract: {productname} helps you manage the whole lifecycle workloads installed on your {kube} cluster.
+include::../tasks/ai-factory-managing-workloads.adoc[leveloffset=+1]
 
 [glossary]
 [#ai-factory-glossary]

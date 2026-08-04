@@ -13,7 +13,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{productname} is a {ranchera} user interface extension and {kube} operator that simplifies the deployment, configuration, scaling, and lifecycle management of your cluster-based AI workloads. This guide explains how to install, configure, and delete application instances in your cluster.
+{productname} is a {ranchera} user interface extension and {kube} operator that simplifies the deployment, configuration, scaling and lifecycle management of your cluster-based AI workloads.
 endif::[]
 
 // erase the flag for future overrides
@@ -65,21 +65,3 @@ Start the deployment by selecting the btn:[Install] button.
 image::aif-apps-install4.png[Screenshot reviewing the installation,width=50%]
 +
 . After the installation progress bar reaches 100%, you can check the workload status by selecting menu:SUSE AI Factory[Workloads] from the left menu.
-
-== How do I manage application instances?
-
-[#fig-aif-apps-manage]
-.List of AI workloads to manage
-image::aif-apps-manage.png[Screenshot showing a list of AI workloads to manage,scaledwidth=100%]
-
-. From the main left panel, select menu:SUSE AI Factory[Workloads].
-. Select the btn:[Manage] button pertaining to the application you want to manage.
-. In the `Manage` wizard, you can update the application version, the destination cluster, and the details of the {helm} chart.
-. Confirm with btn:[Save].
-
-
-[#ai-factory-apps-delete]
-== How do I delete application instances?
-
-. From the main left panel, select menu:SUSE AI Factory[Workloads].
-. Select the btn:[Delete] button pertaining to the application you want to uninstall, and confirm the deletion.
