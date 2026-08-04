@@ -1,9 +1,8 @@
-[#ai-factory-deployment-uninstall]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-01-26
+:revdate: 2026-08-03
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
@@ -14,16 +13,85 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{empty}
+To uninstall {productname}, you need to perform the following tasks:
+
+* Uninstall {saifoperator}.
+* Remove installation leftovers.
+* Optionally, remove Custom Resource Definitions (CRDs).
+
+You can uninstall {productname} either using {ranchera} or the command line.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
-To uninstall {productname}, run the following command:
+== Uninstall using {helm}?
 
+
+. *Uninstall {saifoperator}*
+.. Uninstall the {saifactory} extension and the operator.
++
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm uninstall aif-operator -n aif-operator
 ----
+
+.. Verify that the resources have been removed by running the following commands.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get all -n aif-operator
+{prompt_user}kubectl get aifext
+{prompt_user}helm list -n aif-operator
+----
+
+. *Remove installation leftovers*
+.. Remove the related settings resource.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl delete settings settings -n aif-operator
+----
+
+. To perform a complete removal of all resources, *remove CRDs*.
+.. Delete `ai-factory` CRDs.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl delete crd \
+  aiworkloads.ai-factory.suse.com \
+  blueprints.ai-factory.suse.com \
+  installaiextensions.ai-factory.suse.com \
+  settings.ai-factory.suse.com
+----
+
+== Uninstall using {ranchera}?
+
+. *Uninstall the {saifactory} extension and the operator.*
+.. From the main left panel, select the cluster you want to uninstall from, then menu:Apps[Installed Apps].
+.. From the list of installed applications, activate the checkbox of `aif-operator` and click btn:[Delete] above the list.
++
+[#fig-aif-uninstall]
+.Uninstalling {saifoperator}
+image::aif-operator-uninstall.png[Screenshot showing how to uninstall {saifoperator},scaledwidth=100%]
+.. Confirm the deletion and wait until it is finished.
+
+. *Remove installation leftovers*
+.. From the same cluster menu, select menu:More Resources[ai-factory.suse.com > Settingses].
+.. Activate the checkbox of `aif-operator` and click btn:[Delete] above the list.
++
+[#fig-aif-leftovers-uninstall]
+.Uninstalling {saifoperator} leftovers
+image::aif-leftovers-uninstall.png[Screenshot showing how to uninstall {saifoperator} leftovers,scaledwidth=100%]
+.. Confirm the deletion.
+
+. To perform a complete removal of all resources, *remove CRDs*.
+.. From the same cluster menu, select menu:More Resources[API > CustomResourceDefinitions].
+.. Filter the list by entering `ai-factory.suse.com` in the search box.
+.. Activate the checkbox of all `ai-factory.suse.com` resources and click btn:[Delete] above the list.
++
+[#fig-aif-crds-uninstall]
+.Uninstalling {saifoperator} CRDs
+image::aif-crds-uninstall.png[Screenshot showing how to uninstall {saifoperator} CRDs,scaledwidth=100%]
+.. Confirm the deletion.
