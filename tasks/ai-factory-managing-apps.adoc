@@ -38,7 +38,8 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 . Select btn:[NVIDIA Library] and select the application tile.
 endif::[]
 +
-You can also limit the number of displayed applications by entering a search string.
+The list sorts charts supported by {productname} first by default (you can also sort by name).
+You can limit the list by entering a search string.
 . Use the `Basic Information` screen of the installation wizard to update the instance name, namespace, and version of the application.
 +
 [#fig-aif-apps-install-basic]
