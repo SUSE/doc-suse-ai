@@ -1,4 +1,11 @@
 <revhistory xml:id="rh-ai-deployment-airgapped">
+  <revision><date>2026-08-06</date>
+    <revdescription>
+      <para>
+        Documented the driver management options of the {nvoperator}
+      </para>
+    </revdescription>
+  </revision>
   <revision><date>2026-04-28</date>
     <revdescription>
       <para>

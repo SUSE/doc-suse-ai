@@ -6,7 +6,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-01-29
+:revdate: 2026-08-06
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
@@ -21,7 +21,7 @@ The {nvidia} operator allows administrators of {k8s} clusters to manage GPUs jus
 It includes everything needed for pods to be able to operate GPUs.
 endif::[]
 
-:revdate: 2026-01-29
+:revdate: 2026-08-06
 :page-revdate: {revdate}
 
 // erase the flag for future overrides
@@ -32,6 +32,10 @@ endif::[]
 == Host OS requirements
 
 To expose the GPU to the pod correctly, the NVIDIA kernel drivers and the `libnvidia-ml` library must be correctly installed in the host OS. The NVIDIA Operator can automatically install drivers and libraries on some operating systems. Refer to the NVIDIA documentation for information on https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html#supported-operating-systems-and-kubernetes-platforms[supported operating system releases]. The installation of the NVIDIA components on your host OS is out of the scope of this documentation, refer to the NVIDIA documentation for instructions.
+
+This section applies when you install and maintain the {nvidia} driver on the host OS.
+If you let the {nvoperator} deploy a precompiled driver instead, the operator provides the kernel modules and the `libnvidia-ml` library, and you can skip the following checks.
+Refer to xref:nvidia-operator-installation-precompiled-driver[] for details.
 
 The following three commands should return a correct output if the kernel driver was correctly installed:
 
@@ -64,10 +68,17 @@ GCC version:  gcc version 7.5.0 (SUSE Linux)
 +
 This library is used by Kubernetes components to interact with the kernel driver.
 
+[#nvidia-operator-installation-procedure]
 == Operator installation
 
-Once the OS is ready and RKE2 is running, install the GPU Operator with the following yaml manifest.
+Once the OS is ready and RKE2 is running, install the GPU Operator with one of the following yaml manifests.
 Use the `kubectl apply -f gpu-operator.yaml` command to install the operator.
+
+The {nvoperator} supports two ways of managing the {nvidia} driver on the cluster nodes.
+Pick one of them, because only one mechanism can manage the driver on a node:
+
+* xref:nvidia-operator-installation-host-driver[] relies on a driver that you install and maintain yourself.
+* xref:nvidia-operator-installation-precompiled-driver[] lets the operator deploy a driver container published in the {sregistry}.
 
 [CAUTION]
 ====
@@ -84,6 +95,25 @@ The envvars `ACCEPT_NVIDIA_VISIBLE_DEVICES_ENVVAR_WHEN_UNPRIVILEGED`, `ACCEPT_NV
 NVIDIA GPU Operator v25.10.x uses link:https://github.com/cncf-tags/container-device-interface/blob/main/SPEC.md[Container Device Interface (CDI) specification] which simplifies operations.
 It is recommended that you enable CDI (the default) and the NRI plug-in on RKE2.
 With both features enabled, you no longer need to pass extra environment variables for security requirements or set `runtimeClassName: nvidia` in your pod specifications.
+====
+
+[#nvidia-operator-installation-host-driver]
+=== Option A: Using a driver installed on the host OS
+
+Use this option when a compatible {nvidia} driver is already installed on the host OS, as described in xref:ai-nvidia-gpu-driver[].
+
+The `driver.enabled` value controls whether the operator deploys a driver container of its own:
+
+* `driver.enabled=true`, the chart default, makes the operator install and manage the {nvidia} driver on the cluster nodes.
+* `driver.enabled=false` stops the operator from installing a driver, so the nodes keep using the driver that is already present on the host OS.
+
+Set `driver.enabled` to `false` for this option.
+The setting keeps a single mechanism responsible for the driver instead of letting both the host OS and the operator manage it.
+
+[IMPORTANT]
+====
+With this option, you install, upgrade and maintain the driver yourself.
+Make sure the driver stays compatible with your GPU model, operating system, running kernel and {nvoperator} version, especially when you upgrade any of these components.
 ====
 
 [,yaml]
@@ -117,6 +147,68 @@ spec:
         value: volume-mounts
 ----
 
+[#nvidia-operator-installation-precompiled-driver]
+=== Option B: Using a precompiled driver managed by the operator
+
+Use this option when you prefer the {nvoperator} to provide the driver instead of maintaining it on the host OS.
+The operator then deploys a precompiled {nvidia} driver container from the {sregistry}, so the kernel modules do not have to be compiled on each node.
+
+Leave `driver.enabled` at its default value of `true` and set the following values to select the driver:
+
+`driver.repository`::
+Points the operator to the driver images in the {sregistry} instead of the default {nvidia} NGC registry.
+
+`driver.usePrecompiled`::
+Set to `true` so that the operator deploys a driver container with prebuilt kernel modules.
+
+`driver.version`::
+The {nvidia} driver branch to deploy, for example `595`.
+When `driver.usePrecompiled` is `true`, this value is a driver branch and not a full driver version.
+
+[IMPORTANT]
+====
+Select a driver branch that supports your GPU architecture and that is available for your SUSE operating system version.
+No single driver branch supports every GPU model.
+Refer to the link:https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html[{nvoperator} Platform Support] documentation and to the {sregistry} for the available combinations.
+====
+
+[,yaml]
+----
+# gpu-operator.yaml
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: gpu-operator
+  namespace: kube-system
+spec:
+  repo: https://helm.ngc.nvidia.com/nvidia
+  chart: gpu-operator
+  version: v26.3.2
+  targetNamespace: gpu-operator
+  createNamespace: true
+  valuesContent: |-
+    toolkit:
+      env:
+      - name: CONTAINERD_SOCKET
+        value: /run/k3s/containerd/containerd.sock
+    driver:
+      repository: registry.suse.com/third-party/nvidia
+      usePrecompiled: true
+      version: "<DRIVER_BRANCH>"
+----
+
+Replace `<DRIVER_BRANCH>` with the {nvidia} driver branch that matches your GPU and your operating system.
+
+The `CONTAINERD_SOCKET` value is required because RKE2 runs containerd on a socket path that differs from the upstream default.
+The example does not set the GPU isolation environment variables used in <<nvidia-operator-installation-host-driver,Option A>>, because it installs an operator version that relies on CDI.
+Precompiled driver containers from a registry other than NGC also depend on the operator version, so verify that the version you install supports them.
+
+[NOTE]
+.Air-gapped deployments
+====
+In an air-gapped environment, mirror the precompiled driver image to your private registry and set `driver.repository` to the mirrored location.
+====
+
 After one minute approximately, you can perform the following checks to verify that everything is working as expected:
 
 . Assuming the drivers and `libnvidia-ml.so` library were previously installed, check if the operator detects them correctly:
@@ -127,6 +219,12 @@ kubectl get node $NODENAME -o jsonpath='{.metadata.labels}' | grep "nvidia.com/g
 ----
 +
 You should see the value `pre-installed`. If you see `true`, the drivers were not correctly installed. If the <<host-os-requirements,pre-requirements>> were correct, it is possible that you forgot to reboot the node after installing all packages.
++
+[NOTE]
+====
+The value `pre-installed` is expected only with <<nvidia-operator-installation-host-driver,Option A>>.
+With <<nvidia-operator-installation-precompiled-driver,Option B>>, the operator manages the driver, so the value `true` is correct.
+====
 +
 You can also check other driver labels with:
 +
