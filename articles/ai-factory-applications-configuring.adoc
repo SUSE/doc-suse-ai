@@ -24,7 +24,8 @@ This approach ensures consistent, reproducible and easily manageable application
 This guide introduces examples of configuring selected AI applications installable by {productname}.
 --
 
-include::../tasks/opensearch-installing.adoc[leveloffset=+1]
+[#opensearch-helm-overrides]
+include::../references/opensearch-helm-overrides.adoc[leveloffset=+1]
 include::../tasks/milvus-installing.adoc[leveloffset=+1]
 include::../tasks/ollama-installing.adoc[leveloffset=+1]
 include::../references/ollama-helmchart.adoc[leveloffset=+2]
