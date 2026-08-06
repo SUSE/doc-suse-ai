@@ -73,7 +73,11 @@ include::../glues/ai-library-intro.adoc[leveloffset=+1]
 :override-title: Installation procedure
 include::../tasks/AI-deployment-ailibrary-installing.adoc[leveloffset=+2]
 include::../tasks/cert-manager-installing.adoc[leveloffset=+2]
+
+:abstract-override: {empty}
 include::../tasks/opensearch-installing.adoc[leveloffset=+2]
+[#opensearch-helm-overrides]
+include::../references/opensearch-helm-overrides.adoc[leveloffset=+3]
 include::../tasks/milvus-installing.adoc[leveloffset=+2]
 include::../tasks/ollama-installing.adoc[leveloffset=+2]
 include::../references/ollama-helmchart.adoc[leveloffset=+3]
