@@ -18,7 +18,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-01-26
+:revdate: 2026-08-17
 :page-revdate: {revdate}
 
 include::../snippets/aif-important-secrets.adoc[]
@@ -90,9 +90,29 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 endif::[]
 . On the `Basic Info` screen, customize the default name and target namespace for your workload.
 . On the `Target` screen, specify the deployment type and the target cluster for your workload.
-+
 You can also review the estimated hardware requirements for the workload.
-. On the `Review` screen, verify that the configuration is correct and start the deployment by selecting btn:[Install].
+. On the `Review` screen, verify that the configuration is correct:
+  * **Default storage class.** Ensure that a default storage class is set on the target cluster.
+  Applications such as {milvus} and {qdrant} require persistent storage.
+  If no default storage class is available, pods remain in the Pending state.
+  * **{ingress} settings.** If your blueprint includes applications that use {ingress}, ensure the `host` field is set correctly for each application.
+  Leaving the `host` field empty causes the {ingress} service to be created without a valid host name.
+  * **Required application fields.** Ensure all required application fields are filled in.
+  Missing values can prevent workloads from starting correctly.
++
+[TIP]
+====
+If the workload stays in the Pending state for an extended period after installation, a configuration value is missing or incorrect.
+To identify the issue, check the pod status directly:
+
+[source,bash,subs="+attributes"]
+{prompt_user}kubectl get pods -n <WORKLOAD_NAMESPACE>
+{prompt_user}kubectl describe pod <POD_NAME> -n <WORKLOAD_NAMESPACE>
+
+The output shows the exact reason why the pod is stuck, such as a missing PVC, an unresolvable image or a failed volume mount.
+====
+
+. Start the deployment by selecting btn:[Install].
 . Navigate to menu:SUSE AI Factory[Workloads] to monitor the startup progress and verify deployment status.
 
 [#ai-factory-managing-blueprints-copy]
