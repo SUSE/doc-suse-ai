@@ -4,7 +4,7 @@ ifdef::override-title[]
 = {override-title}
 endif::[]
 ifndef::override-title[]
-= How do I manage AI applications using {productname}?
+= {opensearch}
 endif::[]
 // overridden abstract?
 ifdef::override-abstract[]

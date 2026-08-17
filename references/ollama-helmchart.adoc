@@ -1,6 +1,25 @@
-[#ollama-helmchart]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Values for the {ollama} {helm} chart
-:revdate: 2026-03-24
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{ollama} is a tool for running and managing language models locally on your computer.
+It offers a simple interface to download, run and interact with models without relying on cloud resources.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-06
 :page-revdate: {revdate}
 
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
@@ -17,7 +36,7 @@ include::../snippets/helm-chart-overrides-intro.adoc[]
 ====
 {ollama} can run optimized for {nvidia} GPUs if the following conditions are fulfilled:
 
-* The {nvidia} driver and {nvoperator} are installed as described in link:https://documentation.suse.com/suse-ai/1.0/html/NVIDIA-GPU-driver-on-SLES/index.html[Installing {nvidia} GPU Drivers on {slsa}] or link:https://documentation.suse.com/suse-ai/1.0/html/NVIDIA-GPU-driver-on-SL-Micro/index.html[Installing {nvidia} GPU Drivers on {slm}].
+* The {nvidia} driver and {nvoperator} are installed as described in link:https://documentation.suse.com/suse-ai/1.0/html/NVIDIA-GPU-driver-on-SLES/index.html[Installing {nvidia} GPU Drivers on {slsa}].
 * The workloads are set to run on {nvidia}-enabled nodes as described in link:https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#ai-gpu-nodes-assigning[].
 
 If you do not want to use the {nvidia} GPU, remove the `gpu` section from `ollama_custom_overrides.yaml` or disable it.
