@@ -23,9 +23,6 @@ endif::[]
 
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 The presented steps mainly relate to *manual* command-line installation.
-
-However, there are alternative installation methods that can ease parts of the installation process.
-Refer to xref:ai-alternative-deployments[] for their list and explanatory description.
 endif::[]
 
 The chart focuses on the following possible scenarios:

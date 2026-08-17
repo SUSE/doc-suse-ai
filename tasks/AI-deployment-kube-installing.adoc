@@ -13,7 +13,6 @@ ifdef::override-abstract[]
 endif::[]
 ifndef::override-abstract[]
 This procedure includes the steps to install the base Linux operating system and a {kube} distribution for users who start deploying on cluster nodes from scratch.
-If you already have {kube} cluster(s) installed and running, you can skip this procedure and continue with xref:suse-ai-deploy-suse-ai[].
 endif::[]
 
 // erase the flag for future overrides

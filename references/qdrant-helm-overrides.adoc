@@ -37,7 +37,7 @@ endif::[]
 # qdrant_custom_overrides.yaml
 global:
   imagePullSecrets:
-    - suse-ai-registry <.>
+    - suse-ai-registry
     {imgRegistry}
 persistence:
   accessModes: ["ReadWriteOnce"]
@@ -49,8 +49,6 @@ persistence:
   # volumeAttributesClassName: ""
 
 ----
-<.> Specify the secret containing the credentials for the {sregistry} in `global.imagePullSecrets`.
-For instructions on how to configure the image pull secrets for the {sregistry}, refer to xref:suse-ai-deploy-suse-ai[].
 <.> Use `local-path` storage only for testing purposes.
 For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
 ====
@@ -63,7 +61,7 @@ For production use, we recommend using a storage solution suitable for persisten
 # qdrant_custom_overrides.yaml
 global:
   imagePullSecrets:
-    - suse-ai-registry <.>
+    - suse-ai-registry
     {imgRegistry}
 env:
   - name: QDRANT__GPU__INDEXING
@@ -91,8 +89,6 @@ resources:
   limits:
     nvidia.com/gpu: 1
 ----
-<.> Specify the secret containing the credentials for the {sregistry} in `global.imagePullSecrets`.
-For instructions on how to configure the image pull secrets for the {sregistry}, refer to xref:suse-ai-deploy-suse-ai[].
 <.> Use `local-path` storage only for testing purposes.
 For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
 ====

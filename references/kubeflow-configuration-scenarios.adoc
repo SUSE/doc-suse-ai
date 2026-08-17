@@ -66,7 +66,7 @@ Navigate to: \http://kubeflow.dev.example.com.
 == Non-production: Self-signed TLS
 
 Suitable for shared development clusters where you can distribute the self-signed CA manually.
-Requires {certmanager}. Refer to xref:kubeflow-installing-kubernetes[].
+Requires {certmanager}.
 
 [source,yaml]
 ----

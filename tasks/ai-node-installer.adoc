@@ -208,4 +208,3 @@ Use the same `extra_vars.yml` if you already operate a {ranchera} instance with 
 ====
 
 After {sainodeinstaller} completes successfully, the nodes are fully prepared for deploying {productname} workloads.
-Deploy the required applications as described in xref:ai-library-installing[].
