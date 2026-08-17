@@ -1,0 +1,65 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= How do I manage AI workloads using {productname}?
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+After you install an AI application or blueprint, it becomes a running _workload_.
+You can modify, upgrade or delete workloads from the {ranchera} UI.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-17
+:page-revdate: {revdate}
+
+[#fig-aif-workloads]
+.List of AI workloads
+image::aif-workloads.png[Screenshot showing a list of AI workloads,scaledwidth=100%]
+
+[#aif-app-workloads-manage]
+== How do I manage application workloads?
+. From the main left panel, select menu:SUSE AI Factory[Workloads].
+. Select the btn:[Manage] button for the application workload you want to manage.
+. In the `Manage` wizard, you can update the application version, destination cluster and 
+{helm} chart details.
+. Confirm with btn:[Save].
+
+[#aif-app-workloads-upgrade]
+== How do I upgrade application workloads?
+. Select the btn:[Manage] button for the application workload you want to upgrade.
+. Select the btn:[Manage] button pertaining to the application workload you want to upgrade.
+. On the `Basic Information` screen, change the target version number.
+. Finish the wizard and the workload upgrade starts automatically.
++
+[#fig-aif-app-workloads-upgrade]
+.Upgrade of application workloads
+image::aif-app-workload-upgrade.png[Screenshot showing a progress bar of the upgrade process,scaledwidth=100%]
+
+[#aif-bp-workloads-upgrade]
+== How do I upgrade blueprint workloads?
+. From the main left panel, select menu:SUSE AI Factory[Workloads].
+. Select the btn:[Upgrade] button for the blueprint workload you want to upgrade.
+. Select the btn:[Upgrade] button pertaining to the blueprint workload you want to upgrade.
+Once the rollout completes, the workload returns to the `Running` state at the new version.
+Once the rollout completes, the workload returns to `Running` state at the new version.
++
+[#fig-aif-bp-workloads-upgrade]
+.Upgrade of blueprint workloads
+image::aif-manage-workload-upgrade.png[Screenshot showing an upgrade drop-down list,scaledwidth=100%]
+
+
+[#aif-workloads-delete]
+== How do I delete workloads?
+. Select the btn:[Delete] button for the workload you want to uninstall, and confirm the deletion.
+. Select the btn:[Delete] button pertaining to the you want to uninstall, and confirm the deletion.
+
