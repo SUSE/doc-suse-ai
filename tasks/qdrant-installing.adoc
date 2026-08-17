@@ -1,60 +1,26 @@
-[#qdrant-installing]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Installing {qdrant}
-
-:revdate: 2026-02-03
-:page-revdate: {revdate}
-
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
 {qdrant} is an AI-native vector database and a semantic search engine. 
 You can use it to extract meaningful information from unstructured data.
-
-[#qdrant-installing-app-details]
-== Details about the {qdrant} application
-
-Before deploying {qdrant}, it is important to know more about the supported configurations and documentation.
-The following command provides the corresponding details, assuming you have already executed the `helm registry login` 
-command as described in xref:suse-ai-deploy-suse-ai[].
-
-[source,,subs="+attributes"]
-----
-{prompt_user}helm show values oci://registry.suse.com/ai/charts/qdrant
-----
-
-To list the available chart versions from this {sregistry}, you can use tools like crane, skopeo, etc.
-Here is an example of the `crane` command.
-[source,,subs="+attributes"]
-----
-{prompt_user}crane auth login registry.suse.com -u regcode -p <SCC_REG_CODE>
-{prompt_user}crane ls registry.suse.com/ai/charts/qdrant
-----
-
-[#qdrant-installing-procedure]
-== {qdrant} installation procedure
-
-include::../snippets/ai-library-requirement.adoc[]
-
-. Create a `qdrant_custom_overrides.yaml` file to override the values of the {helm} chart.
-Find examples of {qdrant} override files in xref:qdrant-helm-overrides[] and a list of all valid options and their values from running helm show values.
-. Install the {qdrant} {helm} chart using the `qdrant_custom_overrides.yaml` file using the following command.
-+
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-[source,subs="+attributes"]
-----
-{prompt_user}helm upgrade --install \
-  qdrant oci://registry.suse.com/ai/charts/qdrant \
-  -n SUSE_AI_NAMESPACE \
-  -f qdrant_custom_overrides.yaml
-----
 endif::[]
-ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
-[source,subs="+attributes"]
-----
-{prompt_user}helm upgrade --install \
-  qdrant charts/qdrant-<X.Y.Z>.tgz \
-  -n SUSE_AI_NAMESPACE \
-  --version <X.Y.Z> \
-  -f qdrant_custom_overrides.yaml
-----
-endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-17
+:page-revdate: {revdate}
 
 [#qdrant-owui-integration]
 == Integrating {qdrant} with {owui}
@@ -121,35 +87,4 @@ endif::[]
 
 Defaulted container "open-webui" out of: open-webui, copy-app-data (init)
 VECTOR_DB=qdrant
-----
-
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-[#qdrant-upgrading]
-== Upgrading {qdrant}
-
-You can upgrade {qdrant} to a specific version by running the following command:
-
-[source,subs="+attributes"]
-----
-{prompt_user}helm upgrade \
-  qdrant oci://dp.apps.rancher.io/ai/charts/qdrant \
-  -n SUSE_AI_NAMESPACE \
-  --version VERSION_NUMBER \
-  -f qdrant_custom_overrides.yaml
-----
-
-[TIP]
-====
-If you omit the `--version` option, {qdrant} gets upgraded to the latest available version.
-====
-endif::[]
-
-[#qdrant-uninstalling]
-== Uninstalling {qdrant}
-
-To uninstall {qdrant}, run the following command:
-
-[source,subs="+attributes"]
-----
-{prompt_user}helm uninstall qdrant -n SUSE_AI_NAMESPACE
 ----

@@ -1,6 +1,24 @@
-[#owui-helm-overrides]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Examples of {owui} {helm} chart override files
-:revdate: 2026-03-24
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{empty}
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-17
 :page-revdate: {revdate}
 
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
@@ -224,7 +242,7 @@ Replace `SUSE_AI_NAMESPACE` with your {kube} namespace.
 
 [TIP]
 =====
-Find more details about installing {vllm} in xref:vllm-installing[].
+Find more details about installing {vllm} in xref:vllm-helm-overrides[].
 =====
 
 [source,yaml]

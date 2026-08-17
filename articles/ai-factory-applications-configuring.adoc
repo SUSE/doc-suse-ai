@@ -31,35 +31,53 @@ include::../references/milvus-helm-overrides.adoc[leveloffset=+1]
 [#ollama-helmchart]
 :override-title: {ollama}
 include::../references/ollama-helmchart.adoc[leveloffset=+1]
-include::../tasks/owui-installing.adoc[leveloffset=+1]
-// include::../references/owui-helm-overrides.adoc[leveloffset=+2]
-// include::../references/owui-helmchart.adoc[leveloffset=+2]
-// include::../tasks/vllm-installing.adoc[leveloffset=+1]
-// include::../references/vllm-helm-overrides.adoc[leveloffset=+2]
-// include::../tasks/mcpo-installing.adoc[leveloffset=+1]
-// include::../tasks/pytorch-installing.adoc[leveloffset=+1]
-// include::../references/pytorch-helm-overrides.adoc[leveloffset=+2]
-// include::../references/pytorch-helmchart.adoc[leveloffset=+2]
-// include::../tasks/qdrant-installing.adoc[leveloffset=+1]
-// include::../references/qdrant-helm-overrides.adoc[leveloffset=+2]
-// include::../tasks/litellm-installing.adoc[leveloffset=+1]
-// include::../references/litellm-helm-overrides.adoc[leveloffset=+2]
-// include::../references/litellm-helmchart.adoc[leveloffset=+2]
-// include::../tasks/mlflow-installing.adoc[leveloffset=+1]
-// include::../tasks/kubeflow-installing.adoc[leveloffset=+1]
-// include::../tasks/kubeflow-accessing.adoc[leveloffset=+2]
-// :override-title: Configuration scenarios
-// include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+2]
-// :override-title: Hardening for production use
-// include::../tasks/kubeflow-hardening.adoc[leveloffset=+2]
-// :override-title: Managing user profiles and namespaces
-// include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+2]
-// :override-title: Upgrade notes
-// include::../references/kubeflow-upgrade-notes.adoc[leveloffset=+2]
-// :override-title: Known limitations
-// include::../references/kubeflow-limitations.adoc[leveloffset=+2]
-// :override-title: Troubleshooting
-// include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
+[#owui-helmchart]
+:override-title: {owui}
+include::../references/owui-helmchart.adoc[leveloffset=+1]
+[#owui-helm-overrides]
+include::../references/owui-helm-overrides.adoc[leveloffset=+2]
+
+[#vllm-helm-overrides]
+:override-title: {vllm}
+include::../references/vllm-helm-overrides.adoc[leveloffset=+1]
+[#mcpo-installing]
+:override-title: {mcpo}
+include::../tasks/mcpo-installing.adoc[leveloffset=+1]
+
+[#pytorch-helm-overrides]
+:override-title: {pytorch}
+include::../references/pytorch-helm-overrides.adoc[leveloffset=+1]
+include::../references/pytorch-helmchart.adoc[leveloffset=+2]
+
+[#qdrant-installing]
+:override-title: {qdrant}
+include::../tasks/qdrant-installing.adoc[leveloffset=+1]
+include::../references/qdrant-helm-overrides.adoc[leveloffset=+2]
+[#litellm-helm-overrides]
+:override-title: {litellm}
+include::../references/litellm-helm-overrides.adoc[leveloffset=+1]
+include::../references/litellm-helmchart.adoc[leveloffset=+2]
+
+[#mlflow-installing]
+:override-title: {mlflow}
+include::../tasks/mlflow-installing.adoc[leveloffset=+1]
+
+[#kubeflow-installing]
+:override-title: {kubeflow}
+include::../tasks/kubeflow-installing.adoc[leveloffset=+1]
+include::../tasks/kubeflow-accessing.adoc[leveloffset=+2]
+:override-title: Configuration scenarios
+include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+2]
+:override-title: Hardening for production use
+include::../tasks/kubeflow-hardening.adoc[leveloffset=+2]
+:override-title: Managing user profiles and namespaces
+include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+2]
+:override-title: Upgrade notes
+include::../references/kubeflow-upgrade-notes.adoc[leveloffset=+2]
+:override-title: Known limitations
+include::../references/kubeflow-limitations.adoc[leveloffset=+2]
+:override-title: Troubleshooting
+include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
 
 [glossary]
 [#ai-factory-glossary]
