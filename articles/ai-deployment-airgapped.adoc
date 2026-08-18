@@ -84,42 +84,42 @@ include::../tasks/Security-installation-airgapped.adoc[leveloffset=+3]
 include::../tasks/observability-settingup-ai.adoc[leveloffset=+2]
 // AI library
 
-include::../glues/ai-library-intro.adoc[leveloffset=+1]
-:override-title: Installation procedure
+// include::../glues/ai-library-intro.adoc[leveloffset=+1]
+// :override-title: Installation procedure
 
-include::../tasks/AI-deployment-ailibrary-installing.adoc[leveloffset=+2]
+// include::../tasks/AI-deployment-ailibrary-installing.adoc[leveloffset=+2]
 
-include::../tasks/cert-manager-installing.adoc[leveloffset=+2]
+// include::../tasks/cert-manager-installing.adoc[leveloffset=+2]
 
-include::../tasks/opensearch-installing.adoc[leveloffset=+2]
+// include::../tasks/opensearch-installing.adoc[leveloffset=+2]
 
-include::../tasks/milvus-installing.adoc[leveloffset=+2]
+// include::../tasks/milvus-installing.adoc[leveloffset=+2]
 
-include::../tasks/ollama-installing.adoc[leveloffset=+2]
+// include::../tasks/ollama-installing.adoc[leveloffset=+2]
 
-include::../references/ollama-helmchart.adoc[leveloffset=+3]
+// include::../references/ollama-helmchart.adoc[leveloffset=+3]
 
-include::../tasks/owui-installing.adoc[leveloffset=+2]
+// include::../tasks/owui-installing.adoc[leveloffset=+2]
 
-include::../references/owui-helm-overrides.adoc[leveloffset=+3]
+// include::../references/owui-helm-overrides.adoc[leveloffset=+3]
 
-include::../references/owui-helmchart.adoc[leveloffset=+3]
+// include::../references/owui-helmchart.adoc[leveloffset=+3]
 
-include::../tasks/vllm-installing.adoc[leveloffset=+2]
+// include::../tasks/vllm-installing.adoc[leveloffset=+2]
 
-include::../references/vllm-helm-overrides.adoc[leveloffset=+3]
+// include::../references/vllm-helm-overrides.adoc[leveloffset=+3]
 
-include::../tasks/mcpo-installing.adoc[leveloffset=+2]
+// include::../tasks/mcpo-installing.adoc[leveloffset=+2]
 
-include::../tasks/pytorch-installing.adoc[leveloffset=+2]
+// include::../tasks/pytorch-installing.adoc[leveloffset=+2]
 
-include::../references/pytorch-helm-overrides.adoc[leveloffset=+3]
+// include::../references/pytorch-helm-overrides.adoc[leveloffset=+3]
 
-include::../references/pytorch-helmchart.adoc[leveloffset=+3]
+// include::../references/pytorch-helmchart.adoc[leveloffset=+3]
 
-include::../tasks/qdrant-installing.adoc[leveloffset=+2]
+// include::../tasks/qdrant-installing.adoc[leveloffset=+2]
 
-include::../references/qdrant-helm-overrides.adoc[leveloffset=+3]
+// include::../references/qdrant-helm-overrides.adoc[leveloffset=+3]
 
 
 [appendix]
