@@ -26,7 +26,7 @@ endif::[]
 == Install {slsa} {sles-version}
 Install and register a supported Linux operating system on each cluster node.
 We recommend using {sls} {sles-version} for a traditional non-transactional operating system.
-Find more information about supported ways to link:https://documentation.suse.com/sles/16.0/[install {sls} {sles-version}].
+For supported installation methods, see link:https://documentation.suse.com/sles/16.0/[Install {sls} {sles-version}].
 
 For a list of supported operating systems, refer to link:https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/[].
 
