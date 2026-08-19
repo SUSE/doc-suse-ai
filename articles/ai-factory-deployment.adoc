@@ -23,12 +23,18 @@ Deploying {productname} on a {kube} cluster standardizes artificial intelligence
 include::../snippets/ai-rancher-multicluster.adoc[]
 --
 
+
 [#aif-deployment-prepare]
 == How do I prepare for the deployment?
 Preparation tasks depend on how much underlying infrastructure is already deployed.
+
 [#aif-deployment-prepare-overview]
 :override-title: Installation overview
 include::../references/aif-deployment-overview.adoc[leveloffset=+2]
+
+[#aif-deployment-prepare-for-rancher]
+:override-title: Prepare for {ranchera}
+include::../tasks/aif-deployment-prepare-for-rancher.adoc[leveloffset=+2]
 
 
 
