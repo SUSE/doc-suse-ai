@@ -1,11 +1,28 @@
-[#ai-gpu-nodes-assigning]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Assigning GPU nodes to applications
-:revdate: 2025-12-22
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Assigning graphics processing unit (GPU) nodes ensures that containerized applications run on hardware equipped with GPU acceleration.
+Matching demanding workloads, such as {ollama}, with specific worker nodes optimizes cluster resource allocation and performance.
+Configure this matching by labeling target worker nodes and defining explicit resource requests in {kube}.
+endif::[]
+// erase the flag for future overrides
+
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-19
 :page-revdate: {revdate}
 
-When deploying a containerized application to {kube}, you need to ensure that containers requiring GPU resources are run on appropriate worker nodes.
-For example, {ollama}, a core component of {productname}, can deeply benefit from the use of GPU acceleration.
-This topic describes how to satisfy this requirement by explicitly requesting GPU resources and labeling worker nodes for configuring the node selector.
 
 .Requirements
 * {kube} cluster--such as {rke2}--must be available and configured with more than one worker node in which certain nodes have {nvidia} GPU resources and others do not.

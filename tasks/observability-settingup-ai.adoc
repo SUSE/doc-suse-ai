@@ -1,11 +1,28 @@
-[#observability-installing]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Setting up {sobservability} for {productname}
-:revdate: 2026-02-20
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{sobservability} integrated with the {suseai} Observability Extension monitors and analyzes enterprise artificial intelligence (AI) workloads across cluster environments.
+Tracking metrics, logs and traces in real time enables proactive performance tuning, simplifies troubleshooting, and maintains optimal cluster health.
+Deploy this solution in either single-cluster or multi-cluster environments to establish unified telemetry pipelines.
+endif::[]
+// erase the flag for future overrides
+
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-19
 :page-revdate: {revdate}
 
-{sobservability} provides comprehensive monitoring and insights into your infrastructure and applications.
-It enables efficient tracking of metrics, logs and traces, helping you maintain optimal performance and troubleshoot issues effectively.
-This procedure guides you through setting up {sobservability} for the {productname} environment using the {suseai} Observability Extension.
 
 [#ai-observability-scenarios]
 == Deployment scenarios
@@ -1031,7 +1048,7 @@ Verify the installation by checking the existence of a new deployment and servic
 <.> Replace with your {sobservability} server URL.
 --
 . *Install {productname}.*
-Refer to xref:ai-library-installing[] for the complete procedure.
+Refer to xref:aif-deployment[] for the complete procedure.
 
 include::../snippets/observability-warning-262.adoc[]
 

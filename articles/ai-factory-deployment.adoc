@@ -36,7 +36,9 @@ include::../references/aif-deployment-overview.adoc[leveloffset=+2]
 :override-title: Prepare for {ranchera}
 include::../tasks/aif-deployment-prepare-for-rancher.adoc[leveloffset=+2]
 
-
+[#aif-deployment-prepare-for-aif]
+:override-title: Prepare for {productname}
+include::../tasks/aif-deployment-prepare-for-aif.adoc[leveloffset=+2]
 
 [#aif-deployment]
 == How do I deploy {productname}?
