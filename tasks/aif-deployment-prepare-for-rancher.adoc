@@ -11,7 +11,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-Preparing the infrastructure for {productname} involves setting up a supported operating system, configuring graphics processing unit (GPU) drivers, and deploying a {kube} distribution.
+Preparing the infrastructure for {productname} involves setting up {slsa} {sles-version} operating system, configuring graphics processing unit (GPU) drivers, and deploying an {rke2a} {kube} distribution.
 Establishing this baseline environment ensures that cluster nodes are fully optimized, registered and prepared to host {ranchera} and artificial intelligence (AI) platform management components.
 endif::[]
 // erase the flag for future overrides
@@ -26,22 +26,22 @@ endif::[]
 == Install {slsa} {sles-version}
 Install and register a supported Linux operating system on each cluster node.
 We recommend using {sls} {sles-version} for a traditional non-transactional operating system.
-For supported installation methods, see link:https://documentation.suse.com/sles/16.0/[Install {sls} {sles-version}].
-
-For a list of supported operating systems, refer to link:https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/[].
+For supported installation methods, see:
+*  link:https://documentation.suse.com/sles/16.0/[{sls} 16 Documentation].
+*  link:https://documentation.suse.com/sles/15-SP7/html/SLES-all/book-deployment.html[{sls} 15.7 Deployment Guide].
 
 [#aif-deployment-gpu-driver]
 == Install GPU drivers
 Depending on the preferred GPU hardware, install the {nvidia} or {amd} GPU driver on cluster nodes with GPUs.
+
 [#aif-deployment-nv-driver]
 :override-title: {nvidia} GPU drivers
 include::../tasks/NVIDIA-GPU-driver-installation-SLES.adoc[leveloffset=+2]
 
 [#aif-deployment-kube]
-== Install {kube}
+== Install {rke2a}
 include::../snippets/ai-separate-rancher-cluster.adoc[]
 
-We recommend using the supported {rke2} distribution.
 Refer to
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
   link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/quickstart.html[{rke2a} Installation Quickstart]
@@ -50,4 +50,3 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
   link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/airgap.html[{rke2a} Air-Gapped Installation]
 endif::[]
 for details.
-For a list of supported {kube} platforms, refer to link:https://www.suse.com/suse-rancher/support-matrix/all-supported-versions/[].
