@@ -51,7 +51,7 @@ You can download the `config_web_frag_2_1_0_updated.yaml` file from the link:htt
 Override the AI-Q back-end to load the custom configuration and talk to the RAG services.
 Replace `<RAG_NAMESPACE>` with the namespace where RAG is deployed.
 It is `ns-aiq` if RAG and AI-Q are deployed together by this blueprint.
-In such cases, short service names (for example, `http://rag-server:8081/v1`) also work.
+In such cases, short service names (for example, `\http://rag-server:8081/v1`) also work.
 With the following configuration, the AI-Q back-end uses the custom file `config_web_frag.yml`
 defined in the ConfigMap.
 +
