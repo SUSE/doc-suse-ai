@@ -1,4 +1,11 @@
 <revhistory xml:id="rh-deployment">
+  <revision><date>2026-08-06</date>
+    <revdescription>
+      <para>
+        Documented the driver management options of the {nvoperator}
+      </para>
+    </revdescription>
+  </revision>
   <revision><date>2026-06-10</date>
     <revdescription>
       <para>
