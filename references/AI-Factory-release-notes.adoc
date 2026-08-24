@@ -62,7 +62,7 @@ This release builds on the 2.0.x line with an operator-served application catalo
 - *Git-backed catalogs require a {ranchera} token*: To deploy from git-backed `ClusterRepo` resources, authorize a {ranchera} API token under *Settings > Rancher API Access* after upgrading. Charts too large to ship as a {fleeta} `Bundle` fail with `ChartTooLarge`; host those in an OCI or HTTP `ClusterRepo` instead link:https://github.com/SUSE/aif/pull/156[#156].
 - *Chatbot default model change*: After upgrading `simple-chatbot-with-rag` to 1.0.2, new chats default to `qwen2.5:3b` (`gemma:2b` is removed); existing chats remain readable link:https://github.com/SUSE/aif/pull/154[#154].
 
-Full Changelog: link:https://github.com/SUSE/aif/compare/aif-operator-2.0.1...aif-operator-2.1.0[aif-operator-2.0.1...aif-operator-2.1.0]
+Full Changelog: link:++https://github.com/SUSE/aif/compare/aif-operator-2.0.1...aif-operator-2.1.0++[aif-operator-2.0.1...aif-operator-2.1.0]
 
 == Release 2.0.1
 
@@ -76,7 +76,7 @@ This is the 2.0.1 release of {productname}, bringing comprehensive AI workload m
 - Reduced resource requests for the Phi-3-mini-4k-instruct model.
 - Marked the 1.0.0 simple-chatbot-with-rag, simple-chatbot-with-rag-vllm, and suse-inference-endpoint blueprints as deprecated as their 1.0.0 have blocking issues.
 
-Full Changelog: link:https://github.com/SUSE/aif/compare/aif-operator-2.0.0...aif-operator-2.0.1[aif-operator-2.0.0...aif-operator-2.0.1]
+Full Changelog: link:++https://github.com/SUSE/aif/compare/aif-operator-2.0.0...aif-operator-2.0.1++[aif-operator-2.0.0...aif-operator-2.0.1]
 
 == Release 2.0.0
 
