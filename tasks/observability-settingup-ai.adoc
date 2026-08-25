@@ -1031,7 +1031,6 @@ Verify the installation by checking the existence of a new deployment and servic
 <.> Replace with your {sobservability} server URL.
 --
 . *Install {productname}.*
-Refer to xref:ai-library-installing[] for the complete procedure.
 
 include::../snippets/observability-warning-262.adoc[]
 

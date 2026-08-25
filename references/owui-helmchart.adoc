@@ -1,6 +1,24 @@
-[#owui-helmchart-values]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Values for the {owui} {helm} chart
-:revdate: 2026-01-28
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+include::../snippets/openwebui-intro.adoc[]
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-17
 :page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]

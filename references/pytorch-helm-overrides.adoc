@@ -1,6 +1,25 @@
-[#pytorch-helm-overrides]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Examples of {pytorch} {helm} chart override files
-:revdate: 2026-03-25
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{pytorch} is a widely used open-source deep-learning framework that supports both CPU and GPU acceleration.
+When deployed with the {suseaia} stack, the {pytorch} {helm} chart lets you inject your own training or inference code into the container and run it on {nvidia} GPUs available in your cluster.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-17
 :page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]

@@ -1,0 +1,273 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {opensearch}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{opensearch} is a community-driven, open source search and analytics suite.
+It is used to search, visualize and analyze data.
+{opensearch} consists of a data store and search engine ({opensearch}), a visualization and user interface ({opensearch} Dashboards), and a server-side data collector (Data Prepper).
+Its functionality can be extended by plug-ins that enhance features like search, analytics, observability, security or machine learning.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-06
+:page-revdate: {revdate}
+
+include::../snippets/helm-chart-overrides-intro.adoc[]
+
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+:imgRegistry: {empty}
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
+endif::[]
+
+{opensearch} can operate as a single-node or multi-node cluster.
+The following override file examples outline both scenarios.
+
+[IMPORTANT]
+====
+Both scenarios require increasing the value of the `vm.max_map_count` to at least 262144.
+To check the current value, run the following command:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}cat /proc/sys/vm/max_map_count
+----
+
+To increase the value, add the following to `/etc/sysctl.conf`:
+
+[source]
+----
+vm.max_map_count=262144
+----
+
+Then run `sudo sysctl -p` to reload.
+====
+
+include::../snippets/ai-library-requirement.adoc[]
+
+. Create an `opensearch_custom_overrides.yaml` file to override the default values of the {helm} chart.
++
+For a single-node cluster, use the following template file:
++
+[source,yaml,subs="+attributes"]
+----
+# opensearch_custom_overrides.yaml
+global:
+  imagePullSecrets:
+    - application-collection
+    {imgRegistry}
+singleNode: true
+replicas: 1
+persistence:
+  enabled: true
+  storageClass: local-path
+
+extraEnvs:
+  - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+    value: "MySecurePass123"
+
+service:
+  type: NodePort
+  httpPort: 9200
+  transportPort: 9300
+  metricsPort: 9600
+
+resources:
+  limits:
+    memory: "6Gi"
+    cpu: "2"
+
+config:
+  opensearch.yml: |
+    plugins.security.disabled: true
+----
++
+For a multi-node cluster, use the following template file:
++
+[source,yaml,subs="+attributes"]
+----
+# opensearch_custom_overrides.yaml
+global:
+  imagePullSecrets:
+    - application-collection
+    {imgRegistry}
+singleNode: false
+replicas: 3
+persistence:
+  enabled: true
+  storageClass: local-path
+
+extraEnvs:
+  - name: OPENSEARCH_INITIAL_ADMIN_PASSWORD
+    value: "MySecurePass123"
+  - name: ES_JAVA_OPTS
+    value: "-Xms3g -Xmx3g" 
+
+service:
+  type: NodePort
+  httpPort: 9200
+  transportPort: 9300
+  metricsPort: 9600
+
+resources:
+  limits:
+    memory: "6Gi"
+    cpu: "2"
+  requests:
+    memory: "4Gi"
+    cpu: "1"
+
+startupProbe:
+  tcpSocket:
+    port: 9200
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 12
+
+readinessProbe:
+  tcpSocket:
+    port: 9200
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 6
+
+livenessProbe:
+  tcpSocket:
+    port: 9200
+  initialDelaySeconds: 120
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+config:
+  opensearch.yml: |
+    plugins.security.disabled: true
+----
+. After saving the override file as `opensearch_custom_overrides.yaml`, apply its configuration with the following command.
++
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  opensearch oci://dp.apps.rancher.io/charts/opensearch \
+  -n <SUSE_AI_NAMESPACE> \
+  -f <opensearch_custom_overrides.yaml>
+----
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  opensearch charts/opensearch-<X.Y.Z>.tgz \
+  -n <SUSE_AI_NAMESPACE> \
+  --version <X.Y.Z> \
+  -f <opensearch_custom_overrides.yaml>
+----
+endif::[]
+. Check that the pods and services are running.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -n <SUSE_AI_NAMESPACE> | grep "opensearch"
+opensearch-cluster-master-0           1/1     Running   0          5h34m
+----
++
+A multi-node cluster configuration shows that the replicas are distributed across multiple nodes.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -n <SUSE_AI_NAMESPACE> | grep "opensearch"
+opensearch-cluster-master-0 1/1 Running 0 2m30s 10.42.1.32 mgmt-rancher-wkrgpu1
+opensearch-cluster-master-1 1/1 Running 0 2m30s 10.42.1.33 mgmt-rancher-wkrgpu1
+opensearch-cluster-master-2 1/1 Running 0 2m30s 10.42.0.27 mgmt-rancher
+----
+
+[#opensearch-owui-integration]
+== Integrating {opensearch} with {owui}
+
+To integrate {opensearch} with {owui}, follow these steps:
+
+. Edit the override file for {owui}, `owui_custom_overrides.yaml`, and update the `extraEnvVars` section as follows.
++
+* Change the `VECTOR_DB` value to `opensearch`.
+* Remove the `MILVUS_URI` variable.
+* Add all the {opensearch}-related environment variables.
++
+[source,yaml]
+----
+extraEnvVars:
+- name: DEFAULT_MODELS
+  value: "gemma:2b"
+- name: DEFAULT_USER_ROLE
+  value: "pending"
+- name: ENABLE_SIGNUP
+  value: "true"
+- name: GLOBAL_LOG_LEVEL
+  value: INFO
+- name: RAG_EMBEDDING_MODEL
+  value: "sentence-transformers/all-MiniLM-L6-v2"
+- name: INSTALL_NLTK_DATASETS
+  value: "true"
+- name: VECTOR_DB
+  value: "opensearch"
+#- name: MILVUS_URI
+#  value: http://milvus.<SUSE_AI_NAMESPACE>.svc.cluster.local:19530
+- name: OPENAI_API_KEY
+  value: "0p3n-w3bu!"
+- name: OPENSEARCH_SSL
+  value: "false"
+- name: OPENSEARCH_URI
+  value: http://opensearch-cluster-master.<SUSE_AI_NAMESPACE>.svc.cluster.local:9200
+- name: OPENSEARCH_USERNAME
+  value: admin
+- name: OPENSEARCH_PASSWORD
+  value: MySecurePass123
+- name: OPENSEARCH_CERT_VERIFY
+  value: "false"
+----
+. Redeploy {owui}.
++
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  open-webui oci://dp.apps.rancher.io/charts/open-webui \
+  -n <SUSE_AI_NAMESPACE> \
+  -f <owui_custom_overrides.yaml>
+----
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install \
+  open-webui charts/open-webui-<X.Y.Z>.tgz \
+  -n <SUSE_AI_NAMESPACE> \
+  --version <X.Y.Z> \
+  -f <opensearch_custom_overrides.yaml>
+----
+endif::[]
+. Verify that `VECTOR_DB` is set to `opensearch`.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl exec -it open-webui-0 -n <SUSE_AI_NAMESPACE> \
+  -- sh -c 'echo "VECTOR_DB=$VECTOR_DB"'
+
+Defaulted container "open-webui" out of: open-webui, copy-app-data (init)
+VECTOR_DB=opensearch
+----

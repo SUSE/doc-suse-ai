@@ -1,4 +1,3 @@
-[#litellm-helm-overrides]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
@@ -12,13 +11,14 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
+{litellm} is an open source LLM proxy and abstraction layer that lets you interact with many large language model providers through a single, OpenAI-compatible API.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-25
+:revdate: 2026-08-17
 :page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
@@ -46,9 +46,7 @@ postgresql:
     storageClassName: "local-path" <.>
 ----
 <.> Specify the secret containing the credentials for the {sappco} in `global.imagePullSecrets`.
-    For instructions on how to configure the image pull secrets for the {sappco}, refer to xref:suse-ai-deploy-suse-ai[].
 <.> Specify the secret containing the credentials for the {sregistry} in `global.imagePullSecrets`.
-    For instructions on how to configure the image pull secrets for the {sregistry}, refer to xref:suse-ai-deploy-suse-ai[].
 <.> Use `local-path` storage only for testing purposes.
     For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
 ====

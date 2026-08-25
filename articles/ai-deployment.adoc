@@ -69,59 +69,69 @@ include::../tasks/Security-installation-kubernetes.adoc[leveloffset=+3]
 include::../tasks/observability-settingup-ai.adoc[leveloffset=+2]
 
 // AI library
-include::../glues/ai-library-intro.adoc[leveloffset=+1]
-:override-title: Installation procedure
-include::../tasks/AI-deployment-ailibrary-installing.adoc[leveloffset=+2]
-include::../tasks/cert-manager-installing.adoc[leveloffset=+2]
-include::../tasks/opensearch-installing.adoc[leveloffset=+2]
-include::../tasks/milvus-installing.adoc[leveloffset=+2]
-include::../tasks/ollama-installing.adoc[leveloffset=+2]
-include::../references/ollama-helmchart.adoc[leveloffset=+3]
-include::../tasks/owui-installing.adoc[leveloffset=+2]
-include::../references/owui-helm-overrides.adoc[leveloffset=+3]
-include::../references/owui-helmchart.adoc[leveloffset=+3]
-include::../tasks/vllm-installing.adoc[leveloffset=+2]
-include::../references/vllm-helm-overrides.adoc[leveloffset=+3]
-include::../tasks/mcpo-installing.adoc[leveloffset=+2]
-include::../tasks/pytorch-installing.adoc[leveloffset=+2]
-include::../references/pytorch-helm-overrides.adoc[leveloffset=+3]
-include::../references/pytorch-helmchart.adoc[leveloffset=+3]
-include::../tasks/qdrant-installing.adoc[leveloffset=+2]
-include::../references/qdrant-helm-overrides.adoc[leveloffset=+3]
-include::../tasks/litellm-installing.adoc[leveloffset=+2]
-include::../references/litellm-helm-overrides.adoc[leveloffset=+3]
-include::../references/litellm-helmchart.adoc[leveloffset=+3]
-include::../tasks/mlflow-installing.adoc[leveloffset=+2]
-include::../tasks/kubeflow-installing.adoc[leveloffset=+2]
-include::../tasks/kubeflow-accessing.adoc[leveloffset=+3]
-:override-title: Configuration scenarios
-include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+3]
-:override-title: Hardening for production use
-include::../tasks/kubeflow-hardening.adoc[leveloffset=+3]
-:override-title: Managing user profiles and namespaces
-include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+3]
-:override-title: Upgrade notes
-include::../references/kubeflow-upgrade-notes.adoc[leveloffset=+3]
-:override-title: Known limitations
-include::../references/kubeflow-limitations.adoc[leveloffset=+3]
-:override-title: Troubleshooting
-include::../references/kubeflow-troubleshooting.adoc[leveloffset=+3]
-include::../tasks/ai-library-apps-verifying.adoc[leveloffset=+2]
+//include::../glues/ai-library-intro.adoc[leveloffset=+1]
+//:override-title: Installation procedure
+//include::../tasks/AI-deployment-ailibrary-installing.adoc[leveloffset=+2]
+//include::../tasks/cert-manager-installing.adoc[leveloffset=+2]
+
+//:abstract-override: {empty}
+//include::../tasks/opensearch-installing.adoc[leveloffset=+2]
+//[#opensearch-helm-overrides]
+//include::../references/opensearch-helm-overrides.adoc[leveloffset=+3]
+//[#milvus-installing-procedure]
+//:abstract-override: {empty}
+//include::../tasks/milvus-installing.adoc[leveloffset=+2]
+//[#milvus-helm-overrides]
+//include::../references/milvus-helm-overrides.adoc[leveloffset=+3]
+
+
+//include::../tasks/ollama-installing.adoc[leveloffset=+2]
+//include::../references/ollama-helmchart.adoc[leveloffset=+3]
+//include::../tasks/owui-installing.adoc[leveloffset=+2]
+//include::../references/owui-helm-overrides.adoc[leveloffset=+3]
+//include::../references/owui-helmchart.adoc[leveloffset=+3]
+//include::../tasks/vllm-installing.adoc[leveloffset=+2]
+//include::../references/vllm-helm-overrides.adoc[leveloffset=+3]
+//include::../tasks/mcpo-installing.adoc[leveloffset=+2]
+//include::../tasks/pytorch-installing.adoc[leveloffset=+2]
+//include::../references/pytorch-helm-overrides.adoc[leveloffset=+3]
+//include::../references/pytorch-helmchart.adoc[leveloffset=+3]
+// include::../tasks/qdrant-installing.adoc[leveloffset=+2]
+// include::../references/qdrant-helm-overrides.adoc[leveloffset=+3]
+//include::../tasks/litellm-installing.adoc[leveloffset=+2]
+//include::../references/litellm-helm-overrides.adoc[leveloffset=+3]
+//include::../references/litellm-helmchart.adoc[leveloffset=+3]
+// include::../tasks/mlflow-installing.adoc[leveloffset=+2]
+// include::../tasks/kubeflow-installing.adoc[leveloffset=+2]
+// include::../tasks/kubeflow-accessing.adoc[leveloffset=+3]
+// :override-title: Configuration scenarios
+// include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+3]
+// :override-title: Hardening for production use
+// include::../tasks/kubeflow-hardening.adoc[leveloffset=+3]
+// :override-title: Managing user profiles and namespaces
+// include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+3]
+// :override-title: Upgrade notes
+// include::../references/kubeflow-upgrade-notes.adoc[leveloffset=+3]
+// :override-title: Known limitations
+// include::../references/kubeflow-limitations.adoc[leveloffset=+3]
+// :override-title: Troubleshooting
+// include::../references/kubeflow-troubleshooting.adoc[leveloffset=+3]
+// include::../tasks/ai-library-apps-verifying.adoc[leveloffset=+2]
 
 
 // automated installations
-[#ai-alternative-deployments]
-== Alternative deployment
+// [#ai-alternative-deployments]
+// == Alternative deployment
 
-You can automate key parts of your {productname} configuration and deployment.
-This includes preparing {suse}-based servers for AI workloads by deploying {rke2a}, {ranchera}, {rancherprime}, {nvidia} GPU drivers and {nvoperator} using xref:ai-node-installer[{sainodeinstaller}].
+// You can automate key parts of your {productname} configuration and deployment.
+// This includes preparing {suse}-based servers for AI workloads by deploying {rke2a}, {ranchera}, {rancherprime}, {nvidia} GPU drivers and {nvoperator} using xref:ai-node-installer[{sainodeinstaller}].
 //* Deploying {productname} workloads using xref:ailibrary-installing-deployer[{saideployer}].
 //* Deploying {productname} workloads using xref:ai-lifecycle-manager[{sailifecyclemanager}].
 
-:override-title: Node installer
-include::../concepts/ai-node-installer.adoc[leveloffset=+2]
-:override-abstract: {empty}
-include::../tasks/ai-node-installer.adoc[leveloffset=+3]
+// // :override-title: Node installer
+// // include::../concepts/ai-node-installer.adoc[leveloffset=+2]
+// // :override-abstract: {empty}
+// include::../tasks/ai-node-installer.adoc[leveloffset=+3]
 
 //:override-title: {ailibrary} deployer
 //include::../tasks/ai-deployment-ailibrary-deployer.adoc[leveloffset=+2]
