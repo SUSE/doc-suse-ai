@@ -4,112 +4,43 @@ ifdef::override-title[]
 = {override-title}
 endif::[]
 ifndef::override-title[]
-= Assigning GPU nodes to applications
+= Assigning GPU resources to applications
 endif::[]
 // overridden abstract?
 ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-Assigning graphics processing unit (GPU) nodes ensures that containerized applications run on hardware equipped with GPU acceleration.
-Matching demanding workloads, such as {ollama}, with specific worker nodes optimizes cluster resource allocation and performance.
-Configure this matching by labeling target worker nodes and defining explicit resource requests in {kube}.
+Applications running on {kube} can request GPU resources when GPU acceleration is required.
+
+After the GPU Operator is installed and configured, GPU resources become available to {kube}.
+Applications request these resources by defining resource requests and limits for their workloads.
+
+{kube} schedules workloads that request GPU resources on nodes where the requested resources are available.
+Optionally, you can use node selection rules to restrict an application to specific nodes.
 endif::[]
 // erase the flag for future overrides
 
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-19
+:revdate: 2026-08-25
 :page-revdate: {revdate}
 
 
-.Requirements
-* {kube} cluster--such as {rke2}--must be available and configured with more than one worker node in which certain nodes have {nvidia} GPU resources and others do not.
-* This document assumes that any kind of deployment to the {kube} cluster is done using {helm} charts.
+.**Requirements**
 
-[#ai-gpu-node-labeling]
-== Labeling GPU nodes
+* {rke2a} {kube} cluster with one or more nodes that provide supported GPU resources.
+* A GPU Operator must be installed and configured so that the GPU resources are available to {kube}.
+* Application deployments must support configuring {kube} resource requests and limits.
 
-To distinguish nodes with the GPU support from non-GPU nodes, {kube} uses *labels*.
-Labels are used for relevant metadata and should not be confused with annotations that provide simple information about a resource.
-It is possible to manipulate labels with the `kubectl` command, as well as by tweaking configuration files from the nodes.
-If an IaC tool such as Terraform is used, labels can be inserted in the node resource configuration files.
+[#ai-gpu-nodes-requesting]
+== Requesting GPU resources
 
-To label a single node, use the following command:
+When GPU resources are available to {kube}, applications can request them by defining resource requests and limits.
+For {nvidia} GPUs, the GPU Operator typically makes the GPU resource available as `nvidia.com/gpu`.
 
-[source,bash,subs="+attributes"]
-----
-{prompt_user}kubectl label node <GPU_NODE_NAME> accelerator=nvidia-gpu
-----
-
-To achieve the same result by tweaking the `node.yaml` node configuration, add the following content and apply the changes with `kubectl apply -f node.yaml`:
-
-[source,yaml]
-----
-apiVersion: v1
-kind: Node
-metadata:
-  name: node-name
-  labels:
-    accelerator: nvidia-gpu
-----
-
-[TIP]
-.Labeling multiple nodes
-====
-To label multiple nodes, use the following command:
-
-[source,bash,subs="+attributes"]
-----
-{prompt_user}kubectl label node \
-  <GPU_NODE_NAME1> \
-  <GPU_NODE_NAME2> ... \
-  accelerator=nvidia-gpu
-----
-====
-
-[TIP]
-====
-If Terraform is being used as an IaC tool, you can add labels to a group of nodes by editing the `.tf` files and adding the following values to a resource:
-
-[source]
-----
-resource "node_group" "example" {
-  labels = {
-    "accelerator" = "nvidia-gpu"
-  }
-}
-----
-====
-
-To check if the labels are correctly applied, use the following command:
-
-[source,bash,subs="+attributes"]
-----
-{prompt_user}kubectl get nodes --show-labels
-----
-
-[#ai-gpu-node-assign]
-== Assigning GPU nodes
-
-The matching between a container and a node is configured by the explicit resource allocation and the use of labels and node selectors.
-The use cases described below focus on {nvidia} GPUs.
-
-[#ai-gpu-passthru]
-=== Enable GPU passthrough
-
-Containers are isolated from the host environment by default.
-For the containers that rely on the allocation of GPU resources, their {helm} charts must enable GPU passthrough so that the container can access and use the GPU resource.
-Without enabling the GPU passthrough, the container may still run, but it can only use the main CPU for all computations.
-Refer to link:https://documentation.suse.com/suse-ai/1.0/html/AI-deployment-intro/index.html#ollama-helmchart[{ollama} {helm} chart] for an example of the configuration required for GPU acceleration.
-
-[#ai-gpu-assign-request-resources]
-=== Assignment by resource request
-
-After the {nvoperator} is configured on a node, you can instantiate applications requesting the resource `nvidia.com/gpu` provided by the operator.
-Add the following content to your `values.yaml` file.
-Specify the number of GPUs according to your setup.
+For example, add the following configuration to the application's `values.yaml` file:
 
 [source,yaml]
 ----
@@ -120,11 +51,26 @@ resources:
     nvidia.com/gpu: 1
 ----
 
-[#ai-gpu-assign-labels]
-=== Assignment by labels and node selectors
+Specify the number of GPUs according to the requirements of the application and the available cluster resources.
 
-If affected cluster nodes are labeled with a label such as `accelerator=nvidia-gpu`, you can configure the node selector to check for the label.
-In this case, use the following values in your `values.yaml` file.
+When the workload is scheduled, {kube} schedules it on a node where the requested GPU resources are available and allocates the requested resources to the workload.
+
+[#ai-gpu-nodes-optional-selecting]
+== Optionally selecting specific GPU nodes
+
+In some environments, you might want to restrict an application to specific GPU nodes.
+For example, this can be useful when a cluster contains nodes with different GPU models or when GPU nodes are reserved for particular workloads.
+
+You can use {kube} labels and node selectors to control where the workload is scheduled.  
+
+For example, label a node:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl label node <GPU_NODE_NAME> accelerator=nvidia-gpu
+----
+
+Then configure the application to select nodes with that label:
 
 [source,yaml]
 ----
@@ -132,16 +78,33 @@ nodeSelector:
   accelerator: nvidia-gpu
 ----
 
-[#ai-gpu-assign-verify]
-== Verifying {ollama} GPU assignment
+Node labels and selectors are optional.
+They are not required for {kube} to allocate GPU resources.
 
-If the GPU is correctly detected, the {ollama} container logs this event:
+[#ai-gpu-nodes-assign-verify]
+== Verifying GPU assignment
 
-[source]
+The method used to verify GPU usage depends on the application.
+
+First, verify that {kube} scheduled the workload successfully on a node that provides the requested GPU resources.
+You can inspect the workload and its assigned node by using `kubectl`.
+For example:
+
+[source,bash,subs="+attributes"]
 ----
-| [...] source=routes.go:1172 msg="Listening on :11434 (version 0.0.0)"                                              │
-│ [...] source=payload.go:30 msg="extracting embedded files" dir=/tmp/ollama2502346830/runners                       │
-│ [...] source=payload.go:44 msg="Dynamic LLM libraries [cuda_v12 cpu cpu_avx cpu_avx2]"                             │
-│ [...] source=gpu.go:204 msg="looking for compatible GPUs"                                                          │
-│ [...] source=types.go:105 msg="inference compute" id=GPU-c9ad37d0-d304-5d2a-c2e6-d3788cd733a7 library=cuda compute │
+{prompt_user}kubectl describe pod <POD_NAME>
 ----
+
+After the workload is running, use application-specific information to verify that the application detected and is using the assigned GPU.
+Depending on the application, this information might be available through logs, metrics, or the user interface.
+
+For example, {ollama} logs information about the available compute libraries and detected GPUs when GPU acceleration is enabled.
+The following example shows an {ollama} log indicating that a compatible GPU was detected:
+
+[source,text]
+----
+[...] source=gpu.go:204 msg="looking for compatible GPUs"
+[...] source=types.go:105 msg="inference compute" id=GPU-... library=cuda compute=...
+----
+
+Refer to the documentation of the deployed application for application-specific instructions on verifying GPU detection and usage.

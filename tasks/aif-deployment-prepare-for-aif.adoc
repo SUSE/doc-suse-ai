@@ -43,7 +43,6 @@ Refer to link:https://documentation.suse.com/cloudnative/rke2/latest/en/add-ons/
 Refer to link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/cluster-deployment/register-existing-clusters.html[Registering Existing Clusters] for more details.
 
 [#ai-gpu-nodes-assigning]
-:override-title: Assign GPU nodes to applications
 include::../tasks/AI-gpu-nodes-assigning.adoc[leveloffset=+1]
 
 [#ai-gpu-install-ssecurity]
