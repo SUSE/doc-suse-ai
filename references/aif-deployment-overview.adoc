@@ -24,8 +24,8 @@ endif::[]
 The {productname} installation process differs according to the following scenarios:
 
 * You have clean cluster nodes prepared without {slsa} {sles-version} operating system.
-* You have {slsa} {sles-version} operating system and {rke2a} {kube} distribution installed on cluster nodes.
-* You have {rancherprime} and all supporting components installed on the {rke2a} {kube} cluster.
+* You have {slsa} {sles-version} operating system and {rke2a} {kube} distribution with {rancherprime} installed.
+* You setup is ready for installing AI applications and blueprints.
 
 [#fg-aif-installation-flowchart]
 .{productname} installation process

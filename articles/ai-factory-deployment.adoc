@@ -33,13 +33,64 @@ Preparation tasks depend on how much underlying infrastructure is already deploy
 :override-title: Installation overview
 include::../references/aif-deployment-overview.adoc[leveloffset=+2]
 
-[#aif-deployment-prepare-for-rancher]
-:override-title: Prepare for {ranchera}
-include::../tasks/aif-deployment-prepare-for-rancher.adoc[leveloffset=+2]
+[#aif-deployment-prepare-os]
+=== Install {slsa} {sles-version}
+Install and register a supported Linux operating system on each cluster node.
+We recommend using {sls} {sles-version} for a traditional non-transactional operating system.
+For supported installation methods, see:
+*  link:https://documentation.suse.com/sles/16.0/[{sls} 16 Documentation].
+*  link:https://documentation.suse.com/sles/15-SP7/html/SLES-all/book-deployment.html[{sls} 15.7 Deployment Guide].
 
-[#aif-deployment-prepare-for-aif]
-:override-title: Prepare for {productname}
-include::../tasks/aif-deployment-prepare-for-aif.adoc[leveloffset=+2]
+[#aif-deployment-kube]
+=== Install {rke2a}
+include::../snippets/ai-separate-rancher-cluster.adoc[]
+
+Refer to
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+  link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/quickstart.html[{rke2a} Installation Quickstart]
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+  link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/airgap.html[{rke2a} Air-Gapped Installation]
+endif::[]
+for details.
+
+[#aif-deployment-install-rancher]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+=== Install {ranchera}
+Refer to link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/install-rancher.html[{ranchera} Installation on {kube} Cluster] for more details.
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+=== Install {ranchera}
+Refer to link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/other-installation-methods/air-gapped/air-gapped.html[{ranchera} Air-Gapped Installation] for more details.
+endif::[]
+
+include::../snippets/ai-separate-rancher-cluster.adoc[]
+
+[#aif-deployment-install-gpu-operator]
+=== Install {nvoperator}
+Refer to link:https://documentation.suse.com/cloudnative/rke2/latest/en/add-ons/gpu_operators.html[GPU Operator Installation] for more details.
+
+[#aif-deployment-connect-cluster]
+=== Connect the _downstream_ cluster to {ranchera}
+Refer to link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/cluster-deployment/register-existing-clusters.html[Registering Existing Clusters] for more details.
+
+[#ai-gpu-nodes-assigning]
+:override-title: Assign GPU resources
+include::../tasks/AI-gpu-nodes-assigning.adoc[leveloffset=+2]
+
+[#ai-gpu-install-ssecurity]
+:override-title: Install {ssecurity}
+include::../glues/ai-ssecurity-intro.adoc[leveloffset=+2]
+[#suse-security-installation-rancher]
+include::../tasks/Security-installation-rancher.adoc[leveloffset=+3]
+[#suse-security-installation-kubernetes]
+include::../tasks/Security-installation-kubernetes.adoc[leveloffset=+3]
+
+[#ai-gpu-install-sobservability]
+:override-title: Install {sobservability}
+include::../tasks/observability-settingup-ai.adoc[leveloffset=+2]
+
+
 
 [#aif-deployment]
 == How do I deploy {productname}?
@@ -56,20 +107,29 @@ include::../tasks/ai-factory-deployment-helm.adoc[leveloffset=+2]
 :override-title: How do I install {productname} using Rancher?
 include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
 
+
+
 [#aif-credentials-install]
 :override-title: Can I provide repository credentials during the {productname} installation?
 include::../tasks/aif-credentials-helm.adoc[leveloffset=+2]
 
 
+
 :override-title: Are there any post-deployment steps?
 include::../tasks/ai-factory-registries-access.adoc[leveloffset=+1]
+
+
 
 :override-title: How do I upgrade {productname}?
 include::../tasks/ai-factory-upgrade.adoc[leveloffset=+1]
 
+
+
 [#ai-factory-deployment-uninstall]
 :override-title: How do I uninstall {productname}?
 include::../tasks/ai-factory-uninstall.adoc[leveloffset=+1]
+
+
 
 [glossary]
 [#ai-factory-glossary]
