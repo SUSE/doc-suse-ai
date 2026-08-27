@@ -79,16 +79,13 @@ Refer to link:https://documentation.suse.com/cloudnative/rancher-manager/latest/
 include::../tasks/AI-gpu-nodes-assigning.adoc[leveloffset=+2]
 
 [#ai-gpu-install-ssecurity]
-:override-title: Install {ssecurity}
-include::../glues/ai-ssecurity-intro.adoc[leveloffset=+2]
-[#suse-security-installation-rancher]
-include::../tasks/Security-installation-rancher.adoc[leveloffset=+3]
-[#suse-security-installation-kubernetes]
-include::../tasks/Security-installation-kubernetes.adoc[leveloffset=+3]
+=== Install {ssecurity}
+Refer to link:https://documentation.suse.com/cloudnative/security/latest/en/rancher.html[{ssecurity} {ranchera} Deployment] for more details.
+
 
 [#ai-gpu-install-sobservability]
-:override-title: Install {sobservability}
-include::../tasks/observability-settingup-ai.adoc[leveloffset=+2]
+=== Install {sobservability}
+Refer to link:https://documentation.suse.com/cloudnative/suse-observability/latest/en/k8s-suse-rancher-prime.html[{sobservability} {ranchera} Deployment] for more details.
 
 
 
