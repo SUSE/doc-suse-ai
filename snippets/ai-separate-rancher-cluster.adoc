@@ -1,5 +1,5 @@
 [IMPORTANT]
 .Separate clusters for specific {productname} components
 ====
-For production deployments, we strongly recommended deploying {ranchera}, {sobservability}, and workloads from the AI library to separate {kube} clusters.
+For production deployments, we strongly recommend deploying {ranchera}, {sobservability}, and workloads from the AI library to separate {kube} clusters.
 ====
