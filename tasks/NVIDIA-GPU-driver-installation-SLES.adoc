@@ -11,7 +11,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-The {nvidia} open-driver provides host-level graphics processing unit (GPU) support directly from the core operating system package repositories.
+The {nvidia} open driver provides host-level graphics processing unit (GPU) support directly from the core operating system package repositories.
 This built-in configuration eliminates the need to compile drivers manually or load them dynamically using the {nvidia} GPU Operator.
 Use this method to pre-build deployment artifacts into your system images and simplify offline or containerized installations.
 endif::[]

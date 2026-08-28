@@ -14,7 +14,7 @@ ifndef::override-abstract[]
 {ssecurity} protects cluster infrastructure by continuously scanning nodes for vulnerabilities and securing containerized workloads.
 Integrating this platform prevents unauthorized access and improves overall data protection across enterprise environments.
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-Deploy this component using either xref:suse-security-installation-rancher[{ranchermanager}] or directly onto a target xref:suse-security-installation-kubernetes[{kube} cluster].
+Deploy this component using xref:suse-security-installation-rancher[{ranchermanager}] or directly onto a target xref:suse-security-installation-kubernetes[{kube} cluster].
 endif::[]
 endif::[]
 // erase the flag for future overrides

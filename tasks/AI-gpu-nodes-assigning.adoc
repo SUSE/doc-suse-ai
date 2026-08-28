@@ -31,7 +31,7 @@ endif::[]
 .**Requirements**
 
 * {rke2a} {kube} cluster with one or more nodes that provide supported GPU resources.
-* A GPU Operator must be installed and configured so that the GPU resources are available to {kube}.
+* A GPU Operator must be installed and configured to make GPU resources available to {kube}.
 * Application deployments must support configuring {kube} resource requests and limits.
 
 [#ai-gpu-nodes-requesting]

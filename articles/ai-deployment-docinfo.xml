@@ -2,7 +2,7 @@
   <revision><date>2026-08-26</date>
     <revdescription>
       <para>
-        Updated NVIDIA GPU driver installation to use containerized drivers via GPU Operator.
+        Updated NVIDIA GPU driver installation to use containerized drivers via GPU Operator
       </para>
     </revdescription>
   </revision>
