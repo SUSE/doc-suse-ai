@@ -38,6 +38,7 @@ include::../references/aif-deployment-overview.adoc[leveloffset=+2]
 Install and register a supported Linux operating system on each cluster node.
 We recommend using {sls} {sles-version} for a traditional non-transactional operating system.
 For supported installation methods, see:
+
 *  link:https://documentation.suse.com/sles/16.0/[{sls} 16 Documentation]
 *  link:https://documentation.suse.com/sles/15-SP7/html/SLES-all/book-deployment.html[{sls} 15.7 Deployment Guide]
 
