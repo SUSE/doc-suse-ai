@@ -1,10 +1,27 @@
-[#suse-security-installation-rancher]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Installing and managing {ssecurity} through {ranchera} Extensions or Apps & Marketplace
-:revdate: 2025-12-22
-:page-revdate: {revdate}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Deploying {ssecurity} through {ranchera} integrates advanced container security, vulnerability scanning, and runtime protection directly into cluster management workflows.
+This integration enables single sign-on (SSO) console access and centralized security policy control across managed environments.
+Deploy this component using {ranchera} Extensions or Apps & Marketplace to install security containers into the default namespace.
+endif::[]
+// erase the flag for future overrides
 
-{ssecurity} can be deployed easily either through {ranchera} Extensions for Prime customers, or {ranchera} Apps and Marketplace.
-The default ({helm}-based) deployment deploys {ssecurity} containers into the `cattle-neuvector-system` namespace.
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-19
+:page-revdate: {revdate}
 
 [NOTE]
 ====

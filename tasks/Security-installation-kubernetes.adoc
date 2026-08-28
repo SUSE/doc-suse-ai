@@ -1,10 +1,27 @@
-[#suse-security-installation-kubernetes]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
 = Installing {ssecurity} using {kube}
-:revdate: 2025-12-22
-:page-revdate: {revdate}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Deploying {ssecurity} using {kube} provides containerized runtime protection, vulnerability scanning, and compliance auditing directly on cluster infrastructure.
+This native deployment schedules dedicated manager, controller and enforcer containers to automatically secure existing and newly provisioned worker nodes.
+The security platform natively supports standard {kube} network plug-ins, including Calico, Flannel and Weave.
+endif::[]
+// erase the flag for future overrides
 
-You can use {kube} to deploy separate manager, controller and enforcer containers and make sure that all new nodes have an enforcer deployed.
-{ssecurity} requires and supports {kube} network plug-ins such as flannel, weave and calico.
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-19
+:page-revdate: {revdate}
 
 The sample file will deploy one manager and 3 controllers.
 It will deploy an enforcer on every node as a daemonset.

@@ -1,0 +1,32 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {productname} installation overview
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+This overview summarizes the {productname} installation scenarios and shows which deployment path to follow.
+endif::[]
+// erase the flag for future overrides
+
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-18
+:page-revdate: {revdate}
+
+The {productname} installation process differs according to the following scenarios:
+
+* You have clean cluster nodes prepared without {slsa} {sles-version} operating system.
+* You have {slsa} {sles-version} operating system and {rke2a} {kube} distribution with {rancherprime} installed.
+* Your setup is ready for installing AI applications and blueprints.
+
+[#fg-aif-installation-flowchart]
+.{productname} installation process
+image::aif-installation-flowchart.png[alt="{productname} installation process",width=100%]
