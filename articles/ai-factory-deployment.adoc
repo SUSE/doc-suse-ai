@@ -17,19 +17,84 @@ endif::[]
 
 [abstract]
 --
-// include::../snippets/aif-tip-suseai-docs.adoc[]
-
-Deploying {productname} on a {kube} cluster standardizes artificial intelligence (AI) platform management, replacing manual integration with version-controlled, reproducible blueprints to streamline enterprise workloads.
---
-
-== How do I deploy {productname}?
-You can install {productname} on the {ranchera}-enabled {kube} cluster in the following ways:
-
-* on the command line by using the {helm} command
-* using {ranchera} UI
+Deploying {productname} on a {rke2a} {kube} cluster standardizes artificial intelligence (AI) platform management.
+It replaces manual integration with version-controlled, reproducible blueprints to streamline enterprise workloads.
 
 :app: {saifoperator}
 include::../snippets/ai-rancher-multicluster.adoc[]
+--
+
+
+[#aif-deployment-prepare]
+== How do I prepare for the deployment?
+Preparation tasks depend on how much underlying infrastructure is already deployed.
+
+[#aif-deployment-prepare-overview]
+:override-title: Installation overview
+include::../references/aif-deployment-overview.adoc[leveloffset=+2]
+
+[#aif-deployment-prepare-os]
+=== Install {slsa} {sles-version}
+Install and register {sls} {sles-version} operating system on each cluster node.
+For supported installation methods, see:
+
+*  link:https://documentation.suse.com/sles/16.0/[{sls} 16 Documentation]
+*  link:https://documentation.suse.com/sles/15-SP7/html/SLES-all/book-deployment.html[{sls} 15.7 Deployment Guide]
+
+[#aif-deployment-kube]
+=== Install {rke2a}
+include::../snippets/ai-separate-rancher-cluster.adoc[]
+
+Refer to
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+  link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/quickstart.html[{rke2a} Installation Quickstart]
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+  link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/airgap.html[{rke2a} Air-Gapped Installation]
+endif::[]
+for details.
+
+[#aif-deployment-install-rancher]
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+=== Install {ranchera}
+Refer to link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/install-rancher.html[{ranchera} Installation on {kube} Cluster] for more details.
+endif::[]
+ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
+=== Install {ranchera}
+Refer to link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/other-installation-methods/air-gapped/air-gapped.html[{ranchera} Air-Gapped Installation] for more details.
+endif::[]
+
+include::../snippets/ai-separate-rancher-cluster.adoc[]
+
+[#aif-deployment-install-gpu-operator]
+=== Install {nvoperator}
+Refer to link:https://documentation.suse.com/cloudnative/rke2/latest/en/add-ons/gpu_operators.html[GPU Operator Installation] for more details.
+
+[#aif-deployment-connect-cluster]
+=== Connect the _downstream_ cluster to {ranchera}
+Refer to link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/cluster-deployment/register-existing-clusters.html[Registering Existing Clusters] for more details.
+
+[#ai-gpu-nodes-assigning]
+:override-title: Assign GPU resources
+include::../tasks/AI-gpu-nodes-assigning.adoc[leveloffset=+2]
+
+[#ai-gpu-install-ssecurity]
+=== Install {ssecurity}
+Refer to link:https://documentation.suse.com/cloudnative/security/latest/en/rancher.html[{ssecurity} {ranchera} Deployment] for more details.
+
+
+[#ai-gpu-install-sobservability]
+=== Install {sobservability}
+Refer to link:https://documentation.suse.com/cloudnative/suse-observability/latest/en/k8s-suse-rancher-prime.html[{sobservability} {ranchera} Deployment] for more details.
+
+
+
+[#aif-deployment]
+== How do I deploy {productname}?
+You can install {productname} on the {ranchera}-enabled {rke2a} {kube} cluster in the following ways:
+
+* on the command line by using the {helm} command
+* using {ranchera} UI
 
 [#ai-factory-deployment-helm]
 :override-title: How do I install {productname} using the {helm} CLI?
@@ -39,19 +104,29 @@ include::../tasks/ai-factory-deployment-helm.adoc[leveloffset=+2]
 :override-title: How do I install {productname} using Rancher?
 include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
 
+
+
 [#aif-credentials-install]
 :override-title: Can I provide repository credentials during the {productname} installation?
-include::../tasks/aif-credentials-helm.adoc[leveloffset=+1]
+include::../tasks/aif-credentials-helm.adoc[leveloffset=+2]
+
+
 
 :override-title: Are there any post-deployment steps?
 include::../tasks/ai-factory-registries-access.adoc[leveloffset=+1]
 
+
+
 :override-title: How do I upgrade {productname}?
 include::../tasks/ai-factory-upgrade.adoc[leveloffset=+1]
+
+
 
 [#ai-factory-deployment-uninstall]
 :override-title: How do I uninstall {productname}?
 include::../tasks/ai-factory-uninstall.adoc[leveloffset=+1]
+
+
 
 [glossary]
 [#ai-factory-glossary]
@@ -65,4 +140,3 @@ include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]
 [appendix]
 [#ai-factory-appendix]
 include::../references/AI-Factory-appendix.adoc[leveloffset=+1]
-

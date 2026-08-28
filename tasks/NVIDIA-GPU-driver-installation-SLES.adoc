@@ -1,4 +1,3 @@
-[#nvidia-gpu-driver-installation-sles]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
@@ -12,14 +11,16 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{empty}
+The {nvidia} open driver provides host-level graphics processing unit (GPU) support directly from the core operating system package repositories.
+This built-in configuration eliminates the need to compile drivers manually or load them dynamically using the {nvidia} GPU Operator.
+Use this method to pre-build deployment artifacts into your system images and simplify offline or containerized installations.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-09
+:revdate: 2026-08-19
 :page-revdate: {revdate}
 
 [#nvidia-gpu-requirements-sles]
