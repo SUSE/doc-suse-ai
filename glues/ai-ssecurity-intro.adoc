@@ -1,7 +1,26 @@
-[#ai-security-installation]
-= Installing {ssecurity}
-
-This chapter describes how to install {ssecurity} to scan {suseai} nodes for vulnerabilities and improve data protection.
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-You can install it either using xref:suse-security-installation-rancher[{ranchermanager}] or on any xref:suse-security-installation-kubernetes[{kube} cluster].
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
 endif::[]
+ifndef::override-title[]
+= Installing {ssecurity}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{ssecurity} protects cluster infrastructure by continuously scanning nodes for vulnerabilities and securing containerized workloads.
+Integrating this platform prevents unauthorized access and improves overall data protection across enterprise environments.
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+Deploy this component using xref:suse-security-installation-rancher[{ranchermanager}] or directly onto a target xref:suse-security-installation-kubernetes[{kube} cluster].
+endif::[]
+endif::[]
+// erase the flag for future overrides
+
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-08-19
+:page-revdate: {revdate}
