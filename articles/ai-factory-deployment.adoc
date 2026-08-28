@@ -17,7 +17,7 @@ endif::[]
 
 [abstract]
 --
-Deploying {productname} on an {rke2a} {kube} cluster standardizes artificial intelligence (AI) platform management.
+Deploying {productname} on a {rke2a} {kube} cluster standardizes artificial intelligence (AI) platform management.
 It replaces manual integration with version-controlled, reproducible blueprints to streamline enterprise workloads.
 
 :app: {saifoperator}
