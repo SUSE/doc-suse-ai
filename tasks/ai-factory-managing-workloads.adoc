@@ -37,7 +37,6 @@ image::aif-workloads.png[Screenshot showing a list of AI workloads,scaledwidth=1
 [#aif-app-workloads-upgrade]
 == How do I upgrade application workloads?
 . Select the btn:[Manage] button for the application workload you want to upgrade.
-. Select the btn:[Manage] button pertaining to the application workload you want to upgrade.
 . On the `Basic Information` screen, change the target version number.
 . Finish the wizard and the workload upgrade starts automatically.
 +
@@ -49,9 +48,7 @@ image::aif-app-workload-upgrade.png[Screenshot showing a progress bar of the upg
 == How do I upgrade blueprint workloads?
 . From the main left panel, select menu:SUSE AI Factory[Workloads].
 . Select the btn:[Upgrade] button for the blueprint workload you want to upgrade.
-. Select the btn:[Upgrade] button pertaining to the blueprint workload you want to upgrade.
 Once the rollout completes, the workload returns to the `Running` state at the new version.
-Once the rollout completes, the workload returns to `Running` state at the new version.
 +
 [#fig-aif-bp-workloads-upgrade]
 .Upgrade of blueprint workloads
@@ -60,6 +57,6 @@ image::aif-manage-workload-upgrade.png[Screenshot showing an upgrade drop-down l
 
 [#aif-workloads-delete]
 == How do I delete workloads?
+. From the main left panel, select menu:SUSE AI Factory[Workloads].
 . Select the btn:[Delete] button for the workload you want to uninstall, and confirm the deletion.
-. Select the btn:[Delete] button pertaining to the you want to uninstall, and confirm the deletion.
 
