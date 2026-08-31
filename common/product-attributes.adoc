@@ -31,7 +31,7 @@ ifeval::["{PROF_PRODUCT}" == "saif"]
 // PRODUCT NAME AND VERSIONS
 :productname:       SUSE AI Factory
 
-:sles-version:   15.7+
+:sles-version:   16
 
 // PROJECT REPOSITORY URL
 :repo-url:          https://github.com/SUSE/doc-suse-ai
@@ -50,7 +50,7 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 // PRODUCT NAME AND VERSIONS
 :productname:       SUSE AI Factory with NVIDIA
 
-:sles-version:   15.7+
+:sles-version:   16
 
 // PROJECT REPOSITORY URL
 :repo-url:          https://github.com/SUSE/doc-suse-ai
