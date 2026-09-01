@@ -46,7 +46,7 @@ For a private CA, provide the CA certificate rather than skipping verification.
 Restrict which registry hosts the operator may pull from by setting an allowlist (`manager.allowedRegistryHosts`); leaving it empty allows all hosts.
 
 * *Blueprint portability.* Blueprints reference a chart repository by its identity rather than by its URL.
-The registry endpoints you configure om the `Settings` page determine where that repository is hosted, so the same blueprints deploy unchanged against your local mirror.
+The registry endpoints you configure on the `Settings` page determine where that repository is hosted, so the same blueprints deploy unchanged against your local mirror.
 Both the {nvidia} application and {nvidia} blueprint repositories are preserved when mirrored, so {nvidia} blueprints continue to resolve.
 
 * *Private CA certificates.* Store the PEM-encoded CA certificate in a secret in the `aif-operator` namespace and select it for {sappco}, {sregistry} and {nvidia} in menu:SUSE AI Factory[Settings].
