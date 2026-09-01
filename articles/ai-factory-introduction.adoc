@@ -156,7 +156,7 @@ Blueprints reference a chart repository by its identity rather than by its URL, 
 The same blueprints therefore deploy unchanged in a connected environment and against a local mirror in an air-gapped environment.
 
 Running blueprint workloads can be upgraded to a newer blueprint version, rolled back to the previously deployed version, or retried after a failed deployment.
-A version becomes a rollback target only after it has been fully rolled out across every target cluster of the workload.
+A version becomes a rollback target only after it has been fully rolled out across all target clusters for the workload.
 
 [#ai-factory-blueprints]
 === Blueprints
