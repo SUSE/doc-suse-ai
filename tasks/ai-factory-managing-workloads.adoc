@@ -12,14 +12,14 @@ ifdef::override-abstract[]
 endif::[]
 ifndef::override-abstract[]
 After you install an AI application or blueprint, it becomes a running _workload_.
-You can modify, upgrade or delete workloads from the {ranchera} UI.
+You can modify, upgrade, roll back or delete workloads from the {ranchera} UI.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-17
+:revdate: 2026-09-01
 :page-revdate: {revdate}
 
 [#fig-aif-workloads]
@@ -54,9 +54,59 @@ Once the rollout completes, the workload returns to the `Running` state at the n
 .Upgrade of blueprint workloads
 image::aif-manage-workload-upgrade.png[Screenshot showing an upgrade drop-down list,scaledwidth=100%]
 
+[#aif-bp-workloads-rollback]
+== How do I roll back a blueprint workload?
+
+If an upgrade does not complete successfully, you can return the workload to the previous blueprint version.
+
+. From the main left panel, select menu:SUSE AI Factory[Workloads].
+. Select the btn:[Roll Back] button for the blueprint workload you want to revert.
+. Review the target version in the confirmation dialog and confirm the rollback.
+
+[NOTE]
+.Rollback target
+====
+A blueprint version becomes a rollback target only after it has been fully rolled out across every target cluster of the workload.
+A workload that has never reached this state has no rollback target, and the btn:[Roll Back] button is not available.
+====
+
+[#aif-bp-workloads-retry]
+== How do I retry a failed deployment?
+
+If a deployment fails for a transient reason, such as a registry that was temporarily unreachable, you can repeat it without changing the blueprint version.
+
+. From the main left panel, select menu:SUSE AI Factory[Workloads].
+. Select the btn:[Retry] button for the failed blueprint workload.
+
+[NOTE]
+.Supported workload types
+====
+The btn:[Upgrade], btn:[Roll Back] and btn:[Retry] operations apply to blueprint workloads only.
+Application workloads reject these operations.
+To change an application workload, use btn:[Manage] as described in xref:aif-app-workloads-manage[].
+====
+
+[#aif-workloads-status]
+== How do I inspect the status of a workload?
+
+A workload that is not in the `Running` state reports its status for each component and each pod, including while a deployment is still in progress or failing.
+Use this detail to identify the component that is blocking the rollout before you retry or roll back.
+
+. From the main left panel, select menu:SUSE AI Factory[Workloads]. You will see underlying pods status in the status column in the table.
+. To inspect the underlying resources in {ranchera}, select btn:[Open in Rancher] for the workload.
+For an application workload, this opens the {helm} release; for a blueprint workload, it opens the namespace.
+For a workload that targets multiple clusters, select the cluster first.
 
 [#aif-workloads-delete]
 == How do I delete workloads?
 . From the main left panel, select menu:SUSE AI Factory[Workloads].
 . Select the btn:[Delete] button for the workload you want to uninstall, and confirm the deletion.
 
+[NOTE]
+.Deleting workloads outside the UI
+====
+Deleting an `AIWorkload` resource with `kubectl` or through GitOps uninstalls the underlying {helm} chart only when a {ranchera} API token is configured in the `Rancher API Access` section of menu:SUSE AI Factory[Settings].
+
+Without a token, the deletion is intentionally held rather than leaving the {helm} release behind, and the workload reports that it is waiting for the uninstall.
+To complete such a deletion, either configure a token or uninstall the application from the {ranchera} `Apps` page.
+====

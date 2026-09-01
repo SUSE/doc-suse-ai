@@ -18,7 +18,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-29
+:revdate: 2026-09-01
 :page-revdate: {revdate}
 
 
@@ -84,8 +84,11 @@ We strongly recommend configuring endpoint protection with production TLS certif
 After air-gapped offline registries exist, configure {productname} to access them by specifying endpoints for their repositories:
 
 . From the main left panel, click menu:SUSE AI Factory[Settings].
-. In the menu:Advanced[Registry Endpoints] section, enter endpoint URLs for local {sappco}, {sregistry} or {nvidia} registry.
+. In the `SUSE Application Collection`, `SUSE Registry` or `NVIDIA` section, enter the endpoint URL of the corresponding local registry.
+. If the registry uses a certificate issued by a private CA, select the secret that holds the PEM-encoded CA certificate and the key within that secret.
 . Confirm with btn:[Apply] in the bottom right corner.
+
+Because blueprints reference a chart repository by its identity rather than by its URL, the bundled blueprints deploy unchanged after you point these endpoints at your local registries.
 
 [#fig-aif-airgapped-endpoints]
 Air-gapped registry endpoints
