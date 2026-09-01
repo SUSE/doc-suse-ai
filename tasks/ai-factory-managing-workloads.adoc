@@ -66,7 +66,7 @@ If an upgrade does not complete successfully, you can return the workload to the
 [NOTE]
 .Rollback target
 ====
-A blueprint version becomes a rollback target only after it has been fully rolled out across every target cluster of the workload.
+A blueprint version becomes a rollback target only after it has been fully rolled out across all target clusters for the workload.
 A workload that has never reached this state has no rollback target, and the btn:[Roll Back] button is not available.
 ====
 
