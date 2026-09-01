@@ -72,7 +72,10 @@ This release builds on the 2.1.x line with enhanced support for air-gapped deplo
 - *The UI extension is no longer installed separately*: If your automation installs the `aif-ui` chart as a separate step, remove that step and the `aiExtension.enabled: false` override link:https://github.com/SUSE/aif/pull/233[#233].
 - *Deleting workloads outside the UI requires a {ranchera} token*: Deleting an `AIWorkload` resource with `kubectl` or through GitOps only uninstalls the chart when a token is configured in *Settings > Rancher API Access*. Without a token, the deletion is held rather than orphaning the {helm} release link:https://github.com/SUSE/aif/pull/193[#193].
 - *Manually created chart repositories are ignored*: Only `ClusterRepo` resources created by {productname} contribute to the application catalog link:https://github.com/SUSE/aif/pull/182[#182].
-- *Git authentication requires a user name*: The authentication type setting is deprecated. Existing configurations continue to work, but new configurations must specify a Git user name. SSH is not supported link:https://github.com/SUSE/aif/pull/224[#224].
+- *HTTPS Git authentication*: The authentication type setting is deprecated, and existing configurations continue to work.
+For new authenticated HTTPS configurations, select a password or personal access token.
+The user name is optional unless the Git server requires an account name.
+SSH is not supported link:https://github.com/SUSE/aif/pull/224[#224].
 - *Unused settings were removed*: The {sappco} API endpoint, catalog discovery and image rewrite settings, and the *Advanced* section of *Settings* were removed link:https://github.com/SUSE/aif/pull/224[#224].
 - *New workload validation*: Review existing `AIWorkload` resources before upgrading. The deployment strategy is now immutable, blueprint workloads require at least one target cluster, and GitOps workloads cannot combine the local cluster with downstream clusters link:https://github.com/SUSE/aif/pull/214[#214].
 - *Image overrides for air-gapped installations*: The `global.imageRegistry` and `global.imagePullSecrets` values of the `aif-operator` chart are now forwarded to the managed `aif-ui` chart. Existing nested overrides take precedence link:https://github.com/SUSE/aif/pull/209[#209].
@@ -220,4 +223,3 @@ Users must create a copy to customize configuration or component versions.
 ==== Deprecations
 {saideployer} and {sailifecyclemanager} are now superseded by {saifactory}.
 Update as soon as possible.
-

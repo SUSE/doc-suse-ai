@@ -79,20 +79,29 @@ Refer to the documentation of the specific registry you plan to deploy for more 
 We strongly recommend configuring endpoint protection with production TLS certificates.
 
 [#ai-factory-deployment-airgapped-workflow-setup-registries-access]
-=== Configure {productname} to access image registries?
+=== How do I configure {productname} to access mirrored chart repositories?
 
-After air-gapped offline registries exist, configure {productname} to access them by specifying endpoints for their repositories:
+After the private registries are available, configure {productname} with the corresponding chart repository endpoints:
 
-. From the main left panel, click menu:SUSE AI Factory[Settings].
-. In the `SUSE Application Collection`, `SUSE Registry` or `NVIDIA` section, enter the endpoint URL of the corresponding local registry.
+. From the main left panel, select menu:SUSE AI Factory[Settings].
+. In the `SUSE Application Collection`, `SUSE Registry` or `NVIDIA` section, enter the endpoint URL of the corresponding mirrored chart repository.
 . If the registry uses a certificate issued by a private CA, select the secret that holds the PEM-encoded CA certificate and the key within that secret.
 . Confirm with btn:[Apply] in the bottom right corner.
 
-Because blueprints reference a chart repository by its identity rather than by its URL, the bundled blueprints deploy unchanged after you point these endpoints at your local registries.
+Because blueprints reference a chart repository by its identity rather than by its URL, the bundled blueprints deploy unchanged after you point these endpoints at your private chart repositories.
+
+[NOTE]
+.Container image registries
+====
+The endpoint fields configure {helm} chart repositories only.
+They do not redirect container image pulls.
+In particular, the {nvidia} endpoint does not redirect container images that resolve from `nvcr.io`.
+Configure the {rke2a} and {containerd} registry mirrors on every cluster node as described in xref:ai-factory-deployment-airgapped-workflow-configure-rke2[].
+====
 
 [#fig-aif-airgapped-endpoints]
-Air-gapped registry endpoints
-image::aif-airgapped-endpoints.png[Screenshot showing how to configure registry endpoints for air-gapped deployment,width=100%]
+Air-gapped chart repository endpoints
+image::aif-airgapped-endpoints.png[Screenshot showing how to configure chart repository endpoints for an air-gapped deployment,width=100%]
 
 [#ai-factory-deployment-airgapped-workflow-upload-artifacts]
 == Upload {helm} charts and containers
