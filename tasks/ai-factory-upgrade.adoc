@@ -3,7 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-01-26
+:revdate: 2026-09-01
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
@@ -45,8 +45,31 @@ The latest version is {aif-latest-version}.
 [NOTE]
 .Custom resource definitions on upgrade
 ====
-By default, the operator chart applies and upgrades its custom resource definitions (CRDs) through a pre-upgrade job (`crds.manageWithJob=true`).
+CRDs are installed on first installation through the standard `crds/` directory of the chart.
+Because {helm} never upgrades that directory, the chart applies CRD schema changes through a pre-install and pre-upgrade job (`crds.manageWithJob=true`).
 The job only creates or updates CRDs; it never deletes them.
 
-In restricted environments where the job cannot run, set `crds.manageWithJob=false` and apply the CRDs from the chart's `crds/` directory manually before upgrading.
+The job requires the `kubectl` image defined by the `crds.image` values.
+In an air-gapped environment, mirror this image or override the registry.
+
+In restricted environments where the installer cannot create cluster-scoped RBAC, set `crds.rbac.create=false`, create the service account, cluster role and cluster role binding in advance, and set `crds.serviceAccountName` to the name of the service account in the release namespace.
+
+To skip the job entirely, set `crds.manageWithJob=false`.
+You are then responsible for applying the CRDs from the chart's `crds/` directory with `kubectl apply --server-side -f crds/` before each upgrade.
+====
+
+[IMPORTANT]
+.Changes to review before upgrading to {aif-latest-version}
+====
+* *New workload validation may reject existing resources.*
+Review your `AIWorkload` resources first: the deployment strategy is now immutable, blueprint workloads require at least one target cluster, and GitOps workloads cannot combine the local cluster with downstream clusters.
+
+* *Git authentication requires a user name.*
+The authentication type setting is deprecated.
+Existing configurations continue to work, but new configurations must specify a Git user name as described in xref:ai-factory-fleet-gitops[].
+
+* *Only chart repositories created by {productname} contribute to the application catalog.*
+If you added a `ClusterRepo` resource manually to make applications appear in the `Apps` page, it is ignored after the upgrade.
+
+* *The {sappco} API endpoint, catalog discovery and image rewrite settings were removed*, together with the *Advanced* section of *Settings*.
 ====
