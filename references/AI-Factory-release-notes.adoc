@@ -78,8 +78,8 @@ This release builds on the 2.1.x line with enhanced support for air-gapped deplo
 - *Image overrides for air-gapped installations*: The `global.imageRegistry` and `global.imagePullSecrets` values of the `aif-operator` chart are now forwarded to the managed `aif-ui` chart. Existing nested overrides take precedence link:https://github.com/SUSE/aif/pull/209[#209].
 
 === Known issues and limitations
-- Air-gap support covers private chart repositories, private Git repositories, repository credentials and CA trust. Preparing the cluster remains a separate task: node and containerd registry mirrors, DNS, host proxies and operating system repositories are not configured by {productname}.
-- Container image references inside blueprint values are not rewritten. Your containerd registry mirrors must resolve them transparently.
+- Air-gap support covers private chart repositories, private Git repositories, repository credentials and CA trust. Preparing the cluster remains a separate task: node and {containerd} registry mirrors, DNS, host proxies and operating system repositories are not configured by {productname}.
+- Container image references inside blueprint values are not rewritten. Your {containerd} registry mirrors must resolve them transparently.
 - Git over SSH is not supported. Use HTTPS with credentials and, where required, a private CA certificate.
 - Upgrade, rollback and retry apply to blueprint workloads only. A workload that has never reached a healthy, fully rolled out state has no rollback target.
 

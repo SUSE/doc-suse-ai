@@ -152,7 +152,7 @@ The {kube} operator serves a built-in application catalog that the UI loads by d
 Because this catalog ships with {productname}, you can browse and install applications without the management cluster reaching out to live chart repositories, which also makes the catalog available in air-gapped environments.
 Administrators can optionally enable runtime discovery to populate the catalog from live chart repositories instead.
 
-Blueprints reference a chart repository by its identity rather than by its URL, and the registry endpoints configured in *Settings* determine where that repository is hosted.
+Blueprints reference a chart repository by its identity rather than by its URL, and the registry endpoints configured on the `Settings` page determine where that repository is hosted.
 The same blueprints therefore deploy unchanged in a connected environment and against a local mirror in an air-gapped environment.
 
 Running blueprint workloads can be upgraded to a newer blueprint version, rolled back to the previously deployed version, or retried after a failed deployment.

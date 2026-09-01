@@ -46,11 +46,11 @@ For a private CA, provide the CA certificate rather than skipping verification.
 Restrict which registry hosts the operator may pull from by setting an allowlist (`manager.allowedRegistryHosts`); leaving it empty allows all hosts.
 
 * *Blueprint portability.* Blueprints reference a chart repository by its identity rather than by its URL.
-The registry endpoints you configure in *Settings* determine where that repository is hosted, so the same blueprints deploy unchanged against your local mirror.
+The registry endpoints you configure om the `Settings` page determine where that repository is hosted, so the same blueprints deploy unchanged against your local mirror.
 Both the {nvidia} application and {nvidia} blueprint repositories are preserved when mirrored, so {nvidia} blueprints continue to resolve.
 
 * *Private CA certificates.* Store the PEM-encoded CA certificate in a secret in the `aif-operator` namespace and select it for {sappco}, {sregistry} and {nvidia} in menu:SUSE AI Factory[Settings].
-{productname} propagates the certificate to {ranchera} and {fleeta} and handles certificate and credential rotation, so you do not need to disable TLS verification.
+{productname} propagates the certificate to {ranchera} and {fleeta}, and handles certificate and credential rotation, so you do not need to disable TLS verification.
 
 * *Private Git repositories.* Blueprint input and GitOps output support HTTPS Git repositories with credentials and a private CA certificate.
 Git over SSH is not supported.
@@ -59,5 +59,5 @@ Git over SSH is not supported.
 The CRD lifecycle job additionally requires the `kubectl` image defined by the `crds.image` values, so mirror that image as well.
 
 * *Cluster preparation is a separate task.* {productname} configures its own chart repositories, Git access, credentials and CA trust.
-It does not configure node and containerd registry mirrors, registry fallback policy, DNS, host proxies or operating system repositories.
-In particular, container image references inside blueprint values are not rewritten, so your containerd registry mirrors must resolve them transparently, as described in xref:ai-factory-deployment-airgapped-workflow-configure-rke2[].
+It does not configure node and {containerd} registry mirrors, registry fallback policy, DNS, host proxies or operating system repositories.
+In particular, container image references inside blueprint values are not rewritten, so your {containerd} registry mirrors must resolve them transparently, as described in xref:ai-factory-deployment-airgapped-workflow-configure-rke2[].
