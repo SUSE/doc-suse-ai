@@ -43,7 +43,7 @@ This release builds on the 2.1.x line with enhanced support for air-gapped deplo
 
 ==== Workload recovery
 - *Upgrade, roll back and retry*: Blueprint workloads can be upgraded to a new blueprint version, rolled back, or retried after a failed deployment directly from the UI. Application workloads do not support these operations link:https://github.com/SUSE/aif/pull/214[#214].
-- *Verified rollback target*: A blueprint version becomes a rollback target only after it has been fully rolled out across every target cluster, so a workload cannot be rolled back to a version that never reached a healthy state link:https://github.com/SUSE/aif/pull/214[#214].
+- *Verified rollback target*: A blueprint version becomes a rollback target only after it has been fully rolled out across all target clusters, so a workload cannot be rolled back to a version that never reached a healthy state link:https://github.com/SUSE/aif/pull/214[#214].
 - *Per-component and per-pod status*: Workloads report their status for each component and pod, including while a deployment is failing, which makes it easier to identify the component that is blocking the rollout link:https://github.com/SUSE/aif/pull/214[#214].
 
 ==== Usability improvements
