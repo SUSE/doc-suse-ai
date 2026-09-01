@@ -64,9 +64,11 @@ You are then responsible for applying the CRDs from the chart's `crds/` director
 * *New workload validation may reject existing resources.*
 Review your `AIWorkload` resources first: the deployment strategy is now immutable, blueprint workloads require at least one target cluster, and GitOps workloads cannot combine the local cluster with downstream clusters.
 
-* *Git authentication requires a user name.*
+* *Git authentication settings changed.*
 The authentication type setting is deprecated.
-Existing configurations continue to work, but new configurations must specify a Git user name as described in xref:ai-factory-fleet-gitops[].
+Existing configurations continue to work without changes.
+New authenticated configurations use a password or personal access token for HTTPS authentication.
+The user name is optional unless the Git server requires an account name, as described in xref:ai-factory-fleet-gitops[].
 
 * *Only chart repositories created by {productname} contribute to the application catalog.*
 If you added a `ClusterRepo` resource manually to make applications appear in the `Apps` page, it is ignored after the upgrade.
