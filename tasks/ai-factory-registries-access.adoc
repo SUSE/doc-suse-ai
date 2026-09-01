@@ -3,7 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-01-26
+:revdate: 2026-09-01
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
@@ -191,14 +191,58 @@ image::aif-rancher-secrets-git.png[Screenshot showing how to add secrets for Git
 . Add the Git PAT to {saifactory}.
 .. From the main left panel, select menu:SUSE AI Factory[Settings].
 .. In the `Fleet/GitOps` section, enter the Git repository URL and specify which branch to use.
-.. Select the authentication type and the PAT secret name corresponding to your `<GIT_SECRETS_NAME>` from the `Credential Secret` drop-down list.
+.. Enter the Git user name and select the PAT secret name corresponding to your `<GIT_SECRETS_NAME>` from the `Credential Secret` drop-down list.
 .. Select `token` for menu:Secret Key.
+.. If the Git server uses a certificate issued by a private CA, select the secret that holds the CA certificate.
 +
 [#fig-aif-secrets-git]
 .Assign Git secrets
 image::aif-secrets-git.png[Screenshot showing how to assign secrets for Git,scaledwidth=50%]
 +
 .. Confirm by selecting btn:[Apply] in the bottom-right corner.
+
+[NOTE]
+.Git authentication
+====
+{productname} authenticates to HTTPS Git repositories with the user name and the personal access token.
+A user name is required for new configurations.
+Configurations created before {saifactory} 2.2.0 that use the deprecated authentication type setting continue to work.
+
+Git over SSH is not supported.
+====
+
+[#ai-factory-registry-ca]
+== How do I trust a private CA certificate for a registry?
+
+If you host {sappco}, {sregistry} or {nvidia} artifacts in a local registry that uses a certificate issued by your organization's CA, provide that CA certificate to {saifactory} instead of disabling TLS verification.
+{productname} propagates the certificate to {ranchera} and {fleeta} so that chart repositories and workload deployments trust the registry.
+
+. Add the CA certificate to the {ranchera} _local_ cluster.
+.. From the main left panel, select menu:local[Storage > Secrets].
+.. Select btn:[Create] in the top right and select btn:[Opaque].
+.. Select the btn:[aif-operator] namespace and enter your preferred secret name (referenced as `<REGISTRY_CA_SECRET_NAME>` in command line tasks).
+.. In the btn:[Data] tab, add a key that holds the PEM-encoded certificate, for example `ca.crt`.
++
+[TIP]
+.Creating the CA secret on the command line
+====
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl create secret generic <REGISTRY_CA_SECRET_NAME> \
+  --from-file=ca.crt=<PATH_TO_CA_CERTIFICATE> \
+  -n aif-operator
+----
+====
+. Assign the CA certificate to the registry.
+.. From the main left panel, select menu:SUSE AI Factory[Settings].
+.. In the `SUSE Application Collection`, `SUSE Registry` or `NVIDIA` section, select the secret name corresponding to your `<REGISTRY_CA_SECRET_NAME>` and the key that holds the certificate.
+.. Confirm by selecting btn:[Apply] in the bottom-right corner.
+
+[NOTE]
+.Certificate rotation
+====
+When you replace the certificate or the credentials of a registry, {productname} refreshes the corresponding chart repositories automatically.
+====
 
 [#ai-factory-rancher-api-access]
 == How do I authorize access to Git-backed {ranchera} catalogs?

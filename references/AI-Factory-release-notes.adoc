@@ -18,11 +18,74 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-03
+:revdate: 2026-09-01
 :page-revdate: {revdate}
 
 
 == Release {aif-latest-version}
+
+This release builds on the 2.1.x line with enhanced support for air-gapped deployments, recovery operations for blueprint workloads, an {nvidia} AI Enterprise application catalog that is generated and refreshed automatically, and a range of reliability fixes in the operator's {helm} lifecycle.
+
+=== What's new
+
+==== Application catalog
+- *Generated {nvidia} AI Enterprise catalog*: The {nvidia} {ailibrary} is generated from the {nvidia} GPU Cloud (NGC) catalog and gated on {nvidia} AI Enterprise support, replacing the previously hand-maintained label refresh link:https://github.com/SUSE/aif/pull/223[#223].
+- *Automated catalog refresh*: A scheduled job regenerates the catalog weekly, so the `Supported` labels on {nvidia} applications stay current between releases link:https://github.com/SUSE/aif/pull/232[#232].
+- *NGC repository classification*: NGC repository paths are classified as organization, public, gated or excluded. Gated repositories are provisioned with the authentication secret, and unrecognized paths fall back to anonymous access link:https://github.com/SUSE/aif/pull/223[#223].
+- *NGC image pull secret injection*: {nvidia} charts receive the `ngc-secret` image pull secret under both supported chart value conventions, which resolves `403` errors caused by an empty default suppressing the injection link:https://github.com/SUSE/aif/pull/223[#223].
+- *Catalog scoped to managed repositories*: The `Apps` page lists applications only from `ClusterRepo` resources that {productname} created. Previously, an unrelated `ClusterRepo` could add applications to the {suseai} or {nvidia} libraries link:https://github.com/SUSE/aif/pull/182[#182].
+
+==== Air-gapped deployments
+- *Private chart and Git sources*: Blueprints reference a chart repository by its identity, while the registry endpoints in *Settings* determine where that repository is hosted. The same blueprints therefore deploy unchanged against a local mirror. Private HTTPS Git is supported for both blueprint input and GitOps output link:https://github.com/SUSE/aif/pull/224[#224].
+- *Private CA certificate propagation*: You can select a CA certificate secret for {sappco}, {sregistry} and {nvidia} in *Settings*. The operator propagates it to {ranchera} and {fleeta}, and handles CA certificate and credential rotation link:https://github.com/SUSE/aif/pull/200[#200].
+- *{nvidia} blueprint repository in mirrored mode*: Both the {nvidia} application and {nvidia} blueprint repository identities are preserved when mirrored and pointed at your private OCI URL, so {nvidia} blueprints continue to resolve link:https://github.com/SUSE/aif/pull/201[#201].
+- *Image registry override*: A single `global.imageRegistry` value redirects every image shipped by the operator and UI extension charts link:https://github.com/SUSE/aif/pull/209[#209].
+
+==== Workload recovery
+- *Upgrade, roll back and retry*: Blueprint workloads can be upgraded to a new blueprint version, rolled back, or retried after a failed deployment directly from the UI. Application workloads do not support these operations link:https://github.com/SUSE/aif/pull/214[#214].
+- *Verified rollback target*: A blueprint version becomes a rollback target only after it has been fully rolled out across all target clusters, so a workload cannot be rolled back to a version that never reached a healthy state link:https://github.com/SUSE/aif/pull/214[#214].
+- *Per-component and per-pod status*: Workloads report their status for each component and pod, including while a deployment is failing, which makes it easier to identify the component that is blocking the rollout link:https://github.com/SUSE/aif/pull/214[#214].
+
+==== Usability improvements
+- *Open workloads in {ranchera}*: Each workload row provides an btn:[Open in Rancher] action that opens the corresponding {helm} release or namespace, with a cluster selector for multi-cluster workloads link:https://github.com/SUSE/aif/pull/206[#206].
+- *Library filter is preserved*: Cancelling an application installation returns you to the library you were browsing, and filtered catalog views can be bookmarked and shared link:https://github.com/SUSE/aif/pull/215[#215].
+- *Catalog metadata for the UI extension*: The extension is listed as {saifactory} with the correct metadata in the {ranchera} `Apps` and `Marketplace` views link:https://github.com/SUSE/aif/pull/230[#230].
+- *Clearer confirmation dialogs*: The upgrade and rollback confirmation dialogs explain the effect of the operation link:https://github.com/SUSE/aif/pull/229[#229].
+
+==== Packaging
+- *CRD lifecycle*: CRDs are installed natively on first installation, and a hook job applies schema upgrades. The new `crds.rbac.create` and `crds.serviceAccountName` values support restricted environments where the installer cannot create cluster-scoped RBAC link:https://github.com/SUSE/aif/pull/202[#202].
+- *Per-component {helm} release names*: Blueprint components accept an optional `releaseName` value that pins the {helm} release name of a component. It defaults to the chart name link:https://github.com/SUSE/aif/pull/202[#202].
+- *UI extension installed by the operator*: The operator installs the UI extension itself, so `aif-ui` is no longer installed as a separate {helm} chart link:https://github.com/SUSE/aif/pull/233[#233].
+
+=== Key fixes
+- Restarting the operator no longer leaves the UI extension's {helm} release in a `failed` state without recovering link:https://github.com/SUSE/aif/pull/199[#199].
+- The UI extension no longer remains on an incorrect version after consecutive upgrades and downgrades link:https://github.com/SUSE/aif/pull/177[#177].
+- Deleting an application workload now uninstalls the underlying {helm} chart instead of leaving the release in the `Uninstalling` state with orphaned resources link:https://github.com/SUSE/aif/pull/193[#193].
+- The operator no longer downloads the UI extension chart on every reconcile, which previously caused continuous registry traffic and could exhaust public registry rate limits link:https://github.com/SUSE/aif/pull/185[#185].
+- Attaching image pull secrets no longer removes other service account fields, such as labels, annotations, owner references and finalizers link:https://github.com/SUSE/aif/pull/192[#192].
+- Several user interface strings and tooltips that previously displayed raw translation keys now render correctly link:https://github.com/SUSE/aif/pull/211[#211].
+- Long {helm} release names no longer prevent the UI extension from installing. The generated service name could exceed the {kube} 63-character limit and be rejected link:https://github.com/SUSE/aif/pull/210[#210].
+
+=== Upgrade notes
+- *CRDs are retained on uninstall*: `helm uninstall` no longer removes CRDs or the `Settings` resource. Bundled blueprints and the UI extension are still removed. Schema upgrades are applied by a pre-install and pre-upgrade hook job link:https://github.com/SUSE/aif/pull/202[#202].
+- *Mirror the `kubectl` image for air-gapped installations*, because the CRD hook job requires it. Alternatively, set `crds.manageWithJob=false` and apply the CRDs manually with `kubectl apply --server-side -f crds/` before each upgrade link:https://github.com/SUSE/aif/pull/202[#202].
+- *The UI extension is no longer installed separately*: If your automation installs the `aif-ui` chart as a separate step, remove that step and the `aiExtension.enabled: false` override link:https://github.com/SUSE/aif/pull/233[#233].
+- *Deleting workloads outside the UI requires a {ranchera} token*: Deleting an `AIWorkload` resource with `kubectl` or through GitOps only uninstalls the chart when a token is configured in *Settings > Rancher API Access*. Without a token, the deletion is held rather than orphaning the {helm} release link:https://github.com/SUSE/aif/pull/193[#193].
+- *Manually created chart repositories are ignored*: Only `ClusterRepo` resources created by {productname} contribute to the application catalog link:https://github.com/SUSE/aif/pull/182[#182].
+- *Git authentication requires a user name*: The authentication type setting is deprecated. Existing configurations continue to work, but new configurations must specify a Git user name. SSH is not supported link:https://github.com/SUSE/aif/pull/224[#224].
+- *Unused settings were removed*: The {sappco} API endpoint, catalog discovery and image rewrite settings, and the *Advanced* section of *Settings* were removed link:https://github.com/SUSE/aif/pull/224[#224].
+- *New workload validation*: Review existing `AIWorkload` resources before upgrading. The deployment strategy is now immutable, blueprint workloads require at least one target cluster, and GitOps workloads cannot combine the local cluster with downstream clusters link:https://github.com/SUSE/aif/pull/214[#214].
+- *Image overrides for air-gapped installations*: The `global.imageRegistry` and `global.imagePullSecrets` values of the `aif-operator` chart are now forwarded to the managed `aif-ui` chart. Existing nested overrides take precedence link:https://github.com/SUSE/aif/pull/209[#209].
+
+=== Known issues and limitations
+- Air-gap support covers private chart repositories, private Git repositories, repository credentials and CA trust. Preparing the cluster remains a separate task: node and {containerd} registry mirrors, DNS, host proxies and operating system repositories are not configured by {productname}.
+- Container image references inside blueprint values are not rewritten. Your {containerd} registry mirrors must resolve them transparently.
+- Git over SSH is not supported. Use HTTPS with credentials and, where required, a private CA certificate.
+- Upgrade, rollback and retry apply to blueprint workloads only. A workload that has never reached a healthy, fully rolled out state has no rollback target.
+
+Full Changelog: link:++https://github.com/SUSE/aif/compare/aif-operator-2.1.0...aif-operator-2.2.0++[aif-operator-2.1.0...aif-operator-2.2.0]
+
+== Release 2.1.0
 
 This release builds on the 2.0.x line with an operator-served application catalog that is now the default, git-backed {ranchera} catalog support, expanded {nvidia} integration, hardened extension chart delivery, and a range of workload/UI reliability fixes.
 
