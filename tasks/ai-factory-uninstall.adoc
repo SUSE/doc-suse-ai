@@ -2,7 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-08-03
+:revdate: 2026-08-31
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
@@ -25,6 +25,15 @@ endif::[]
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
+
+[NOTE]
+.What uninstalling removes
+====
+Uninstalling the operator chart removes the bundled blueprints and the UI extension.
+The CRDs and the `Settings` resource are deliberately retained so that a reinstallation preserves your configuration and existing workload resources.
+
+Remove them explicitly with the steps below if you want a complete removal.
+====
 
 == Uninstall using {helm}
 
