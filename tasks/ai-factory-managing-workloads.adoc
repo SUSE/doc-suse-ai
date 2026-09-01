@@ -66,7 +66,7 @@ If an upgrade does not complete successfully, you can return the workload to the
 [NOTE]
 .Rollback target
 ====
-A blueprint version becomes a rollback target only after it has been fully rolled out across all target clusters for the workload.
+A blueprint version becomes a rollback target only after it has been fully rolled out across every target cluster of the workload.
 A workload that has never reached this state has no rollback target, and the btn:[Roll Back] button is not available.
 ====
 
@@ -92,7 +92,7 @@ To change an application workload, use btn:[Manage] as described in xref:aif-app
 A workload that is not in the `Running` state reports its status for each component and each pod, including while a deployment is still in progress or failing.
 Use this detail to identify the component that is blocking the rollout before you retry or roll back.
 
-. From the main left panel, select menu:SUSE AI Factory[Workloads]. You will see underlying pods status in the status column in the table.
+. From the main left panel, select menu:SUSE AI Factory[Workloads]. You will see the underlying pod status in the status column in the table.
 . To inspect the underlying resources in {ranchera}, select btn:[Open in Rancher] for the workload.
 For an application workload, this opens the {helm} release; for a blueprint workload, it opens the namespace.
 For a workload that targets multiple clusters, select the cluster first.
