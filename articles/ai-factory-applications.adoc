@@ -1,0 +1,105 @@
+include::../common/generic-attributes.adoc[]
+ifeval::["{PROF_PRODUCT}" == "saif"]
+= {saifactory} Applications
+endif::[]
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+= {saifactory} with {nvidia} Applications
+endif::[]
+
+:docinfo:
+:experimental:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:revdate: 2026-08-17
+
+[abstract]
+--
+Configuring artificial intelligence (AI) applications in the {kube} environment involves using {helm} charts and custom override files.
+While applications ship with default configurations, you can modify application behavior by applying a custom override file with scenario-specific values.
+This approach ensures consistent, reproducible and easily manageable application deployment.
+
+This guide provides a list of AI applications installable by {productname}, along with their descriptions and configuration override examples.
+--
+
+
+ifeval::["{PROF_PRODUCT}" == "saif"]
+// [#opensearch-helm-overrides]
+// include::../references/opensearch-helm-overrides.adoc[leveloffset=+1]
+// [#milvus-helm-overrides]
+// include::../references/milvus-helm-overrides.adoc[leveloffset=+1]
+// [#ollama-helmchart]
+// :override-title: {ollama}
+// include::../references/ollama-helmchart.adoc[leveloffset=+1]
+// [#owui-helmchart]
+// :override-title: {owui}
+// include::../references/owui-helmchart.adoc[leveloffset=+1]
+// [#owui-helm-overrides]
+// include::../references/owui-helm-overrides.adoc[leveloffset=+2]
+
+// [#vllm-helm-overrides]
+// :override-title: {vllm}
+// include::../references/vllm-helm-overrides.adoc[leveloffset=+1]
+// [#mcpo-installing]
+// :override-title: {mcpo}
+// include::../tasks/mcpo-installing.adoc[leveloffset=+1]
+
+// [#pytorch-helm-overrides]
+// :override-title: {pytorch}
+// include::../references/pytorch-helm-overrides.adoc[leveloffset=+1]
+// include::../references/pytorch-helmchart.adoc[leveloffset=+2]
+
+// [#qdrant-installing]
+// :override-title: {qdrant}
+// include::../tasks/qdrant-installing.adoc[leveloffset=+1]
+// include::../references/qdrant-helm-overrides.adoc[leveloffset=+2]
+// [#litellm-helm-overrides]
+// :override-title: {litellm}
+// include::../references/litellm-helm-overrides.adoc[leveloffset=+1]
+// include::../references/litellm-helmchart.adoc[leveloffset=+2]
+
+// [#mlflow-installing]
+// :override-title: {mlflow}
+// include::../tasks/mlflow-installing.adoc[leveloffset=+1]
+
+// [#kubeflow-installing]
+// :override-title: {kubeflow}
+// include::../tasks/kubeflow-installing.adoc[leveloffset=+1]
+// include::../tasks/kubeflow-accessing.adoc[leveloffset=+2]
+// :override-title: Configuration scenarios
+// include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+2]
+// :override-title: Hardening for production use
+// include::../tasks/kubeflow-hardening.adoc[leveloffset=+2]
+// :override-title: Managing user profiles and namespaces
+// include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+2]
+// :override-title: Upgrade notes
+// include::../references/kubeflow-upgrade-notes.adoc[leveloffset=+2]
+// :override-title: Known limitations
+// include::../references/kubeflow-limitations.adoc[leveloffset=+2]
+// :override-title: Troubleshooting
+// include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
+endif::[]
+
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+
+endif::[]
+
+[glossary]
+[#ai-factory-glossary]
+include::../references/AI-glossary.adoc[leveloffset=+1]
+
+[appendix]
+[#ai-factory-release-notes]
+:override-title: Release notes
+include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]
+
+[appendix]
+[#ai-factory-appendix]
+include::../references/AI-Factory-appendix.adoc[leveloffset=+1]

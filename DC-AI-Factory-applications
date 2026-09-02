@@ -1,4 +1,4 @@
-MAIN="ai-factory-applications-configuring.adoc"
+MAIN="ai-factory-applications.adoc"
 SRC_DIR="articles"
 IMG_SRC_DIR="images"
 
