@@ -15,8 +15,6 @@
 // PRODUCT-SPECIFIC ENTITIES
 include::./product-attributes.adoc[]
 include::./network-attributes.adoc[]
-include::./product-attributes.adoc[]
-include::./network-attributes.adoc[]
 
 // special characters
 :ndash:                      &#x02013;
