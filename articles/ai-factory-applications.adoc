@@ -1,3 +1,5 @@
+:docinfo:
+:experimental:
 include::../common/generic-attributes.adoc[]
 ifeval::["{PROF_PRODUCT}" == "saif"]
 = {saifactory} Applications
@@ -5,9 +7,6 @@ endif::[]
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
 = {saifactory} with {nvidia} Applications
 endif::[]
-
-:docinfo:
-:experimental:
 
 ifdef::env-github[]
 :imagesdir: ../images/
@@ -325,5 +324,9 @@ include::../tasks/aif-app-removing.adoc[leveloffset=+2]
 endif::[]
 
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
+
+[#aif-runai]
+:override-title: {runai}
+include::../tasks/runai-installing.adoc[leveloffset=+1]
 
 endif::[]
