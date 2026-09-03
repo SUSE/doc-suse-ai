@@ -1,0 +1,333 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {runai} installation
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{runai} is a graphics processing unit (GPU) orchestration and optimization platform designed to maximize compute resource utilization for artificial intelligence (AI) workloads in a {kube} environment.
+Installing {runai} enables dynamic GPU resource allocation, efficient workload scheduling, and centralized cluster management.
+
+This guide describes how to deploy {runai} via {saifactory}.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-09-02
+:page-revdate: {revdate}
+
+
+[#aif-runai-requirements]
+== Prerequisites
+* **DNS resolution**: The {runai} control plane and cluster URLs must be fully qualified domain names (FQDNs) resolvable via public or private DNS.
+IP addresses are not supported.
+In a {kube} environment, you can use `external-dns` configured with a supported DNS provider, such as {cloudflare}.
+* **TLS certificates**: A configured `{certmanager}` instance with a valid certificate authority (CA) is required.
+While {runai} supports local or custom CAs, using a public CA (such as Let's Encrypt) simplifies the setup.
+* **{prometheus} monitoring**: The link:https://github.com/prometheus-community/helm-charts[kube-prometheus-stack] is required.
+The {runai} Cluster installation depends on the {prometheus} Operator and Custom Resource Definitions (CRDs) provided by this stack.
+The Control Plane does not require this stack.
+
+[#aif-runai-limitations]
+=== Limitations
+* Due to {runai}'s complexity, blueprints currently do not offer to deploying either the Control Plane or Cluster.
+You must deploy them from the menu:SUSE AI Factory[Apps] catalog.
+* You must select the *{helm}* deployment type from the `Target Cluster` step of the deployment wizard.
+Do not select the default `Fleet Bundle`` deployment due to an link:https://github.com/rancher/fleet/issues/5630[existing bug in {fleeta}].
+
+[#aif-runai-externaldns]
+=== Install {externaldns} (optional)
+
+[TIP]
+====
+If using {cloudflare} provider, you must have a {cloudflare} account and be able to link:https://developers.cloudflare.com/fundamentals/api/get-started/create-token/[create an API token].
+====
+
+If no {externaldns} instance is installed yet, install it from {sappco} by following these steps:
+
+. Create a manifest file named `external-dns-deployment.yaml` with the following content.
+Make sure to adjust the credentials as well as `txtOwnerId` and `domainFilters[0]` to match your values.
++
+[source,yaml]
+----
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: external-dns
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: "<YOUR_ENCODED_APPCO_CREDENTIAL_HERE>"
+kind: Secret
+metadata:
+  name: application-collection
+  namespace: external-dns
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+data:
+  apiKey: "<YOUR_ENCODED_CLOUDFLARE_API_TOKEN_HERE>"
+kind: Secret
+metadata:
+  name: cloudflare-api-key
+  namespace: external-dns
+type: Opaque
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: "<YOUR_ENCODED_APPCO_CREDENTIAL_HERE>"
+kind: Secret
+metadata:
+  name: application-collection
+  namespace: kube-system
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: external-dns
+  namespace: kube-system
+spec:
+  chart: oci://dp.apps.rancher.io/charts/external-dns
+  version: "1.21.0"
+  targetNamespace: external-dns
+  dockerRegistrySecret:
+    name: application-collection
+  valuesContent: |-
+    global:
+      imagePullSecrets:
+        - application-collection
+    txtOwnerId: "tux@example.com"
+    logLevel: debug
+    domainFilters[0]: exampleclouddev.com
+    policy: sync
+    interval: 1m
+    sources:
+      - ingress
+      - service
+    provider:
+      name: cloudflare
+    env:
+      - name: CF_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: cloudflare-api-key
+            key: apiKey
+----
+
+. Install {externaldns} by applying the manifest file.
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f external-dns-deployment.yaml
+----
+
+[#aif-runai-certmanager]
+=== Install {certmanager} (optional)
+
+If no {certmanager} instance is installed yet, install it from {sappco} by following these steps:
+
+. Create a manifest file named `cert-manager-deployment.yaml` with the following content.
+Make sure to adjust the credentials to match your values.
++
+[source,yaml]
+----
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: "<YOUR_ENCODED_APPCO_CREDENTIAL_HERE>"
+kind: Secret
+metadata:
+  name: application-collection
+  namespace: cert-manager
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: "<YOUR_ENCODED_APPCO_CREDENTIAL_HERE>"
+kind: Secret
+metadata:
+  name: application-collection
+  namespace: kube-system
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+data:
+  apiKey: "<YOUR_ENCODED_CLOUDFLARE_API_TOKEN_HERE>"
+kind: Secret
+metadata:
+  name: cloudflare-api-key
+  namespace: cert-manager
+type: Opaque
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: cert-manager
+  namespace: kube-system
+spec:
+  chart: oci://dp.apps.rancher.io/charts/cert-manager
+  version: "1.20.0"
+  targetNamespace: cert-manager
+  dockerRegistrySecret:
+    name: application-collection
+  valuesContent: |-
+    global:
+      imagePullSecrets:
+        - application-collection
+    crds:
+      enabled: true
+----
+
+. Install {certmanager} by applying the manifest file.
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f cert-manager-deployment.yaml
+----
+
+[#aif-runai-clusterissuer]
+=== Create a ClusterIssuer
+Create a ClusterIssuer to issue production TLS certificates for the {runai} endpoints.
+Ensure that you created the `cloudflare-api-key` secret in the {certmanager} namespace in the previous step.
+
+. Create a manifest file named `cluster-issuer.yaml` with the following content.
+Make sure to adjust `email` to match yours.
++
+[source,yaml]
+----
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: suse-ai-cluster-issuer
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: "tux@example.com"
+    privateKeySecretRef:
+      name: suse-ai-letsencrypt-key
+    solvers:
+    - dns01:
+        cloudflare:
+          apiTokenSecretRef:
+            key: apiKey
+            name: cloudflare-api-key
+          email: "tux@example.com"
+----
+
+. Create ClusterIssuer by applying the manifest file.
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f cluster-issuer.yaml
+----
+
+[#aif-runai-control-plane]
+== Install {runai} Control Plane
+Determine a unique fully qualified domain name (FQDN) from your domain for the {runai} Control Plane (UI and API) endpoint. For example, if your {cloudflare} domain is `exampleclouddev.com`, use an FQDN such as `runai-control-plane.exampleclouddev.com`.
+
+[IMPORTANT]
+====
+Because {runai} {helm} chart hardcodes the service URLs, both the {helm} release name for {runai} Control Plane and the namespace must be `runai-backend`.
+====
+
+[#aif-runai-control-plane-certificate]
+=== Create Control Plane endpoint certificate
+. Create a manifest file named `runai-control-plane-endpoint-cert.yaml  ` with the following content.
+Make sure to replace the `commonName` and `dnsNames` with your own {runai} endpoint URL.
++
+[source,yaml]
+----
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: runai-backend
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: runai-tls
+  namespace: runai-backend
+spec:
+  commonName: "runai-control-plane.exampleclouddev.com"
+  secretName: runai-tls-cert
+  privateKey:
+    rotationPolicy: Always
+  issuerRef:
+    name: suse-ai-cluster-issuer
+    kind: ClusterIssuer
+  dnsNames:
+  - "runai-control-plane.exampleclouddev.com"
+----
+
+. Create the certificate by applying the manifest file.
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f runai-control-plane-endpoint-cert.yaml
+----
+
+[#aif-runai-runai-reg-creds-secret]
+=== Create runai-reg-creds secret
+{runai} images are hosted in the secure `nvcr.io` registry.
+Create a secret named `runai-reg-creds` in the `runai-backend` namespace using your NVIDIA AI Enterprise (NVAIE) credentials (such as a service key) to pull images from `nvcr.io`.
+
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl create secret docker-registry runai-reg-creds \
+  --docker-server=nvcr.io \
+  --docker-username='$oauthtoken' \
+  --docker-password="<SERVICE_KEY>" \
+  --namespace=runai-backend
+----
+
+[#aif-runai-control-plane-procedure]
+== Install Run:ai Control Plane using {ranchera}
+
+. From the main left panel, select menu:SUSE AI Factory[Apps].
+. Select btn:[NVIDIA AI Library], search for `run:ai` and select the application tile.
++
+[#fig-aif-runai-control-plane]
+.{runai} Control Plane application
+image::aif-runai-install1.png[Screenshot showing NVIDIA applications including {runai} Control Plane,width=100%]
++
+. On the `Basic Information` screen, update both the `Instance Name`  and `Namespace` fields with `runai-backend`.
+. On the `Target Cluster` screen, change the `Deployment Type` to `Helm`. *Do not* leave the default `Fleet Bundle` option.
+. On the `Configuration` screen, override the {helm} values with your custom ones, for example:
++
+[source,yaml]
+----
+global:
+  domain: "runai-control-plane.exampleclouddev.com"
+  ingress:
+    ingressClass: nginx
+    tlsSecretName: runai-tls-cert
+    extraAnnotations:
+      external-dns.alpha.kubernetes.io/hostname: "runai-control-plane.exampleclouddev.com"
+tenantsManager:
+  config:
+    adminUsername: "tux@example.com"
+    adminPassword: "<PASSWORD>"
+----
+
+ . Review the changes and confirm with btn:[Install].
+ The installation process takes several minutes to complete.
+ . After the deployment completes, navigate to the {runai} UI endpoint in a Web browser and log in using the credentials defined in your {helm} values override.
+ For example, navigate to `https://runai-control-plane.exampleclouddev.com` and log in with the username `tux@example.com` and your configured password.
+ . 
