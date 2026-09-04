@@ -326,8 +326,29 @@ tenantsManager:
     adminPassword: "<PASSWORD>"
 ----
 
- . Review the changes and confirm with btn:[Install].
- The installation process takes several minutes to complete.
- . After the deployment completes, navigate to the {runai} UI endpoint in a Web browser and log in using the credentials defined in your {helm} values override.
- For example, navigate to `https://runai-control-plane.exampleclouddev.com` and log in with the username `tux@example.com` and your configured password.
- . 
+. Review the changes and confirm with btn:[Install].
+The installation process takes several minutes to complete.
+. After the deployment completes, navigate to the {runai} UI endpoint in a Web browser and log in using the credentials defined in your {helm} values override.
+For example, navigate to `\https://runai-control-plane.exampleclouddev.com` and log in with the username `tux@example.com` and your configured password.
+. The first login presents you with the {nvidia} user agreement.
+Accept the agreement and follow the wizard to create your first cluster.
+. You can install the {runai} Cluster on the same {kube} cluster as the Control Plane.
+If you select this option, you do not need to change the Cluster URL, as it is identical to the Control Plane URL.
+*Make sure to copy the instructions from the installation screen.*
++
+[#fig-aif-runai-control-plane-app]
+.{runai} Cluster application
+image::aif-runai-nvidia1.png[Screenshot showing a command to install the {runai} cluster,width=100%]
++
+[IMPORTANT]
+====
+*Do not* run the installation commands displayed in the wizard, as the {runai} Cluster must be deployed via {saifactory}.
+Instead, record the following values from the installation screen:
+
+* Control Plane URL
+* Control Plane Client Secret
+* Cluster UID
+* Cluster URL
+
+Other wizard steps, such as setting up SAML authentication or creating teams, are optional and can be configured later.
+====
