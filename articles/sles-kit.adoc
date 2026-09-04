@@ -17,19 +17,9 @@ endif::[]
 include::../common/generic-attributes.adoc[]
 = Setting up an MCP Host on {productname}
 
-WHAT?::
-The MCP host (mcphost) is a command-line interface that implements the Model Context Protocol, enabling large language models (LLMs) to communicate with specialized tools and system services via MCP servers.
 
-WHY?::
-Use the MCP host to enable LLMs to safely interact with system services, execute commands and manage files through a structured environment.
 
-EFFORT::
- It takes 15 minutes of reading time.
-
-GOAL::
-By the end of this article, you will have an installed instance of the MCP host configured to mediate between an LLM and specific system tools.
-
-REQUIREMENTS::
+*Prerequisites:*
 
 * An installed and properly registered instance of SLES 16.0
 
@@ -39,14 +29,14 @@ REQUIREMENTS::
 
 * A supported LLM backend 
 
-include::../concepts/mcphost-introduction.adoc[leveloffset=+1]
+include::../concepts/kit-introduction.adoc[leveloffset=+1]
 
 
-include::../tasks/mcphost-installation.adoc[leveloffset=+1]
+include::../tasks/kit-installation.adoc[leveloffset=+1]
 
-include::../references/mcphost-configuration.adoc[leveloffset=+1]
+include::../references/kit-configuration.adoc[leveloffset=+1]
 
-include::../glues/mcphost-whats-next.adoc[leveloffset=+1]
+include::../glues/kit-whats-next.adoc[leveloffset=+1]
 
 [appendix]
 include::../common/common_copyright_gfdl.adoc[]
