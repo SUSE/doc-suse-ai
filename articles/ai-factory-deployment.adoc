@@ -67,8 +67,15 @@ endif::[]
 include::../snippets/ai-separate-rancher-cluster.adoc[]
 
 [#aif-deployment-install-gpu-operator]
-=== Install {nvoperator}
-Install the GPU operator on the downstream clusters where GPU resources are available, and not on the management cluster where {rancher} is running.
+=== Install GPU Operator
+Install the GPU Operator on downstream clusters where GPU resources are available. Do not install it on the management cluster running {rancher}.
+
+[NOTE]
+.Use third-party drivers
+====
+We recommend deploying the GPU Operator with third-party GPU drivers.
+====
+
 Refer to link:https://documentation.suse.com/cloudnative/rke2/latest/en/add-ons/gpu_operators.html[GPU Operator Installation] for more details.
 
 [#aif-deployment-connect-cluster]
