@@ -12,7 +12,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-08-31
+:revdate: 2026-09-07
 :page-revdate: {revdate}
 
 [abstract]
@@ -112,13 +112,17 @@ include::../tasks/ai-factory-deployment-helm.adoc[leveloffset=+2]
 :override-title: How do I install {productname} using Rancher?
 include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
 
-
-
 [#aif-credentials-install]
 :override-title: Can I provide repository credentials during the {productname} installation?
 include::../tasks/aif-credentials-helm.adoc[leveloffset=+2]
 
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+[#ai-factory-deployment-runai]
+:override-title: How do I deploy {runaia} for GPU workload orchestration?
+include::../tasks/runai-installing.adoc[leveloffset=+2]
+endif::[]
 
+[#ai-factory-registries-access]
 
 :override-title: Are there any post-deployment steps?
 include::../tasks/ai-factory-registries-access.adoc[leveloffset=+1]
