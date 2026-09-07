@@ -390,9 +390,10 @@ Create the `runai-reg-creds` secret in the `runai` namespace using your NVAIE cr
 ----
 
 [#aif-runai-install-prometheus]
-=== Install {prometheus} community stack.
+=== Install {prometheus} community stack
 {runaia} cluster has a hard dependency on {prometheus} CRDs available via the {prometheus} community stack.
-Install {prometheus} community stack via {helm}.
+Install the {prometheus} community stack via {helm}.
+
 . Create a file named `prometheus-community-stack.yaml` with the following content.
 +
 [source,yaml]
@@ -451,5 +452,4 @@ clusterConfig:
 ----
 
 . Review the configuration and select btn:[Install].
-The installation takes several minutes to complete.
-. Once the deployment is complete, you should see that the cluster had successfully registered itself to the Control Plane.
+. Once the deployment is complete, you should see that the cluster has successfully registered itself with the Control Plane.
