@@ -36,15 +36,7 @@ include::../references/ai-factory-deployment-airgapped-requirements.adoc[levelof
 :override-title: Workflow
 include::../tasks/ai-factory-deployment-airgapped-workflow.adoc[leveloffset=+1]
 
-[glossary]
-[#ai-factory-glossary]
-include::../references/AI-glossary.adoc[leveloffset=+1]
-
 [appendix]
 [#ai-factory-release-notes]
 :override-title: Release notes
 include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]
-
-[appendix]
-[#ai-factory-appendix]
-include::../references/AI-Factory-appendix.adoc[leveloffset=+1]
