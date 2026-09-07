@@ -94,16 +94,3 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 include::../tasks/runai-installing.adoc[leveloffset=+1]
 
 endif::[]
-
-[glossary]
-[#ai-factory-glossary]
-include::../references/AI-glossary.adoc[leveloffset=+1]
-
-[appendix]
-[#ai-factory-release-notes]
-:override-title: Release notes
-include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]
-
-[appendix]
-[#ai-factory-appendix]
-include::../references/AI-Factory-appendix.adoc[leveloffset=+1]
