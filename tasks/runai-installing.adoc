@@ -27,7 +27,7 @@ endif::[]
 == Prerequisites
 * **DNS resolution**: The {runaia} control plane and cluster URLs must be fully qualified domain names (FQDNs) resolvable via public or private DNS.
 IP addresses are not supported.
-In a {kube} environment, configure an ingress controller and DNS records pointing to the ingress IP.
+In a {kube} environment, configure an {ingress} controller and DNS records pointing to the {ingress} IP.
 * **TLS certificates**: A configured `{certmanager}` instance with a valid certificate authority (CA) is required.
 While {runaia} supports local or custom CAs, using a public CA, such as Let's Encrypt, simplifies the setup.
 * **{prometheus} monitoring**: The link:https://github.com/prometheus-community/helm-charts[kube-prometheus-stack] is required.
@@ -212,7 +212,7 @@ spec:
 [#aif-runai-runai-reg-creds-secret]
 === Create the `runai-reg-creds` secret
 {runaia} images are hosted in the secure `nvcr.io` registry.
-Create a secret named `runai-reg-creds` in the `runai-backend` namespace using your NVIDIA AI Enterprise (NVAIE) credentials, such as a service key, to pull images from `nvcr.io`.
+Create a secret named `runai-reg-creds` in the `runai-backend` namespace using your {nvidia} AI Enterprise (NVAIE) credentials, such as a service key, to pull images from `nvcr.io`.
 
 [source,sh,subs="+attributes"]
 ----
@@ -231,7 +231,7 @@ Create a secret named `runai-reg-creds` in the `runai-backend` namespace using y
 +
 [#fig-aif-runai-control-plane]
 .{runaia} Control Plane application
-image::aif-runai-install1.png[Screenshot showing NVIDIA applications including {runaia} Control Plane,width=100%]
+image::aif-runai-install1.png[Screenshot showing {nvidia} applications including {runaia} Control Plane,width=100%]
 +
 . On the `Basic Information` screen, set both the `Instance Name` and `Namespace` fields to `runai-backend`.
 . On the `Target Cluster` screen, set the `Deployment Type` to `Helm`. Do not use the default `Fleet Bundle` option.
