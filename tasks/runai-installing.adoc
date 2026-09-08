@@ -19,7 +19,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-02
+:revdate: 2026-09-08
 :page-revdate: {revdate}
 
 
@@ -27,7 +27,7 @@ endif::[]
 == Prerequisites
 * **DNS resolution**: The {runaia} control plane and cluster URLs must be fully qualified domain names (FQDNs) resolvable via public or private DNS.
 IP addresses are not supported.
-In a {kube} environment, use `external-dns` configured with a supported DNS provider, such as {cloudflare}.
+In a {kube} environment, configure an ingress controller and DNS records pointing to the ingress IP.
 * **TLS certificates**: A configured `{certmanager}` instance with a valid certificate authority (CA) is required.
 While {runaia} supports local or custom CAs, using a public CA, such as Let's Encrypt, simplifies the setup.
 * **{prometheus} monitoring**: The link:https://github.com/prometheus-community/helm-charts[kube-prometheus-stack] is required.
@@ -41,94 +41,20 @@ Deploy them from the menu:SUSE AI Factory[Apps] catalog instead.
 * Select the *{helm}* deployment type during the `Target Cluster` step of the deployment wizard.
 Do not select the default `Fleet Bundle` deployment due to an link:https://github.com/rancher/fleet/issues/5630[existing bug in {fleeta}].
 
-[#aif-runai-externaldns]
-=== Install {externaldns} (optional)
+[#aif-runai-ingress-dns]
+=== Configure DNS resolution for {ingress}
 
-[TIP]
-====
-Using the {cloudflare} provider requires a {cloudflare} account and an API token.
-For instructions, see link:https://developers.cloudflare.com/fundamentals/api/get-started/create-token/[Create an API token].
-====
+To allow external access to the {runaia} control plane, you must route your FQDNs to the {kube} cluster's {ingress} controller.
+{rke2a} deploys the {nginx} {ingress} Controller by default.
 
-If {externaldns} is not yet installed, install it from {sappco} using the following steps:
-
-. Create a manifest file named `external-dns-deployment.yaml` with the following content.
-Adjust the credentials, `txtOwnerId`, and `domainFilters[0]` to match your environment.
-+
-[source,yaml]
-----
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: external-dns
----
-apiVersion: v1
-data:
-  .dockerconfigjson: "<YOUR_ENCODED_APPCO_CREDENTIAL_HERE>"
-kind: Secret
-metadata:
-  name: application-collection
-  namespace: external-dns
-type: kubernetes.io/dockerconfigjson
----
-apiVersion: v1
-data:
-  apiKey: "<YOUR_ENCODED_CLOUDFLARE_API_TOKEN_HERE>"
-kind: Secret
-metadata:
-  name: cloudflare-api-key
-  namespace: external-dns
-type: Opaque
----
-apiVersion: v1
-data:
-  .dockerconfigjson: "<YOUR_ENCODED_APPCO_CREDENTIAL_HERE>"
-kind: Secret
-metadata:
-  name: application-collection
-  namespace: kube-system
-type: kubernetes.io/dockerconfigjson
----
-apiVersion: helm.cattle.io/v1
-kind: HelmChart
-metadata:
-  name: external-dns
-  namespace: kube-system
-spec:
-  chart: oci://dp.apps.rancher.io/charts/external-dns
-  version: "1.21.0"
-  targetNamespace: external-dns
-  dockerRegistrySecret:
-    name: application-collection
-  valuesContent: |-
-    global:
-      imagePullSecrets:
-        - application-collection
-    txtOwnerId: "tux@example.com"
-    logLevel: debug
-    domainFilters[0]: exampleclouddev.com
-    policy: sync
-    interval: 1m
-    sources:
-      - ingress
-      - service
-    provider:
-      name: cloudflare
-    env:
-      - name: CF_API_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: cloudflare-api-key
-            key: apiKey
-----
-
-. Apply the manifest file to install {externaldns}.
+. Retrieve the external IP address or host name of the {ingress} controller service.
 +
 [source,sh,subs="+attributes"]
 ----
-{prompt_user}kubectl apply -f external-dns-deployment.yaml
+{prompt_user}kubectl get service -n kube-system rke2-ingress-nginx-controller
 ----
+
+. In your DNS provider's management console, create a DNS record (A or CNAME) pointing your FQDN (for example, `runai-control-plane.exampleclouddev.com`) to the retrieved IP address or host name.
 
 [#aif-runai-certmanager]
 === Install {certmanager} (optional)
@@ -318,8 +244,6 @@ global:
   ingress:
     ingressClass: nginx
     tlsSecretName: runai-tls-cert
-    extraAnnotations:
-      external-dns.alpha.kubernetes.io/hostname: "runai-control-plane.exampleclouddev.com"
 tenantsManager:
   config:
     adminUsername: "tux@example.com"
@@ -435,7 +359,6 @@ You can leave the `Instance Name` field with the default value `runai-cluster`.
 . On the `Target Cluster` screen, set the `Deployment Type` to `Helm`. Do not use the default `Fleet Bundle` option.
 . On the `Configuration` screen, override the default {helm} values with your custom configuration.
 Use the values for `controlPlane.url`, `controlPlane.clientSecret`, `cluster.uid`, and `cluster.url` obtained in the previous step.
-You can also configure `nginx` for `ingress`.
 +
 [source,yaml]
 ----
