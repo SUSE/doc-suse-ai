@@ -3,7 +3,7 @@
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifndef::override-abstract[]
-The MCP Host is a command-line tool designed to act as a central mediator between a Large Language Model (LLM) and various specialized tools known as MCP servers.
+Kit is a command-line tool designed to act as a central mediator between a Large Language Model (LLM) and various specialized tools known as MCP servers.
 endif::[]
 
 // erase the flag for future overrides
@@ -16,8 +16,14 @@ endif::[]
 Its primary purpose is to provide a structured environment where an LLM can safely access system information, execute commands, or manage files to perform complex tasks that the model cannot do on its own.
 
 [#mcphost-introduction-how-it-works]
-== How does the MCP host work?
+== How does Kit work?
 
-On the one hand, it interacts with LLMs by establishing a connection to a provider; on the other hand, it manages MCP Servers, which are the actual providers of "tools" or "capabilities."
+After starting the interaction session with Kit and describing the desired actions, Kit performs the following tasks:
 
+. Kit checks its configuration, connects to configured MCP servers and request a list of tools available for the MCP servers along with request/response schema used by these tools
+. Kit prompts the used LLM and provides it the user input along with MCP server tools schemas
+. The LLM decides what to do: specifies needed tools and exact operations
+. Kit executes the instructions provided by LLM
+. Kit sends the file contents back to the LLM. The LLM reads the code, finds the bug, and issues a second tool call
+. After the problem is solved, LLM generates a human-readable response and via Kit it is handed back to the user.
 

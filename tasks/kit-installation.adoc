@@ -7,7 +7,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-The MCP host is not installed on {sles} by default. To use it, install the `mcphost` package.
+Kit is not installed on {productname} by default. To use it, install the `mcphost` package.
 endif::[]
 
 // erase the flag for future overrides
@@ -20,8 +20,23 @@ endif::[]
 
 To install the package, run the command:
 
---
+* on regular {productname}
++
+----
 [source,bash]
 
-sudo zypper in mcphost
---
+sudo zypper in kit
+----
+* on the immutable {productname}
++
+[source,bash]
+----
+sudo transactional-update pkg in kit
+----
++ 
+and then reboot the system
++
+----
+[source,bash]
+sudo reboot
+----
