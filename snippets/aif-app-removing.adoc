@@ -1,0 +1,18 @@
+= How do I remove {ai-app-name}?
+
+You can remove {ai-app-name} either using *{ranchera}* or on the command line with *{helm}*.
+
+[#{ai-app-string}-removing-rancher]
+== Removal using {ranchera}
+
+Refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-usage/ai-factory-managing-workloads.html#aif-workloads-delete[AI application removal] for a general removal procedure.
+
+[#{ai-app-string}-upgrremovingading-helm]
+== Removal using {helm}
+
+To remove {ai-app-name} using {helm}, use the following command:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm uninstall {ai-app-string} -n {ai-app-string}
+----

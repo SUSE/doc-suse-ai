@@ -1,0 +1,86 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {kubeflow} requirements
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Deploying and running {ai-app-name} has the following requirements.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-09-08
+:page-revdate: {revdate}
+
+[#kubeflow-requirements-hardware]
+== Hardware requirements
+
+|===
+| Profile | CPU | RAM | GPU | Storage
+
+| Minimal evaluation
+| 8 cores
+| 16 GB
+| None
+| 100+ GB
+
+| Recommended evaluation
+| 8-18 cores
+| 32-64 GB
+| 1 GPU
+| 250+ GB
+
+| Production / LLM development
+| 16+ cores
+| 64-128+ GB
+| 2+ GPU (workload dependent)
+| 500+ GB
+|===
+
+[#kubeflow-requirements-software]
+== Software requirements
+
+|===
+| Requirement | Version | Notes
+
+| {kube}
+| >= 1.30
+| Tested on {rke2a} / K3s
+
+| {helm}
+| >= 4.0
+| Required for OCI chart support
+
+| {certmanager}
+| 1.19.3
+| —
+
+| Istio
+| 1.1.3
+| —
+
+| Default StorageClass
+| —
+| Local Path Provisioner (development) or Longhorn (production)
+
+| {sappco} credentials
+| —
+| User name + token for `dp.apps.rancher.io` (application-collection secret)
+
+| {sregistry} credentials
+| —
+| User name + token for `registry.suse.com` (suse-registry secret) — required when sub-charts pull from {sregistry}
+|===
+
+Cloudflare API token::
+Only required if you want automatic DNS record management via `external-dns` or Let's Encrypt DNS-01 challenges.
+Not needed for basic installs.
