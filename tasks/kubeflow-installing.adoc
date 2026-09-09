@@ -13,15 +13,12 @@ endif::[]
 ifndef::override-abstract[]
 //You can install {ai-app-name} either using *{ranchera}* or on the command line with *{helm}*.
 You can install {ai-app-name} on the command line with *{helm}*.
-//You can install {ai-app-name} either using *{ranchera}* or on the command line with *{helm}*.
-You can install {ai-app-name} on the command line with *{helm}*.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-10
 :revdate: 2026-09-10
 :page-revdate: {revdate}
 
@@ -177,116 +174,3 @@ To keep the default installation values, omit `-f values.yaml`.
 ----
 <.> `--force-conflicts` is required because cert-manager-cainjector, istiod (pilot-discovery), and the clusterrole-aggregation-controller modify fields (caBundle, webhook failurePolicy, aggregated RBAC rules) that {helm} tracks.
 This flag lets {helm} reclaim ownership of those fields on each upgrade.
-
-`kubeflow-user-example-com` and all other user namespaces are created by the {kubeflow} chart and receive registry pull secrets automatically via ESO — no manual creation needed.
-====
-
-. Create image pull secrets.
-+
-Create secrets only in the static system namespaces.
-ESO propagates them to user namespaces automatically by copying `suse-ai-registry` and `application-collection` from the {kubeflow} namespace into every user namespace labelled `app.kubernetes.io/part-of: kubeflow-profile`, including namespaces created dynamically by the profiles controller at runtime.
-
-.. Create {sappco} image pull secrets.
-+
-[,sh]
-----
-for ns in cert-manager istio-system kubeflow knative-serving; do
-  kubectl create secret docker-registry application-collection \
-    --docker-server=dp.apps.rancher.io \
-    --docker-username=<appco-registry-username> \
-    --docker-password=<appco-registry-token> \
-    -n "$ns" \
-    --dry-run=client -o yaml | kubectl apply -f -
-done
-----
-
-.. Create {sregistry} image pull secrets.
-+
-[,sh]
-----
-for ns in cert-manager istio-system kubeflow knative-serving; do
-  kubectl create secret docker-registry suse-ai-registry \
-    --docker-server=registry.suse.com \
-    --docker-username=regcode \
-    --docker-password=<suse-ai-registry-token> \
-    -n "$ns" \
-    --dry-run=client -o yaml | kubectl apply -f -
-done
-----
-
-. Label namespaces for {helm}.
-+
-[,sh]
-----
-for ns in kubeflow kubeflow-user-example-com knative-serving; do
-  kubectl label namespace "$ns" app.kubernetes.io/managed-by=Helm --overwrite
-  kubectl annotate namespace "$ns" \
-    meta.helm.sh/release-name=kubeflow \
-    meta.helm.sh/release-namespace=kubeflow \
-    --overwrite
-done
-----
-
-. Install {certmanager}.
-+
-[,sh,subs="+attributes"]
-----
-{prompt_user}helm upgrade --install cert-manager \
-  oci://dp.apps.rancher.io/charts/cert-manager \
-  --version 1.20.2 \
-  --namespace cert-manager \
-  --set crds.enabled=true \
-  --set crds.keep=true \
-  --set global.imagePullSecrets[0].name=application-collection \
-  --wait --timeout 5m
-----
-
-. Install {istio}.
-+
-[,sh,subs="+attributes"]
-----
-{prompt_user}helm upgrade --install istio \
-  oci://dp.apps.rancher.io/charts/istio \
-  --version 1.3.0 \
-  --namespace istio-system \
-  --set global.imagePullSecrets[0].name=application-collection \
-  --set gateway.enabled=true \
-  --force-conflicts \
-  --server-side=true \
-  --wait --timeout 5m
-----
-
-. Install External Secrets Operator (ESO).
-ESO must be installed before the {kubeflow} chart.
-Its CRDs must be present when {helm} applies the `ClusterSecretStore` and `ClusterExternalSecret` resources.
-+
-[,sh,subs="+attributes"]
-----
-{prompt_user}helm upgrade --install external-secrets-operator \
-  oci://dp.apps.rancher.io/charts/external-secrets-operator \
-  --version 2.3.0 \
-  --namespace kubeflow \
-  --set installCRDs=true \
-  --set global.imagePullSecrets[0].name=application-collection \
-  --wait --timeout 5m
-----
-
-. To override default installation values, list them in a `values.yaml` file.
-For a complete list of {ai-app-name} chart values, refer to xref:{ai-app-string}-helm-values[].
-
-. Install {kubeflow}.
-To keep the default installation values, omit `-f values.yaml`.
-+
-[,sh,subs="+attributes"]
-----
-{prompt_user}helm upgrade --install kubeflow \
-  oci://registry.suse.com/ai/charts/kubeflow \
-  --version 0.4.0 \
-  -n kubeflow \
-  --force-conflicts \ <.>
-  --server-side=true \
-  --wait --timeout 15m
-----
-<.> `--force-conflicts` is required because cert-manager-cainjector, istiod (pilot-discovery), and the clusterrole-aggregation-controller modify fields (caBundle, webhook failurePolicy, aggregated RBAC rules) that {helm} tracks.
-This flag lets {helm} reclaim ownership of those fields on each upgrade.
-
