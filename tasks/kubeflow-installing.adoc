@@ -32,7 +32,7 @@ endif::[]
 
 To install {ai-app-name} on the command line using {helm}, follow these steps:
 
-. Log in to the {sappco} registry.
+. Log in to {sappco} registry.
 To prevent the password from being stored in the shell history, save it to the `appco-password.txt` file.
 +
 [,sh,subs="+attributes"]
@@ -78,8 +78,8 @@ ESO propagates them to user namespaces automatically by copying `suse-ai-registr
 for ns in cert-manager istio-system kubeflow knative-serving; do
   kubectl create secret docker-registry application-collection \
     --docker-server=dp.apps.rancher.io \
-    --docker-username=<appco-registry-username> \
-    --docker-password=<appco-registry-token> \
+    --docker-username=<APPCO-REGISTRY-USERNAME> \
+    --docker-password="$(< appco-password.txt)" \
     -n "$ns" \
     --dry-run=client -o yaml | kubectl apply -f -
 done
@@ -93,7 +93,7 @@ for ns in cert-manager istio-system kubeflow knative-serving; do
   kubectl create secret docker-registry suse-ai-registry \
     --docker-server=registry.suse.com \
     --docker-username=regcode \
-    --docker-password=<suse-ai-registry-token> \
+    --docker-password="$(< registry-password.txt)" \
     -n "$ns" \
     --dry-run=client -o yaml | kubectl apply -f -
 done

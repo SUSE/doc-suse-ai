@@ -64,7 +64,7 @@ include::../tasks/kubeflow-accessing.adoc[leveloffset=+2]
 include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+2]
 :override-title: How do I harden {ai-app-name} for production use?
 include::../tasks/kubeflow-hardening.adoc[leveloffset=+2]
-:override-title: How do I manage user profiles and namespaces
+:override-title: How do I manage user profiles and namespaces?
 include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+2]
 [#kubeflow-upgrading]
 include::../snippets/aif-app-upgrading.adoc[leveloffset=+2]
