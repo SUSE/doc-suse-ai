@@ -10,11 +10,11 @@ To prevent the password from being stored in the shell history, save it to the `
   --password-stdin < password.txt
 ----
 
-. To view values for a specific version of {kubeflow}, list all its available versions.
+. To view values for a specific version of {kubeflow}, list all its available chart versions.
 +
 [,sh,subs="+attributes"]
 ----
-{prompt_user}helm show chart oci://registry.suse.com/ai/charts/{ai-app-string}
+{prompt_user}podman search --list-tags registry.suse.com/ai/charts/{ai-app-string}
 ----
 
 . Display all values of {ai-app-name} {helm} chart.
