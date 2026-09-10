@@ -39,10 +39,10 @@ endif::[]
 | 1 GPU
 | 250+ GB
 
-| Production / LLM development
+| Production / large language model development
 | 16+ cores
 | 64-128+ GB
-| 2+ GPU (workload dependent)
+| 2+ GPUs (workload-dependent)
 | 500+ GB
 |===
 
@@ -58,7 +58,7 @@ endif::[]
 
 | {helm}
 | >= 4.0
-| Required for OCI chart support
+| Required because the installation commands use server-side apply flags
 
 | {certmanager}
 | 1.19.3
@@ -78,7 +78,7 @@ endif::[]
 
 | {sregistry} credentials
 | —
-| User name + token for `registry.suse.com` (suse-registry secret) — required when sub-charts pull from {sregistry}
+| User name + token for `registry.suse.com` (suse-ai-registry secret) — required when sub-charts pull from {sregistry}
 |===
 
 Cloudflare API token::

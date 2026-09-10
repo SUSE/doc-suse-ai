@@ -34,13 +34,13 @@ include::../snippets/ai-library-requirement.adoc[]
 To install {ai-app-name} on the command line using {helm}, follow these steps:
 
 . Log in to {sappco} registry.
-To prevent the password from being stored in the shell history, save it to the `appco-pasword.txt` file.
+To prevent the password from being stored in the shell history, save it to the `appco-password.txt` file.
 +
 [,sh,subs="+attributes"]
 ----
 {prompt_user}helm registry login dp.apps.rancher.io \
   --username=<APPCO-REGISTRY-USERNAME> \
-  --password-stdin < appco-pasword.txt
+  --password-stdin < appco-password.txt
 ----
 
 . Log in to {sregistry}.
@@ -70,7 +70,7 @@ for ns in cert-manager istio-system kubeflow; do
   kubectl create secret docker-registry application-collection \
     --docker-server=dp.apps.rancher.io \
     --docker-username=<APPCO-REGISTRY-USERNAME> \
-    --docker-password=<APPCO-REGISTRY-TOKEN> \
+    --docker-password="$(< appco-password.txt)" \
     -n "$ns" \
     --dry-run=client -o yaml | kubectl apply -f -
 done
@@ -84,7 +84,7 @@ for ns in cert-manager istio-system kubeflow; do
   kubectl create secret docker-registry suse-ai-registry \
     --docker-server=registry.suse.com \
     --docker-username=regcode \
-    --docker-password=<SUSE-AI-REGISTRY-TOKEN> \
+    --docker-password="$(< registry-password.txt)" \
     -n "$ns" \
     --dry-run=client -o yaml | kubectl apply -f -
 done

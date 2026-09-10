@@ -1,7 +1,7 @@
 = How do I get the complete value list for {ai-app-name} {helm} chart?
 
 . Log in to the registry where {ai-app-name} chart is stored.
-To prevent the password from being stored in the shell history, save it to the `pssword.txt` file.
+To prevent the password from being stored in the shell history, save it to the `password.txt` file.
 +
 [,sh,subs="+attributes"]
 ----
@@ -22,6 +22,6 @@ Omit `--version` to display the latest chart.
 +
 [,sh,subs="+attributes"]
 ----
-{prompt_user}helm get values oci://registry.suse.com/ai/charts/{ai-app-string} \
+{prompt_user}helm show values oci://registry.suse.com/ai/charts/{ai-app-string} \
   --version <VERSION>
 ----
