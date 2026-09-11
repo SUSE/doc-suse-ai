@@ -147,8 +147,9 @@ Its CRDs must be present when {helm} applies the `ClusterSecretStore` and `Clust
 +
 [,sh,subs="+attributes"]
 ----
-{prompt_user}helm upgrade --install external-secrets-operator \
-  oci://dp.apps.rancher.io/charts/external-secrets-operator \
+{prompt_user}helm upgrade \
+  --install external-secrets-operator \
+    oci://dp.apps.rancher.io/charts/external-secrets-operator \
   --version 2.3.0 \
   --namespace kubeflow \
   --set installCRDs=true \
