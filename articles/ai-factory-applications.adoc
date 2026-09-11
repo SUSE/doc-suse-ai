@@ -49,23 +49,23 @@ Unlike traditional software with hard-coded rules, ML applications learn to make
 ====
 
 [#kubeflow-components]
-:override-title: What components does {ai-app-name} include?
+:override-title: What components does {kubeflow} include?
 include::../references/kubeflow-components.adoc[leveloffset=+2]
 [#kubeflow-requirements]
-:override-title: What are {ai-app-name} requirements?
+:override-title: What are {kubeflow} requirements?
 include::../references/kubeflow-requirements.adoc[leveloffset=+2]
-:override-title: What are known {ai-app-name} limitations?
+:override-title: What are known {kubeflow} limitations?
 include::../references/kubeflow-limitations.adoc[leveloffset=+3]
 [#kubeflow-helm-values]
 include::../snippets/aif-app-values.adoc[leveloffset=+2]
 [#kubeflow-installing]
-:override-title: How do I install {ai-app-name}?
+:override-title: How do I install {kubeflow}?
 include::../tasks/kubeflow-installing.adoc[leveloffset=+2]
-:override-title: How do I access {ai-app-name}?
+:override-title: How do I access {kubeflow}?
 include::../tasks/kubeflow-accessing.adoc[leveloffset=+2]
-:override-title: How do I configure {ai-app-name} for different scenarios?
+:override-title: How do I configure {kubeflow} for different scenarios?
 include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+2]
-:override-title: How do I harden {ai-app-name} for production use?
+:override-title: How do I harden {kubeflow} for production use?
 include::../tasks/kubeflow-hardening.adoc[leveloffset=+2]
 :override-title: How do I manage user profiles and namespaces?
 include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+2]
