@@ -1,0 +1,27 @@
+= How do I get the complete value list for {ai-app-name} {helm} chart?
+
+. Log in to the registry where {ai-app-name} chart is stored.
+To prevent the password from being stored in the shell history, save it to the `password.txt` file.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm registry login registry.suse.com \
+  --username regcode \
+  --password-stdin < password.txt
+----
+
+. To view values for a specific version of {kubeflow}, list all its available chart versions.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}podman search --list-tags registry.suse.com/ai/charts/{ai-app-string}
+----
+
+. Display all values of {ai-app-name} {helm} chart.
+Omit `--version` to display the latest chart.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm show values oci://registry.suse.com/ai/charts/{ai-app-string} \
+  --version <VERSION>
+----

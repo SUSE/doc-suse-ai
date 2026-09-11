@@ -18,7 +18,8 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-08-17
+:revdate: 2026-09-09
+:page-revdate: {revdate}
 
 [abstract]
 --
@@ -29,8 +30,57 @@ This approach ensures consistent, reproducible and easily manageable application
 This guide provides a list of AI applications installable by {productname}, along with their descriptions and configuration override examples.
 --
 
-
 ifeval::["{PROF_PRODUCT}" == "saif"]
+
+[#aif-apps-kubeflow]
+== {kubeflow}
+
+:ai-app-string: kubeflow
+:ai-app-name: {kubeflow}
+
+{ai-app-name} (link:https://www.kubeflow.org[]) is a cloud-native platform that orchestrates and simplifies the entire machine learning (ML) lifecycle on {kube}.
+Unlike traditional software with hard-coded rules, ML applications learn to make decisions and predictions directly from data.
+{ai-app-name} automates this data-driven process, managing everything from initial development to production deployment.
+
+[WARNING]
+.Technology preview
+====
+{ai-app-name} is currently available as a Technology Preview.
+====
+
+[#kubeflow-components]
+:override-title: What components does {kubeflow} include?
+include::../references/kubeflow-components.adoc[leveloffset=+2]
+[#kubeflow-requirements]
+:override-title: What are {kubeflow} requirements?
+include::../references/kubeflow-requirements.adoc[leveloffset=+2]
+:override-title: What are known {kubeflow} limitations?
+include::../references/kubeflow-limitations.adoc[leveloffset=+3]
+[#kubeflow-helm-values]
+include::../snippets/aif-app-values.adoc[leveloffset=+2]
+[#kubeflow-installing]
+:override-title: How do I install {kubeflow}?
+include::../tasks/kubeflow-installing.adoc[leveloffset=+2]
+:override-title: How do I access {kubeflow}?
+include::../tasks/kubeflow-accessing.adoc[leveloffset=+2]
+:override-title: How do I configure {kubeflow} for different scenarios?
+include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+2]
+:override-title: How do I harden {kubeflow} for production use?
+include::../tasks/kubeflow-hardening.adoc[leveloffset=+2]
+:override-title: How do I manage user profiles and namespaces?
+include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+2]
+[#kubeflow-upgrading]
+include::../snippets/aif-app-upgrading.adoc[leveloffset=+2]
+:override-title: Upgrade notes
+include::../references/kubeflow-upgrade-notes.adoc[leveloffset=+3]
+[#kubeflow-removing]
+include::../snippets/aif-app-removing.adoc[leveloffset=+2]
+:override-title: Troubleshooting
+include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
+
+:ai-app-string!:
+:ai-app-name!:
+
 // [#opensearch-helm-overrides]
 // include::../references/opensearch-helm-overrides.adoc[leveloffset=+1]
 // [#milvus-helm-overrides]
@@ -69,37 +119,9 @@ ifeval::["{PROF_PRODUCT}" == "saif"]
 // :override-title: {mlflow}
 // include::../tasks/mlflow-installing.adoc[leveloffset=+1]
 
-// [#kubeflow-installing]
-// :override-title: {kubeflow}
-// include::../tasks/kubeflow-installing.adoc[leveloffset=+1]
-// include::../tasks/kubeflow-accessing.adoc[leveloffset=+2]
-// :override-title: Configuration scenarios
-// include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+2]
-// :override-title: Hardening for production use
-// include::../tasks/kubeflow-hardening.adoc[leveloffset=+2]
-// :override-title: Managing user profiles and namespaces
-// include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+2]
-// :override-title: Upgrade notes
-// include::../references/kubeflow-upgrade-notes.adoc[leveloffset=+2]
-// :override-title: Known limitations
-// include::../references/kubeflow-limitations.adoc[leveloffset=+2]
-// :override-title: Troubleshooting
-// include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
+
 endif::[]
 
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
 
 endif::[]
-
-[glossary]
-[#ai-factory-glossary]
-include::../references/AI-glossary.adoc[leveloffset=+1]
-
-[appendix]
-[#ai-factory-release-notes]
-:override-title: Release notes
-include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]
-
-[appendix]
-[#ai-factory-appendix]
-include::../references/AI-Factory-appendix.adoc[leveloffset=+1]

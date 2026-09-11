@@ -33,7 +33,7 @@ They cannot be set via {helm} values at runtime because the configmap is rendere
 * *`knativeServing.enabled` must be `true`* for KServe to function.
 *Disabling Knative Serving* will cause KServe InferenceService resources to remain in a *non-Ready state*.
 
-* Only the *Cloudflare provider* is supported for external-dns out of the box.
+* Only the *Cloudflare provider* is tested for external-dns out of the box.
 Other providers (AWS Route53, Azure, GCP) require additional `externaldns.env` configuration.
 
 * *{seaweedfs} is single-node, non-replicated.*

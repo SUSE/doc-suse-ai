@@ -20,7 +20,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-10
+:revdate: 2026-09-10
 :page-revdate: {revdate}
 
 [#kubeflow-config-scenarios-nodeport]
@@ -44,7 +44,7 @@ You can point `/etc/hosts` at the cluster IP or use `external-dns` to automate D
 
 [source,yaml]
 ----
-# kubeflow-override-values.yaml
+# values.yaml
 kubeflow-istio-resources:
   hostname: "kubeflow.dev.example.com"
   externalDNSEnabled: false
@@ -67,10 +67,13 @@ Navigate to: \http://kubeflow.dev.example.com.
 
 Suitable for shared development clusters where you can distribute the self-signed CA manually.
 Requires {certmanager}.
+The chart creates a self-signed `ClusterIssuer` and requests a `Certificate` automatically.
+No `kubectl` steps are required beyond the {helm} install.
+Add the self-signed CA to your Web browser trust store to avoid certificate warnings.
 
 [source,yaml]
 ----
-# kubeflow-override-values.yaml
+# values.yaml
 kubeflow-istio-resources:
   hostname: "kubeflow.dev.example.com"
   externalDNSEnabled: false
@@ -80,10 +83,13 @@ kubeflow-istio-resources:
     httpsRedirect: true
 ----
 
-The chart creates a self-signed `ClusterIssuer` and requests a `Certificate` automatically.
-No `kubectl` steps are required beyond the {helm} install.
+[NOTE]
+====
+The self-signed path can also serve inference over external HTTPS.
+It issues the wildcard directly, therefore no DNS-01 solver is needed on that path.
+Refer to  xref:external-https-kserve-inference[] for more details.
+====
 
-Add the self-signed CA to your Web browser trust store to avoid certificate warnings.
 
 [#kubeflow-config-scenarios-lets-encrypt]
 == Production: Let's Encrypt TLS + external-dns
@@ -94,7 +100,7 @@ Requires a Cloudflare API token with DNS edit access.
 
 [source,yaml]
 ----
-# kubeflow-override-values.yaml
+# values.yaml
 
 # Access
 kubeflow-istio-resources:
@@ -189,11 +195,11 @@ Installation:
 ----
 {prompt_user}helm upgrade --install kubeflow \
   oci://registry.suse.com/ai/charts/kubeflow \
-  --version 0.3.1 \
+  --version 0.4.0 \
   -n kubeflow \
   --force-conflicts \
   --wait --timeout 15m \
-  -f kubeflow-override-values.yaml
+  -f prod-values.yaml
 ----
 
 [IMPORTANT]
@@ -221,7 +227,10 @@ Then reference it in your override values file:
 
 [source,yaml]
 ----
-# kubeflow-override-values.yaml
+# prod-values.yaml
+global:
+  kserveDomain: "models.example.com"   # inference domain — see note above
+  kserveExternalHttps: false
 kubeflow-istio-resources:
   hostname: "kubeflow.example.com"
   externalDNSEnabled: false   # manage DNS separately
@@ -230,12 +239,70 @@ kubeflow-istio-resources:
     existingSecret: "my-kubeflow-tls"
     httpsRedirect: true
 
-# Change credentials as shown in the Let's Encrypt scenario above
+# Change credentials as shown in the Let's Encrypt scenario / Production Hardening
 auth:
   oidc:
     clientSecret: "<STRONG-RANDOM-32-CHAR-SECRET>"
-[...] # (rest of credentials)
+# ... (rest of credentials)
 ----
+
+=== Serving KServe inference over HTTPS with a BYO cert
+When configuring `tls.source: "secret"`, the chart does not automatically create a cert-manager `Certificate`. Instead, it uses your existing Kubernetes Secrets as-is.
+
+Depending on your configuration, the secrets are mapped as follows:
+
+Dashboard Server:: Uses the Secret specified in `tls.existingSecret`.
+Inference Server (`*.<kserveDomain>`):: Uses a dedicated Secret specified in `tls.kserveExistingSecret`. Note that while other paths (such as `letsEncrypt`, `selfSigned`, or `issuerRef`) issue a separate `kserve-wildcard-tls` certificate automatically, the secret path does not.
+
+When `global.kserveExternalHttps: true`, the following rules apply:
+
+* The `tls.kserveExistingSecret` parameter is required. If left empty, installation validation will fail.
+* The referenced certificate must include the `*.<kserveDomain>` Subject Alternative Name (SAN). Otherwise, TLS handshakes to inference hosts will fail.
+* If you use a single wildcard or multi-SAN certificate covering both the dashboard and inference hosts, point both fields to the same Kubernetes Secret. The `urlScheme` and domain templates are derived automatically.
+
+[.yaml]
+----
+global:
+  kserveDomain: "models.example.com"
+  kserveExternalHttps: true
+kubeflow-istio-resources:
+  hostname: "kubeflow.example.com"             # the APEX — NOT under *.models.example.com
+  tls:
+    source: "secret"
+    existingSecret: "my-kubeflow-tls"          # dashboard cert (SAN: kubeflow.example.com)
+    kserveExistingSecret: "my-kserve-wild-tls" # wildcard cert (SAN: *.models.example.com) —
+----
+
+[#tls-blast-radius]
+*Containing the blast radius*
+The wildcard Secret terminates TLS for every tenant's inference endpoint. Consequently, its private key represents a cluster-wide single point of compromise.
+To contain this risk, adhere to the following two rules:
+
+. *Scope the wildcard to a dedicated subdomain instead of the organization-wide apex.*
+  Use `+++*.models.example.com+++` (`global.kserveDomain: models.example.com`) rather than deploying an organization-wide `+++*.example.com+++` key into the Gateway Secret.
+  A scoped wildcard confines the blast radius to the `{kubeflow}` subdomain rather than exposing your entire DNS zone.
+. *Keep the dashboard host at the apex, outside the wildcard, using its own Secret.*
+  The apex domain `kubeflow.example.com` is *not* covered by `+++*.models.example.com+++`, meaning it requires a separate certificate.
+  For this reason, the Helm chart provisions the dashboard certificate separately from `kserve-wildcard-tls`.
+  A compromise of the wildcard key or a DNS-01 challenge failure on the wildcard will not disrupt access to the dashboard.
+  Reusing a single certificate for both (which places the dashboard host under the wildcard domain) eliminates this isolation and is not recommended.
+
+With these two rules, `hostname` and `global.kserveDomain` can share the same root value.
+The dashboard remains at the apex domain, while inference endpoints are served under `*.<kserveDomain>`.
+
+*Optional variant (not required for blast-radius containment):* you can place the dashboard on a distinct domain (for example, setting `hostname: kubeflow.example.com` and `global.kserveDomain: models.example.com`).
+This setup works equally well and further isolates the dashboard from the inference wildcard, but does not offer additional blast-radius protection beyond the two rules above and requires managing a second DNS zone.
+
+Regardless of the certificate you provide, always restrict RBAC permissions on Secrets within the `istio-system` namespace and rotate them independently of any organization-wide certificates.
+Keep `global.kserveExternalHttps` set to `false` to keep inference traffic on plain HTTP (in this case, the dedicated `kserve-ingress-gateway` only serves port `:80` without requiring a wildcard certificate).
+
+[NOTE]
+.Inference host name format
+====
+By default, Knative route hosts use the upstream dotted format `\{name\}.\{namespace\}.\{domain\}`.
+These hosts are only flattened to `\{name\}-\{namespace\}.\{domain\}` when you opt into wildcard TLS by setting `global.kserveExternalHttps: true`.
+For more details, see xref:external-https-kserve-inference[External HTTPS for KServe inference] and configure your DNS records, clients or certificate SANs accordingly.
+====
 
 == Production: Use an existing external-dns and cert-manager
 
@@ -246,10 +313,10 @@ You can check the deployment with the `kubectl` command:
 +
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl get deployment external-dns -n external-dns -o yaml | grep source=
-  - --source=service
-  - --source=ingress
-  - --source=istio-gateway
+{prompt_user}$ kubectl get deployment external-dns -n external-dns -o yaml | grep source=
+        - --source=service
+        - --source=ingress
+        - --source=istio-gateway
 ----
 
 * A cluster issuer must exist in the environment and be configured to issue certificates from a production public CA such as Let's Encrypt.
@@ -257,8 +324,7 @@ You can check the deployment with the `kubectl` command:
 +
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl get clusterissuer
-
+{prompt_user}$ kubectl get clusterissuer
 NAME                     READY   AGE
 letsencrypt-production   True    75m
 ----
@@ -267,25 +333,25 @@ To configure {kubeflow} to use existing `external-dns` and `cert-manager`, refer
 
 [source,yaml]
 ----
-# kubeflow-override-values.yaml
+# prod-values.yaml
+global:
+  kserveDomain: "models.example.com"   # inference domain — see note above
 kubeflow-istio-resources:
   hostname: "kubeflow.example.com"
   externalDNSEnabled: true
   tls:
     source: "issuerRef"
     httpsRedirect: true
-
     issuerRef:
       name: letsencrypt-production
-
 externaldns:
   enabled: false
 
-# Change credentials as shown in the Let's Encrypt scenario above
+# Change credentials as shown in the Let's Encrypt scenario / Production Hardening
 auth:
   oidc:
     clientSecret: "<STRONG-RANDOM-32-CHAR-SECRET>"
-[...] # (rest of credentials)
+# ... (rest of credentials)
 ----
 
 [NOTE]
@@ -295,3 +361,118 @@ When adding `istio-gateway` as a source to `external-dns`, make sure the {istio}
 Otherwise, `external-dns` pod may keep crashing with an error indicating a failure to list the {istio} gateway resource.
 However, the error will eventually resolve after {istio} is installed by {kubeflow}.
 ====
+
+[#external-https-kserve-inference]
+== External HTTPS for KServe inference (opt-in)
+
+KServe inference always routes through its own *dedicated* `kserve-ingress-gateway`
+(`global.kserveGateway.name`, default `kubeflow/kserve-ingress-gateway`).
+This gateway is separate from the `kubeflow-gateway` of the dashboard.
+The `net-istio` component binds the Knative ingress `VirtualServices` to this gateway.
+Its readiness prober only probes the gateway ports.
+Therefore, inference readiness is *independent of the dashboard TLS on port `:443`*.
+
+By default, the dedicated gateway serves inference on port `:80`.
+The `status.url` of each `InferenceService` uses the default KServe `\{name\}-\{namespace\}.\{domain\}` host over HTTP.
+This behavior is identical to upstream KServe.
+Serving inference over external HTTPS is optional.
+To enable this option, configure the two global parameters shown below and point the gateway at a TLS issuer.
+The Helm chart then adds a `*.<kserveDomain>:443` server to the dedicated gateway.
+The chart also adds a redirect from port `:80` to port `:443`.
+
+[source,yaml]
+----
+# --- KServe external HTTPS opt-in ---
+global:
+  kserveDomain: "models.example.com"  # base domain for inference hosts + wildcard cert. Prefer a
+                                      # scoped subdomain (models.example.com) over an org-wide domain:
+                                      # the wildcard is "*.<kserveDomain>", so a bare domain widens the
+                                      # cert's blast radius to your whole zone.
+  kserveExternalHttps: true           # the only switch — everything else is auto-derived
+
+kubeflow-istio-resources:
+  hostname: "kubeflow.example.com"    # required: the dashboard host (chart fails fast if unset). Keep
+                                      # it outside the *.models.example.com wildcard so the dashboard
+                                      # gets its own cert.
+  tls:
+    source: "letsEncrypt"             # or selfSigned / secret / issuerRef
+    letsEncrypt:
+      email: "admin@example.com"
+      solver: cloudflare              # DNS-01 required for wildcard certs
+    cloudflare:                       # required for the cloudflare DNS-01 solver
+      email: "admin@example.com"
+      apiTokenSecretRef:
+        name: cloudflare-api-token-secret   # must live in cert-manager's namespace
+        key: api-token
+----
+
+You do not need to set `kserve.urlScheme`, `kserve.ingressDomain`, `knativeServing.domain`, or `knativeServing.domainTemplate` manually.
+The chart derives these parameters from the two global variables.
+The `urlScheme` becomes `https`, and the domains use the value of `global.kserveDomain`.
+The chart flattens the Knative route host to a single `\{name\}-\{namespace\}.\{domain\}` label so that the wildcard certificate covers it.
+Consequently, the dedicated `kserve-ingress-gateway` serves `*.<kserveDomain>` on port `:443` with a separate certificate named `kserve-wildcard-tls`.
+Because this gateway is separate from the dashboard gateway, a DNS-01 failure on the wildcard does not affect the dashboard TLS.
+The Helm chart validation fails during rendering if the configuration is incomplete.
+This includes a missing `hostname`, an invalid `tls.source`, an HTTP-01 solver, an unpopulated Cloudflare block, or a disabled OAuth2 proxy.
+
+=== Requirements, security model, and caveats
+
+* *Requires the bundled oauth2-proxy (`global.oauth2Proxy.enabled: true`, the default).*
+  The chart only renders the gateway authentication (`authn-filter` ext_authz chain) when you enable the OAuth2 proxy.
+  If you disable this proxy to use a custom identity provider (IdP), the dedicated gateway performs no authentication.
+  Consequently, the wildcard server on `*.<kserveDomain>:443` publishes the inference endpoints of all tenants without authentication.
+  Therefore, the chart does not render the wildcard server and fails validation if `global.kserveExternalHttps: true` is combined with `global.oauth2Proxy.enabled: false`.
+  If you use custom gateway authentication, do not enable this option.
+  Expose the inference service through your own authenticated ingress instead.
+* *Requires a DNS-01 solver* (`solver: cloudflare`).
+  Let's Encrypt HTTP-01 cannot issue wildcard certificates.
+  The `apiTokenSecretRef` secret must exist in the namespace of cert-manager.
+  A `ClusterIssuer` resolves solver secrets in that namespace, not in the release namespace.
+  Scope the Cloudflare API token to *Zone > DNS > Edit* and *Zone > Zone > Read* for zone discovery.
+  Apply this scope to the specific zones that cover `kserveDomain` or the dashboard host, rather than selecting all zones.
+  This restriction ensures that a leaked token can only access those specific zones.
+* *The Knative route host is flattened to `\{name\}-\{namespace\}.\{domain\}`* to allow a single `+++*.\{domain\}+++` wildcard to cover them.
+  Let's Encrypt cannot issue a two-level wildcard like `+++*.*.\{domain\}+++`.
+  Knative and KServe render this host using the Go standard library `text/template` package instead of Helm or Sprig.
+  Therefore, the namespace cannot be hashed in the template.
+* *This option is designed for single-tenant environments.*
+  Do not enable this option on an untrusted multi-tenant cluster.
+  Name and namespace are joined by a hyphen into one DNS label.
+  Consequently, two different name and namespace pairs can resolve to the identical host.
+  For example, the name `victim-team` in the `alpha` namespace and the name `victim` in the `team-alpha` namespace both resolve to `victim-team-alpha.\{domain\}`.
+  Similarly, the name `a` in the `b-c` namespace collides with the name `a-b` in the `c` namespace.
+  Istio resolves host collisions by prioritizing the oldest `VirtualService`.
+  A user who can create an `InferenceService` in any namespace can hijack or deny the inference host of another user with a colliding name.
+  Because the user chooses the name, admin-provisioned namespaces do not prevent this risk.
+  Only enable the wildcard option when you trust every namespace that can host an `InferenceService`.
+  This applies to single-tenant environments or mutually trusting teams.
+  Avoid using namespace names that are hyphenated suffixes of other hostnames.
+  For strict isolation between namespaces on an untrusted cluster, keep inference traffic cluster-local and disable this option.
+  Alternatively, issue one wildcard certificate per namespace using the dotted `\{name\}.\{namespace\}.\{domain\}` host format.
+* *The gateway authenticates but does not authorize per tenant.*
+  Any authenticated user can invoke any `InferenceService`.
+  The external authorization chain (`ext_authz`) checks that the caller has a valid Dex session or Bearer token.
+  It does not check if the caller owns the namespace of the model.
+  No gateway-scoped `AuthorizationPolicy` binds `*.<kserveDomain>` hosts to their owning namespace.
+  The `AuthorizationPolicy` of the Knative activator allows all traffic.
+  Additionally, the OAuth2 proxy accepts any domain.
+  Testing with two users confirmed that a token for any Dex user is accepted at every inference host, regardless of the namespace containing the model.
+  This behavior is acceptable for single tenants or mutually trusting teams.
+  However, on an untrusted multi-tenant cluster, one user can invoke and read outputs from the models of another user.
+  To isolate invocations between tenants, disable this option and keep inference traffic cluster-local.
+  In this local configuration, namespace-scoped policies still apply.
+  Alternatively, add a custom gateway-scoped `AuthorizationPolicy` that binds each host to its namespace.
+* *The flattened label must stay under 63 characters.*
+  The Domain Name System (DNS) standard limits any single label to 63 characters.
+  The wildcard certificate must cover the component Knative service rather than the `InferenceService`.
+  For example, a serverless predictor routes as `\{isvc\}-predictor-\{namespace\}`.
+  You must budget for the ten-character `-predictor` suffix.
+  Long InferenceService or namespace names can exceed the limit.
+* *External access requires a Bearer token or session cookie.*
+  Serving over HTTPS does not bypass Kubeflow authentication.
+  See the link:../tutorial.md#programmatic--external-access-bearer-token[Tutorial: Programmatic Access] for instructions on how to authenticate external `curl` or Python clients.
+* *The configuration path for custom certificates differs.*
+  For more information, see xref:kubeflow-config-scenarios-byo-cert[] and the xref:tls-blast-radius[blast-radius rules].
+* *To keep inference on plain HTTP, leave the `kserveExternalHttps` parameter set to `false`.*
+  In this case, the dedicated gateway serves port `:80` only without a wildcard certificate.
+  The `status.url` parameter does not change and uses the default `\{name\}-\{namespace\}.\{domain\}` host over HTTP.
