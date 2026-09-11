@@ -4,24 +4,22 @@ ifdef::override-title[]
 = {override-title}
 endif::[]
 ifndef::override-title[]
-= Examples of {litellm} {helm} chart override files
+= {litellm} custom values examples
 endif::[]
 // overridden abstract?
 ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{litellm} is an open source LLM proxy and abstraction layer that lets you interact with many large language model providers through a single, OpenAI-compatible API.
+include::../snippets/helm-chart-overrides-intro.adoc[]
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-17
+:revdate: 2026-09-11
 :page-revdate: {revdate}
-
-include::../snippets/helm-chart-overrides-intro.adoc[]
 
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 :imgRegistry: {empty}
@@ -31,7 +29,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 endif::[]
 
 [#litellm-chart-example-basic]
-.Basic override file with {postgresql} deployment and master key automatically generated.
+.Basic custom values file with {postgresql} deployment and an automatically generated master key.
 ====
 [source,yaml,subs="+attributes"]
 ----
