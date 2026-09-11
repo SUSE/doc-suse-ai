@@ -29,8 +29,6 @@ Refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Fact
 [#kubeflow-installing-helm]
 == Install using {helm}
 
-include::../snippets/ai-library-requirement.adoc[]
-
 To install {ai-app-name} on the command line using {helm}, follow these steps:
 
 . Log in to {sappco} registry.

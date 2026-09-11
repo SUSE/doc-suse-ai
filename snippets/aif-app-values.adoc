@@ -1,5 +1,7 @@
 = How do I get the complete value list for {ai-app-name} {helm} chart?
 
+Before deploying {ai-app-name}, it is important to know more about the supported configurations.
+
 . Log in to the registry where {ai-app-name} chart is stored.
 To prevent the password from being stored in the shell history, save it to the `password.txt` file.
 +
@@ -10,7 +12,7 @@ To prevent the password from being stored in the shell history, save it to the `
   --password-stdin < password.txt
 ----
 
-. To view values for a specific version of {kubeflow}, list all its available chart versions.
+. To view values for a specific version of {ai-app-name}, list all its available chart versions.
 +
 [,sh,subs="+attributes"]
 ----

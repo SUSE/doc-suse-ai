@@ -38,14 +38,14 @@ ifeval::["{PROF_PRODUCT}" == "saif"]
 :ai-app-string: kubeflow
 :ai-app-name: {kubeflow}
 
-{ai-app-name} (link:https://www.kubeflow.org[]) is a cloud-native platform that orchestrates and simplifies the entire machine learning (ML) lifecycle on {kube}.
+{kubeflow} (link:https://www.kubeflow.org[]) is a cloud-native platform that orchestrates and simplifies the entire machine learning (ML) lifecycle on {kube}.
 Unlike traditional software with hard-coded rules, ML applications learn to make decisions and predictions directly from data.
-{ai-app-name} automates this data-driven process, managing everything from initial development to production deployment.
+{kubeflow} automates this data-driven process, managing everything from initial development to production deployment.
 
 [WARNING]
 .Technology preview
 ====
-{ai-app-name} is currently available as a Technology Preview.
+{kubeflow} is currently available as a Technology Preview.
 ====
 
 [#kubeflow-components]
@@ -81,6 +81,32 @@ include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
 :ai-app-string!:
 :ai-app-name!:
 
+[#aif-apps-litellm]
+== {litellm}
+
+:ai-app-string: litellm
+:ai-app-name: {litellm}
+
+{litellm} (link:https://docs.litellm.ai/docs/[]) is an open-source large language model (LLM) proxy and abstraction layer.
+The service translates diverse provider application programming interfaces (APIs) into a unified, OpenAI-compatible format.
+Using {litellm} simplifies multi-model integration so that you can switch between proprietary cloud models and local open-source models with minimal code changes.
+The proxy also provides centralized key management, detailed usage tracking, and rate-limiting across multiple teams.
+
+[#litellm-helm-values]
+include::../snippets/aif-app-values.adoc[leveloffset=+2]
+[#litellm-helm-overrides]
+:override-title: What custom values examples are available for {litellm}?
+include::../references/litellm-helm-overrides.adoc[leveloffset=+2]
+include::../tasks/litellm-installing.adoc[leveloffset=+2]
+include::../references/litellm-helmchart.adoc[leveloffset=+2]
+[#litellm-upgrading]
+include::../snippets/aif-app-upgrading.adoc[leveloffset=+2]
+[#litellm-removing]
+include::../snippets/aif-app-removing.adoc[leveloffset=+2]
+
+:ai-app-string!:
+:ai-app-name!:
+
 // [#opensearch-helm-overrides]
 // include::../references/opensearch-helm-overrides.adoc[leveloffset=+1]
 // [#milvus-helm-overrides]
@@ -110,10 +136,7 @@ include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
 // :override-title: {qdrant}
 // include::../tasks/qdrant-installing.adoc[leveloffset=+1]
 // include::../references/qdrant-helm-overrides.adoc[leveloffset=+2]
-// [#litellm-helm-overrides]
-// :override-title: {litellm}
-// include::../references/litellm-helm-overrides.adoc[leveloffset=+1]
-// include::../references/litellm-helmchart.adoc[leveloffset=+2]
+
 
 // [#mlflow-installing]
 // :override-title: {mlflow}

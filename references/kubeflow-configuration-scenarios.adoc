@@ -26,7 +26,7 @@ endif::[]
 [#kubeflow-config-scenarios-nodeport]
 == Non-production: NodePort access (zero-configuration)
 
-No values override file is needed.
+No custom values file is required.
 Install with the default values and access via NodePort or port-forward as described in xref:kubeflow-accessing[].
 
 Default credentials:
@@ -223,7 +223,7 @@ Create your TLS Secret in the `istio-system` namespace before installing:
   -n istio-system
 ----
 
-Then reference it in your override values file:
+Then reference it in your custom values file:
 
 [source,yaml]
 ----

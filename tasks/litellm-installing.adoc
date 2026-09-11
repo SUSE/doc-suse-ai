@@ -12,88 +12,85 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{litellm} is an open source LLM proxy and abstraction layer that lets you interact with many large language model providers through a single, OpenAI-compatible API.
+You can install {ai-app-name} either using *{ranchera}* or on the command line with *{helm}*.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-25
+:revdate: 2026-09-11
 :page-revdate: {revdate}
 
-[NOTE]
-.Upstream {litellm}
-====
-The upstream {litellm} project uses `cgr.dev/chainguard/wolfi-base` as the base container image.
-====
+[#litellm-installing-rancher]
+== Install using {ranchera}
 
-[#litellm-installing-app-details]
-== Details about the {litellm} application
+Refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-usage/ai-factory-managing-apps.html#ai-factory-apps-install[AI application installation] for a general installation procedure.
 
-Before deploying {litellm}, it is important to know more about the supported configurations and documentation.
-The following command provides the corresponding details, assuming you have already executed the `helm registry login` 
-command as described in xref:suse-ai-deploy-suse-ai[].
+[#litellm-installing-helm]
+== Install using {helm}
 
-[source,,subs="+attributes"]
-----
-{prompt_user}helm show values oci://registry.suse.com/ai/charts/litellm
-----
 
-To list the available chart versions from this {sregistry}, you can use tools like podman, crane, {skopeo}, etc.
-Here is an example of the `podman` command.
-[source,,subs="+attributes"]
-----
-{prompt_user}podman login registry.suse.com -u regcode -p <SCC_REG_CODE>
-{prompt_user}podman search --list-tags registry.suse.com/ai/charts/litellm
-----
-
-[#litellm-installing-procedure]
-== {litellm} installation procedure
-
-include::../snippets/ai-library-requirement.adoc[]
-
-. Create a `litellm_custom_overrides.yaml` file to override the values of the {helm} chart.
-  Find examples of {litellm} override files in xref:litellm-helm-overrides[] together with a list of all valid options and their values as displayed by the `helm show` commands.
-. Install the {litellm} {helm} chart using the `litellm_custom_overrides.yaml` file by running the following command.
+. Log in to {sappco} registry.
+To prevent the password from being stored in the shell history, save it to the `appco-password.txt` file.
 +
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm registry login dp.apps.rancher.io \
+  --username=<APPCO-REGISTRY-USERNAME> \
+  --password-stdin < appco-password.txt
+----
+
+. Log in to {sregistry}.
+To prevent the password from being stored in the shell history, save it to the `registry-password.txt` file.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm registry login registry.suse.com \
+  --username=regcode \
+  --password-stdin < registry-password.txt
+----
+
+. Create a namespace.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl create namespace {ai-app-string} --dry-run=client -o yaml | kubectl apply -f -
+----
+
+. Create image pull secrets.
+.. Create {sappco} image pull secrets.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl create secret docker-registry application-collection \
+  --docker-server=dp.apps.rancher.io \
+  --docker-username=<APPCO-REGISTRY-USERNAME> \
+  --docker-password="$(< appco-password.txt)" \
+  -n {ai-app-string} \
+    --dry-run=client -o yaml | kubectl apply -f -
+----
+
+.. Create {sregistry} image pull secrets.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl create secret docker-registry suse-ai-registry \
+  --docker-server=registry.suse.com \
+  --docker-username=regcode \
+  --docker-password="$(< registry-password.txt)" \
+  -n {ai-app-string} \
+  --dry-run=client -o yaml | kubectl apply -f -
+----
+
+. Create a `{ai-app-string}_custom_values.yaml` file to override the values of the default {helm} chart.
+
+. Install the {litellm} {helm} chart using the `{ai-app-string}_custom_overrides.yaml` file by running the following command.
++
 [source,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
-  litellm oci://registry.suse.com/ai/charts/litellm \
-  -n SUSE_AI_NAMESPACE \
-  -f litellm_custom_overrides.yaml
-----
-endif::[]
-
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-[#litellm-upgrading]
-== Upgrading {litellm}
-
-You can upgrade {litellm} to a specific version by running the following command:
-
-[source,subs="+attributes"]
-----
-{prompt_user}helm upgrade \
-  litellm oci://dp.apps.rancher.io/ai/charts/litellm \
-  -n SUSE_AI_NAMESPACE \
-  --version VERSION_NUMBER \
-  -f litellm_custom_overrides.yaml
-----
-
-[TIP]
-====
-If you omit the `--version` option, {litellm} gets upgraded to the latest available version.
-====
-endif::[]
-
-[#litellm-uninstalling]
-== Uninstalling {litellm}
-
-To uninstall {litellm}, run the following command:
-
-[source,subs="+attributes"]
-----
-{prompt_user}helm uninstall litellm -n SUSE_AI_NAMESPACE
+  {ai-app-string} oci://registry.suse.com/ai/charts/litellm \
+  -n {ai-app-string} \
+  -f {ai-app-string}_custom_overrides.yaml
 ----
