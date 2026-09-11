@@ -48,6 +48,9 @@ Unlike traditional software with hard-coded rules, ML applications learn to make
 {ai-app-name} is currently available as a Technology Preview.
 ====
 
+[#kubeflow-components]
+:override-title: What components does {ai-app-name} include?
+include::../references/kubeflow-components.adoc[leveloffset=+2]
 [#kubeflow-requirements]
 :override-title: What are {ai-app-name} requirements?
 include::../references/kubeflow-requirements.adoc[leveloffset=+2]

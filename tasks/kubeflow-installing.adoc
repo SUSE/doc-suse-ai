@@ -18,7 +18,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-08
+:revdate: 2026-09-10
 :page-revdate: {revdate}
 
 [#kubeflow-installing-rancher]
@@ -61,8 +61,18 @@ for ns in cert-manager istio-system kubeflow; do
   kubectl create namespace "$ns" --dry-run=client -o yaml | kubectl apply -f -
 done
 ----
++
+[NOTE]
+====
+`kubeflow-user-example-com` and all other user namespaces are created by the {kubeflow} chart and receive registry pull secrets automatically via ESO — no manual creation needed.
+====
 
-. Create {sappco} image pull secrets.
+. Create image pull secrets.
++
+Create secrets only in the static system namespaces.
+ESO propagates them to user namespaces automatically by copying `suse-ai-registry` and `application-collection` from the {kubeflow} namespace into every user namespace labelled `app.kubernetes.io/part-of: kubeflow-profile`, including namespaces created dynamically by the profiles controller at runtime.
+
+.. Create {sappco} image pull secrets.
 +
 [,sh]
 ----
@@ -76,7 +86,7 @@ for ns in cert-manager istio-system kubeflow; do
 done
 ----
 
-. Create {sregistry} image pull secrets.
+.. Create {sregistry} image pull secrets.
 +
 [,sh]
 ----
@@ -117,7 +127,7 @@ done
   --wait --timeout 5m
 ----
 
-. Install {istio} (required by {kubeflow}).
+. Install {istio}.
 +
 [,sh,subs="+attributes"]
 ----
@@ -129,6 +139,22 @@ done
   --set gateway.enabled=true \
   --force-conflicts \
   --server-side=true \
+  --wait --timeout 5m
+----
+
+. Install External Secrets Operator (ESO).
+ESO must be installed before the {kubeflow} chart.
+Its CRDs must be present when {helm} applies the `ClusterSecretStore` and `ClusterExternalSecret` resources.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm upgrade \
+  --install external-secrets-operator \
+    oci://dp.apps.rancher.io/charts/external-secrets-operator \
+  --version 2.3.0 \
+  --namespace kubeflow \
+  --set installCRDs=true \
+  --set global.imagePullSecrets[0].name=application-collection \
   --wait --timeout 5m
 ----
 
