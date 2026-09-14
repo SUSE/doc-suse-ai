@@ -100,15 +100,17 @@ The proxy also provides centralized key management, detailed usage tracking, and
 
 [#litellm-helm-values]
 include::../snippets/aif-app-values.adoc[leveloffset=+2]
+[#litellm-installing]
+:override-title: How do I install {ai-app-name}?
+include::../tasks/ai-app-installing.adoc[leveloffset=+2]
 [#litellm-helm-overrides]
 :override-title: What custom values examples are available for {litellm}?
 include::../references/litellm-helm-overrides.adoc[leveloffset=+2]
-include::../tasks/litellm-installing.adoc[leveloffset=+2]
 include::../references/litellm-helmchart.adoc[leveloffset=+2]
 [#litellm-upgrading]
-include::../snippets/aif-app-upgrading.adoc[leveloffset=+2]
+include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
 [#litellm-removing]
-include::../snippets/aif-app-removing.adoc[leveloffset=+2]
+include::../tasks/aif-app-removing.adoc[leveloffset=+2]
 
 :ai-app-string!:
 :ai-app-name!:
