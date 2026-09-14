@@ -44,7 +44,9 @@ You can point `/etc/hosts` at the cluster IP or use `external-dns` to automate D
 
 [source,yaml]
 ----
-# values.yaml
+# my-values.yaml
+global:
+  kserveDomain: "models.dev.example.com"   # inference domain
 kubeflow-istio-resources:
   hostname: "kubeflow.dev.example.com"
   externalDNSEnabled: false
@@ -73,7 +75,9 @@ Add the self-signed CA to your Web browser trust store to avoid certificate warn
 
 [source,yaml]
 ----
-# values.yaml
+# my-values.yaml
+global:
+  kserveDomain: "models.dev.example.com"   # inference domain — see note above
 kubeflow-istio-resources:
   hostname: "kubeflow.dev.example.com"
   externalDNSEnabled: false
@@ -100,9 +104,11 @@ Requires a Cloudflare API token with DNS edit access.
 
 [source,yaml]
 ----
-# values.yaml
+# prod-values.yaml
 
-# Access
+# ── Access ──────────────────────────────────────────────────────────────────────
+global:
+  kserveDomain: "models.example.com"   # inference domain — see note above
 kubeflow-istio-resources:
   hostname: "kubeflow.example.com"
   externalDNSEnabled: true
@@ -114,14 +120,13 @@ kubeflow-istio-resources:
       email: "admin@example.com"   # your ACME account email
       server: prod                 # prod | staging (use staging first to test)
       solver: cloudflare           # dns01 via Cloudflare
-      # Configuring cloudflare since solver is cloudflare
-      cloudflare:
-        email: "admin@example.com"
-        apiTokenSecretRef:
-          name: cloudflare-api-key
-          key: apiKey
+    cloudflare:
+      email: "admin@example.com"
+      apiTokenSecretRef:
+        name: cloudflare-api-key
+        key: apiKey
 
-# external-dns — watches the {istio} Gateway and creates/updates DNS records
+# external-dns — watches the Istio Gateway and creates/updates DNS records
 externaldns:
   enabled: true
   provider:
@@ -140,7 +145,7 @@ externaldns:
           name: cloudflare-api-key
           key: apiKey
 
-# Credentials — change ALL of these
+# ── Credentials — change ALL of these (see Production Hardening) ─────────────────
 auth:
   oidc:
     clientSecret: "<STRONG-RANDOM-32-CHAR-SECRET>"
@@ -163,7 +168,7 @@ dex:
         userID: "1"
     enablePasswordDB: true
 
-# Storage credentials — change these
+# ── Storage credentials — change these (see Production Hardening) ────────────────
 pipelines:
   seaweedfs:
     accessKey: "<STRONG-ACCESS-KEY>"
@@ -174,19 +179,18 @@ pipelines:
       schedule: "0 2 * * *"
       storageSize: 20Gi
 
-# User namespace must use the same SeaweedFS credentials
+# User namespace must use the SAME SeaweedFS credentials
 user-namespace:
   pipelines:
     seaweedfs:
       accessKey: "<STRONG-ACCESS-KEY>"    # same as pipelines.seaweedfs.accessKey
       secretKey: "<STRONG-SECRET-KEY>"    # same as pipelines.seaweedfs.secretKey
 
-# Optional hardening
+# ── Optional hardening ───────────────────────────────────────────────────────────
 networkPolicies:
-  enabled: false   # (Experimental) set to 'true' when using CNI that enforces NetworkPolicy (Calico, Cilium, Canal)
-
+  enabled: false   # set true when using a CNI that enforces NetworkPolicy (Calico, Cilium, Canal)
 monitoring:
-  enabled: false  # Leave this to 'false' as monitoring is not implemented yet
+  enabled: false   # set true after Rancher Monitoring (kube-prometheus-stack) is installed
 ----
 
 Installation:
@@ -195,7 +199,7 @@ Installation:
 ----
 {prompt_user}helm upgrade --install kubeflow \
   oci://registry.suse.com/ai/charts/kubeflow \
-  --version 0.4.0 \
+  --version 0.4.1 \
   -n kubeflow \
   --force-conflicts \
   --wait --timeout 15m \

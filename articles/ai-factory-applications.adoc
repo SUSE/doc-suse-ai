@@ -61,6 +61,9 @@ include::../snippets/aif-app-values.adoc[leveloffset=+2]
 [#kubeflow-installing]
 :override-title: How do I install {kubeflow}?
 include::../tasks/kubeflow-installing.adoc[leveloffset=+2]
+[#kubeflow-installing-airgapped]
+:override-title: How do I install {kubeflow} in air-gapped environments?
+include::../tasks/kubeflow-installing-airgapped.adoc[leveloffset=+2]
 :override-title: How do I access {kubeflow}?
 include::../tasks/kubeflow-accessing.adoc[leveloffset=+2]
 :override-title: How do I configure {kubeflow} for different scenarios?
