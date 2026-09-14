@@ -75,7 +75,7 @@ By default, the configuration does not enable {ingress}. To expose the service o
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}kubectl \
-  -n <SUSE_AI_NAMESPACE> port-forward service/litellm 4000:4000
+  -n {ai-app-string} port-forward service/litellm 4000:4000
 ----
 
 Your {litellm} Proxy Server is now running at `\http://127.0.0.1:4000`.
@@ -88,5 +88,5 @@ Retrieve the password for the administrator user from the secret resource:
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}kubectl get secret litellm-masterkey \
-  -n <SUSE_AI_NAMESPACE> -o jsonpath='{.data.masterkey}' | base64 --decode
+  -n {ai-app-string} -o jsonpath='{.data.masterkey}' | base64 --decode
 ----
