@@ -32,7 +32,7 @@ endif::[]
 
 To install {ai-app-name} on the command line using {helm}, follow these steps:
 
-. Log in to {sappco} registry.
+. Log in to the {sappco} registry.
 To prevent the password from being stored in the shell history, save it to the `appco-password.txt` file.
 +
 [,sh,subs="+attributes"]
