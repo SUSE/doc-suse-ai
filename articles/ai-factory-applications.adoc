@@ -38,14 +38,14 @@ ifeval::["{PROF_PRODUCT}" == "saif"]
 :ai-app-string: kubeflow
 :ai-app-name: {kubeflow}
 
-{ai-app-name} (link:https://www.kubeflow.org[]) is a cloud-native platform that orchestrates and simplifies the entire machine learning (ML) lifecycle on {kube}.
-Unlike traditional software with hard-coded rules, ML applications learn to make decisions and predictions directly from data.
+{ai-app-name} (link:https://www.kubeflow.org[]) is a cloud native platform that orchestrates and simplifies the entire machine learning (ML) lifecycle on {kube}.
+Unlike traditional software with hardcoded rules, ML applications learn to make decisions and predictions directly from data.
 {ai-app-name} automates this data-driven process, managing everything from initial development to production deployment.
 
 [WARNING]
 .Technology preview
 ====
-{ai-app-name} is currently available as a Technology Preview.
+{ai-app-name} is currently available as a technology preview.
 ====
 
 [#kubeflow-components]
@@ -57,7 +57,7 @@ include::../references/kubeflow-requirements.adoc[leveloffset=+2]
 :override-title: What are known {kubeflow} limitations?
 include::../references/kubeflow-limitations.adoc[leveloffset=+3]
 [#kubeflow-helm-values]
-:override-title: How do I get the values list for {ai-app-name} {helm} chart?
+:override-title: How do I get the values list for the {ai-app-name} {helm} chart?
 include::../tasks/aif-app-values.adoc[leveloffset=+2]
 [#kubeflow-installing]
 :override-title: How do I install {kubeflow}?

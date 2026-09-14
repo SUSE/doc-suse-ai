@@ -11,7 +11,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-Deploying and running {ai-app-name} has the following requirements.
+Before deploying {ai-app-name}, ensure your target environment meets the hardware and system specifications outlined below.
 endif::[]
 
 // erase the flag for future overrides
@@ -68,7 +68,7 @@ endif::[]
 | mesh ≥ 1.9 (chart 1.3.0)
 | —
 
-| Load Balancer (i.e. metallb)
+| Load Balancer (i.e., metallb)
 | —
 | Required when used in conjunction with external-dns and cert-manager. Tested with MetalLB v0.15.3
 
@@ -87,7 +87,7 @@ endif::[]
 
 Storage class::
 All PVCs use the cluster default StorageClass unless `global.storageClass` is set.
-For single-node clusters the Local Path Provisioner is sufficient for development. For production, Longhorn is recommended.
+For single-node clusters, the Local Path Provisioner is sufficient for development. For production, Longhorn is recommended.
 +
 [NOTE]
 ====

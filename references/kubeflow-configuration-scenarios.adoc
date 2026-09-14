@@ -90,7 +90,7 @@ kubeflow-istio-resources:
 [NOTE]
 ====
 The self-signed path can also serve inference over external HTTPS.
-It issues the wildcard directly, therefore no DNS-01 solver is needed on that path.
+It issues the wildcard directly; therefore, no DNS-01 solver is needed on that path.
 Refer to  xref:external-https-kserve-inference[] for more details.
 ====
 
@@ -362,7 +362,7 @@ auth:
 .Verify {istio} CRDs installation
 ====
 When adding `istio-gateway` as a source to `external-dns`, make sure the {istio} CRDs are installed.
-Otherwise, `external-dns` pod may keep crashing with an error indicating a failure to list the {istio} gateway resource.
+Otherwise, the `external-dns` pod may keep crashing with an error indicating a failure to list the {istio} gateway resource.
 However, the error will eventually resolve after {istio} is installed by {kubeflow}.
 ====
 
