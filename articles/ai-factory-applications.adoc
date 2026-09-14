@@ -56,7 +56,7 @@ include::../references/kubeflow-components.adoc[leveloffset=+2]
 include::../references/kubeflow-requirements.adoc[leveloffset=+2]
 :override-title: What are known {kubeflow} limitations?
 include::../references/kubeflow-limitations.adoc[leveloffset=+3]
-[#kubeflow-helm-values]
+[#{ai-app-string}-helm-values]
 :override-title: How do I get the values list for {ai-app-name} {helm} chart?
 include::../tasks/aif-app-values.adoc[leveloffset=+2]
 [#kubeflow-installing]
@@ -73,7 +73,7 @@ include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+2]
 include::../tasks/kubeflow-hardening.adoc[leveloffset=+2]
 :override-title: How do I manage user profiles and namespaces?
 include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+2]
-[#kubeflow-upgrading]
+[#{ai-app-string}-upgrading]
 :override-title: How do I upgrade {ai-app-name}?
 include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
 :override-title: Upgrade notes
@@ -98,18 +98,20 @@ The service translates diverse provider application programming interfaces (APIs
 Using {litellm} simplifies multi-model integration so that you can switch between proprietary cloud models and local open-source models with minimal code changes.
 The proxy also provides centralized key management, detailed usage tracking, and rate-limiting across multiple teams.
 
-[#litellm-helm-values]
-include::../snippets/aif-app-values.adoc[leveloffset=+2]
+[#{ai-app-string}-helm-values]
+:override-title: How do I get the values list for {ai-app-name} {helm} chart?
+include::../tasks/aif-app-values.adoc[leveloffset=+2]
 [#litellm-installing]
 :override-title: How do I install {ai-app-name}?
 include::../tasks/ai-app-installing.adoc[leveloffset=+2]
 [#litellm-helm-overrides]
 :override-title: What custom values examples are available for {litellm}?
 include::../references/litellm-helm-overrides.adoc[leveloffset=+2]
-include::../references/litellm-helmchart.adoc[leveloffset=+2]
-[#litellm-upgrading]
+[#{ai-app-string}-upgrading]
+:override-title: How do I upgrade {ai-app-name}?
 include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
-[#litellm-removing]
+[#{ai-app-string}-removing]
+:override-title: How do I remove {ai-app-name}?
 include::../tasks/aif-app-removing.adoc[leveloffset=+2]
 
 :ai-app-string!:
