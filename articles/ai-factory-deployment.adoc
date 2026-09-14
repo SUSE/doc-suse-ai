@@ -112,6 +112,8 @@ include::../tasks/ai-factory-deployment-helm.adoc[leveloffset=+2]
 :override-title: How do I install {productname} using Rancher?
 include::../tasks/ai-factory-deployment-rancherui.adoc[leveloffset=+2]
 
+
+
 [#aif-credentials-install]
 :override-title: Can I provide repository credentials during the {productname} installation?
 include::../tasks/aif-credentials-helm.adoc[leveloffset=+2]
