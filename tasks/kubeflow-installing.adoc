@@ -78,8 +78,8 @@ ESO propagates them to user namespaces automatically by copying `suse-ai-registr
 for ns in cert-manager istio-system kubeflow knative-serving; do
   kubectl create secret docker-registry application-collection \
     --docker-server=dp.apps.rancher.io \
-    --docker-username=<APPCO-REGISTRY-USERNAME> \
-    --docker-password="$(< appco-password.txt)" \
+    --docker-username=<appco-registry-username> \
+    --docker-password=<appco-registry-token> \
     -n "$ns" \
     --dry-run=client -o yaml | kubectl apply -f -
 done
@@ -93,7 +93,7 @@ for ns in cert-manager istio-system kubeflow knative-serving; do
   kubectl create secret docker-registry suse-ai-registry \
     --docker-server=registry.suse.com \
     --docker-username=regcode \
-    --docker-password="$(< registry-password.txt)" \
+    --docker-password=<suse-ai-registry-token> \
     -n "$ns" \
     --dry-run=client -o yaml | kubectl apply -f -
 done
@@ -147,9 +147,8 @@ Its CRDs must be present when {helm} applies the `ClusterSecretStore` and `Clust
 +
 [,sh,subs="+attributes"]
 ----
-{prompt_user}helm upgrade \
-  --install external-secrets-operator \
-    oci://dp.apps.rancher.io/charts/external-secrets-operator \
+{prompt_user}helm upgrade --install external-secrets-operator \
+  oci://dp.apps.rancher.io/charts/external-secrets-operator \
   --version 2.3.0 \
   --namespace kubeflow \
   --set installCRDs=true \
@@ -175,3 +174,4 @@ To keep the default installation values, omit `-f values.yaml`.
 ----
 <.> `--force-conflicts` is required because cert-manager-cainjector, istiod (pilot-discovery), and the clusterrole-aggregation-controller modify fields (caBundle, webhook failurePolicy, aggregated RBAC rules) that {helm} tracks.
 This flag lets {helm} reclaim ownership of those fields on each upgrade.
+
