@@ -261,6 +261,7 @@ include::./network-attributes.adoc[]
 :trivy:                      Trivy
 :valkey:                     Valkey
 :certmanager:                cert-manager
+:externaldns:                external-dns
 :otelemetry:                 OpenTelemetry
 :openlit:                    OpenLIT
 :mlflow:                     MLflow
@@ -276,6 +277,10 @@ include::./network-attributes.adoc[]
 :istio:                      Istio
 :seaweedfs:                  SeaweedFS
 :mysql:                      MySQL
+:runaia:                     Run:ai
+:runai:                      {nvidia} {runaia}
+:cloudflare:                 Cloudflare
+
 // https://aws.amazon.com/trademark-guidelines/
 :amazon-ec2:                 Amazon{nbsp}EC2
 :amazon-ec2reg:              {amazon-ec2}{thrdmrk}
@@ -330,6 +335,13 @@ include::./network-attributes.adoc[]
 :huaweireg:                  {huawei}{thrdmrk}
 :kunpeng:                    Kunpeng
 :kunpengreg:                 {kunpeng}{thrdmrk}
+// https://www.intel.com/content/www/us/en/legal/trademarks.html
+:intel:                      Intel
+:intelreg:                   {intel}{thrdmrk}
+:optane:                     {intel}{nbsp}Optane
+:optanereg:                  {intelreg}{nbsp}Optane{thrdmrk}
+:optanemem:                  {optane} Memory
+:optanememreg:               {optanereg} Memory
 // Khronos
 :openmax:                    OpenMAX
 :openmaxreg:                 {openmax}{thrdmrk}
