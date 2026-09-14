@@ -29,7 +29,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 endif::[]
 
 [#litellm-chart-example-basic]
-.Basic custom values file with {postgresql} deployment and an automatically generated master key.
+.Basic custom values file with {postgresql} deployment and an automatically generated master key
 ====
 [source,yaml,subs="+attributes"]
 ----
@@ -68,7 +68,7 @@ litellm-postgresql-0          1/1     Running   0          2m33s
 
 Pods for the {litellm} deployment should transition to the `Ready` and `Running` states.
 
-== Validation
+== Validating local access
 
 By default, the configuration does not enable {ingress}. To expose the service on localhost, run:
 

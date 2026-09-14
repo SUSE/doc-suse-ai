@@ -93,10 +93,10 @@ include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
 :ai-app-string: litellm
 :ai-app-name: {litellm}
 
-{litellm} (link:https://docs.litellm.ai/docs/[]) is an open-source large language model (LLM) proxy and abstraction layer.
+{litellm} (link:https://docs.litellm.ai/docs/[]) is an open source large language model (LLM) proxy and abstraction layer.
 The service translates diverse provider application programming interfaces (APIs) into a unified, OpenAI-compatible format.
-Using {litellm} simplifies multi-model integration so that you can switch between proprietary cloud models and local open-source models with minimal code changes.
-The proxy also provides centralized key management, detailed usage tracking, and rate-limiting across multiple teams.
+Using {litellm} simplifies multi-model integration so that you can switch between proprietary cloud models and local open source models with minimal code changes.
+The proxy also provides centralized key management, detailed usage tracking and rate-limiting across multiple teams.
 
 [#{ai-app-string}-helm-values]
 :override-title: How do I get the values list for {ai-app-name} {helm} chart?
