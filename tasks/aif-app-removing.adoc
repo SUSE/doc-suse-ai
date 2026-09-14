@@ -1,6 +1,26 @@
-= How do I remove {ai-app-name}?
-
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Removing {ai-app-name}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
 You can remove {ai-app-name} either using *{ranchera}* or on the command line with *{helm}*.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-09-14
+:page-revdate: {revdate}
+
 
 [#{ai-app-string}-removing-rancher]
 == Removal using {ranchera}

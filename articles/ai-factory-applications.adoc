@@ -57,7 +57,8 @@ include::../references/kubeflow-requirements.adoc[leveloffset=+2]
 :override-title: What are known {kubeflow} limitations?
 include::../references/kubeflow-limitations.adoc[leveloffset=+3]
 [#kubeflow-helm-values]
-include::../snippets/aif-app-values.adoc[leveloffset=+2]
+:override-title: How do I get the values list for {ai-app-name} {helm} chart?
+include::../tasks/aif-app-values.adoc[leveloffset=+2]
 [#kubeflow-installing]
 :override-title: How do I install {kubeflow}?
 include::../tasks/kubeflow-installing.adoc[leveloffset=+2]
@@ -73,11 +74,13 @@ include::../tasks/kubeflow-hardening.adoc[leveloffset=+2]
 :override-title: How do I manage user profiles and namespaces?
 include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+2]
 [#kubeflow-upgrading]
-include::../snippets/aif-app-upgrading.adoc[leveloffset=+2]
+:override-title: How do I upgrade {ai-app-name}?
+include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
 :override-title: Upgrade notes
 include::../references/kubeflow-upgrade-notes.adoc[leveloffset=+3]
 [#kubeflow-removing]
-include::../snippets/aif-app-removing.adoc[leveloffset=+2]
+:override-title: How do I remove {ai-app-name}?
+include::../tasks/aif-app-removing.adoc[leveloffset=+2]
 :override-title: Troubleshooting
 include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
 

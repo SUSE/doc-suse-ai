@@ -1,4 +1,25 @@
-= How do I get the complete value list for {ai-app-name} {helm} chart?
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Listing values list for {ai-app-name} {helm} chart
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+To view the complete list of {helm} chart values for {ai-app-name}, follow these steps:
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-09-14
+:page-revdate: {revdate}
 
 . Log in to the registry where {ai-app-name} chart is stored.
 To prevent the password from being stored in the shell history, save it to the `password.txt` file.
