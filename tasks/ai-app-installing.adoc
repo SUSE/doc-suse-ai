@@ -5,7 +5,7 @@ ifdef::override-title[]
 = {override-title}
 endif::[]
 ifndef::override-title[]
-= Installing {litellm}
+= Installing {ai-app-name}
 endif::[]
 // overridden abstract?
 ifdef::override-abstract[]
@@ -19,7 +19,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-11
+:revdate: 2026-09-14
 :page-revdate: {revdate}
 
 [#litellm-installing-rancher]
@@ -83,14 +83,16 @@ To prevent the password from being stored in the shell history, save it to the `
   --dry-run=client -o yaml | kubectl apply -f -
 ----
 
-. Create a `{ai-app-string}_custom_values.yaml` file to override the values of the default {helm} chart.
+. To override default installation values, list them in a `values.yaml` file.
+For a complete list of {ai-app-name} chart values, refer to xref:{ai-app-string}-helm-values[].
 
-. Install the {litellm} {helm} chart using the `{ai-app-string}_custom_overrides.yaml` file by running the following command.
+. Install {ai-app-name}.
+To keep the default installation values, omit `-f values.yaml`.
 +
 [source,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
   {ai-app-string} oci://registry.suse.com/ai/charts/litellm \
   -n {ai-app-string} \
-  -f {ai-app-string}_custom_overrides.yaml
+  -f values.yaml
 ----
