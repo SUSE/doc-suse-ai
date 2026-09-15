@@ -1,0 +1,157 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {kubeflow} components
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The following table describes all the components of the {kubeflow} package.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-09-10
+:page-revdate: {revdate}
+
+
+|===
+| Component | Chart source | Namespace | Purpose
+
+| Dex
+| SUSE Application Collection `dex-idp` 0.23.0 (0.24.0 incompatible — see link:/SUSE/suse-ai-charts/blob/main/kubeflow/docs/troubleshooting.md#known-limitations[Known Limitations])
+| kubeflow
+| OIDC identity provider
+
+| oauth2-proxy
+| SUSE Application Collection `oauth2-proxy` 10.1.4
+| kubeflow
+| OIDC login broker / session cookie
+
+| Central Dashboard
+| local
+| kubeflow
+| Web UI shell
+
+| Kubeflow Pipelines
+| local
+| kubeflow
+| ML workflow engine (KFP v2)
+
+| Notebook Controller
+| local
+| kubeflow
+| Jupyter Notebook CRD controller
+
+| Jupyter Web App
+| local
+| kubeflow
+| Notebook creation UI
+
+| Katib
+| local
+| kubeflow
+| Hyperparameter tuning
+
+| KServe
+| local
+| kubeflow
+| Model serving
+
+| Training Operator V1
+| local
+| kubeflow
+| TFJob / PyTorchJob / etc. (`kubeflow.org` API)
+
+| Trainer V2
+| local
+| kubeflow
+| TrainJob / TrainingRuntime / ClusterTrainingRuntime (`trainer.kubeflow.org` API)
+
+| Profiles & KFAM
+| local
+| kubeflow
+| Multi-tenancy / namespace management
+
+| Volumes Web App
+| local
+| kubeflow
+| PVC management UI (co-enabled with PVCViewer Controller via `volumesWebApp.enabled`)
+
+| PVCViewer Controller
+| local
+| kubeflow
+| File browser for PVCs (co-enabled with Volumes Web App)
+
+| Tensorboard Controller
+| local
+| kubeflow
+| TensorBoard CRD controller
+
+| Tensorboards Web App
+| local
+| kubeflow
+| TensorBoard UI
+
+| Models Web App
+| local
+| kubeflow
+| Model serving UI (co-enabled with KServe via `kserve.enabled`)
+
+| Model Registry
+| local
+| kubeflow
+| Model versioning and metadata
+
+| Admission Webhook
+| local
+| kubeflow
+| PodDefault mutating webhook (always installed — no condition)
+
+| Knative Serving
+| local
+| knative-serving
+| Serverless layer required by KServe
+
+| Knative Eventing
+| local
+| knative-eventing
+| Optional event-driven pipeline triggers (disabled by default)
+
+| MariaDB (KFP)
+| SUSE Application Collection `mariadb` 0.1.7
+| kubeflow
+| Pipeline + MLMD metadata DB
+
+| MariaDB (Katib)
+| inline
+| kubeflow
+| Katib experiment DB
+
+| SeaweedFS
+| inline
+| kubeflow
+| Pipeline artifact store (S3-compatible, Docker Hub image — requires internet access)
+
+| external-dns
+| SUSE Application Collection `external-dns` 1.20.0
+| kubeflow
+| Automatic DNS record management for Cloudflare (disabled by default)
+
+| NetworkPolicies
+| local
+| kubeflow / knative-serving
+| Deny-all + explicit allow NetworkPolicies (disabled by default)
+
+| Monitoring
+| local
+| kubeflow
+| ServiceMonitors + PrometheusRules for Rancher Monitoring (disabled by default)
+|===

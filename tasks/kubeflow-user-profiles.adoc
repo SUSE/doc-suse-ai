@@ -47,7 +47,7 @@ user-namespace:
 ====
 The `namespace` field is optional but strongly recommended.
 Without it, the namespace is auto-generated from the e-mail by replacing `@` with `--` and `.` with `-`.
-E-mails that differ only by `.` vs `-` -- such as `tux.geeko@example.com` and `tux-geeko@example.com` -- produce the same auto-generated namespace.
+e-mail that differ only by `.` vs `-` -- such as `tux.geeko@example.com` and `tux-geeko@example.com` -- produce the same auto-generated namespace.
 Use an explicit `namespace` to disambiguate.
 ====
 
@@ -56,7 +56,7 @@ Use an explicit `namespace` to disambiguate.
 
 Add the user to your values file and run `helm upgrade`:
 
-[source,bash,subs="+attributes"]
+[,sh,subs="+attributes"]
 ----
 {prompt_user}helm upgrade kubeflow oci://registry.suse.com/ai/charts/kubeflow \
   --version <VERSION> \
@@ -67,7 +67,7 @@ Add the user to your values file and run `helm upgrade`:
 
 Alternatively, add the user to your values file and rerun the upgrade:
 
-[source,bash]
+[,sh]
 ----
 # in your kubeflow-override-values.yaml
 user-namespace:
@@ -76,7 +76,7 @@ user-namespace:
       namespace: tux
 ----
 
-[source,bash,subs="+attributes"]
+[,sh,subs="+attributes"]
 ----
 {prompt_user}helm upgrade kubeflow oci://registry.suse.com/ai/charts/kubeflow \
   --version <VERSION> \

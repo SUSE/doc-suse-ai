@@ -1,0 +1,198 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Installing {kubeflow} in air-gapped environments
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+nstalling {kubeflow} in an air-gapped environment allows you to deploy and manage machine learning workflows securely without active Internet connectivity.
+This deployment method uses local image registries and {helm} repositories to satisfy all software dependencies, ensuring complete data privacy and network isolation.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-09-14
+:page-revdate: {revdate}
+
+[#kubeflow-installing-airgapped-prerequisities]
+== Prerequisites
+
+* A local private container registry mirror
+* Synced container images and {helm} charts
+* A running {kube} cluster (v1.31 or higher)
+
+[#kubeflow-installing-airgapped-procedure]
+== How to install {kubeflow} in an air-gapped environment?
+
+An air-gapped deployment requires you to host all container images and {helm} charts in a local container registry.
+This process ensures the system can satisfy all software dependencies without contacting external networks. 
+
+Before starting the installation, you must mirror the required AI applications charts and container images to your local private registry.
+
+=== How to configure local registry credentials?
+
+To access your private registry, authenticate with your local mirror address.
+To prevent passwords from appearing in the shell history, save your credentials to the `mirror-password.txt` file.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm registry login mirror.corp.example.com \
+  --username=<username> \
+  --password-stdin < mirror-password.txt
+----
+
+=== How to prepare the Kubernetes namespaces?
+
+Create the required namespaces on the target cluster.
+Creating namespaces before the deployment allows you to pre-configure the necessary image pull secrets.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}for ns in cert-manager istio-system kubeflow knative-serving; do
+  kubectl create namespace "$ns" --dry-run=client -o yaml | kubectl apply -f -
+done
+----
++
+[NOTE]
+====
+User namespaces, such as `kubeflow-user-example-com`, are automatically created by the {kubeflow} chart.
+The External Secrets Operator (ESO) handles registry pull secrets for these dynamic namespaces automatically.
+====
+
+=== How to create local image pull secrets?
+
+Create the pull secrets in all static system namespaces.
+The cluster uses these credentials to pull container images from your local mirror.
+ESO propagates these secrets to user namespaces at runtime.
+
+.. Create {sappco} secrets pointing to your local registry.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}for ns in cert-manager istio-system kubeflow knative-serving; do
+  kubectl create secret docker-registry application-collection \
+    --docker-server=mirror.corp.example.com \
+    --docker-username=<username> \
+    --docker-password=<token> \
+    -n "$ns" \
+    --dry-run=client -o yaml | kubectl apply -f -
+done
+----
+
+.. Create {sregistry} secrets pointing to your local registry.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}for ns in cert-manager istio-system kubeflow knative-serving; do
+  kubectl create secret docker-registry suse-ai-registry \
+    --docker-server=mirror.corp.example.com \
+    --docker-username=<username> \
+    --docker-password=<token> \
+    -n "$ns" \
+    --dry-run=client -o yaml | kubectl apply -f -
+done
+----
+
+=== How to label and annotate namespaces?
+
+Configure the namespaces to allow {helm} management.
+Applying these labels prevents resource ownership conflicts during the upgrade process.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}for ns in kubeflow kubeflow-user-example-com knative-serving; do
+  kubectl label namespace "$ns" app.kubernetes.io/managed-by=Helm --overwrite
+  kubectl annotate namespace "$ns" \
+    meta.helm.sh/release-name=kubeflow \
+    meta.helm.sh/release-namespace=kubeflow \
+    --overwrite
+done
+----
+
+=== How to install required infrastructure components?
+
+Install the supporting operators and controllers from your local registry mirror.
+
+. Install {certmanager} from the local mirror.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install cert-manager \
+  oci://mirror.corp.example.com/charts/cert-manager \
+  --version 1.20.2 \
+  --namespace cert-manager \
+  --set crds.enabled=true \
+  --set crds.keep=true \
+  --set global.imagePullSecrets[0].name=application-collection \
+  --wait --timeout 5m
+----
+
+. Install {istio} from the local mirror.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install istio \
+  oci://mirror.corp.example.com/charts/istio \
+  --version 1.3.0 \
+  --namespace istio-system \
+  --set global.imagePullSecrets[0].name=application-collection \
+  --set gateway.enabled=true \
+  --force-conflicts \
+  --server-side=true \
+  --wait --timeout 5m
+----
+
+. Install External Secrets Operator (ESO) from the local mirror.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install external-secrets-operator \
+  oci://mirror.corp.example.com/charts/external-secrets-operator \
+  --version 2.3.0 \
+  --namespace kubeflow \
+  --set installCRDs=true \
+  --set global.imagePullSecrets[0].name=application-collection \
+  --wait --timeout 5m
+----
+
+=== How to override default registry settings?
+
+You must instruct the {kubeflow} chart and all its sub-charts to pull container images from your private registry instead of the default online repositories. 
+
+To configure registry overrides, create an `airgapped-values.yaml` file with the following settings:
+
+[,yaml]
+----
+# airgapped-values.yaml
+global:
+  suseApplicationCollectionRegistry: "mirror.corp.example.com"
+  suseRegistry: "mirror.corp.example.com"
+----
+
+For more information on available overrides, see the link:https://github.com/SUSE/suse-ai-charts/blob/main/kubeflow/docs/values-reference.md#registry-overrides[Registry overrides documentation].
+
+=== How to perform the {kubeflow} installation?
+
+Install {kubeflow} using the charts stored in your local registry mirror.
+Pass your `airgapped-values.yaml` configuration file to override the default registry values.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install kubeflow \
+  oci://mirror.corp.example.com/ai/charts/kubeflow \
+  --version 0.4.1 \
+  -n kubeflow \
+  --force-conflicts \ <.>
+  --server-side=true \
+  --wait --timeout 15m \
+  -f airgapped-values.yaml
+----
+<.> The `--force-conflicts` flag is required because several sub-components update shared {kube} resources that {helm} tracks.
