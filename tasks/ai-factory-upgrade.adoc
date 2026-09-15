@@ -43,7 +43,7 @@ Omit `--version` to display the latest chart.
 +
 [,sh,subs="+attributes"]
 ----
-{prompt_user}helm show values oci://ghcr.io/suse/chart/aif-operator \
+{prompt_user}helm show values {aif-operator-registry} \
   --version {aif-latest-version} \
   --output yaml \
   > values.yaml
@@ -55,7 +55,7 @@ Omit `--version` to upgrade to the latest chart.
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
-  aif-operator oci://ghcr.io/suse/chart/aif-operator \
+  aif-operator {aif-operator-registry} \
   -n aif-operator \
   --version {aif-latest-version} \
   -f values.yaml
