@@ -33,7 +33,7 @@ To upgrade {productname} on the command line, follow these steps:
 +
 [,sh,subs="+attributes"]
 ----
-{prompt_user}skopeo list-tags docker://ghcr.io/suse/chart/aif-operator
+{prompt_user}skopeo list-tags docker://{aif-operator-registry}
 ----
 +
 The latest version is {aif-latest-version}.
@@ -43,7 +43,7 @@ Omit `--version` to display the latest chart.
 +
 [,sh,subs="+attributes"]
 ----
-{prompt_user}helm show values {aif-operator-registry} \
+{prompt_user}helm show values oci://{aif-operator-registry} \
   --version {aif-latest-version} \
   --output yaml \
   > values.yaml
@@ -55,7 +55,7 @@ Omit `--version` to upgrade to the latest chart.
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
-  aif-operator {aif-operator-registry} \
+  aif-operator oci://{aif-operator-registry} \
   -n aif-operator \
   --version {aif-latest-version} \
   -f values.yaml
