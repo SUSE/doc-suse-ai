@@ -29,8 +29,15 @@ Always review the companion `README` file for release-specific instructions befo
 
 To upgrade {productname} on the command line, follow these steps:
 
-. Identify the operator chart version number that you want to upgrade to.
+. (_Optional_) Identify the operator chart version number that you want to upgrade to, for example:
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}skopeo list-tags docker://ghcr.io/suse/chart/aif-operator
+----
++
 The latest version is {aif-latest-version}.
+
 . Upgrade {saifoperator}. The upgrade can take a few minutes.
 +
 [source,bash,subs="+attributes"]
