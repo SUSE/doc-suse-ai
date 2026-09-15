@@ -29,18 +29,39 @@ Always review the companion `README` file for release-specific instructions befo
 
 To upgrade {productname} on the command line, follow these steps:
 
-. Identify the operator chart version number that you want to upgrade to.
+. (_Optional_) Identify the operator chart version number that you want to upgrade to, for example:
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}skopeo list-tags docker://ghcr.io/suse/chart/aif-operator
+----
++
 The latest version is {aif-latest-version}.
-. Upgrade {saifoperator}. The upgrade can take a few minutes.
+
+. Save all values of the AIF Operator {helm} chart to `values.yaml` and customize them if required.
+Omit `--version` to display the latest chart.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm show values {aif-operator-registry} \
+  --version {aif-latest-version} \
+  --output yaml \
+  > values.yaml
+----
+
+. Upgrade {saifoperator}.
+Omit `--version` to upgrade to the latest chart.
 +
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
-  aif-operator oci://ghcr.io/suse/chart/aif-operator \
+  aif-operator {aif-operator-registry} \
   -n aif-operator \
   --version {aif-latest-version} \
-  -f aif-operator_custom_overrides.yaml
+  -f values.yaml
 ----
++
+The upgrade can take a few minutes.
 
 [NOTE]
 .Custom resource definitions on upgrade

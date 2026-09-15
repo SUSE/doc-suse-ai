@@ -25,7 +25,7 @@ include::../snippets/ai-rancher-admin-requirement.adoc[]
 . *Add a new repository for {productname}.*
 .. From the main left panel, select menu:local[Apps > Repositories] and click btn:[Create].
 .. Select btn:[OCI Repository] and enter your preferred repository name, for example, `suse-aif-operator`.
-.. Enter `oci://ghcr.io/suse/chart/aif-operator` as an OCI repository URL.
+.. Enter `{aif-operator-registry}` as an OCI repository URL.
 .. Leave `None` for authentication type and confirm with btn:[Create].
 . *Install the `SUSE AI Operator` application.*
 .. Navigate to menu:Apps[Charts] and select the new `suse-aif-operator` filter in the left repository panel.

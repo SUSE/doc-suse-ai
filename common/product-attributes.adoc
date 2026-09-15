@@ -76,6 +76,7 @@ ifndef::copyrightstart[]
 endif::copyrightstart[]
 
 :aif-latest-version: 2.2.0
+:aif-operator-registry: oci://ghcr.io/suse/chart/aif-operator
 
 :copyrightholder: SUSE LLC
 
