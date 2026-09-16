@@ -21,21 +21,40 @@ endif::[]
 :revdate: 2026-09-14
 :page-revdate: {revdate}
 
-. (_Optional_) To get the values for a specific {ai-app-name} chart version, identify the version, for example:
-+
-[,sh,subs="+attributes"]
-----
-{prompt_user}skopeo list-tags docker://registry.suse.com/ai/charts/{ai-app-string}
-----
-
-. Log in to the registry where {ai-app-name} chart is stored.
+. (_Optional_) To get the values for a specific {ai-app-name} chart version, log in to {ai-app-registry} and identify the version.
 To prevent the password from being stored in the shell history, save it to the `password.txt` file.
 +
 [,sh,subs="+attributes"]
 ----
+ifeval::["{ai-app-registry}" == "{sregistry}"]
+{prompt_user}skopeo login registry.suse.com \
+  --username regcode \
+  --password-stdin < password.txt
+{prompt_user}skopeo list-tags docker://registry.suse.com/ai/charts/{ai-app-string}
+endif::[]
+ifeval::["{ai-app-registry}" == "{sappco}"]
+{prompt_user}skopeo login dp.apps.rancher.io \
+  --username <APPCO-USERNAME> \
+  --password-stdin < password.txt
+{prompt_user}skopeo list-tags docker://dp.apps.rancher.io/charts/{ai-app-string}
+endif::[]
+----
+
+. Log in to {ai-app-registry} where {ai-app-name} chart is stored.
+To prevent the password from being stored in the shell history, save it to the `password.txt` file.
++
+[,sh,subs="+attributes"]
+----
+ifeval::["{ai-app-registry}" == "{sregistry}"]
 {prompt_user}helm registry login registry.suse.com \
   --username regcode \
   --password-stdin < password.txt
+endif::[]
+ifeval::["{ai-app-registry}" == "{sappco}"]
+{prompt_user}helm registry login dp.apps.rancher.io \
+  --username <APPCO-USERNAME> \
+  --password-stdin < appco-password.txt
+endif::[]
 ----
 
 . Display all values of the {ai-app-name} {helm} chart.
@@ -43,6 +62,12 @@ Omit `--version` to display the latest chart.
 +
 [,sh,subs="+attributes"]
 ----
+ifeval::["{ai-app-registry}" == "{sregistry}"]
 {prompt_user}helm show values oci://registry.suse.com/ai/charts/{ai-app-string} \
   --version <VERSION>
+endif::[]
+ifeval::["{ai-app-registry}" == "{sappco}"]
+{prompt_user}helm show values oci://dp.apps.rancher.io/charts/{ai-app-string} \
+  --version <VERSION>
+endif::[]
 ----

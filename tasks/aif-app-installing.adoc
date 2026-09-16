@@ -1,4 +1,4 @@
-[#litellm-installing]
+[#{ai-app-string}-installing]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
@@ -22,63 +22,55 @@ endif::[]
 :revdate: 2026-09-14
 :page-revdate: {revdate}
 
-[#litellm-installing-rancher]
+[#{ai-app-string}installing-rancher]
 == Installing with {ranchera}
 
 Refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-usage/ai-factory-managing-apps.html#ai-factory-apps-install[AI application installation] for a general installation procedure.
 
-[#litellm-installing-helm]
+[#{ai-app-string}-installing-helm]
 == Installing with {helm}
 
-
-. Log in to {sappco} registry.
-To prevent the password from being stored in the shell history, save it to the `appco-password.txt` file.
+. Log in to {ai-app-registry}.
+To prevent the password from being stored in the shell history, save it to the `password.txt` file.
 +
 [,sh,subs="+attributes"]
 ----
-{prompt_user}helm registry login dp.apps.rancher.io \
-  --username=<APPCO-REGISTRY-USERNAME> \
-  --password-stdin < appco-password.txt
-----
-
-. Log in to {sregistry}.
-To prevent the password from being stored in the shell history, save it to the `registry-password.txt` file.
-+
-[,sh,subs="+attributes"]
-----
+ifeval::["{ai-app-registry}" == "{sregistry}"]
 {prompt_user}helm registry login registry.suse.com \
   --username=regcode \
-  --password-stdin < registry-password.txt
+endif::[]
+ifeval::["{ai-app-registry}" == "{sappco}"]
+{prompt_user}helm registry login dp.apps.rancher.io \
+  --username=<APPCO-USERNAME> \
+endif::[]
+  --password-stdin < password.txt
 ----
 
 . Create a namespace.
 +
 [,sh,subs="+attributes"]
 ----
-{prompt_user}kubectl create namespace {ai-app-string} --dry-run=client -o yaml | kubectl apply -f -
+{prompt_user}kubectl create namespace {ai-app-string} \
+  --dry-run=client \
+  -o yaml | kubectl apply -f -
 ----
 
-. Create image pull secrets.
-.. Create {sappco} image pull secrets.
+. (_Optioonal_) If you have not created image pull secrets for {ai-app-registry}, create them now.
+To prevent the password from being stored in the shell history, save it to the `password.txt` file.
 +
 [,sh,subs="+attributes"]
 ----
-{prompt_user}kubectl create secret docker-registry application-collection \
-  --docker-server=dp.apps.rancher.io \
-  --docker-username=<APPCO-REGISTRY-USERNAME> \
-  --docker-password="$(< appco-password.txt)" \
-  -n {ai-app-string} \
-    --dry-run=client -o yaml | kubectl apply -f -
-----
-
-.. Create {sregistry} image pull secrets.
-+
-[,sh,subs="+attributes"]
-----
+ifeval::["{ai-app-registry}" == "{sregistry}"]
 {prompt_user}kubectl create secret docker-registry suse-ai-registry \
   --docker-server=registry.suse.com \
   --docker-username=regcode \
-  --docker-password="$(< registry-password.txt)" \
+endif::[]
+ifeval::["{ai-app-registry}" == "{sappco}"]
+{prompt_user}kubectl create secret docker-registry application-collection \
+  --docker-server=dp.apps.rancher.io \
+  --docker-username=<APPCO-USERNAME> \
+endif::[]
+  --docker-password="$(< password.txt)" \
   -n {ai-app-string} \
   --dry-run=client -o yaml | kubectl apply -f -
 ----
@@ -89,10 +81,15 @@ For a complete list of {ai-app-name} chart values, refer to xref:{ai-app-string}
 . Install {ai-app-name}.
 To keep the default installation values, omit `-f values.yaml`.
 +
-[source,subs="+attributes"]
+[,sh,subs="+attributes"]
 ----
-{prompt_user}helm upgrade --install \
-  {ai-app-string} oci://registry.suse.com/ai/charts/litellm \
+{prompt_user}helm install {ai-app-string} \
+ifeval::["{ai-app-registry}" == "{sregistry}"]
+  oci://registry.suse.com/ai/charts/{ai-app-string} \
+endif::[]
+ifeval::["{ai-app-registry}" == "{sappco}"]
+  oci://dp.apps.rancher.io/charts/{ai-app-string} \
+endif::[]
   -n {ai-app-string} \
   -f values.yaml
 ----
