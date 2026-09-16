@@ -333,7 +333,7 @@ NAME                     READY   AGE
 letsencrypt-production   True    75m
 ----
 +
-To configure {kubeflow} to use existing `external-dns` and `cert-manager`, reference it in your values:
+To configure {kubeflow} to use existing `external-dns` and `cert-manager`, reference them in your values:
 
 [source,yaml]
 ----
