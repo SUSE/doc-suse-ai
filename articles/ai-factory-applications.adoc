@@ -32,44 +32,45 @@ This guide provides a list of AI applications installable by {productname}, alon
 
 ifeval::["{PROF_PRODUCT}" == "saif"]
 
-[#aif-apps-kubeflow]
-== {kubeflow}
-
 :ai-app-string: kubeflow
 :ai-app-name: {kubeflow}
+:ai-app-registry: {sregistry}
 
-{kubeflow} (link:https://www.kubeflow.org[]) is a cloud-native platform that orchestrates and simplifies the entire machine learning (ML) lifecycle on {kube}.
+[#aif-apps-{ai-app-string}]
+== {ai-app-name}
+
+{ai-app-name} (link:https://www.kubeflow.org[]) is a cloud-native platform that orchestrates and simplifies the entire machine learning (ML) lifecycle on {kube}.
 Unlike traditional software with hard-coded rules, ML applications learn to make decisions and predictions directly from data.
-{kubeflow} automates this data-driven process, managing everything from initial development to production deployment.
+{ai-app-name} automates this data-driven process, managing everything from initial development to production deployment.
 
 [WARNING]
 .Technology preview
 ====
-{kubeflow} is currently available as a Technology Preview.
+{ai-app-name} is currently available as a Technology Preview.
 ====
 
-[#kubeflow-components]
-:override-title: What components does {kubeflow} include?
+[#{ai-app-string}-components]
+:override-title: What components does {ai-app-name} include?
 include::../references/kubeflow-components.adoc[leveloffset=+2]
-[#kubeflow-requirements]
-:override-title: What are {kubeflow} requirements?
+[#{ai-app-string}-requirements]
+:override-title: What are {ai-app-name} requirements?
 include::../references/kubeflow-requirements.adoc[leveloffset=+2]
-:override-title: What are known {kubeflow} limitations?
+:override-title: What are known {ai-app-name} limitations?
 include::../references/kubeflow-limitations.adoc[leveloffset=+3]
 [#{ai-app-string}-helm-values]
 :override-title: How do I get the values list for {ai-app-name} {helm} chart?
 include::../tasks/aif-app-values.adoc[leveloffset=+2]
-[#kubeflow-installing]
-:override-title: How do I install {kubeflow}?
+[#{ai-app-string}-installing]
+:override-title: How do I install {ai-app-name}?
 include::../tasks/kubeflow-installing.adoc[leveloffset=+2]
-[#kubeflow-installing-airgapped]
-:override-title: How do I install {kubeflow} in air-gapped environments?
+[#{ai-app-string}-installing-airgapped]
+:override-title: How do I install {ai-app-name} in air-gapped environments?
 include::../tasks/kubeflow-installing-airgapped.adoc[leveloffset=+2]
-:override-title: How do I access {kubeflow}?
+:override-title: How do I access {ai-app-name}?
 include::../tasks/kubeflow-accessing.adoc[leveloffset=+2]
-:override-title: How do I configure {kubeflow} for different scenarios?
+:override-title: How do I configure {ai-app-name} for different scenarios?
 include::../references/kubeflow-configuration-scenarios.adoc[leveloffset=+2]
-:override-title: How do I harden {kubeflow} for production use?
+:override-title: How do I harden {ai-app-name} for production use?
 include::../tasks/kubeflow-hardening.adoc[leveloffset=+2]
 :override-title: How do I manage user profiles and namespaces?
 include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+2]
@@ -78,7 +79,7 @@ include::../tasks/kubeflow-user-profiles.adoc[leveloffset=+2]
 include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
 :override-title: Upgrade notes
 include::../references/kubeflow-upgrade-notes.adoc[leveloffset=+3]
-[#kubeflow-removing]
+[#{ai-app-string}-removing]
 :override-title: How do I remove {ai-app-name}?
 include::../tasks/aif-app-removing.adoc[leveloffset=+2]
 :override-title: Troubleshooting
@@ -87,11 +88,13 @@ include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
 :ai-app-string!:
 :ai-app-name!:
 
-[#aif-apps-litellm]
-== {litellm}
 
 :ai-app-string: litellm
 :ai-app-name: {litellm}
+:ai-app-registry: {sregistry}
+
+[#aif-apps-{ai-app-string}]
+== {ai-app-name}
 
 {litellm} (link:https://docs.litellm.ai/docs/[]) is an open source large language model (LLM) proxy and abstraction layer.
 The service translates diverse provider application programming interfaces (APIs) into a unified, OpenAI-compatible format.
@@ -101,12 +104,12 @@ The proxy also provides centralized key management, detailed usage tracking and 
 [#{ai-app-string}-helm-values]
 :override-title: How do I get the values list for {ai-app-name} {helm} chart?
 include::../tasks/aif-app-values.adoc[leveloffset=+2]
-[#litellm-installing]
+[#{ai-app-string}-installing]
 :override-title: How do I install {ai-app-name}?
-include::../tasks/ai-app-installing.adoc[leveloffset=+2]
-[#litellm-helm-overrides]
-:override-title: What custom values examples are available for {litellm}?
-include::../references/litellm-helm-overrides.adoc[leveloffset=+2]
+include::../tasks/aif-app-installing.adoc[leveloffset=+2]
+[#{ai-app-string}-helm-overrides]
+:override-title: What custom values examples are available for {ai-app-name}?
+include::../references/{ai-app-string}-helm-overrides.adoc[leveloffset=+2]
 [#{ai-app-string}-upgrading]
 :override-title: How do I upgrade {ai-app-name}?
 include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
@@ -117,10 +120,36 @@ include::../tasks/aif-app-removing.adoc[leveloffset=+2]
 :ai-app-string!:
 :ai-app-name!:
 
+:ai-app-string: milvus
+:ai-app-name: {milvus}
+:ai-app-registry: {sappco}
+
+[#aif-apps-{ai-app-string}]
+== {ai-app-name}
+
+{milvus} (link:https://milvus.io[]) is an open source, cloud-native vector database designed to store, index and manage massive datasets of high-dimensional vector embeddings.
+It accelerates similarity search by separating storage and computing, allowing independent scaling of both layers.
+This architecture enables low-latency retrieval across billions of vectors for large-scale artificial intelligence (AI) applications, making it highly effective for retrieval-augmented generation (RAG) and semantic search.
+
+[#{ai-app-string}-helm-values]
+:override-title: How do I get the values list for {ai-app-name} {helm} chart?
+include::../tasks/aif-app-values.adoc[leveloffset=+2]
+[#{ai-app-string}-installing]
+:override-title: How do I install {ai-app-name}?
+include::../tasks/aif-app-installing.adoc[leveloffset=+2]
+[#{ai-app-string}-helm-overrides]
+:override-title: What custom values examples are available for {ai-app-name}?
+include::../references/milvus-helm-overrides.adoc[leveloffset=+2]
+[#{ai-app-string}-upgrading]
+:override-title: How do I upgrade {ai-app-name}?
+include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
+[#{ai-app-string}-removing]
+:override-title: How do I remove {ai-app-name}?
+include::../tasks/aif-app-removing.adoc[leveloffset=+2]
+
 // [#opensearch-helm-overrides]
 // include::../references/opensearch-helm-overrides.adoc[leveloffset=+1]
-// [#milvus-helm-overrides]
-// include::../references/milvus-helm-overrides.adoc[leveloffset=+1]
+
 // [#ollama-helmchart]
 // :override-title: {ollama}
 // include::../references/ollama-helmchart.adoc[leveloffset=+1]

@@ -30,12 +30,33 @@ Refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Fact
 [#{ai-app-string}-upgrading-helm]
 == Upgrading with {helm}
 
-To upgrade {ai-app-name} to a specific version using {helm}, use the following command:
+. Log in to {ai-app-registry}.
+To prevent the password from being stored in the shell history, save it to the `password.txt` file.
++
+[,sh,subs="+attributes"]
+----
+ifeval::["{ai-app-registry}" == "{sregistry}"]
+{prompt_user}helm registry login registry.suse.com \
+  --username=regcode \
+endif::[]
+ifeval::["{ai-app-registry}" == "{sappco}"]
+{prompt_user}helm registry login dp.apps.rancher.io \
+  --username=<APPCO-USERNAME> \
+endif::[]
+  --password-stdin < password.txt
+----
 
+. Upgrade {ai-app-name}.
++
 [,sh,subs="+attributes"]
 ----
 {prompt_user}helm upgrade {ai-app-string} \
+ifeval::["{ai-app-registry}" == "{sregistry}"]
   oci://registry.suse.com/ai/charts/{ai-app-string} \
+endif::[]
+ifeval::["{ai-app-registry}" == "{sappco}"]
+  oci://dp.apps.rancher.io/charts/{ai-app-string} \
+endif::[]
   -n {ai-app-string} \
   --version <VERSION_NUMBER> \ <.>
   --wait --timeout 15m \
