@@ -11,7 +11,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-To view the complete list of {helm} chart values for {ai-app-name}, follow these steps:
+Before deploying {ai-app-name}, it is important to know more about the supported configurations.
 endif::[]
 
 // erase the flag for future overrides
@@ -21,6 +21,13 @@ endif::[]
 :revdate: 2026-09-14
 :page-revdate: {revdate}
 
+. (_Optional_) To get the values for a specific {ai-app-name} chart version, identify the version, for example:
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}skopeo list-tags docker://registry.suse.com/ai/charts/{ai-app-string}
+----
+
 . Log in to the registry where {ai-app-name} chart is stored.
 To prevent the password from being stored in the shell history, save it to the `password.txt` file.
 +
@@ -29,13 +36,6 @@ To prevent the password from being stored in the shell history, save it to the `
 {prompt_user}helm registry login registry.suse.com \
   --username regcode \
   --password-stdin < password.txt
-----
-
-. To view values for a specific version of {kubeflow}, list all its available chart versions.
-+
-[,sh,subs="+attributes"]
-----
-{prompt_user}podman search --list-tags registry.suse.com/ai/charts/{ai-app-string}
 ----
 
 . Display all values of the {ai-app-name} {helm} chart.
