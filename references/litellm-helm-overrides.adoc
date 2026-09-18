@@ -21,13 +21,6 @@ endif::[]
 :revdate: 2026-09-11
 :page-revdate: {revdate}
 
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-:imgRegistry: {empty}
-endif::[]
-ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
-:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-endif::[]
-
 [#litellm-chart-example-basic]
 .Basic custom values file with {postgresql} deployment and an automatically generated master key
 ====
