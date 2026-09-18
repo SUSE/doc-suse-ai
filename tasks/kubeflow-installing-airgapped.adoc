@@ -11,7 +11,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-nstalling {kubeflow} in an air-gapped environment allows you to deploy and manage machine learning workflows securely without active Internet connectivity.
+Installing {kubeflow} in an air-gapped environment allows you to deploy and manage machine learning workflows securely without active Internet connectivity.
 This deployment method uses local image registries and {helm} repositories to satisfy all software dependencies, ensuring complete data privacy and network isolation.
 endif::[]
 
@@ -35,7 +35,7 @@ endif::[]
 An air-gapped deployment requires you to host all container images and {helm} charts in a local container registry.
 This process ensures the system can satisfy all software dependencies without contacting external networks. 
 
-Before starting the installation, you must mirror the required AI applications charts and container images to your local private registry.
+Before starting the installation, you must mirror the required AI application charts and container images to your local private registry.
 
 === How to configure local registry credentials?
 

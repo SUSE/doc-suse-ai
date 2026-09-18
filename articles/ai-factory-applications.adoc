@@ -20,6 +20,8 @@ endif::[]
 
 :revdate: 2026-09-09
 :page-revdate: {revdate}
+:revdate: 2026-09-09
+:page-revdate: {revdate}
 
 [abstract]
 --
@@ -151,6 +153,7 @@ include::../tasks/aif-app-removing.adoc[leveloffset=+2]
 // [#mlflow-installing]
 // :override-title: {mlflow}
 // include::../tasks/mlflow-installing.adoc[leveloffset=+1]
+
 
 
 endif::[]
