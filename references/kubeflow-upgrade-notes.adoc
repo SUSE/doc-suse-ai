@@ -92,3 +92,14 @@ We recommend temporarily disabling active pipeline runs in the GUI before upgrad
 Supply the full values file on upgrade::
 Running `helm upgrade --reuse-values` does not update the `user-namespace` Secret with new {seaweedfs} credentials.
 Always supply the full values file on upgrade, or patch the Secret manually after upgrade.
+
+CRDs are not automatically upgraded by `helm upgrade`::
+{kubeflow} CRDs are placed in `crds/` subdirectories.
+{helm} intentionally skips them on upgrade.
+After a chart version bump, run:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm show crds oci://registry.suse.com/ai/charts/kubeflow \
+  --version <VERSION> | kubectl apply -f -
+----
