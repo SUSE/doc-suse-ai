@@ -33,23 +33,23 @@ endif::[]
 To install {ai-app-name} on the command line using {helm}, follow these steps:
 
 . Log in to the {sappco} registry.
-To prevent the password from being stored in the shell history, save it to the `appco-password.txt` file.
+To prevent the password from being stored in the shell history, save it to the `paassword.txt` file.
 +
 [,sh,subs="+attributes"]
 ----
 {prompt_user}helm registry login dp.apps.rancher.io \
   --username=<APPCO-REGISTRY-USERNAME> \
-  --password-stdin < appco-password.txt
+  --password-stdin < paassword.txt
 ----
 
 . Log in to {sregistry}.
-To prevent the password from being stored in the shell history, save it to the `registry-password.txt` file.
+To prevent the password from being stored in the shell history, save it to the `paassword.txt` file.
 +
 [,sh,subs="+attributes"]
 ----
 {prompt_user}helm registry login registry.suse.com \
   --username=regcode \
-  --password-stdin < registry-password.txt
+  --password-stdin < paassword.txt
 ----
 
 . Create namespaces.
