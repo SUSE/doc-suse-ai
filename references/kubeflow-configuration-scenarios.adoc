@@ -30,6 +30,7 @@ No custom values file is required.
 Install with the default values and access via NodePort or port-forward as described in xref:kubeflow-accessing[].
 
 Default credentials:
+
 [source]
 ----
 Email:    user@example.com
@@ -248,8 +249,7 @@ auth:
     clientSecret: "<STRONG-RANDOM-32-CHAR-SECRET>"
 # ... (rest of credentials)
 ----
-====
-By
+
 == Production: Use an existing external-dns and cert-manager
 
 If the existing environment already has `external-dns` and `cert-manager`, {kubeflow} can make use of them if the following conditions are satisfied:
@@ -260,9 +260,9 @@ You can check the deployment with the `kubectl` command:
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}$ kubectl get deployment external-dns -n external-dns -o yaml | grep source=
-        - --source=service
-        - --source=ingress
-        - --source=istio-gateway
+  - --source=service
+  - --source=ingress
+  - --source=istio-gateway
 ----
 
 * A cluster issuer must exist in the environment and be configured to issue certificates from a production public CA such as Let's Encrypt.
@@ -418,7 +418,7 @@ This includes a missing `hostname`, an invalid `tls.source`, an HTTP-01 solver, 
   Serving over HTTPS does not bypass Kubeflow authentication.
   See the link:../tutorial.md#programmatic--external-access-bearer-token[Tutorial: Programmatic Access] for instructions on how to authenticate external `curl` or Python clients.
 * *The configuration path for custom certificates differs.*
-  For more information, see xref:kubeflow-config-scenarios-byo-cert[] and the xref:tls-blast-radius[blast-radius rules].
+  For more information, see xref:kubeflow-config-scenarios-byo-cert[].
 * *To keep inference on plain HTTP, leave the `kserveExternalHttps` parameter set to `false`.*
   In this case, the dedicated gateway serves port `:80` only without a wildcard certificate.
   The `status.url` parameter does not change and uses the default `\{name\}-\{namespace\}.\{domain\}` host over HTTP.

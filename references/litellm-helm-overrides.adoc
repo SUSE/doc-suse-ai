@@ -22,16 +22,14 @@ endif::[]
 :page-revdate: {revdate}
 
 [#litellm-chart-example-basic]
-.Basic custom values file with {postgresql} deployment and an automatically generated master key
-====
-[source,yaml,subs="+attributes"]
+== Basic custom values file with {postgresql} deployment and an automatically generated master key
+[,yaml,subs="+attributes"]
 ----
 # litellm_custom_overrides.yaml
 global:
   imagePullSecrets: 
     - application-collection <.>
     - suse-ai-registry <.>
-    {imgRegistry}
 postgresql:
   persistence:
     storageClassName: "local-path" <.>
@@ -39,8 +37,7 @@ postgresql:
 <.> Specify the secret containing the credentials for the {sappco} in `global.imagePullSecrets`.
 <.> Specify the secret containing the credentials for the {sregistry} in `global.imagePullSecrets`.
 <.> Use `local-path` storage only for testing purposes.
-    For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
-====
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
 
 The {litellm} chart from {sregistry} makes use of subcharts such as {redis} and {postgresql} from the {sappco} registry.
 Therefore, both registry secrets must be configured.
