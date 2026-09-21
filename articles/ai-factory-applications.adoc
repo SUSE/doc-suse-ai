@@ -153,12 +153,42 @@ include::../tasks/aif-app-removing.adoc[leveloffset=+2]
 :ai-app-name!:
 :ai-app-registry!:
 
+:ai-app-string: ollama
+:ai-app-name: {ollama}
+:ai-app-registry: {sappco}
+
+[#aif-apps-{ai-app-string}]
+== {ai-app-name}
+
+{ollama} is a tool for running and managing language models locally on your computer.
+It offers a simple interface to download, run and interact with models without relying on cloud resources.
+
+[#{ai-app-string}-helm-values]
+:override-title: How do I get the values list for {ai-app-name} {helm} chart?
+include::../tasks/aif-app-values.adoc[leveloffset=+2]
+[#{ai-app-string}-installing]
+:override-title: How do I install {ai-app-name}?
+include::../tasks/aif-app-installing.adoc[leveloffset=+2]
+[#{ai-app-string}-helm-overrides]
+:override-title: What custom values examples are available for {ai-app-name}?
+include::../references/ollama-helm-overrides.adoc[leveloffset=+2]
+[#{ai-app-string}-upgrading]
+:override-title: How do I upgrade {ai-app-name}?
+include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
+[#{ai-app-string}-removing]
+:override-title: How do I remove {ai-app-name}?
+include::../tasks/aif-app-removing.adoc[leveloffset=+2]
+
+:ai-app-string!:
+:ai-app-name!:
+:ai-app-registry!:
+
+
+
 // [#opensearch-helm-overrides]
 // include::../references/opensearch-helm-overrides.adoc[leveloffset=+1]
 
-// [#ollama-helmchart]
-// :override-title: {ollama}
-// include::../references/ollama-helmchart.adoc[leveloffset=+1]
+
 // [#owui-helmchart]
 // :override-title: {owui}
 // include::../references/owui-helmchart.adoc[leveloffset=+1]
