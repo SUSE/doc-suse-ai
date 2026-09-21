@@ -1,4 +1,11 @@
 <revhistory xml:id="rh-aif-apps-config">
+  <revision><date>2026-09-21</date>
+    <revdescription>
+      <para>
+        Added all major AI applications
+      </para>
+    </revdescription>
+  </revision>
   <revision><date>2026-09-09</date>
     <revdescription>
       <para>
