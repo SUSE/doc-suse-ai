@@ -34,5 +34,5 @@ To remove {ai-app-name} using {helm}, use the following command:
 
 [,sh,subs="+attributes"]
 ----
-{prompt_user}helm uninstall {ai-app-string} -n {ai-app-string}
+{prompt_user}helm uninstall {ai-app-string} -n {ai-app-string}-system
 ----

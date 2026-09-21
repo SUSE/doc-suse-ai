@@ -23,8 +23,8 @@ endif::[]
 
 [abstract]
 --
-Configuring artificial intelligence (AI) applications in the {kube} environment involves using {helm} charts and custom custom values files.
-While applications ship with default configurations, you can modify application behavior by applying a custom custom values file with scenario-specific values.
+Configuring artificial intelligence (AI) applications in the {kube} environment involves using {helm} charts and custom values files.
+While applications ship with default configurations, you can modify application behavior by applying a custom values file with scenario-specific values.
 This approach ensures consistent, reproducible and easily manageable application deployment.
 
 This guide provides a list of AI applications installable by {productname}, along with their descriptions and configuration override examples.

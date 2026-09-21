@@ -50,7 +50,7 @@ endif::[]
 +
 [,sh,subs="+attributes"]
 ----
-{prompt_user}kubectl create namespace {ai-app-string} \
+{prompt_user}kubectl create namespace {ai-app-string}-system \
   --dry-run=client \
   -o yaml | kubectl apply -f -
 ----
@@ -71,7 +71,7 @@ ifeval::["{ai-app-registry}" == "{sappco}"]
   --docker-username=<APPCO-USERNAME> \
 endif::[]
   --docker-password="$(< password.txt)" \
-  -n {ai-app-string} \
+  -n {ai-app-string}-system \
   --dry-run=client -o yaml | kubectl apply -f -
 ----
 
@@ -90,6 +90,6 @@ endif::[]
 ifeval::["{ai-app-registry}" == "{sappco}"]
   oci://dp.apps.rancher.io/charts/{ai-app-string} \
 endif::[]
-  -n {ai-app-string} \
+  -n {ai-app-string}-system \
   -f values.yaml
 ----
