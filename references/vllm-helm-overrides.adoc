@@ -310,7 +310,7 @@ Apply the specification with the following commands:
   wait --for=condition=complete job/prefetch-llama3.1-8b
 ----
 
-. Update the custom {vllm} custom values file with support for PVC.
+. Update the {vllm} custom values file with support for PVC.
 +
 [source,yaml,subs="+attributes"]
 ----

@@ -57,7 +57,7 @@ To create a ConfigMap, run the following command:
 [source,subs="+attributes"]
 ----
 {prompt_user}kubectl describe configmap \
-  MY_CONFIG_MAP -n SAIF_NAMESPACE
+  MY_CONFIG_MAP -n <SUSE_AI_NAMESPACE>
 ----
 
 [source,yaml,subs="+attributes"]

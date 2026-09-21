@@ -48,6 +48,23 @@ endif::[]
 
 . Upgrade {ai-app-name}.
 +
+ifdef::ai-app-namespace[]
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm upgrade {ai-app-string} \
+ifeval::["{ai-app-registry}" == "{sregistry}"]
+  oci://registry.suse.com/ai/charts/{ai-app-string} \
+endif::[]
+ifeval::["{ai-app-registry}" == "{sappco}"]
+  oci://dp.apps.rancher.io/charts/{ai-app-string} \
+endif::[]
+  -n {ai-app-namespace} \
+  --version <VERSION_NUMBER> \ <.>
+  --wait --timeout 15m \
+  --force-conflicts
+----
+endif::[]
+ifndef::ai-app-namespace[]
 [,sh,subs="+attributes"]
 ----
 {prompt_user}helm upgrade {ai-app-string} \
@@ -62,4 +79,5 @@ endif::[]
   --wait --timeout 15m \
   --force-conflicts
 ----
+endif::[]
 <.> If you omit `--version`, {ai-app-name} gets upgraded to the latest available version.

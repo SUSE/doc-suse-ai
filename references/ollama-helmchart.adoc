@@ -110,7 +110,7 @@ ingress:
 For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
 ====
 
-.custom values file options for the {ollama} {helm} chart
+.Custom values file options for the {ollama} {helm} chart
 [cols="4"]
 |===
 |Key |Type |Default |Description

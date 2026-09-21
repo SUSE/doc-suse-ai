@@ -30,7 +30,7 @@ endif::[]
 # qdrant_custom_overrides.yaml
 global:
   imagePullSecrets:
-    - suse-ai-registry
+    - application-collection
 persistence:
   accessModes: ["ReadWriteOnce"]
   size: 10Gi
@@ -53,15 +53,15 @@ For production use, we recommend using a storage solution suitable for persisten
 # qdrant_custom_overrides.yaml
 global:
   imagePullSecrets:
-    - suse-ai-registry
+    - application-collection
 env:
   - name: QDRANT__GPU__INDEXING
     value: "1"
   - name: QDRANT__LOG_LEVEL
     value: debug
 image:
-  registry: registry.suse.com
-  repository: ai/containers/qdrant
+  registry: dp.apps.rancher.io
+  repository: containers/qdrant
   pullPolicy: IfNotPresent
   useUnprivilegedImage: false
   tag: "v1.17.0-gpu-nvidia"

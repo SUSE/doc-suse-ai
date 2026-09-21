@@ -18,7 +18,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-09-09
+:revdate: 2026-09-21
 :page-revdate: {revdate}
 
 [abstract]
@@ -35,6 +35,7 @@ ifeval::["{PROF_PRODUCT}" == "saif"]
 :ai-app-string: kubeflow
 :ai-app-name: {kubeflow}
 :ai-app-registry: {sregistry}
+:ai-app-namespace: kubeflow
 
 [#aif-apps-{ai-app-string}]
 == {ai-app-name}
@@ -88,6 +89,7 @@ include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
 :ai-app-string!:
 :ai-app-name!:
 :ai-app-registry!:
+:ai-app-namespace!:
 
 
 :ai-app-string: litellm

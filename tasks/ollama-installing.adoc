@@ -33,7 +33,7 @@ include::../snippets/ai-library-requirement.adoc[]
 
 . Create the `ollama_custom_overrides.yaml` file to override the values of the parent {helm} chart.
 Refer to xref:ollama-helmchart[] for more details.
-. Install the {ollama} {helm} chart using the `ollama-custom-overrides.yaml` custom values file.
+. Install the {ollama} {helm} chart using the `ollama_custom_overrides.yaml` custom values file.
 +
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]

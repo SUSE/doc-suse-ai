@@ -33,7 +33,7 @@ global:
   imagePullSecrets:
   - application-collection
 ollamaUrls:
-- http://open-webui-ollama.<SAIF_NAMESPACE>.svc.cluster.local:11434
+- http://open-webui-ollama.<SUSE_AI_NAMESPACE>.svc.cluster.local:11434
 persistence:
   enabled: true
   storageClass: local-path <.>
@@ -89,7 +89,7 @@ extraEnvVars:
 - name: VECTOR_DB
   value: "milvus"
 - name: MILVUS_URI
-  value: http://milvus.<SAIF_NAMESPACE>.svc.cluster.local:19530
+  value: http://milvus.<SUSE_AI_NAMESPACE>.svc.cluster.local:19530
 - name: INSTALL_NLTK_DATASETS <.>
   value: "true"
 - name: OMP_NUM_THREADS
@@ -132,7 +132,7 @@ global:
   imagePullSecrets:
   - application-collection
 ollamaUrls:
-- http://ollama.<SAIF_NAMESPACE>.svc.cluster.local:11434
+- http://ollama.<SUSE_AI_NAMESPACE>.svc.cluster.local:11434
 persistence:
   enabled: true
   storageClass: local-path <.>
@@ -163,7 +163,7 @@ extraEnvVars:
 - name: VECTOR_DB
   value: "milvus"
 - name: MILVUS_URI
-  value: http://milvus.<SAIF_NAMESPACE>.svc.cluster.local:19530
+  value: http://milvus.<SUSE_AI_NAMESPACE>.svc.cluster.local:19530
 - name: ENABLE_OTEL <.>
   value: "true"
 - name: OTEL_EXPORTER_OTLP_ENDPOINT <.>
@@ -198,7 +198,7 @@ global:
   imagePullSecrets:
   - application-collection
 ollamaUrls:
-- http://ollama.<SAIF_NAMESPACE>.svc.cluster.local:11434
+- http://ollama.<SUSE_AI_NAMESPACE>.svc.cluster.local:11434
 persistence:
   enabled: true
   storageClass: local-path
@@ -239,7 +239,7 @@ Find more details about installing {vllm} in xref:vllm-helm-overrides[].
 extraEnvVars:
 [...]
 - name: OPENAI_API_BASE_URL
-  value: "http://vllm-router-service.<SAIF_NAMESPACE>.svc.cluster.local:80/v1"
+  value: "http://vllm-router-service.<SUSE_AI_NAMESPACE>.svc.cluster.local:80/v1"
 - name: OPENAI_API_KEY
   value: "dummy" <.>
 ----
