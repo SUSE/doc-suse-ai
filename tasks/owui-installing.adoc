@@ -33,7 +33,7 @@ If {certmanager} is not installed from previous {owui} releases, install it by f
 The file contains URLs for {milvus} and {ollama}, and specifies whether a stand-alone {ollama} deployment is used or whether {ollama} is installed as part of the {owui} installation.
 Find more details in xref:owui-helm-overrides[].
 For a list of all installation options with examples, refer to xref:owui-helmchart-values[].
-. Install the {owui} {helm} chart using the `owui_custom_overrides.yaml` override file.
+. Install the {owui} {helm} chart using the `owui_custom_overrides.yaml` custom values file.
 +
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]

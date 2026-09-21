@@ -52,7 +52,7 @@ If you do not want to use the {nvidia} GPU, remove the `gpu` section from `ollam
 ----
 ====
 
-.Basic override file with GPU and two models pulled at startup
+.Basic custom values file with GPU and two models pulled at startup
 ====
 [source,yaml,subs="+attributes"]
 ----
@@ -85,7 +85,7 @@ persistentVolume: <.>
 For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
 ====
 
-.Basic override file with {ingress} and no GPU
+.Basic custom values file with {ingress} and no GPU
 ====
 [source,yaml]
 ----
@@ -110,7 +110,7 @@ ingress:
 For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
 ====
 
-.Override file options for the {ollama} {helm} chart
+.custom values file options for the {ollama} {helm} chart
 [cols="4"]
 |===
 |Key |Type |Default |Description

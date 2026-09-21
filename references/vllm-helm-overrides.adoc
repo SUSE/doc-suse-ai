@@ -4,7 +4,7 @@ ifdef::override-title[]
 = {override-title}
 endif::[]
 ifndef::override-title[]
-= Examples of {vllm} {helm} chart override files
+= Examples of {vllm} {helm} chart custom values files
 endif::[]
 // overridden abstract?
 ifdef::override-abstract[]
@@ -32,7 +32,7 @@ endif::[]
 [#vllm-owui-integration]
 == Integrating {vllm} with {owui}
 
-You can integrate {vllm} in {owui} either using the {owui} Web user interface, or updating {owui} override file during {owui} deployment (see xref:owui-ollama-deploy-vllm[]).
+You can integrate {vllm} in {owui} either using the {owui} Web user interface, or updating {owui} custom values file during {owui} deployment (see xref:owui-ollama-deploy-vllm[]).
 
 .Integrating {vllm} with {owui} via the Web user interface
 --
@@ -60,7 +60,7 @@ include::../snippets/helm-chart-overrides-intro.adoc[]
 [#vllm-helm-overrides-minimal]
 .Minimal configuration
 ====
-The following override file installs {vllm} using a model that is publicly available.
+The following custom values file installs {vllm} using a model that is publicly available.
 
 [source,yaml,subs="+attributes"]
 ----
@@ -159,7 +159,7 @@ Pods for the {vllm} deployment should transition to the states `Ready` and `Runn
 [#vllm-helm-overrides-basic]
 .Basic configuration
 ====
-The following {vllm} override file includes basic configuration options.
+The following {vllm} custom values file includes basic configuration options.
 
 .Prerequisites
 * Access to a {huggingface} token (`HF_TOKEN`).
@@ -310,7 +310,7 @@ Apply the specification with the following commands:
   wait --for=condition=complete job/prefetch-llama3.1-8b
 ----
 
-. Update the custom {vllm} override file with support for PVC.
+. Update the custom {vllm} custom values file with support for PVC.
 +
 [source,yaml,subs="+attributes"]
 ----

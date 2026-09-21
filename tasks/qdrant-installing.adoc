@@ -27,7 +27,7 @@ endif::[]
 
 To integrate {qdrant} with {owui}, follow these steps:
 
-. Edit the override file for {owui}, `owui_custom_overrides.yaml` and update the `extraEnvVars` section as follows.
+. Edit the custom values file for {owui}, `owui_custom_overrides.yaml` and update the `extraEnvVars` section as follows.
 +
 * Change the `VECTOR_DB` value to `qdrant`.
 * Add the {qdrant}-related environment variables: 

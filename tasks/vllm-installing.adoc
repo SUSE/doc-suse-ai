@@ -49,8 +49,8 @@ The current release of {productname} {vllm} does not support Ray and LoraControl
 ====
 
 . Create a `vllm_custom_overrides.yaml` file to override the default values of the {helm} chart.
-Find examples of override files in xref:vllm-helm-overrides[].
-. After saving the override file as `vllm_custom_overrides.yaml`, apply its configuration with the following command.
+Find examples of custom values files in xref:vllm-helm-overrides[].
+. After saving the custom values file as `vllm_custom_overrides.yaml`, apply its configuration with the following command.
 +
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]
@@ -75,7 +75,7 @@ endif::[]
 [#vllm-owui-integration]
 == Integrating {vllm} with {owui}
 
-You can integrate {vllm} in {owui} either using the {owui} Web user interface, or updating {owui} override file during {owui} deployment (see xref:owui-ollama-deploy-vllm[]).
+You can integrate {vllm} in {owui} either using the {owui} Web user interface, or updating {owui} custom values file during {owui} deployment (see xref:owui-ollama-deploy-vllm[]).
 
 .Integrating {vllm} with {owui} via the Web user interface
 --

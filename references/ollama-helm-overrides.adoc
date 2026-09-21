@@ -42,7 +42,7 @@ If you do not want {ollama} to use the GPU hardware, remove the `gpu` section fr
 ----
 ====
 
-.Basic override file with GPU and two models pulled at startup
+.Basic custom values file with GPU and two models pulled at startup
 ====
 [source,yaml,subs="+attributes"]
 ----
@@ -74,7 +74,7 @@ persistentVolume: <.>
 For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
 ====
 
-.Basic override file with {ingress} and no GPU
+.Basic custom values file with {ingress} and no GPU
 ====
 [source,yaml]
 ----

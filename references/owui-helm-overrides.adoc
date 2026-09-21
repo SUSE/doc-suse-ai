@@ -4,45 +4,36 @@ ifdef::override-title[]
 = {override-title}
 endif::[]
 ifndef::override-title[]
-= Examples of {owui} {helm} chart override files
+= Examples of {owui} {helm} chart custom values files
 endif::[]
 // overridden abstract?
 ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{empty}
+include::../snippets/helm-chart-overrides-intro.adoc[]
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-17
+:revdate: 2026-09-21
 :page-revdate: {revdate}
 
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-:imgRegistry: {empty}
-endif::[]
-ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
-:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-endif::[]
-
-include::../snippets/helm-chart-overrides-intro.adoc[]
 
 [#owui-helm-overrides-ollama]
-.{owui} override file with {ollama} included
+.{owui} custom values file with {ollama} included
 ====
-The following override file installs {ollama} during the {owui} installation.
+The values file installs {ollama} during the {owui} installation.
 
 [source,yaml,subs="+attributes"]
 ----
 global:
   imagePullSecrets:
   - application-collection
-  {imgRegistry}
 ollamaUrls:
-- http://open-webui-ollama.<SUSE_AI_NAMESPACE>.svc.cluster.local:11434
+- http://open-webui-ollama.<SAIF_NAMESPACE>.svc.cluster.local:11434
 persistence:
   enabled: true
   storageClass: local-path <.>
@@ -98,7 +89,7 @@ extraEnvVars:
 - name: VECTOR_DB
   value: "milvus"
 - name: MILVUS_URI
-  value: http://milvus.<SUSE_AI_NAMESPACE>.svc.cluster.local:19530
+  value: http://milvus.<SAIF_NAMESPACE>.svc.cluster.local:19530
 - name: INSTALL_NLTK_DATASETS <.>
   value: "true"
 - name: OMP_NUM_THREADS
@@ -131,18 +122,17 @@ The default value is '0p3n-w3bu!'.
 ====
 
 [#owui-ollama-deploy-separate]
-.{owui} override file with {ollama} installed separately
+.{owui} custom values file with {ollama} installed separately
 ====
-The following override file installs {ollama} separately from the {owui} installation.
+The values file installs {ollama} separately from the {owui} installation.
 
 [source,yaml,subs="+attributes"]
 ----
 global:
   imagePullSecrets:
   - application-collection
-  {imgRegistry}
 ollamaUrls:
-- http://ollama.<SUSE_AI_NAMESPACE>.svc.cluster.local:11434
+- http://ollama.<SAIF_NAMESPACE>.svc.cluster.local:11434
 persistence:
   enabled: true
   storageClass: local-path <.>
@@ -173,7 +163,7 @@ extraEnvVars:
 - name: VECTOR_DB
   value: "milvus"
 - name: MILVUS_URI
-  value: http://milvus.<SUSE_AI_NAMESPACE>.svc.cluster.local:19530
+  value: http://milvus.<SAIF_NAMESPACE>.svc.cluster.local:19530
 - name: ENABLE_OTEL <.>
   value: "true"
 - name: OTEL_EXPORTER_OTLP_ENDPOINT <.>
@@ -192,9 +182,9 @@ For production use, we recommend using a storage solution suitable for persisten
 ====
 
 [#owui-ollama-deploy-pipelines]
-.{owui} override file with pipelines enabled
+.{owui} custom values file with pipelines enabled
 ====
-The following override file installs {ollama} separately and enables {owui} pipelines.
+The values file installs {ollama} separately and enables {owui} pipelines.
 This simple filter adds a limit to the number of question and answer turns during the LLM chat.
 
 [TIP]
@@ -207,9 +197,8 @@ Pipelines normally require additional configuration provided either via environm
 global:
   imagePullSecrets:
   - application-collection
-  {imgRegistry}
 ollamaUrls:
-- http://ollama.<SUSE_AI_NAMESPACE>.svc.cluster.local:11434
+- http://ollama.<SAIF_NAMESPACE>.svc.cluster.local:11434
 persistence:
   enabled: true
   storageClass: local-path
@@ -235,9 +224,9 @@ ingress:
 Individual URLs are separated by a semicolon `;`.
 ====
 [#owui-ollama-deploy-vllm]
-.{owui} override file with a connection to {vllm}
+.{owui} custom values file with a connection to {vllm}
 ====
-The following example shows how to extend the `extraEnvVars` section of the {owui} override file to connect to {vllm}.
+The following example shows how to extend the `extraEnvVars` section of the {owui} custom values file to connect to {vllm}.
 Replace `SUSE_AI_NAMESPACE` with your {kube} namespace.
 
 [TIP]
@@ -250,7 +239,7 @@ Find more details about installing {vllm} in xref:vllm-helm-overrides[].
 extraEnvVars:
 [...]
 - name: OPENAI_API_BASE_URL
-  value: "http://vllm-router-service.<SUSE_AI_NAMESPACE>.svc.cluster.local:80/v1"
+  value: "http://vllm-router-service.<SAIF_NAMESPACE>.svc.cluster.local:80/v1"
 - name: OPENAI_API_KEY
   value: "dummy" <.>
 ----
@@ -272,8 +261,7 @@ extraEnvVars:
 [#owui-pipelines-standalone]
 .Stand-alone deployment of open-webui-pipelines
 ====
-You can install the `open-webui-pipelines` service as a stand-alone deployment, independent of the {owui} chart.
-To install open-webui-pipelines as a stand-alone component, use the following command:
+You can install the `open-webui-pipelines` service as a stand-alone deployment, independent of the {owui} chart:
 
 [source,bash,subs="+attributes"]
 ----
@@ -283,14 +271,13 @@ To install open-webui-pipelines as a stand-alone component, use the following co
 -f open-webui-pipelines-values.yaml
 ----
 
-Following is an example of the `open-webui-pipelines-values.yaml` override file.
+Following is an example of the `open-webui-pipelines-values.yaml` custom values file.
 
 [source,yaml,subs="+attributes"]
 ----
 global:
   imagePullSecrets:
     - application-collection
-    {imgRegistry}
 image:
   registry: dp.apps.rancher.io
   repository: containers/open-webui-pipelines

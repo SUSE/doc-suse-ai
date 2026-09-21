@@ -34,7 +34,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 endif::[]
 
 {opensearch} can operate as a single-node or multi-node cluster.
-The following override file examples outline both scenarios.
+The following custom values file examples outline both scenarios.
 
 [IMPORTANT]
 ====
@@ -158,7 +158,7 @@ config:
   opensearch.yml: |
     plugins.security.disabled: true
 ----
-. After saving the override file as `opensearch_custom_overrides.yaml`, apply its configuration with the following command.
+. After saving the custom values file as `opensearch_custom_overrides.yaml`, apply its configuration with the following command.
 +
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]
@@ -202,7 +202,7 @@ opensearch-cluster-master-2 1/1 Running 0 2m30s 10.42.0.27 mgmt-rancher
 
 To integrate {opensearch} with {owui}, follow these steps:
 
-. Edit the override file for {owui}, `owui_custom_overrides.yaml`, and update the `extraEnvVars` section as follows.
+. Edit the custom values file for {owui}, `owui_custom_overrides.yaml`, and update the `extraEnvVars` section as follows.
 +
 * Change the `VECTOR_DB` value to `opensearch`.
 * Remove the `MILVUS_URI` variable.
