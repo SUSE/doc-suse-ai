@@ -264,12 +264,12 @@ include::../tasks/aif-app-removing.adoc[leveloffset=+2]
 
 :ai-app-string: qdrant
 :ai-app-name: {qdrant}
-:ai-app-registry: {sappco}
+:ai-app-registry: {sregistry}
 
 [#aif-apps-{ai-app-string}]
 == {ai-app-name}
 
-{qdrant} is an open-source, AI-native vector database and semantic search engine designed for high-performance retrieval-augmented generation.
+{qdrant} (link:https://qdrant.tech[]) is an open-source, AI-native vector database and semantic search engine designed for high-performance retrieval-augmented generation.
 It indexes, stores and searches high-dimensional vector embeddings with low latency and high accuracy.
 The database handles unstructured data efficiently and supports fast vector-similarity queries for enterprise artificial intelligence applications.
 

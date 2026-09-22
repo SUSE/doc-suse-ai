@@ -30,7 +30,7 @@ endif::[]
 # qdrant_custom_overrides.yaml
 global:
   imagePullSecrets:
-    - application-collection
+    - suse-ai-registry
 persistence:
   accessModes: ["ReadWriteOnce"]
   size: 10Gi
@@ -53,7 +53,7 @@ For production use, we recommend using a storage solution suitable for persisten
 # qdrant_custom_overrides.yaml
 global:
   imagePullSecrets:
-    - application-collection
+    - suse-ai-registry
 env:
   - name: QDRANT__GPU__INDEXING
     value: "1"

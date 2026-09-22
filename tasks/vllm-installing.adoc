@@ -57,7 +57,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 ----
 {prompt_user}helm upgrade --install \
   vllm oci://dp.apps.rancher.io/charts/vllm \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   -f <vllm_custom_overrides.yaml>
 ----
 endif::[]
@@ -66,7 +66,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 ----
 {prompt_user}helm upgrade --install \
   vllm charts/vllm-<X.Y.Z>.tgz \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   --version <X.Y.Z> \
   -f <vllm_custom_overrides.yaml>
 ----
@@ -90,7 +90,7 @@ include::../snippets/openwebui-requirement-admin-privileges.adoc[]
 +
 [source]
 ----
-http://vllm-router-service.<SUSE_AI_NAMESPACE>.svc.cluster.local:80/v1
+http://vllm-router-service.<SAIF_NAMESPACE>.svc.cluster.local:80/v1
 ----
 +
 Confirm with btn:[Save].
@@ -113,7 +113,7 @@ To upgrade {vllm}, identify the new version number and run the following command
 ----
 {prompt_user}helm upgrade --install \
   vllm oci://dp.apps.rancher.io/charts/vllm \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   --version <VERSION_NUMBER> \
   -f <vllm_custom_overrides.yaml>
 ----
@@ -135,9 +135,9 @@ The following commands identify the {vllm} deployment name and patch its deploym
 +
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl get deployments -n <SUSE_AI_NAMESPACE>
+{prompt_user}kubectl get deployments -n <SAIF_NAMESPACE>
 {prompt_user}kubectl patch deployment <VLLM_DEPLOYMENT_NAME> \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   -p '{"spec": {"strategy": {"type": "Recreate", "rollingUpdate": null}}}'
 ----
 ====
@@ -155,9 +155,9 @@ To resolve this issue, delete the affected deployments (this stops the running p
 
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl get deployments -n <SUSE_AI_NAMESPACE>
-{prompt_user}kubectl delete deployment vllm-deployment-router -n <SUSE_AI_NAMESPACE>
-{prompt_user}kubectl delete deployment <MODEL_DEPLOYMENT_NAME> -n <SUSE_AI_NAMESPACE>
+{prompt_user}kubectl get deployments -n <SAIF_NAMESPACE>
+{prompt_user}kubectl delete deployment vllm-deployment-router -n <SAIF_NAMESPACE>
+{prompt_user}kubectl delete deployment <MODEL_DEPLOYMENT_NAME> -n <SAIF_NAMESPACE>
 ----
 
 Replace `<MODEL_DEPLOYMENT_NAME>` with the actual deployment name(s) for your model(s) from the list above (for example, `vllm-phi-3-m-deployment-vllm`).
@@ -175,5 +175,5 @@ To uninstall {vllm}, run the following command:
 
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}helm uninstall vllm -n <SUSE_AI_NAMESPACE>
+{prompt_user}helm uninstall vllm -n <SAIF_NAMESPACE>
 ----

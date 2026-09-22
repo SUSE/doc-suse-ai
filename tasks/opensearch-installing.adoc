@@ -44,7 +44,7 @@ To upgrade {opensearch}, identify the new version number and run the following c
 ----
 {prompt_user}helm upgrade --install \
   opensearch oci://dp.apps.rancher.io/charts/opensearch \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   --version <VERSION_NUMBER> \
   -f <opensearch_custom_overrides.yaml>
 ----
@@ -62,5 +62,5 @@ To uninstall {opensearch}, run the following command:
 
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}helm uninstall opensearch -n <SUSE_AI_NAMESPACE>
+{prompt_user}helm uninstall opensearch -n <SAIF_NAMESPACE>
 ----

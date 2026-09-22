@@ -33,7 +33,7 @@ global:
   imagePullSecrets:
   - application-collection
 ollamaUrls:
-- http://open-webui-ollama.<SUSE_AI_NAMESPACE>.svc.cluster.local:11434
+- http://open-webui-ollama.<SAIF_NAMESPACE>.svc.cluster.local:11434
 persistence:
   enabled: true
   storageClass: local-path <.>
@@ -89,7 +89,7 @@ extraEnvVars:
 - name: VECTOR_DB
   value: "milvus"
 - name: MILVUS_URI
-  value: http://milvus.<SUSE_AI_NAMESPACE>.svc.cluster.local:19530
+  value: http://milvus.<SAIF_NAMESPACE>.svc.cluster.local:19530
 - name: INSTALL_NLTK_DATASETS <.>
   value: "true"
 - name: OMP_NUM_THREADS
@@ -132,7 +132,7 @@ global:
   imagePullSecrets:
   - application-collection
 ollamaUrls:
-- http://ollama.<SUSE_AI_NAMESPACE>.svc.cluster.local:11434
+- http://ollama.<SAIF_NAMESPACE>.svc.cluster.local:11434
 persistence:
   enabled: true
   storageClass: local-path <.>
@@ -163,7 +163,7 @@ extraEnvVars:
 - name: VECTOR_DB
   value: "milvus"
 - name: MILVUS_URI
-  value: http://milvus.<SUSE_AI_NAMESPACE>.svc.cluster.local:19530
+  value: http://milvus.<SAIF_NAMESPACE>.svc.cluster.local:19530
 - name: ENABLE_OTEL <.>
   value: "true"
 - name: OTEL_EXPORTER_OTLP_ENDPOINT <.>
@@ -198,7 +198,7 @@ global:
   imagePullSecrets:
   - application-collection
 ollamaUrls:
-- http://ollama.<SUSE_AI_NAMESPACE>.svc.cluster.local:11434
+- http://ollama.<SAIF_NAMESPACE>.svc.cluster.local:11434
 persistence:
   enabled: true
   storageClass: local-path
@@ -227,7 +227,7 @@ Individual URLs are separated by a semicolon `;`.
 .{owui} custom values file with a connection to {vllm}
 ====
 The following example shows how to extend the `extraEnvVars` section of the {owui} custom values file to connect to {vllm}.
-Replace `SUSE_AI_NAMESPACE` with your {kube} namespace.
+Replace `SAIF_NAMESPACE` with your {kube} namespace.
 
 [TIP]
 =====
@@ -239,7 +239,7 @@ Find more details about installing {vllm} in xref:vllm-helm-overrides[].
 extraEnvVars:
 [...]
 - name: OPENAI_API_BASE_URL
-  value: "http://vllm-router-service.<SUSE_AI_NAMESPACE>.svc.cluster.local:80/v1"
+  value: "http://vllm-router-service.<SAIF_NAMESPACE>.svc.cluster.local:80/v1"
 - name: OPENAI_API_KEY
   value: "dummy" <.>
 ----
@@ -252,7 +252,7 @@ If the {owui} installation has pipelines enabled besides the {vllm} deployment, 
 extraEnvVars:
 [...]
 - name: OPENAI_API_BASE_URLS
-  value: "http://open-webui-pipelines.<SUSE_AI_NAMESPACE>.svc.cluster.local:9099;http://vllm-router-service.<SUSE_AI_NAMESPACE>.svc.cluster.local:80/v1"
+  value: "http://open-webui-pipelines.<SAIF_NAMESPACE>.svc.cluster.local:9099;http://vllm-router-service.<SAIF_NAMESPACE>.svc.cluster.local:80/v1"
 - name: OPENAI_API_KEYS
   value: "0p3n-w3bu!;dummy"
 ----
@@ -267,7 +267,7 @@ You can install the `open-webui-pipelines` service as a stand-alone deployment, 
 ----
 {prompt_user}helm upgrade --install open-webui-pipelines \
   oci://dp.apps.rancher.io/charts/open-webui-pipelines \
--n <SUSE_AI_NAMESPACE> \
+-n <SAIF_NAMESPACE> \
 -f open-webui-pipelines-values.yaml
 ----
 

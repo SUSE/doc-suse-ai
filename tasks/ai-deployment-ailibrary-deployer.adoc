@@ -62,13 +62,13 @@ It typically includes the following files:
 The examples use self-signed certificates for TLS communication.
 To use other option (see xref:owui-tls-sources[]), copy the `global` section from the `values.yaml` file into your `custom-overrides.yaml` and update its `tls` section as needed.
 . Install the {saideployer} {helm} chart with while overriding values from the `custom-overrides.yaml` file.
-Use the appropriate `RELEASE_NAME` and `SUSE_AI_NAMESPACE` based the configuration in `custom-overrides.yaml`.
+Use the appropriate `RELEASE_NAME` and `SAIF_NAMESPACE` based the configuration in `custom-overrides.yaml`.
 +
 [source,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
   RELEASE_NAME \
-  --namespace  SUSE_AI_NAMESPACE \
+  --namespace  SAIF_NAMESPACE \
   --create-namespace \
   --values ./custom-overrides.yaml \
   --version 1.0.0 \

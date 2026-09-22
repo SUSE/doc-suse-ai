@@ -328,8 +328,8 @@ global:
 extraEnvs:
   - name: K8S_CLUSTER_NAME
     value: "<CLUSTER_NAME>" <.>
-  - name: SUSE_AI_NAMESPACE
-    value: "<SUSE_AI_NAMESPACE>" <.>
+  - name: SAIF_NAMESPACE
+    value: "<SAIF_NAMESPACE>" <.>
 extraEnvsFrom:
   - secretRef:
       name: open-telemetry-collector
@@ -384,12 +384,12 @@ config:
             scrape_interval: 15s
             metrics_path: '/metrics'
             static_configs:
-              - targets: ['<MILVUS_SERVICE_NAME>.<SUSE_AI_NAMESPACE>.svc.cluster.local:9091'] <.>
+              - targets: ['<MILVUS_SERVICE_NAME>.<SAIF_NAMESPACE>.svc.cluster.local:9091'] <.>
           - job_name: 'qdrant'
             scrape_interval: 10s
             metrics_path: '/metrics'
             static_configs:
-              - targets: ['<QDRANT_SERVICE_NAME>.<SUSE_AI_NAMESPACE>.svc.cluster.local:6333'] <.>
+              - targets: ['<QDRANT_SERVICE_NAME>.<SAIF_NAMESPACE>.svc.cluster.local:6333'] <.>
           - job_name: 'vllm'
             scrape_interval: 10s
             scheme: http
@@ -407,7 +407,7 @@ config:
     topology:
       endpoint: http://<SUSE_OBSERVABILITY_ROUTER_ENDPOINT>:8080 <.>
       api_key: ${env:API_KEY}
-      namespace: ${env:SUSE_AI_NAMESPACE}
+      namespace: ${env:SAIF_NAMESPACE}
       cluster_name: ${env:K8S_CLUSTER_NAME}
       tls: <.>
         insecure_skip_verify: true
@@ -433,10 +433,10 @@ config:
           value: "opensearch"
           action: insert
         - key: service.namespace
-          value: ${env:SUSE_AI_NAMESPACE}
+          value: ${env:SAIF_NAMESPACE}
           action: insert
         - key: k8s.namespace.name
-          value: ${env:SUSE_AI_NAMESPACE}
+          value: ${env:SAIF_NAMESPACE}
           action: upsert
         - key: service.instance.id
           value: "opensearch-cluster"
@@ -450,7 +450,7 @@ config:
             - set(attributes["suse.ai.component.name"], "vllm") where attributes["service.name"] == "vllm"
             - set(attributes["suse.ai.component.type"], "inference-engine") where attributes["service.name"] == "vllm"
             - set(attributes["service.instance.id"], "vllm") where attributes["service.name"] == "vllm"
-            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}") where attributes["service.name"] == "vllm"
+            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["service.name"] == "vllm"
     transform/qdrant:
       error_mode: ignore
       metric_statements:
@@ -459,7 +459,7 @@ config:
             - set(attributes["suse.ai.managed"], "true") where attributes["service.name"] == "qdrant"
             - set(attributes["suse.ai.component.name"], "qdrant") where attributes["service.name"] == "qdrant"
             - set(attributes["suse.ai.component.type"], "vectordb") where attributes["service.name"] == "qdrant"
-            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}") where attributes["service.name"] == "qdrant"
+            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["service.name"] == "qdrant"
     transform/milvus:
       error_mode: ignore
       metric_statements:
@@ -468,7 +468,7 @@ config:
             - set(attributes["suse.ai.managed"], "true") where attributes["service.name"] == "milvus"
             - set(attributes["suse.ai.component.name"], "milvus") where attributes["service.name"] == "milvus"
             - set(attributes["suse.ai.component.type"], "vectordb") where attributes["service.name"] == "milvus"
-            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}") where attributes["service.name"] == "milvus"
+            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["service.name"] == "milvus"
     tail_sampling:
       decision_wait: 10s
       policies:
@@ -522,7 +522,7 @@ config:
             - set(attributes["suse.ai.managed"], "true") where attributes["gen_ai.provider.name"] != nil
             - set(attributes["suse.ai.component.name"], attributes["gen_ai.provider.name"]) where attributes["gen_ai.provider.name"] != nil
             - set(attributes["suse.ai.component.type"], "inference-engine") where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}") where attributes["gen_ai.provider.name"] != nil
+            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["gen_ai.provider.name"] != nil
     # Infer LLM models from GenAI client metrics.
     groupbyattrs/infer-models:
       keys:
@@ -538,7 +538,7 @@ config:
             - set(attributes["suse.ai.managed"], "true") where attributes["gen_ai.request.model"] != nil
             - set(attributes["suse.ai.component.name"], attributes["gen_ai.request.model"]) where attributes["gen_ai.request.model"] != nil
             - set(attributes["suse.ai.component.type"], "llm-model") where attributes["gen_ai.request.model"] != nil
-            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}") where attributes["gen_ai.request.model"] != nil
+            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["gen_ai.request.model"] != nil
     # Exclude services that already have suse.ai.component.name set.
     filter/exclude-already-tagged:
       error_mode: ignore
@@ -554,7 +554,7 @@ config:
             - set(attributes["suse.ai.managed"], "true")
             - set(attributes["suse.ai.component.type"], "application")
             - set(attributes["suse.ai.component.name"], attributes["service.name"])
-            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}")
+            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}")
     # Create provider -> model relations from GenAI trace spans.
     filter/genai-spans:
       error_mode: ignore
@@ -654,7 +654,7 @@ config:
         exporters: [debug, otlp]
 ----
 <.> Replace `<CLUSTER_NAME>` with the cluster's name.
-<.> Replace `<SUSE_AI_NAMESPACE>` with the namespace where {productname} components are installed.
+<.> Replace `<SAIF_NAMESPACE>` with the namespace where {productname} components are installed.
 <.> Configure the {milvus} service and namespace for the {prometheus} scraper.
 Because {milvus} will be installed in subsequent steps, you can return to this step and edit the endpoint if necessary.
 <.> Configure the {qdrant} service and namespace for the {prometheus} scraper.
@@ -678,8 +678,8 @@ global:
 extraEnvs:
   - name: K8S_CLUSTER_NAME
     value: "<CLUSTER_NAME>" <.>
-  - name: SUSE_AI_NAMESPACE
-    value: "<SUSE_AI_NAMESPACE>" <.>
+  - name: SAIF_NAMESPACE
+    value: "<SAIF_NAMESPACE>" <.>
 extraEnvsFrom:
   - secretRef:
       name: open-telemetry-collector
@@ -734,12 +734,12 @@ config:
             scrape_interval: 15s
             metrics_path: '/metrics'
             static_configs:
-              - targets: ['<MILVUS_SERVICE_NAME>.<SUSE_AI_NAMESPACE>.svc.cluster.local:9091'] <.>
+              - targets: ['<MILVUS_SERVICE_NAME>.<SAIF_NAMESPACE>.svc.cluster.local:9091'] <.>
           - job_name: 'qdrant'
             scrape_interval: 10s
             metrics_path: '/metrics'
             static_configs:
-              - targets: ['<QDRANT_SERVICE_NAME>.<SUSE_AI_NAMESPACE>.svc.cluster.local:6333'] <.>
+              - targets: ['<QDRANT_SERVICE_NAME>.<SAIF_NAMESPACE>.svc.cluster.local:6333'] <.>
           - job_name: 'vllm'
             scrape_interval: 10s
             scheme: http
@@ -757,7 +757,7 @@ config:
     topology:
       endpoint: http://<SUSE_OBSERVABILITY_ROUTER_ENDPOINT>:8080 <.>
       api_key: ${env:API_KEY}
-      namespace: ${env:SUSE_AI_NAMESPACE}
+      namespace: ${env:SAIF_NAMESPACE}
       cluster_name: ${env:K8S_CLUSTER_NAME}
       tls: <.>
         insecure_skip_verify: true
@@ -783,10 +783,10 @@ config:
           value: "opensearch"
           action: insert
         - key: service.namespace
-          value: ${env:SUSE_AI_NAMESPACE}
+          value: ${env:SAIF_NAMESPACE}
           action: insert
         - key: k8s.namespace.name
-          value: ${env:SUSE_AI_NAMESPACE}
+          value: ${env:SAIF_NAMESPACE}
           action: upsert
         - key: service.instance.id
           value: "opensearch-cluster"
@@ -800,7 +800,7 @@ config:
             - set(attributes["suse.ai.component.name"], "vllm") where attributes["service.name"] == "vllm"
             - set(attributes["suse.ai.component.type"], "inference-engine") where attributes["service.name"] == "vllm"
             - set(attributes["service.instance.id"], "vllm") where attributes["service.name"] == "vllm"
-            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}") where attributes["service.name"] == "vllm"
+            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["service.name"] == "vllm"
     transform/qdrant:
       error_mode: ignore
       metric_statements:
@@ -809,7 +809,7 @@ config:
             - set(attributes["suse.ai.managed"], "true") where attributes["service.name"] == "qdrant"
             - set(attributes["suse.ai.component.name"], "qdrant") where attributes["service.name"] == "qdrant"
             - set(attributes["suse.ai.component.type"], "vectordb") where attributes["service.name"] == "qdrant"
-            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}") where attributes["service.name"] == "qdrant"
+            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["service.name"] == "qdrant"
     transform/milvus:
       error_mode: ignore
       metric_statements:
@@ -818,7 +818,7 @@ config:
             - set(attributes["suse.ai.managed"], "true") where attributes["service.name"] == "milvus"
             - set(attributes["suse.ai.component.name"], "milvus") where attributes["service.name"] == "milvus"
             - set(attributes["suse.ai.component.type"], "vectordb") where attributes["service.name"] == "milvus"
-            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}") where attributes["service.name"] == "milvus"
+            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["service.name"] == "milvus"
     tail_sampling:
       decision_wait: 10s
       policies:
@@ -872,7 +872,7 @@ config:
             - set(attributes["suse.ai.managed"], "true") where attributes["gen_ai.provider.name"] != nil
             - set(attributes["suse.ai.component.name"], attributes["gen_ai.provider.name"]) where attributes["gen_ai.provider.name"] != nil
             - set(attributes["suse.ai.component.type"], "inference-engine") where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}") where attributes["gen_ai.provider.name"] != nil
+            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["gen_ai.provider.name"] != nil
     # Infer LLM models from GenAI client metrics.
     groupbyattrs/infer-models:
       keys:
@@ -888,7 +888,7 @@ config:
             - set(attributes["suse.ai.managed"], "true") where attributes["gen_ai.request.model"] != nil
             - set(attributes["suse.ai.component.name"], attributes["gen_ai.request.model"]) where attributes["gen_ai.request.model"] != nil
             - set(attributes["suse.ai.component.type"], "llm-model") where attributes["gen_ai.request.model"] != nil
-            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}") where attributes["gen_ai.request.model"] != nil
+            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["gen_ai.request.model"] != nil
     # Exclude services that already have suse.ai.component.name set.
     filter/exclude-already-tagged:
       error_mode: ignore
@@ -904,7 +904,7 @@ config:
             - set(attributes["suse.ai.managed"], "true")
             - set(attributes["suse.ai.component.type"], "application")
             - set(attributes["suse.ai.component.name"], attributes["service.name"])
-            - set(attributes["k8s.namespace.name"], "${env:SUSE_AI_NAMESPACE}")
+            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}")
     # Create provider -> model relations from GenAI trace spans.
     filter/genai-spans:
       error_mode: ignore
@@ -1004,7 +1004,7 @@ config:
         exporters: [debug, otlp]
 ----
 <.> Replace `<CLUSTER_NAME>` with the cluster's name.
-<.> Replace `<SUSE_AI_NAMESPACE>` with the namespace where {productname} components are installed.
+<.> Replace `<SAIF_NAMESPACE>` with the namespace where {productname} components are installed.
 <.> Configure the {milvus} service and namespace for the {prometheus} scraper.
 Because {milvus} will be installed in subsequent steps, you can return to this step and edit the endpoint if necessary.
 <.> Configure the {qdrant} service and namespace for the {prometheus} scraper.

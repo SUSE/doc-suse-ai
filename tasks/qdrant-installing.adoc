@@ -50,7 +50,7 @@ extraEnvVars:
 - name: VECTOR_DB
   value: "qdrant"
 - name: QDRANT_URI
-  value: http://qdrant.<SUSE_AI_NAMESPACE>.svc.cluster.local:6333
+  value: http://qdrant.<SAIF_NAMESPACE>.svc.cluster.local:6333
 # Optional: If your Qdrant instance requires authentication, provide the API key here
 #- name: QDRANT_API_KEY
 #  value: <qdrant_api_key>
@@ -64,7 +64,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 ----
 {prompt_user}helm upgrade --install \
   open-webui oci://dp.apps.rancher.io/charts/open-webui \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   -f <owui_custom_overrides.yaml>
 ----
 endif::[]
@@ -73,7 +73,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 ----
 {prompt_user}helm upgrade --install \
   open-webui charts/open-webui-<X.Y.Z>.tgz \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   --version <X.Y.Z> \
   -f <owui_custom_overrides.yaml>
 ----
@@ -82,7 +82,7 @@ endif::[]
 +
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl exec -it open-webui-0 -n <SUSE_AI_NAMESPACE> \
+{prompt_user}kubectl exec -it open-webui-0 -n <SAIF_NAMESPACE> \
   -- sh -c 'echo "VECTOR_DB=$VECTOR_DB"'
 
 Defaulted container "open-webui" out of: open-webui, copy-app-data (init)

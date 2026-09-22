@@ -47,7 +47,7 @@ include::../snippets/openwebui-requirement-admin-privileges.adoc[]
 +
 [source]
 ----
-http://vllm-router-service.<SUSE_AI_NAMESPACE>.svc.cluster.local:80/v1
+http://vllm-router-service.<SAIF_NAMESPACE>.svc.cluster.local:80/v1
 ----
 +
 Confirm with btn:[Save].
@@ -90,7 +90,7 @@ You can monitor the status of the {vllm} installation by running the following c
 +
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl get pods -n <SUSE_AI_NAMESPACE>
+{prompt_user}kubectl get pods -n <SAIF_NAMESPACE>
 
 NAME                                           READY   STATUS    RESTARTS   AGE
 [...]
@@ -106,7 +106,7 @@ Pods for the {vllm} deployment should transition to the states `Ready` and `Runn
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}kubectl port-forward svc/vllm-router-service \
-  -n <SUSE_AI_NAMESPACE> 30080:80
+  -n <SAIF_NAMESPACE> 30080:80
 ----
 . Query the {openai}-compatible API to list the available models:
 +
@@ -237,7 +237,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: models-pvc
-  namespace: <SUSE_AI_NAMESPACE>
+  namespace: <SAIF_NAMESPACE>
 spec:
   accessModes: ["ReadWriteOnce"]
   resources:
@@ -252,7 +252,7 @@ Save it as `pvc-models.yaml` and apply with `kubectl apply -f pvc-models.yaml`.
 +
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl create secret -n <SUSE_AI_NAMESPACE> \
+{prompt_user}kubectl create secret -n <SAIF_NAMESPACE> \
   generic huggingface-credentials \
   --from-literal=HUGGING_FACE_HUB_TOKEN=<HF_TOKEN>
 ----
@@ -266,7 +266,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: prefetch-llama3.1-8b
-  namespace: <SUSE_AI_NAMESPACE>
+  namespace: <SAIF_NAMESPACE>
 spec:
   template:
     spec:
@@ -306,7 +306,7 @@ Apply the specification with the following commands:
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}kubectl apply -f job-prefetch-llama3.1-8b.yaml
-{prompt_user}kubectl -n <SUSE_AI_NAMESPACE> \
+{prompt_user}kubectl -n <SAIF_NAMESPACE> \
   wait --for=condition=complete job/prefetch-llama3.1-8b
 ----
 
@@ -357,7 +357,7 @@ Save it as `vllm_custom_overrides.yaml` and apply with `kubectl apply -f vllm_cu
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}kubectl exec -it vllm-llama3-deployment-vllm-858bd967bd-w26f7 \
-  -n <SUSE_AI_NAMESPACE> -- ls -l /models
+  -n <SAIF_NAMESPACE> -- ls -l /models
 drwxr-xr-x 1 root root 608 Aug 22 16:29 llama-3.1-8b-it
 ----
 ====
