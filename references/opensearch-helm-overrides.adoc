@@ -34,7 +34,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 endif::[]
 
 {opensearch} can operate as a single-node or multi-node cluster.
-The following override file examples outline both scenarios.
+The following custom values file examples outline both scenarios.
 
 [IMPORTANT]
 ====
@@ -158,14 +158,14 @@ config:
   opensearch.yml: |
     plugins.security.disabled: true
 ----
-. After saving the override file as `opensearch_custom_overrides.yaml`, apply its configuration with the following command.
+. After saving the custom values file as `opensearch_custom_overrides.yaml`, apply its configuration with the following command.
 +
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
   opensearch oci://dp.apps.rancher.io/charts/opensearch \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   -f <opensearch_custom_overrides.yaml>
 ----
 endif::[]
@@ -174,7 +174,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 ----
 {prompt_user}helm upgrade --install \
   opensearch charts/opensearch-<X.Y.Z>.tgz \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   --version <X.Y.Z> \
   -f <opensearch_custom_overrides.yaml>
 ----
@@ -183,7 +183,7 @@ endif::[]
 +
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl get pods -n <SUSE_AI_NAMESPACE> | grep "opensearch"
+{prompt_user}kubectl get pods -n <SAIF_NAMESPACE> | grep "opensearch"
 opensearch-cluster-master-0           1/1     Running   0          5h34m
 ----
 +
@@ -191,7 +191,7 @@ A multi-node cluster configuration shows that the replicas are distributed acros
 +
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl get pods -n <SUSE_AI_NAMESPACE> | grep "opensearch"
+{prompt_user}kubectl get pods -n <SAIF_NAMESPACE> | grep "opensearch"
 opensearch-cluster-master-0 1/1 Running 0 2m30s 10.42.1.32 mgmt-rancher-wkrgpu1
 opensearch-cluster-master-1 1/1 Running 0 2m30s 10.42.1.33 mgmt-rancher-wkrgpu1
 opensearch-cluster-master-2 1/1 Running 0 2m30s 10.42.0.27 mgmt-rancher
@@ -202,7 +202,7 @@ opensearch-cluster-master-2 1/1 Running 0 2m30s 10.42.0.27 mgmt-rancher
 
 To integrate {opensearch} with {owui}, follow these steps:
 
-. Edit the override file for {owui}, `owui_custom_overrides.yaml`, and update the `extraEnvVars` section as follows.
+. Edit the custom values file for {owui}, `owui_custom_overrides.yaml`, and update the `extraEnvVars` section as follows.
 +
 * Change the `VECTOR_DB` value to `opensearch`.
 * Remove the `MILVUS_URI` variable.
@@ -226,13 +226,13 @@ extraEnvVars:
 - name: VECTOR_DB
   value: "opensearch"
 #- name: MILVUS_URI
-#  value: http://milvus.<SUSE_AI_NAMESPACE>.svc.cluster.local:19530
+#  value: http://milvus.<SAIF_NAMESPACE>.svc.cluster.local:19530
 - name: OPENAI_API_KEY
   value: "0p3n-w3bu!"
 - name: OPENSEARCH_SSL
   value: "false"
 - name: OPENSEARCH_URI
-  value: http://opensearch-cluster-master.<SUSE_AI_NAMESPACE>.svc.cluster.local:9200
+  value: http://opensearch-cluster-master.<SAIF_NAMESPACE>.svc.cluster.local:9200
 - name: OPENSEARCH_USERNAME
   value: admin
 - name: OPENSEARCH_PASSWORD
@@ -247,7 +247,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 ----
 {prompt_user}helm upgrade --install \
   open-webui oci://dp.apps.rancher.io/charts/open-webui \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   -f <owui_custom_overrides.yaml>
 ----
 endif::[]
@@ -256,7 +256,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 ----
 {prompt_user}helm upgrade --install \
   open-webui charts/open-webui-<X.Y.Z>.tgz \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   --version <X.Y.Z> \
   -f <opensearch_custom_overrides.yaml>
 ----
@@ -265,7 +265,7 @@ endif::[]
 +
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl exec -it open-webui-0 -n <SUSE_AI_NAMESPACE> \
+{prompt_user}kubectl exec -it open-webui-0 -n <SAIF_NAMESPACE> \
   -- sh -c 'echo "VECTOR_DB=$VECTOR_DB"'
 
 Defaulted container "open-webui" out of: open-webui, copy-app-data (init)

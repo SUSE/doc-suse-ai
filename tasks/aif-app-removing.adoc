@@ -32,7 +32,15 @@ Refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Fact
 
 To remove {ai-app-name} using {helm}, use the following command:
 
+ifdef::ai-app-namespace[]
 [,sh,subs="+attributes"]
 ----
-{prompt_user}helm uninstall {ai-app-string} -n {ai-app-string}
+{prompt_user}helm uninstall {ai-app-string} -n {ai-app-namespace}
 ----
+endif::[]
+ifndef::ai-app-namespace[]
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm uninstall {ai-app-string} -n {ai-app-string}-system
+----
+endif::[]

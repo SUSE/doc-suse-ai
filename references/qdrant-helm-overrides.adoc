@@ -5,7 +5,7 @@ ifdef::override-title[]
 = {override-title}
 endif::[]
 ifndef::override-title[]
-= Examples of {qdrant} {helm} chart override files
+= Examples of {qdrant} {helm} chart custom values files
 endif::[]
 // overridden abstract?
 ifdef::override-abstract[]
@@ -19,18 +19,11 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-25
+:revdate: 2026-09-21
 :page-revdate: {revdate}
 
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-:imgRegistry: {empty}
-endif::[]
-ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
-:imgRegistry: imageRegistry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-endif::[]
-
 [#qdrant-chart-example-basic]
-.Basic override file when the cluster has no default storage class set.
+.Basic custom values file when the cluster has no default storage class set.
 ====
 [source,yaml,subs="+attributes"]
 ----
@@ -38,7 +31,6 @@ endif::[]
 global:
   imagePullSecrets:
     - suse-ai-registry
-    {imgRegistry}
 persistence:
   accessModes: ["ReadWriteOnce"]
   size: 10Gi
@@ -62,15 +54,14 @@ For production use, we recommend using a storage solution suitable for persisten
 global:
   imagePullSecrets:
     - suse-ai-registry
-    {imgRegistry}
 env:
   - name: QDRANT__GPU__INDEXING
     value: "1"
   - name: QDRANT__LOG_LEVEL
     value: debug
 image:
-  registry: registry.suse.com
-  repository: ai/containers/qdrant
+  registry: dp.apps.rancher.io
+  repository: containers/qdrant
   pullPolicy: IfNotPresent
   useUnprivilegedImage: false
   tag: "v1.17.0-gpu-nvidia"

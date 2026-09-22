@@ -61,14 +61,14 @@ This section provides a step-by-step walkthrough for deploying {mlflow} with {po
 .Prerequisites
 * A running {kube} cluster with {helm} installed.
 * Access to the {sappco} registry (`dp.apps.rancher.io`).
-* A {kube} namespace for {productname} components (referred to as `SUSE_AI_NAMESPACE` below).
+* A {kube} namespace for {productname} components (referred to as `SAIF_NAMESPACE` below).
 * A storage class available for persistent volumes (for example, `longhorn`).
 
 [IMPORTANT]
 ====
 Replace the following placeholders with your own values before running the commands:
 
-* `SUSE_AI_NAMESPACE` -- the {kube} namespace where {productname} components are deployed.
+* `SAIF_NAMESPACE` -- the {kube} namespace where {productname} components are deployed.
 * `POSTGRESQL_PASSWORD` -- a strong password for the {postgresql} database user.
   Do not use the placeholder value in production environments.
 ====
@@ -129,14 +129,14 @@ podTemplates:
 ----
 {prompt_user}helm upgrade --install postgresql ./postgresql-0.5.5.tgz \
   -f postgresql-values.yaml \
-  -n SUSE_AI_NAMESPACE
+  -n SAIF_NAMESPACE
 ----
 
 . Verify the {postgresql} pod is running.
 +
 [source,,subs="+attributes"]
 ----
-{prompt_user}kubectl get pods -n SUSE_AI_NAMESPACE
+{prompt_user}kubectl get pods -n SAIF_NAMESPACE
 NAME           READY   STATUS    RESTARTS   AGE
 postgresql-0   1/1     Running   0          3m9s
 ----
@@ -145,7 +145,7 @@ postgresql-0   1/1     Running   0          3m9s
 +
 [source,,subs="+attributes"]
 ----
-{prompt_user}kubectl logs postgresql-0 -n SUSE_AI_NAMESPACE
+{prompt_user}kubectl logs postgresql-0 -n SAIF_NAMESPACE
 ----
 +
 Expected initialization logs include:
@@ -166,7 +166,7 @@ Run the following command to retrieve it:
 +
 [source,,subs="+attributes"]
 ----
-{prompt_user}kubectl get secret -n SUSE_AI_NAMESPACE postgresql \
+{prompt_user}kubectl get secret -n SAIF_NAMESPACE postgresql \
   -o jsonpath="{.data.password}" | base64 -d
 ----
 +
@@ -176,7 +176,7 @@ Note the output value. You will use it as `POSTGRESQL_PASSWORD` in the steps bel
 +
 [source,,subs="+attributes"]
 ----
-{prompt_user}kubectl exec -it postgresql-0 -n SUSE_AI_NAMESPACE -- bash
+{prompt_user}kubectl exec -it postgresql-0 -n SAIF_NAMESPACE -- bash
 ----
 
 . Connect to the database and validate the current user and active database.
@@ -289,7 +289,7 @@ backendStore:
   databaseMigration: true
   databaseConnectionCheck: true
 
-backendStoreUri: postgresql+psycopg2://appuser:$(MLFLOW_DB_PASSWORD)@postgresql.SUSE_AI_NAMESPACE.svc.cluster.local:5432/appdb
+backendStoreUri: postgresql+psycopg2://appuser:$(MLFLOW_DB_PASSWORD)@postgresql.SAIF_NAMESPACE.svc.cluster.local:5432/appdb
 
 env:
   - name: MLFLOW_LOG_LEVEL
@@ -319,7 +319,7 @@ env:
 [source,,subs="+attributes"]
 ----
 {prompt_user}kubectl create secret generic mlflow-postgres \
-  -n SUSE_AI_NAMESPACE \
+  -n SAIF_NAMESPACE \
   --from-literal=username=appuser \
   --from-literal=password='POSTGRESQL_PASSWORD'
 ----
@@ -449,14 +449,14 @@ spec:
 ----
 {prompt_user}helm upgrade --install mlflow . \
   -f ../mlflow-values.yaml \
-  -n SUSE_AI_NAMESPACE
+  -n SAIF_NAMESPACE
 ----
 
 . Verify {mlflow} logs.
 +
 [source,,subs="+attributes"]
 ----
-{prompt_user}kubectl logs deployment/mlflow -n SUSE_AI_NAMESPACE
+{prompt_user}kubectl logs deployment/mlflow -n SAIF_NAMESPACE
 ----
 +
 Expected output:
@@ -477,7 +477,7 @@ The logs confirm that the {mlflow} database schema was initialized successfully.
 +
 [source,,subs="+attributes"]
 ----
-{prompt_user}kubectl exec -it postgresql-0 -n SUSE_AI_NAMESPACE -- bash
+{prompt_user}kubectl exec -it postgresql-0 -n SAIF_NAMESPACE -- bash
 ----
 
 . Connect to {postgresql} using the application user.
@@ -521,7 +521,7 @@ This confirms that {mlflow} successfully initialized the backend {postgresql} da
 +
 [source,,subs="+attributes"]
 ----
-{prompt_user}kubectl get ingress -n SUSE_AI_NAMESPACE
+{prompt_user}kubectl get ingress -n SAIF_NAMESPACE
 NAME     CLASS   HOSTS         ADDRESS          PORTS   AGE
 mlflow   <none>  suse-mlflow   10.0.10.195,...  80      11m
 ----

@@ -1,0 +1,100 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Values for the {ollama} {helm} chart
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+include::../snippets/helm-chart-overrides-intro.adoc[]
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-09-21
+:page-revdate: {revdate}
+
+
+.Enabling or disabling the GPU section
+====
+{ollama} can run optimized for {nvidia} and {amd} GPUs if the following conditions are fulfilled:
+
+* The GPU driver and operator are installed as described in link:https://documentation.suse.com/cloudnative/rke2/latest/en/add-ons/gpu_operators.html[Installing GPU Operators on {rke2a}].
+* The workloads are set to run on GPU-enabled nodes as described in link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/aif-deployment-prepare.html#ai-gpu-nodes-assigning[Assigning GPU resources].
+
+If you do not want {ollama} to use the GPU hardware, remove the `gpu` section from the custom values file or disable it:
+
+[source,yaml]
+----
+ ollama:
+  [...]
+  gpu:
+    enabled: false
+    type: 'nvidia'
+    number: 1
+----
+====
+
+.Basic custom values file with GPU and two models pulled at startup
+====
+[source,yaml,subs="+attributes"]
+----
+global:
+  imagePullSecrets:
+  - application-collection
+ingress:
+  enabled: false
+defaultModel: "gemma:2b"
+ollama:
+  models:
+    pull:
+      - "gemma:2b"
+      - "llama3.1"
+    run:
+      - "gemma:2b"
+      - "llama3.1"
+  gpu:
+    enabled: true
+    type: 'nvidia'
+    number: 1
+    nvidiaResource: "nvidia.com/gpu"
+persistentVolume: <.>
+  enabled: true
+  storageClass: local-path <.>
+----
+<.> Without the `persistentVolume` option enabled, changes made to {ollama}, such as downloading other LLM, are lost when the container is restarted.
+<.> Use `local-path` storage only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+====
+
+.Basic custom values file with {ingress} and no GPU
+====
+[source,yaml]
+----
+ollama:
+  models:
+    pull:
+      - llama2
+    run:
+      - llama2
+  persistentVolume:
+    enabled: true
+    storageClass: local-path <.>
+ingress:
+  enabled: true
+  hosts:
+  - host: <OLLAMA_API_URL>
+    paths:
+      - path: /
+        pathType: Prefix
+----
+<.> Use `local-path` storage (requires installing the corresponding provisioner) only for testing purposes.
+For production use, we recommend using a storage solution suitable for persistent storage, such as {sstorage}.
+====

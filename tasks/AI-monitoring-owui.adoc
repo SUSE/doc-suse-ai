@@ -9,7 +9,7 @@ It requires enabling and configuring {owui} Pipelines.
 
 [#ai-monitoring-owui-pipelines-cmdline]
 .Configuring pipeline filter during {owui} installation (recommended)
-. Verify that the {owui} installation override file `owui_custom_overrides.yaml` includes the following content. 
+. Verify that the {owui} installation custom values file `owui_custom_overrides.yaml` includes the following content. 
 +
 [source,yaml]
 ----
@@ -61,13 +61,13 @@ instance.
     The default value is `0p3n-w3bu!`.
 --
 ---
-. After you fill the override file with correct values, install or update {owui}. 
+. After you fill the custom values file with correct values, install or update {owui}. 
 +
 [source,bash]
 ----
 > helm upgrade \
   --install open-webui oci://dp.apps.rancher.io/charts/open-webui \
-  -n SUSE_AI_NAMESPACE \
+  -n SAIF_NAMESPACE \
   --create-namespace \
   --version 7.2.0 \
   -f owui_custom_overrides.yaml 
@@ -137,13 +137,13 @@ extraEnvVars:
 <.> Enter your custom {otelemetry} collector endpoint URL, such as "http://opentelemetry-collector.suse-observability.svc.cluster.local:4318".
 <.> Specify a custom identifier for the {otelemetry} service, such as `OI Core`.
 
-. Save the enhanced override file and update {owui}:
+. Save the enhanced custom values file and update {owui}:
 +
 [source,bash]
 ----
 > helm upgrade \
   --install open-webui oci://dp.apps.rancher.io/charts/open-webui \
-  -n <replaceable>SUSE_AI_NAMESPACE</replaceable> \
+  -n <replaceable>SAIF_NAMESPACE</replaceable> \
   --create-namespace \
   --version 7.2.0 \
   -f owui_custom_overrides.yaml

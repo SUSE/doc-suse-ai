@@ -46,13 +46,13 @@ endif::[]
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 . Create a {kube} namespace if it does not already exist.
 endif::[]
-The steps in this procedure assume that all containers are deployed into the same namespace, referred to as `SUSE_AI_NAMESPACE`.
+The steps in this procedure assume that all containers are deployed into the same namespace, referred to as `SAIF_NAMESPACE`.
 Replace its name to match your preferences.
 {helm} charts of AI applications are hosted in the private {suse} registries: {sappco} and {sregistry}.
 +
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}kubectl create namespace <SUSE_AI_NAMESPACE>
+{prompt_user}kubectl create namespace <SAIF_NAMESPACE>
 ----
 . Create the {sappco} secret.
 +
@@ -62,7 +62,7 @@ Replace its name to match your preferences.
   --docker-server=dp.apps.rancher.io \
   --docker-username=<APPCO_USERNAME> \
   --docker-password=<APPCO_USER_TOKEN> \
-  -n <SUSE_AI_NAMESPACE>
+  -n <SAIF_NAMESPACE>
 ----
 . Create the {sregistry} secret.
 +
@@ -72,7 +72,7 @@ Replace its name to match your preferences.
   --docker-server=registry.suse.com \
   --docker-username=regcode \
   --docker-password=<SCC_REG_CODE> \
-  -n <SUSE_AI_NAMESPACE>
+  -n <SAIF_NAMESPACE>
 ----
 . Log in to the {sappco} {helm} registry.
 +

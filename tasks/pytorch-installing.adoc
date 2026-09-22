@@ -26,7 +26,7 @@ It contains {pytorch} dependencies, available versions and the link to pull the 
 include::../snippets/ai-library-requirement.adoc[]
 
 . Create a `pytorch_custom_overrides.yaml` file to override the values of the parent {helm} chart.
-Find examples of {pytorch} override files in xref:pytorch-helm-overrides[] and a list of all valid options and their values in xref:pytorch-helm-values[].
+Find examples of {pytorch} custom values files in xref:pytorch-helm-overrides[] and a list of all valid options and their values in xref:pytorch-helm-values[].
 . Install the {pytorch} {helm} chart using the `pytorch_custom_overrides.yaml` file using the following command.
 +
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
@@ -34,7 +34,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 ----
 {prompt_user}helm upgrade --install \
   pytorch oci://dp.apps.rancher.io/charts/pytorch \
-  -n SUSE_AI_NAMESPACE \
+  -n SAIF_NAMESPACE \
   -f pytorch_custom_overrides.yaml
 ----
 endif::[]
@@ -43,7 +43,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 ----
 {prompt_user}helm upgrade --install \
   pytorch charts/pytorch-<X.Y.Z>.tgz \
-  -n SUSE_AI_NAMESPACE \
+  -n SAIF_NAMESPACE \
   --version <X.Y.Z> \
   -f pytorch_custom_overrides.yaml
 ----
@@ -59,7 +59,7 @@ You can upgrade {pytorch} to a specific version by running the following command
 ----
 {prompt_user}helm upgrade \
   pytorch oci://dp.apps.rancher.io/charts/pytorch \
-  -n SUSE_AI_NAMESPACE \
+  -n SAIF_NAMESPACE \
   --version VERSION_NUMBER \
   -f pytorch_custom_overrides.yaml
 ----
@@ -77,5 +77,5 @@ To uninstall {pytorch}, run the following command:
 
 [source,subs="+attributes"]
 ----
-{prompt_user}helm uninstall pytorch -n SUSE_AI_NAMESPACE
+{prompt_user}helm uninstall pytorch -n SAIF_NAMESPACE
 ----

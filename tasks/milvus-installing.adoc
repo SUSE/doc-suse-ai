@@ -47,7 +47,7 @@ To upgrade {milvus}, identify the new version number and run the following comma
 ----
 {prompt_user}helm upgrade --install \
   milvus oci://dp.apps.rancher.io/charts/milvus \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   --version <VERSION_NUMBER> \
   -f milvus_custom_overrides.yaml
 ----
@@ -60,6 +60,6 @@ To uninstall {milvus}, run the following command:
 
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}helm uninstall milvus -n <SUSE_AI_NAMESPACE>
+{prompt_user}helm uninstall milvus -n <SAIF_NAMESPACE>
 ----
 

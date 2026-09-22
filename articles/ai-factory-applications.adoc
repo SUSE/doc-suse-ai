@@ -18,13 +18,13 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-09-09
+:revdate: 2026-09-21
 :page-revdate: {revdate}
 
 [abstract]
 --
-Configuring artificial intelligence (AI) applications in the {kube} environment involves using {helm} charts and custom override files.
-While applications ship with default configurations, you can modify application behavior by applying a custom override file with scenario-specific values.
+Configuring artificial intelligence (AI) applications in the {kube} environment involves using {helm} charts and custom values files.
+While applications ship with default configurations, you can modify application behavior by applying a custom values file with scenario-specific values.
 This approach ensures consistent, reproducible and easily manageable application deployment.
 
 This guide provides a list of AI applications installable by {productname}, along with their descriptions and configuration override examples.
@@ -35,6 +35,7 @@ ifeval::["{PROF_PRODUCT}" == "saif"]
 :ai-app-string: kubeflow
 :ai-app-name: {kubeflow}
 :ai-app-registry: {sregistry}
+:ai-app-namespace: kubeflow
 
 [#aif-apps-{ai-app-string}]
 == {ai-app-name}
@@ -88,6 +89,7 @@ include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
 :ai-app-string!:
 :ai-app-name!:
 :ai-app-registry!:
+:ai-app-namespace!:
 
 
 :ai-app-string: litellm
@@ -97,7 +99,7 @@ include::../references/kubeflow-troubleshooting.adoc[leveloffset=+2]
 [#aif-apps-{ai-app-string}]
 == {ai-app-name}
 
-{litellm} (link:https://docs.litellm.ai/docs/[]) is an open source large language model (LLM) proxy and abstraction layer.
+{litellm} (link:https://docs.litellm.ai[]) is an open source large language model (LLM) proxy and abstraction layer.
 The service translates diverse provider application programming interfaces (APIs) into a unified, OpenAI-compatible format.
 Using {litellm} simplifies multi-model integration so that you can switch between proprietary cloud models and local open source models with minimal code changes.
 The proxy also provides centralized key management, detailed usage tracking and rate-limiting across multiple teams.
@@ -153,40 +155,174 @@ include::../tasks/aif-app-removing.adoc[leveloffset=+2]
 :ai-app-name!:
 :ai-app-registry!:
 
+:ai-app-string: ollama
+:ai-app-name: {ollama}
+:ai-app-registry: {sappco}
+
+[#aif-apps-{ai-app-string}]
+== {ai-app-name}
+
+{ollama} (link:https://ollama.ai[]) is a tool for running and managing language models locally on your computer.
+It offers a simple interface to download, run and interact with models without relying on cloud resources.
+
+[#{ai-app-string}-helm-values]
+:override-title: How do I get the values list for {ai-app-name} {helm} chart?
+include::../tasks/aif-app-values.adoc[leveloffset=+2]
+[#{ai-app-string}-installing]
+:override-title: How do I install {ai-app-name}?
+include::../tasks/aif-app-installing.adoc[leveloffset=+2]
+[#{ai-app-string}-helm-overrides]
+:override-title: What custom values examples are available for {ai-app-name}?
+include::../references/ollama-helm-overrides.adoc[leveloffset=+2]
+[#{ai-app-string}-upgrading]
+:override-title: How do I upgrade {ai-app-name}?
+include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
+[#{ai-app-string}-removing]
+:override-title: How do I remove {ai-app-name}?
+include::../tasks/aif-app-removing.adoc[leveloffset=+2]
+
+:ai-app-string!:
+:ai-app-name!:
+:ai-app-registry!:
+
+:ai-app-string: open-webui
+:ai-app-name: {owui}
+:ai-app-registry: {sappco}
+
+[#aif-apps-{ai-app-string}]
+== {ai-app-name}
+
+{owui} (link:https://openwebui.com[]) is an open-source, extensible Web interface for managing and interacting with large language models (LLMs) locally.
+It provides a user-friendly chat interface that integrates with backend engines like {ollama} and {vllm}.
+The application supports retrieval-augmented generation, prompt engineering, and customizable pipelines to optimize your local AI workflows.
+
+[#{ai-app-string}-helm-values]
+:override-title: How do I get the values list for {ai-app-name} {helm} chart?
+include::../tasks/aif-app-values.adoc[leveloffset=+2]
+[#{ai-app-string}-installing]
+:override-title: How do I install {ai-app-name}?
+include::../tasks/aif-app-installing.adoc[leveloffset=+2]
+[#{ai-app-string}-helm-overrides]
+:override-title: What custom values examples are available for {ai-app-name}?
+include::../references/owui-helm-overrides.adoc[leveloffset=+2]
+[#{ai-app-string}-upgrading]
+:override-title: How do I upgrade {ai-app-name}?
+include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
+[#{ai-app-string}-removing]
+:override-title: How do I remove {ai-app-name}?
+include::../tasks/aif-app-removing.adoc[leveloffset=+2]
+
+:ai-app-string!:
+:ai-app-name!:
+:ai-app-registry!:
+
+
+:ai-app-string: pytorch
+:ai-app-name: {pytorch}
+:ai-app-registry: {sappco}
+
+[#aif-apps-{ai-app-string}]
+== {ai-app-name}
+
+{pytorch} (link:https://pytorch.org[]) is an open-source machine learning framework that accelerates deep learning workloads using CPUs and GPUs.
+Within the {saifactory} stack, the {pytorch} {helm} chart deploys custom training or inference containers directly onto GPU-enabled cluster nodes.
+This integration lets you execute custom model code locally while utilizing dedicated GPU hardware for maximum performance.
+
+[#{ai-app-string}-helm-values]
+:override-title: How do I get the values list for {ai-app-name} {helm} chart?
+include::../tasks/aif-app-values.adoc[leveloffset=+2]
+[#{ai-app-string}-installing]
+:override-title: How do I install {ai-app-name}?
+include::../tasks/aif-app-installing.adoc[leveloffset=+2]
+[#{ai-app-string}-helm-overrides]
+:override-title: What custom values examples are available for {ai-app-name}?
+include::../references/pytorch-helm-overrides.adoc[leveloffset=+2]
+[#{ai-app-string}-upgrading]
+:override-title: How do I upgrade {ai-app-name}?
+include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
+[#{ai-app-string}-removing]
+:override-title: How do I remove {ai-app-name}?
+include::../tasks/aif-app-removing.adoc[leveloffset=+2]
+
+:ai-app-string!:
+:ai-app-name!:
+:ai-app-registry!:
+
+
 // [#opensearch-helm-overrides]
 // include::../references/opensearch-helm-overrides.adoc[leveloffset=+1]
 
-// [#ollama-helmchart]
-// :override-title: {ollama}
-// include::../references/ollama-helmchart.adoc[leveloffset=+1]
-// [#owui-helmchart]
-// :override-title: {owui}
-// include::../references/owui-helmchart.adoc[leveloffset=+1]
-// [#owui-helm-overrides]
-// include::../references/owui-helm-overrides.adoc[leveloffset=+2]
-
-// [#vllm-helm-overrides]
-// :override-title: {vllm}
-// include::../references/vllm-helm-overrides.adoc[leveloffset=+1]
 // [#mcpo-installing]
 // :override-title: {mcpo}
 // include::../tasks/mcpo-installing.adoc[leveloffset=+1]
-
-// [#pytorch-helm-overrides]
-// :override-title: {pytorch}
-// include::../references/pytorch-helm-overrides.adoc[leveloffset=+1]
-// include::../references/pytorch-helmchart.adoc[leveloffset=+2]
-
-// [#qdrant-installing]
-// :override-title: {qdrant}
-// include::../tasks/qdrant-installing.adoc[leveloffset=+1]
-// include::../references/qdrant-helm-overrides.adoc[leveloffset=+2]
 
 
 // [#mlflow-installing]
 // :override-title: {mlflow}
 // include::../tasks/mlflow-installing.adoc[leveloffset=+1]
 
+
+:ai-app-string: qdrant
+:ai-app-name: {qdrant}
+:ai-app-registry: {sregistry}
+
+[#aif-apps-{ai-app-string}]
+== {ai-app-name}
+
+{qdrant} (link:https://qdrant.tech[]) is an open-source, AI-native vector database and semantic search engine designed for high-performance retrieval-augmented generation.
+It indexes, stores and searches high-dimensional vector embeddings with low latency and high accuracy.
+The database handles unstructured data efficiently and supports fast vector-similarity queries for enterprise artificial intelligence applications.
+
+[#{ai-app-string}-helm-values]
+:override-title: How do I get the values list for {ai-app-name} {helm} chart?
+include::../tasks/aif-app-values.adoc[leveloffset=+2]
+[#{ai-app-string}-installing]
+:override-title: How do I install {ai-app-name}?
+include::../tasks/aif-app-installing.adoc[leveloffset=+2]
+[#{ai-app-string}-helm-overrides]
+:override-title: What custom values examples are available for {ai-app-name}?
+include::../references/qdrant-helm-overrides.adoc[leveloffset=+2]
+[#{ai-app-string}-upgrading]
+:override-title: How do I upgrade {ai-app-name}?
+include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
+[#{ai-app-string}-removing]
+:override-title: How do I remove {ai-app-name}?
+include::../tasks/aif-app-removing.adoc[leveloffset=+2]
+
+:ai-app-string!:
+:ai-app-name!:
+:ai-app-registry!:
+
+:ai-app-string: vllm
+:ai-app-name: {vllm}
+:ai-app-registry: {sappco}
+
+[#aif-apps-{ai-app-string}]
+== {ai-app-name}
+
+{vllm} is an open-source, high-throughput engine designed for fast large language model (LLM) serving and inference.
+It uses PagedAttention to manage attention keys and values efficiently, reducing memory waste and increasing serving capacity.
+This local deployment enables high-performance model execution with an OpenAI-compatible API interface.
+
+[#{ai-app-string}-helm-values]
+:override-title: How do I get the values list for {ai-app-name} {helm} chart?
+include::../tasks/aif-app-values.adoc[leveloffset=+2]
+[#{ai-app-string}-installing]
+:override-title: How do I install {ai-app-name}?
+include::../tasks/aif-app-installing.adoc[leveloffset=+2]
+[#{ai-app-string}-helm-overrides]
+:override-title: What custom values examples are available for {ai-app-name}?
+include::../references/vllm-helm-overrides.adoc[leveloffset=+2]
+[#{ai-app-string}-upgrading]
+:override-title: How do I upgrade {ai-app-name}?
+include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
+[#{ai-app-string}-removing]
+:override-title: How do I remove {ai-app-name}?
+include::../tasks/aif-app-removing.adoc[leveloffset=+2]
+
+:ai-app-string!:
+:ai-app-name!:
+:ai-app-registry!:
 
 endif::[]
 

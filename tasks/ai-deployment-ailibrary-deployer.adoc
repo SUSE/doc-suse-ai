@@ -53,22 +53,22 @@ To see default values for the charts of the individual components within the met
 {prompt_user}helm show values charts/pytorch
 ----
 ====
-. Explore downloaded example override files in the `suse-ai-deployer/examples` subdirectory.
+. Explore downloaded example custom values files in the `suse-ai-deployer/examples` subdirectory.
 It typically includes the following files:
 `suse-gen-ai-minimal.yaml`:: Basic configuration to get started with GenAI. It deploys {ollama} without GPU support, {owui}, and {milvus} in stand-alone mode using local storage. {pytorch} is disabled.
 `suse-gen-ai.yaml`:: Configuration optimized for production usage. It deploys {ollama} with GPU support, {owui}, and {milvus} in cluster mode using Longhorn storage. {pytorch} is disabled.
 `suse-ml-stack.yaml`:: Basic configuration that enables deployment of {pytorch} with no GPU support with Longhorn storage. It deploys {pytorch} but disables {ollama}, {owui} and {milvus}.
-. Create `custom-overrides.yaml` override file based one of the above examples.
+. Create `custom-overrides.yaml` custom values file based on one of the above examples.
 The examples use self-signed certificates for TLS communication.
 To use other option (see xref:owui-tls-sources[]), copy the `global` section from the `values.yaml` file into your `custom-overrides.yaml` and update its `tls` section as needed.
 . Install the {saideployer} {helm} chart with while overriding values from the `custom-overrides.yaml` file.
-Use the appropriate `RELEASE_NAME` and `SUSE_AI_NAMESPACE` based the configuration in `custom-overrides.yaml`.
+Use the appropriate `RELEASE_NAME` and `SAIF_NAMESPACE` based the configuration in `custom-overrides.yaml`.
 +
 [source,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
   RELEASE_NAME \
-  --namespace  SUSE_AI_NAMESPACE \
+  --namespace  SAIF_NAMESPACE \
   --create-namespace \
   --values ./custom-overrides.yaml \
   --version 1.0.0 \

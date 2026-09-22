@@ -28,13 +28,13 @@ However, if the user has lost their password and cannot log in to {owui}, the pa
 +
 [source,bash]
 ----
-> kubectl get pod -n SUSE_AI_NAMESPACE| grep open-webui | grep -v pipelines
+> kubectl get pod -n SAIF_NAMESPACE| grep open-webui | grep -v pipelines
 ----
 . Update the password. 
 +
 [source,bash]
 ----
-> kubectl exec open-webui-0-n SUSE_AI_NAMESPACE – \
+> kubectl exec open-webui-0-n SAIF_NAMESPACE – \
   python3.11 -c 'import sqlite3; con = sqlite3.connect("/usr/lib/python3.11/site-packages/data/webui.db"); \
   con.cursor().execute("UPDATE auth SET password=\"PASSWORD_HASH\" WHERE email=\"admin@example.org\""); con.commit()'
 ----

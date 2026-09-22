@@ -33,14 +33,14 @@ If {certmanager} is not installed from previous {owui} releases, install it by f
 The file contains URLs for {milvus} and {ollama}, and specifies whether a stand-alone {ollama} deployment is used or whether {ollama} is installed as part of the {owui} installation.
 Find more details in xref:owui-helm-overrides[].
 For a list of all installation options with examples, refer to xref:owui-helmchart-values[].
-. Install the {owui} {helm} chart using the `owui_custom_overrides.yaml` override file.
+. Install the {owui} {helm} chart using the `owui_custom_overrides.yaml` custom values file.
 +
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
   open-webui oci://dp.apps.rancher.io/charts/open-webui \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   -f <owui_custom_overrides.yaml>
 ----
 endif::[]
@@ -49,7 +49,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 ----
 {prompt_user}helm upgrade --install \
   open-webui charts/open-webui-<X.Y.Z>.tgz \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   --version <X.Y.Z> \
   -f <owui_custom_overrides.yaml>
 ----
@@ -66,7 +66,7 @@ To upgrade {owui} to a specific new version, run the following command:
 ----
 {prompt_user}helm upgrade --install open-webui \
   oci://dp.apps.rancher.io/charts/open-webui \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   --version <VERSION_NUMBER> \
   -f <owui_custom_overrides.yaml>
 ----
@@ -77,7 +77,7 @@ To upgrade {owui} to the latest version, run the following command:
 ----
 {prompt_user}helm upgrade --install open-webui \
   oci://dp.apps.rancher.io/charts/open-webui \
-  -n <SUSE_AI_NAMESPACE> \
+  -n <SAIF_NAMESPACE> \
   -f <owui_custom_overrides.yaml>
 ----
 endif::[]
@@ -89,5 +89,5 @@ To uninstall {owui}, run the following command:
 
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}helm uninstall open-webui -n <SUSE_AI_NAMESPACE>
+{prompt_user}helm uninstall open-webui -n <SAIF_NAMESPACE>
 ----
