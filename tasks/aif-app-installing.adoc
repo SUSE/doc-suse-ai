@@ -46,6 +46,15 @@ endif::[]
   --password-stdin < password.txt
 ----
 
+. Create a namespace for {ai-app-name}.
++
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl create namespace {ai-app-string}-system \
+  --dry-run=client \
+  -o yaml | kubectl apply -f -
+----
+
 . (_Optional_) If you have not created image pull secrets for {ai-app-registry}, create them now.
 To prevent the password from being stored in the shell history, save it to the `password.txt` file.
 +
@@ -62,17 +71,8 @@ ifeval::["{ai-app-registry}" == "{sappco}"]
   --docker-username=<APPCO-USERNAME> \
 endif::[]
   --docker-password="$(< password.txt)" \
-  -n aif-operator \
+  -n {ai-app-string}-system \
   --dry-run=client -o yaml | kubectl apply -f -
-----
-
-. Create a namespace for {ai-app-name}.
-+
-[,sh,subs="+attributes"]
-----
-{prompt_user}kubectl create namespace {ai-app-string}-system \
-  --dry-run=client \
-  -o yaml | kubectl apply -f -
 ----
 
 . (_Optional_) To override default installation values, list them in a `values.yaml` file.
