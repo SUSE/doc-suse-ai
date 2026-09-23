@@ -24,7 +24,12 @@ include::../snippets/aif-important-secrets.adoc[]
 
 [#fig-aif-apps]
 .List of AI applications
+ifeval::["{PROF_PRODUCT}" == "saif"]
 image::aif-apps.png[Screenshot showing a list of AI applications,scaledwidth=100%]
+endif::[]
+ifeval::["{PROF_PRODUCT}" == "saifnv"]
+image::aif-apps-nv.png[Screenshot showing a list of AI applications,scaledwidth=100%]
+endif::[]
 
 [#ai-factory-apps-install]
 == How do I install AI applications?
@@ -35,7 +40,7 @@ ifeval::["{PROF_PRODUCT}" == "saif"]
 . Select btn:[SUSE AI Library] and select the application tile.
 endif::[]
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
-. Select btn:[NVIDIA Library] and select the application tile.
+. Select btn:[NVIDIA AI Library] and select the application tile.
 endif::[]
 +
 The list sorts charts supported by {productname} first by default (you can also sort by name).

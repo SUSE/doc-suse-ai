@@ -24,7 +24,7 @@ ifeval::["{PROF_PRODUCT}" == "saif"]
 * installing and managing AI applications and blueprints from {ailibrary}
 endif::[]
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
-* installing and managing AI applications and blueprints from {nvidia} catalog
+* installing and managing AI applications and blueprints from {nvidia} AI Library
 endif::[]
 * creating and managing custom blueprints
 * managing running workloads
