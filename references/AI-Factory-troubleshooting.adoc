@@ -29,6 +29,7 @@ include::../references/AI-Factory-troubleshooting-principles.adoc[leveloffset=+1
 :override-title: Collecting diagnostics
 include::../references/AI-Factory-troubleshooting-collecting.adoc[leveloffset=+1]
 
+[#aif-troubleshooting-credentials]
 == What happens when a registry credentials secret is removed?
 
 If a container registry credentials Secret (referenced by `imagePullSecrets`) is removed or invalid, currently running pods continue to operate normally because credentials are only verified during image pull operations.
