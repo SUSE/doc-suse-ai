@@ -1,0 +1,48 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= {productname} Troubleshooting
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{empty}
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-10-01
+:page-revdate: {revdate}
+
+[#aif-troubleshooting-principles]
+:override-title: General principles
+include::../references/AI-Factory-troubleshooting-principles.adoc[leveloffset=+1]
+
+[#aif-troubleshooting-collecting]
+:override-title: Collecting diagnostics
+include::../references/AI-Factory-troubleshooting-collecting.adoc[leveloffset=+1]
+
+== What happens when a registry credentials secret is removed?
+
+If a container registry credentials Secret (referenced by `imagePullSecrets`) is removed or invalid, currently running pods continue to operate normally because credentials are only verified during image pull operations.
+
+However, subsequent actions that require pulling an image -- such as pod restarts, rolling deployments, rescheduling or scaling operations -- may fail with `ErrImagePull` or `ImagePullBackOff` under the following conditions:
+
+* *Pod scheduled on a different node:* The new node does not have the image cached locally in its container runtime storage and cannot pull it without valid credentials.
+* *`imagePullPolicy: Always`:* The {kube} agent Kubelet is forced to verify the remote registry manifest on every start, which fails with an HTTP 401 (Unauthorized) error.
+* *Image cache invalidation:* If an image previously cached on a node has been pruned by Kubelet image garbage collection, the node cannot re-fetch the image.
+
+[NOTE]
+====
+If a pod is restarted on the *same node*, uses `imagePullPolicy: IfNotPresent`, and the image is still present in the node's local container runtime cache, the container starts successfully without querying the registry.
+====
+
+To resolve `ImagePullBackOff` caused by missing credentials, re-create the registry secret and ensure it is referenced in the pod specification or the default ServiceAccount for the namespace.
+Refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html[Post-deployment steps] for more details.

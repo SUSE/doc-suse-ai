@@ -135,6 +135,11 @@ include::../tasks/ai-factory-upgrade.adoc[leveloffset=+1]
 include::../tasks/ai-factory-uninstall.adoc[leveloffset=+1]
 
 [appendix]
+[#ai-factory-troubleshooting]
+:override-title: Troubleshooting
+include::../references/AI-Factory-troubleshooting.adoc[leveloffset=+1]
+
+[appendix]
 [#ai-factory-release-notes]
 :override-title: Release notes
 include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]
