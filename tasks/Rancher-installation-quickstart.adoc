@@ -6,7 +6,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-06-10
+:revdate: 2026-09-25
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
@@ -20,7 +20,7 @@ ifndef::override-abstract[]
 In this section, you'll learn how to deploy Rancher on a Kubernetes cluster using the Helm CLI.
 endif::[]
 
-:revdate: 2025-12-22
+:revdate: 2026-09-25
 :page-revdate: {revdate}
 
 // erase the flag for future overrides
@@ -128,15 +128,11 @@ There are three recommended options for the source of the certificate used for T
 | `ingress.tls.source=secret`
 | no
 |===
+
 [#install-cert-manager]
 === 4. Install cert-manager
 
-[tabs]
-=======
-Using SUSE Application Collection::
-+
---
-https://docs.apps.rancher.io/[SUSE Application Collection] provides a cert-manager chart that is compatible with Rancher. If you are using SUSE Application Collection, we recommend installing cert-manager using this option. 
+https://docs.apps.rancher.io/[SUSE Application Collection] provides a SUSE Rancher compatible cert-manager chart, follow the instructions below for installation.
 
 . Log in to the secure SUSE Application Collection registry:
 +
@@ -200,71 +196,6 @@ cert-manager-56cc584bd4-nhjx7              1/1     Running   0          3m
 cert-manager-cainjector-7cfc74b84b-kg7m2   1/1     Running   0          3m
 cert-manager-webhook-784f6dd68-69dvn       1/1     Running   0          3m
 ----
-
---
-
-Using Upstream Jetstack Helm Repository::
-+
---
-____
-You should skip this step if you are bringing your own certificate files (option `ingress.tls.source=secret`), or if you use link:https://documentation.suse.com/cloudnative/rancher-manager/v2.13/en/installation-and-upgrade/references/helm-chart-options.html#_external_tls_termination[External TLS Termination].
-____
-
-This step is only required to use certificates issued by Rancher's generated CA (`ingress.tls.source=rancher`) or to request Let's Encrypt issued certificates (`ingress.tls.source=letsEncrypt`).
-
-.Click to Expand
-[%collapsible]
-======
-
-[NOTE]
-.Important:
-====
-
-Recent changes to cert-manager require an upgrade. If you are upgrading Rancher and using a version of cert-manager older than v0.11.0, please see our link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/installation-and-upgrade/resources/upgrade-cert-manager.html[upgrade documentation].
-====
-
-
-These instructions are adapted from the https://cert-manager.io/docs/installation/kubernetes/#installing-with-helm[official cert-manager documentation].
-
-[NOTE]
-====
-
-To see options on how to customize the cert-manager install (including for cases where your cluster uses PodSecurityPolicies), see the https://artifacthub.io/packages/helm/cert-manager/cert-manager#configuration[cert-manager docs].
-====
-
-
-----
-# If you have installed the CRDs manually, instead of setting `installCRDs` or `crds.enabled` to `true` in your Helm install command, you should upgrade your CRD resources before upgrading the Helm chart:
-kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/<VERSION>/cert-manager.crds.yaml
-
-# Add the Jetstack Helm repository
-helm repo add jetstack https://charts.jetstack.io
-
-# Update your local Helm chart repository cache
-helm repo update
-
-# Install the cert-manager Helm chart
-helm install cert-manager jetstack/cert-manager \
-  --namespace cert-manager \
-  --create-namespace \
-  --set crds.enabled=true
-----
-
-Once you've installed cert-manager, you can verify it is deployed correctly by checking the cert-manager namespace for running pods:
-
-----
-kubectl get pods --namespace cert-manager
-
-NAME                                       READY   STATUS    RESTARTS   AGE
-cert-manager-5c6866597-zw7kh               1/1     Running   0          2m
-cert-manager-cainjector-577f6d9fd7-tr77l   1/1     Running   0          2m
-cert-manager-webhook-787858fcdb-nlzsq      1/1     Running   0          2m
-----
-
-======
-
---
-=======
 
 === 5. Install Rancher with Helm and Your Chosen Certificate Option
 
