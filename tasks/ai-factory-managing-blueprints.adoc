@@ -18,7 +18,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-17
+:revdate: 2026-10-06
 :page-revdate: {revdate}
 
 include::../snippets/aif-important-secrets.adoc[]
@@ -26,6 +26,19 @@ include::../snippets/aif-important-secrets.adoc[]
 [#fig-aif-bps]
 .List of AI blueprints
 image::aif-blueprints.png[Screenshot showing a list of AI blueprints,scaledwidth=100%]
+
+Blueprints are grouped into catalogs.
+Use the catalog drop-down list on the `Blueprints` page to show only the blueprints of a specific catalog.
+Blueprints bundled with {productname} are listed under `SUSE Blueprints`.
+To add more catalogs, refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html#ai-factory-blueprint-catalogs[How do I add blueprint catalogs?].
+
+[NOTE]
+.Partner blueprints
+====
+Blueprints can carry a partner logo, which is shown next to the source badge on the `Blueprints` page, and can declare the `Partner` source.
+The source is declared by the blueprint author and is not verified by {productname}.
+When you copy a blueprint, the copy becomes a custom blueprint without the partner logo.
+====
 
 [#ai-factory-managing-blueprints-create]
 == How do I create custom blueprints?
@@ -91,6 +104,14 @@ endif::[]
 . On the `Basic Info` screen, customize the default name and target namespace for your workload.
 . On the `Target` screen, specify the deployment type and the target cluster for your workload.
 You can also review the estimated hardware requirements for the workload.
+. (_Optional_) On the `Configuration` screen, customize the blueprint for this deployment.
+Leave a component untouched to keep the blueprint defaults.
+** To override the default {helm} values of a component, edit its values.
+** To leave a component out of the deployment, clear its btn:[Include] check box.
+At least one component must remain included.
++
+{productname} saves only the values that you change.
+A workload whose configuration differs from the blueprint defaults is marked as `Customized` on the `Workloads` page.
 . On the `Review` screen, verify that the configuration is correct:
   * **Default storage class.** Ensure that a default storage class is set on the target cluster.
   Applications such as {milvus} and {qdrant} require persistent storage.
@@ -158,11 +179,12 @@ To make it visible again, check the btn:[Show deprecated] box.
 == How do I delete blueprints?
 
 [NOTE]
-.Bundled blueprints cannot be deleted
+.Bundled and catalog blueprints cannot be deleted
 ====
-Bundled blueprints shipped with {productname} are protected and cannot be deleted.
+Bundled blueprints shipped with {productname} and blueprints synchronized from a Git blueprint catalog are protected and cannot be deleted.
 The btn:[Delete] action is not shown for them, and any deletion request is rejected.
-To customize a bundled blueprint, clone it as described in xref:ai-factory-managing-blueprints-copy[] and edit the copy.
+To remove the blueprints of a Git catalog, remove the catalog as described in link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html#ai-factory-blueprint-catalogs[How do I add blueprint catalogs?].
+To customize a protected blueprint, clone it as described in xref:ai-factory-managing-blueprints-copy[] and edit the copy.
 ====
 
 . From the main left panel, select menu:SUSE AI Factory[Blueprints].

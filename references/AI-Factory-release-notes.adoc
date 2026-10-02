@@ -18,11 +18,84 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-01
+:revdate: 2026-10-06
 :page-revdate: {revdate}
 
 
 == Release {aif-latest-version}
+
+This release builds on the 2.2.x line with customizable blueprint deployments, custom chart repositories and Git-sourced blueprint catalogs, clearer repository and workload health reporting, and a new workload details view, plus several stability and installation improvements.
+
+=== What's new
+
+==== Blueprint customization
+- *Customize blueprint deployments*: A new `Configuration` step in the blueprint installation and management wizard lets you override {helm} values and enable or disable individual blueprint components before deployment. Disabled components are left out of the deployment and removed from the cluster. Blueprint workloads can be reconfigured later with the btn:[Manage] action link:https://github.com/SUSE/aif/pull/265[#265].
+- *Configuration drift tracking*: Workloads report whether their configuration differs from the blueprint defaults, and the `Workloads` page shows a `Customized` badge next to the blueprint source. Only the values you changed are saved, not the full set of component values link:https://github.com/SUSE/aif/pull/287[#287].
+- *Partner icons and `Partner` source*: Blueprints accept an optional `icon`, either an `https://` URL or a base64-encoded raster `data:` URI of up to 16 KB, which is shown next to the source badge, and a new `Partner` source value. Updating a blueprint with an invalid specification now returns HTTP `422` instead of `500` link:https://github.com/SUSE/aif/pull/292[#292].
+
+==== Custom blueprint catalogs
+- *Git-sourced blueprint catalogs*: Administrators can add external Git repositories that contain blueprint definitions in the `Custom Catalogs` section of *Settings* or through the `blueprintCatalogs` {helm} value. The operator synchronizes each catalog into the cluster through its own {fleeta} `GitRepo` resource, with its own credential and CA certificate secrets link:https://github.com/SUSE/aif/pull/281[#281].
+- *New `BlueprintCatalog` CRD*: A cluster-scoped resource that describes a curated, branded collection of blueprints link:https://github.com/SUSE/aif/pull/281[#281].
+- *Browse blueprints by catalog*: The `Blueprints` page provides a catalog filter. Blueprints bundled with the chart are listed under `SUSE Blueprints` link:https://github.com/SUSE/aif/pull/281[#281].
+
+==== Custom chart repositories
+- *Manage chart repositories from Settings*: Administrators can add, edit and delete {helm} (HTTP or HTTPS), OCI and Git chart repositories, including credentials, in the `Repositories` section of *Settings*. The operator creates a `ClusterRepo` resource with the same name for each repository, and its applications are listed in the application catalog under their own library link:https://github.com/SUSE/aif/pull/244[#244].
+- *Single-chart OCI repositories*: Repositories whose URL already ends with the chart name, for example `oci://ghcr.io/nvidia/openshell/helm-chart`, install correctly with both {helm} and {fleeta}. Use this to add the {nvidia} OpenShell charts link:https://github.com/SUSE/aif/pull/244[#244], link:https://github.com/SUSE/aif/pull/293[#293].
+- *Verify before saving*: Custom repositories can be tested for credentials, reachability and access to a sample chart from the same form link:https://github.com/SUSE/aif/pull/244[#244].
+
+==== Repository verification and readiness
+- *Three-part connection test*: In *Settings*, btn:[Test] reports the registry connection, access to a sample chart, and the readiness of the {ranchera} chart repository as separate results, so a successful login alone is no longer reported as success. The result names the chart and version that were tested, and denied access, missing content, invalid indexes, TLS errors and timeouts each have their own explanation link:https://github.com/SUSE/aif/pull/242[#242].
+- *Repository failures shown across the UI*: The `Overview` page lists failing managed repositories with links to *Settings* and {ranchera}. Applications from an unavailable repository remain visible but cannot be installed, and the installation wizard explains missing repository indexes instead of reporting `configmaps "" not found` link:https://github.com/SUSE/aif/pull/242[#242].
+- *Explicit refresh*: btn:[Test] is read-only. A new btn:[Refresh] action asks {ranchera} to download the index of a saved repository again link:https://github.com/SUSE/aif/pull/242[#242].
+
+==== Workload monitoring
+- *Workload details*: Selecting a workload name on the `Workloads` page opens a details panel with the source, deployment strategy, target namespace and clusters, blueprint components, per-cluster status messages, value overrides, and the underlying {fleeta} resources or {helm} release link:https://github.com/SUSE/aif/pull/221[#221], link:https://github.com/SUSE/aif/pull/303[#303].
+- *Accurate status for {helm} workloads*: Application workloads deployed with {helm} now derive their status from pod and controller readiness. A crash-looping or unschedulable pod reports `Degraded` with the reason, and a pod that is still starting reports `Pending` for as long as it needs. Previously, a workload was reported as `Running` as soon as its {helm} release existed link:https://github.com/SUSE/aif/pull/260[#260].
+
+==== Air-gapped deployments
+- *{nvidia} repository aliases preserved in mirror mode*: Switching to a private {nvidia} mirror keeps every repository alias derived from the catalog, such as `nvidia-runai` or `nim-nvidia`, so existing workloads can still be upgraded and redeployed link:https://github.com/SUSE/aif/pull/237[#237].
+- *Bundled catalog logos*: Logos for 81 {suseai} charts are bundled with the UI extension, so application tiles show the correct logo in connected and air-gapped installations, including behind private mirrors link:https://github.com/SUSE/aif/pull/245[#245].
+
+==== Application catalog
+- *{nvidia} catalog refresh*: The weekly {nvidia} AI Enterprise catalog refreshes are included. NGC applications that lost their {nvidia} AI Enterprise support label, including several NeMo microservices, two NIM embedding models and `dgxc-admission-controller`, remain in the catalog without the `Supported` label. The {nvidia} GPU Operator no longer has the `Supported` label link:https://github.com/SUSE/aif/pull/301[#301].
+
+==== Packaging
+- *{ranchera} readiness check*: A pre-install and pre-upgrade hook job waits until the required {fleeta} and {ranchera} catalog CRDs and the `cattle-ui-plugin-system` namespace exist before the operator is installed, and retries on temporary API errors link:https://github.com/SUSE/aif/pull/277[#277], link:https://github.com/SUSE/aif/pull/289[#289].
+
+=== Key fixes
+- The UI extension no longer remains in the `Failed` state after the operator re-creates its `aif-ui-config` ConfigMap. The operator now takes {helm} ownership of an existing ConfigMap instead of failing every installation and upgrade with an `invalid ownership metadata` error link:https://github.com/SUSE/aif/pull/218[#218].
+- Custom UI extension settings are retained after uninstalling. The `aif-ui-config` ConfigMap was previously deleted with the release, so custom operator connection and catalog settings were lost on reinstallation link:https://github.com/SUSE/aif/pull/218[#218].
+- Failing {helm} workloads are no longer reported as `Running`. For example, a NIM pod that did not fit in GPU memory was reported as `Running` while it was crash-looping link:https://github.com/SUSE/aif/pull/260[#260].
+- {kubeflow}, {litellm} and {qdrant} no longer fail on the first installation wizard screen when chart access is denied or the {ranchera} repository is disconnected despite a successful registry login link:https://github.com/SUSE/aif/pull/242[#242].
+- Applications such as {ollama} show their own logo instead of a generic icon when their metadata contains a logo URL link:https://github.com/SUSE/aif/pull/245[#245].
+- Switching to an {nvidia} mirror no longer breaks later upgrades of applications installed from {nvidia} team repositories link:https://github.com/SUSE/aif/pull/237[#237].
+
+=== Upgrade notes
+- *Mirror the `kubectl` image for air-gapped installations*: The new {ranchera} readiness hook job uses the `registry.suse.com/suse/kubectl:1.35` image, which you can configure with the `global.kubectl.image` values. The job waits until {ranchera} is ready, limited only by the installer timeout, such as `helm --timeout` or the {fleeta} `helm.timeoutSeconds` value link:https://github.com/SUSE/aif/pull/277[#277], link:https://github.com/SUSE/aif/pull/289[#289].
+- *New CRD and settings*: The `blueprintcatalogs.ai-factory.suse.com` CRD and the `blueprintCatalogs` and `customRepos` settings are added, and the `AIWorkload` and `Blueprint` CRDs are updated. The CRD hook job of the chart applies them on upgrade link:https://github.com/SUSE/aif/pull/281[#281], link:https://github.com/SUSE/aif/pull/244[#244], link:https://github.com/SUSE/aif/pull/265[#265].
+- *Use matching operator and UI extension versions*: Chart access checks, blueprint customization and partner icons require both the {aif-latest-version} operator and the {aif-latest-version} UI extension link:https://github.com/SUSE/aif/pull/242[#242], link:https://github.com/SUSE/aif/pull/265[#265], link:https://github.com/SUSE/aif/pull/292[#292].
+- *{helm} workload status may change*: Application workloads that were previously reported as `Running` may now report `Pending` or `Degraded` if their pods are not ready link:https://github.com/SUSE/aif/pull/260[#260].
+- *`aif-ui-config` is retained on uninstall*: Uninstalling the UI extension now leaves the `aif-ui-config` ConfigMap in place. Delete it manually for a clean reinstallation link:https://github.com/SUSE/aif/pull/218[#218].
+- *Standalone installations of the UI extension chart*: Installing or upgrading the `aif-ui` chart with `helm` without the operator, over an existing `aif-ui-config` ConfigMap, requires the `--take-ownership` option, available in {helm} 3.15 and later link:https://github.com/SUSE/aif/pull/218[#218].
+- *Reserved custom repository names*: Custom repositories cannot use the names of the built-in {productname} repositories, the default {ranchera} repositories, the {nvidia} team repositories, or a name already used by another `ClusterRepo` resource link:https://github.com/SUSE/aif/pull/244[#244].
+- *`Partner` blueprint source*: {saifoperator} 2.2.0 rejects blueprints with the `Partner` source. Do not use it until {aif-latest-version} is the minimum operator version in your environment link:https://github.com/SUSE/aif/pull/292[#292].
+
+=== Known issues and limitations
+- Air-gap support covers private chart repositories, private Git repositories, repository credentials and CA trust. Preparing the cluster remains a separate task: node and {containerd} registry mirrors, DNS, host proxies and operating system repositories are not configured by {productname}.
+- Container image references inside blueprint values are not rewritten. Your {containerd} registry mirrors must resolve them transparently.
+- Git over SSH is not supported for blueprint input and GitOps output. Use HTTPS with credentials and, where required, a private CA certificate.
+- Blueprint partner icons specified as `https://` URLs do not load in air-gapped installations. Use base64-encoded `data:` URIs instead.
+- A custom HTTPS repository that uses a certificate issued by a private CA is not trusted through the CA bundle alone. As a workaround, enable `Skip TLS verification` for that repository.
+- Anonymous connection tests against OCI registries that require repository-scoped tokens, such as GitHub Container Registry, report an authentication failure even though the charts can be pulled anonymously.
+- Chart access is only checked for `https://` {helm} and `oci://` repositories. A plain `http://` {helm} repository can pass the connection test but reports a configuration error for chart access.
+- Running chart access checks repeatedly against repositories with very large indexes can exceed the operator memory limit and restart the operator.
+- The OpenShell gateway chart requires the Agent Sandbox CRDs and controller (`agents.x-k8s.io`) on the target cluster.
+- A {helm} workload whose pod is stuck for a reason that is only reported as a pod event, such as `FailedMount` for a missing secret or ConfigMap, remains `Pending` instead of `Degraded`.
+- Upgrade, rollback and retry apply to blueprint workloads only. A workload that has never reached a healthy, fully rolled out state has no rollback target.
+
+Full Changelog: link:++https://github.com/SUSE/aif/compare/aif-operator-2.2.0...aif-operator-2.3.0++[aif-operator-2.2.0...aif-operator-2.3.0]
+
+== Release 2.2.0
 
 This release builds on the 2.1.x line with enhanced support for air-gapped deployments, recovery operations for blueprint workloads, an {nvidia} AI Enterprise application catalog that is generated and refreshed automatically, and a range of reliability fixes in the operator's {helm} lifecycle.
 

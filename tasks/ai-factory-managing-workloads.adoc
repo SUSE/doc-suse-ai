@@ -12,14 +12,14 @@ ifdef::override-abstract[]
 endif::[]
 ifndef::override-abstract[]
 After you install an AI application or blueprint, it becomes a running _workload_.
-You can modify, upgrade, roll back or delete workloads from the {ranchera} UI.
+You can inspect, customize, upgrade, roll back or delete workloads from the {ranchera} UI.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-01
+:revdate: 2026-10-06
 :page-revdate: {revdate}
 
 [#fig-aif-workloads]
@@ -44,6 +44,27 @@ image::aif-workloads.png[Screenshot showing a list of AI workloads,scaledwidth=1
 [#fig-aif-app-workloads-upgrade]
 .Upgrade of application workloads
 image::aif-app-workload-upgrade.png[Screenshot showing a progress bar of the upgrade process,scaledwidth=100%]
+
+[#aif-bp-workloads-manage]
+== How do I customize blueprint workloads?
+
+You can change the {helm} values of the components of a running blueprint workload and include or exclude individual components.
+
+. From the main left panel, select menu:SUSE AI Factory[Workloads].
+. Select the btn:[Manage] button for the blueprint workload you want to customize.
+The instance name, namespace, target cluster and deployment type cannot be changed.
+. On the `Configuration` screen, edit the values of the components you want to change.
+To remove a component from the workload, clear its btn:[Include] check box.
+At least one component must remain included.
++
+[WARNING]
+====
+Excluding a component that is already deployed removes its resources from the cluster on the next synchronization.
+====
+. On the `Review` screen, verify the changes and confirm with btn:[Save].
+
+{productname} saves only the values that differ from the blueprint defaults.
+When the configuration of a workload differs from its blueprint, either by changed values or by excluded components, the `Workloads` page shows a `Customized` badge next to the blueprint source.
 
 [#aif-bp-workloads-upgrade]
 == How do I upgrade blueprint workloads?
@@ -94,9 +115,33 @@ A workload that is not in the `Running` state reports its status for each compon
 Use this detail to identify the component that is blocking the rollout before you retry or roll back.
 
 . From the main left panel, select menu:SUSE AI Factory[Workloads]. You will see the underlying pod status in the status column in the table.
+. To see the details of a workload, select its name.
+A details panel opens and shows the following information:
+** the source of the workload, its deployment strategy, target namespace and target clusters
+** the blueprint description and components, or the application chart
+** the status and messages for each target cluster
+** the {helm} values of each component, with the workload overrides merged onto the blueprint defaults
+** the names of the underlying {fleeta} resources or {helm} release
++
+To change the workload, select btn:[Manage] in the details panel.
 . To inspect the underlying resources in {ranchera}, select btn:[Open in Rancher] for the workload.
 For an application workload, this opens the {helm} release; for a blueprint workload, it opens the namespace.
 For a workload that targets multiple clusters, select the cluster first.
+
+[NOTE]
+.Status of application workloads deployed with {helm}
+====
+The status of an application workload deployed with {helm} is derived from the readiness of its pods:
+
+* `Running`: all workloads of the {helm} release are ready.
+* `Pending`: the pods are still starting, for example while a container image or an AI model is being downloaded.
+The workload remains `Pending` for as long as the startup takes.
+* `Degraded`: a pod reports a failure, such as `CrashLoopBackOff`, `ImagePullBackOff` or an unschedulable pod.
+The status message contains the reason.
+
+A pod that is stuck for a reason reported only as a pod event, such as a volume that cannot be mounted, remains `Pending`.
+If a workload stays `Pending` for an unexpectedly long time, inspect its pods in {ranchera} or with `kubectl describe pod`.
+====
 
 [#aif-workloads-delete]
 == How do I delete workloads?

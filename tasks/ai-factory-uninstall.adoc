@@ -2,7 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-08-31
+:revdate: 2026-10-06
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
@@ -30,7 +30,7 @@ endif::[]
 .What uninstalling removes
 ====
 Uninstalling the operator chart removes the bundled blueprints and the UI extension.
-The CRDs and the `Settings` resource are deliberately retained so that a reinstallation preserves your configuration and existing workload resources.
+The CRDs, the `Settings` resource and the `aif-ui-config` ConfigMap of the UI extension are deliberately retained so that a reinstallation preserves your configuration and existing workload resources.
 
 Remove them explicitly with the steps below if you want a complete removal.
 ====
@@ -62,6 +62,12 @@ Remove them explicitly with the steps below if you want a complete removal.
 ----
 {prompt_user}kubectl delete settings settings -n aif-operator
 ----
+.. Remove the configuration of the UI extension.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl delete configmap aif-ui-config -n cattle-ui-plugin-system
+----
 
 . To perform a complete removal of all resources, *remove CRDs*.
 .. Delete `ai-factory` CRDs.
@@ -70,6 +76,7 @@ Remove them explicitly with the steps below if you want a complete removal.
 ----
 {prompt_user}kubectl delete crd \
   aiworkloads.ai-factory.suse.com \
+  blueprintcatalogs.ai-factory.suse.com \
   blueprints.ai-factory.suse.com \
   installaiextensions.ai-factory.suse.com \
   settings.ai-factory.suse.com
@@ -93,6 +100,9 @@ image::aif-operator-uninstall.png[Screenshot showing how to uninstall {saifopera
 [#fig-aif-leftovers-uninstall]
 .Uninstalling {saifoperator} leftovers
 image::aif-leftovers-uninstall.png[Screenshot showing how to uninstall {saifoperator} leftovers,scaledwidth=100%]
+.. Confirm the deletion.
+.. From the same cluster menu, select menu:Storage[ConfigMaps].
+.. Activate the checkbox of `aif-ui-config` in the `cattle-ui-plugin-system` namespace and click btn:[Delete] above the list.
 .. Confirm the deletion.
 
 . To perform a complete removal of all resources, *remove CRDs*.

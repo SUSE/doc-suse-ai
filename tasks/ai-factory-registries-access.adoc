@@ -3,7 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-09-01
+:revdate: 2026-10-06
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
@@ -73,7 +73,7 @@ image::aif-rancher-secrets-keys.png[Screenshot showing how to add secrets to {sa
 .{sappco} secrets
 image::aif-secrets-sappco.png[Screenshot showing how to assign secrets for {sappco},scaledwidth=50%]
 +
-.. (_Optional_) Select btn:[Test] to validate the credentials before saving.
+.. (_Optional_) Select btn:[Test] to validate the credentials before saving, as described in xref:ai-factory-verify-repositories[].
 .. Confirm by selecting btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[SUSE AI Library] from the drop-down list in the top center of the screen.
 . Select the btn:[Refresh] button in the top right.
@@ -116,7 +116,7 @@ image::aif-rancher-secrets-sregistry.png[Screenshot showing how to add secrets f
 .Assign {sregistry} secrets
 image::aif-secrets-sregistry.png[Screenshot showing how to assign secrets for {sregistry},scaledwidth=50%]
 +
-.. (_Optional_) Select btn:[Test] to validate the credentials before saving.
+.. (_Optional_) Select btn:[Test] to validate the credentials before saving, as described in xref:ai-factory-verify-repositories[].
 .. Confirm by selecting btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[SUSE AI Library] from the drop-down list in the top center of the screen.
 . Select the btn:[Refresh] button in the top right.
@@ -159,11 +159,51 @@ image::aif-rancher-secrets-nvidia.png[Screenshot showing how to add secrets for 
 .Assign {nvidia} secrets
 image::aif-secrets-nvidia.png[Screenshot showing how to assign secrets for {nvidia},scaledwidth=50%]
 +
-.. (_Optional_) Select btn:[Test] to validate the credentials before saving.
+.. (_Optional_) Select btn:[Test] to validate the credentials before saving, as described in xref:ai-factory-verify-repositories[].
 .. Confirm by selecting btn:[Apply] in the bottom right corner.
 . Navigate to menu:SUSE AI Factory[Apps] and select btn:[NVIDIA AI Library] from the drop-down list in the top center of the screen.
 . Select the btn:[Refresh] button in the top right.
 The list of available applications from the {nvidia} registry appears.
+
+[#ai-factory-verify-repositories]
+== How do I verify access to a chart repository?
+
+A successful registry login does not guarantee that you can read the charts in the repository, or that {ranchera} has downloaded the repository index.
+The btn:[Test] button in the `SUSE Application Collection`, `SUSE Registry` and `NVIDIA` sections therefore reports three separate results in the `Verify repository access` panel:
+
+Registry connection (current form)::
+Whether the registry responds to the endpoint and credentials entered in the form.
+
+Chart access (current form)::
+Whether a sample chart can be read with the endpoint, credentials and CA certificate entered in the form.
+The result names the chart and version that were tested, and explains failures such as denied access, missing content, an invalid index, TLS errors or timeouts.
+
+Chart repositories (saved settings)::
+Whether the {ranchera} `ClusterRepo` resources of the saved configuration have downloaded their index.
+This result is based on the saved settings, not on unsaved changes in the form.
+
+. From the main left panel, select menu:SUSE AI Factory[Settings].
+. (_Optional_) If your private mirror does not contain the default sample chart, enter a chart that is available in your repository in the `Chart to test` field.
+. Select btn:[Test] and review the results.
+. If you changed the form, select btn:[Apply] and then btn:[Test] again to verify the saved configuration in {ranchera}.
+. If a repository index failed to download, for example because you corrected the credentials or the mirror content, select btn:[Refresh] next to the saved repository.
+This asks {ranchera} to download the index again.
+Select btn:[Test] again to check the result.
+
+[NOTE]
+.Scope of the test
+====
+btn:[Test] is read-only.
+It does not save your settings and does not refresh repositories.
+Only the listed chart and version in each repository are checked.
+The test does not verify all charts, full chart downloads or application container images.
+
+An {nvidia} GPU Cloud (NGC) key may have access to some {nvidia} team repositories but not to others.
+An unavailable optional team repository does not mean that the key is invalid for every {nvidia} application.
+====
+
+When a managed chart repository is unavailable, the `Overview` page lists it with links to *Settings* and to the repository in {ranchera}.
+Applications from that repository remain visible on the `Apps` page, but you cannot install them until the repository is available again.
 
 [#ai-factory-fleet-gitops]
 == How do I access a Git repository for application configuration?
@@ -270,6 +310,147 @@ If you host {sappco}, {sregistry} or {nvidia} artifacts in a local registry that
 .Certificate rotation
 ====
 When you replace the certificate or the credentials of a registry, {productname} refreshes the corresponding chart repositories automatically.
+====
+
+[#ai-factory-custom-repos]
+== How do I add custom chart repositories?
+
+In addition to the built-in {suseai} and {nvidia} repositories, you can add your own {helm}, OCI and Git chart repositories.
+For each custom repository, {productname} creates a {ranchera} `ClusterRepo` resource with the same name and lists its applications on the `Apps` page under a separate library.
+
+. If the repository requires authentication, add its credentials to the {ranchera} _local_ cluster.
+.. From the main left panel, select menu:local[Storage > Secrets].
+.. Select btn:[Create] in the top right and select btn:[Opaque].
+.. Select the btn:[aif-operator] namespace and enter your preferred secret name (referenced as `<CUSTOM_REPO_SECRETS_NAME>` in command line tasks) to identify the resource.
+.. In the btn:[Data] tab, add the key `user` with your user name and `token` with your password or token.
+For a Git repository accessed over SSH, add a key that holds the SSH private key instead.
+.. Confirm by selecting btn:[Create] in the bottom right corner.
+
++
+[TIP]
+.Creating the secrets on the command line
+====
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl create secret generic <CUSTOM_REPO_SECRETS_NAME> \
+  --from-literal=user=<USERNAME> \
+  --from-literal=token=<PASSWORD_OR_TOKEN> \
+  -n aif-operator
+----
+====
+. Add the repository to {saifactory}.
+.. From the main left panel, select menu:SUSE AI Factory[Settings].
+.. In the `Repositories` section, select btn:[Add Repository].
+.. Enter the `Repository Name` and, optionally, a `Display Name (optional)` that is shown in the catalog.
+.. Select the `Repository Type`: `Helm`, `OCI` or `Git`.
+.. For a {helm} or OCI repository, enter the `Repository URL`, for example `\https://example.com/charts` or `oci://example.com/charts`.
+For a Git repository, enter the `Git Repository URL` and the `Git Branch`.
+.. If the repository requires authentication, select the secret and key in `Username Secret (optional)` and `Token/Password Secret (optional)`.
+For a Git repository accessed over SSH, select the secret and key in `SSH Private Key Secret (optional)` instead.
+.. If the repository uses a certificate issued by a private CA, select the secret and key that hold the PEM-encoded CA certificate in `CA Bundle Secret (optional)`.
+.. (_Optional_) Select btn:[Test] to check the credentials, reachability and access to a sample chart.
+.. Confirm by selecting btn:[Apply] in the bottom right corner.
+. Navigate to menu:SUSE AI Factory[Apps] and select the library of your repository from the drop-down list in the top center of the screen.
+
+Custom repositories are marked with a `Custom` badge in the `Repositories` section.
+To edit a custom repository, change its settings and select btn:[Apply].
+To delete it, select the delete icon of the repository, confirm with btn:[Delete], and select btn:[Apply].
+
+[NOTE]
+.Reserved repository names
+====
+A custom repository cannot use the name of a built-in {productname} repository, of a default {ranchera} repository such as `rancher-charts`, of an {nvidia} team repository, or of any other existing `ClusterRepo` resource.
+====
+
+[NOTE]
+.Single-chart OCI repositories
+====
+If the OCI repository URL already ends with the chart name, for example `oci://ghcr.io/nvidia/openshell/helm-chart`, {productname} uses the URL as is and does not append the chart name again.
+Use this to add the {nvidia} OpenShell charts.
+The OpenShell gateway chart requires the Agent Sandbox CRDs and controller (`agents.x-k8s.io`) to be installed on the target cluster first.
+====
+
+[NOTE]
+.Testing repositories on private networks
+====
+Tests of unsaved repositories cannot reach private network addresses.
+If the repository is hosted on a private network, for example a mirror in an air-gapped environment, select btn:[Apply] first and then btn:[Test].
+====
+
+[NOTE]
+.Known limitations
+====
+* A custom HTTPS repository that uses a certificate issued by a private CA is not trusted through the CA bundle alone.
+As a workaround, enable `Skip TLS verification (development only)` for that repository.
+* Anonymous tests against OCI registries that require repository-scoped tokens, such as GitHub Container Registry, report an authentication failure even though the charts can be pulled anonymously.
+* Chart access is checked only for `https://` {helm} and `oci://` repositories.
+A plain `http://` {helm} repository can pass the connection test but reports a configuration error for chart access.
+* Testing is not available for Git repositories accessed over SSH.
+====
+
+[#ai-factory-blueprint-catalogs]
+== How do I add blueprint catalogs?
+
+A blueprint catalog is a Git repository that contains `Blueprint` resources and a `BlueprintCatalog` resource that describes the catalog and lists its blueprints.
+{productname} synchronizes each catalog into the cluster through its own {fleeta} `GitRepo` resource.
+Blueprints from a catalog appear on the `Blueprints` page, where you can filter them by catalog.
+The blueprints bundled with {productname} are listed under `SUSE Blueprints`.
+
+.Example `BlueprintCatalog` resource
+[source,yaml]
+----
+apiVersion: ai-factory.suse.com/v1alpha1
+kind: BlueprintCatalog
+metadata:
+  name: partner-acme
+spec:
+  displayName: ACME Blueprints
+  blueprints:
+    - name: acme-chatbot
+----
+
+. If the Git repository is private, add the password or personal access token to a secret in the `aif-operator` namespace, as described in xref:ai-factory-fleet-gitops[].
+If the Git server uses a certificate issued by a private CA, add the CA certificate to a secret in the same namespace, as described in xref:ai-factory-registry-ca[].
+. From the main left panel, select menu:SUSE AI Factory[Settings].
+. In the `Blueprint Catalogs` section, select btn:[Add Catalog] under `Custom Catalogs`.
+. Enter the catalog `Name`.
+The name must be unique, can be up to 40 characters long, and must consist of lowercase alphanumeric characters and hyphens.
+. Enter the `Repository URL`, the `Branch`, and the directories that contain the blueprint files in `Paths (comma-separated)`.
+. If the repository is private, select the secret and key in `Password or Personal Access Token (optional)`.
+. If the Git server uses a certificate issued by a private CA, select the secret and key in `HTTPS CA Bundle (optional)`.
+. (_Optional_) Select btn:[Test] to check access to the repository.
+. Confirm by selecting btn:[Apply] in the bottom right corner.
+
+To remove a catalog, select btn:[Remove catalog] and then btn:[Apply].
+{productname} removes the corresponding {fleeta} `GitRepo` resource together with the blueprints of the catalog.
+
+[TIP]
+.Configuring catalogs with {helm}
+====
+You can also define blueprint catalogs when you install or upgrade the operator by using the `blueprintCatalogs` value of the `aif-operator` chart:
+
+[source,yaml]
+----
+blueprintCatalogs:
+  - name: partner-acme
+    repoURL: https://github.com/acme/blueprints.git
+    branch: main
+    paths: [catalog/blueprints]
+    credSecretRef: {name: acme-git, key: token}
+    caBundleSecretRef: {name: acme-ca, key: ca.crt}
+----
+
+The referenced secrets must exist in the operator namespace.
+====
+
+[NOTE]
+.Catalog blueprints are read-only
+====
+Blueprints synchronized from a catalog cannot be edited or deleted in {productname}.
+To customize one, clone it as described in link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-usage/ai-factory-managing-blueprints.html#ai-factory-managing-blueprints-copy[How do I clone a blueprint?].
+You can also override values and exclude components when you deploy it, as described in link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-usage/ai-factory-managing-blueprints.html#ai-factory-managing-blueprints-install[How do I install blueprints?].
+
+Blueprint `source` values, including `Partner`, are declared by the blueprint author and are not verified by {productname}.
 ====
 
 [#ai-factory-rancher-api-access]
