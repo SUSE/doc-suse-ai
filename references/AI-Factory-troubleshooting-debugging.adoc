@@ -1,0 +1,202 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Debugging issues in {ranchera} / {kube}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Because {ranchera} runs on {kube}, `kubectl` is the primary tool for debugging workload issues.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-10-05
+:page-revdate: {revdate}
+
+== Find the namespace and pods
+
+List all installed pods sorted by their namespace.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -A
+NAMESPACE                   NAME                                       READY   STATUS    RESTARTS       AGE
+aif-operator                aif-operator-7d6b8f6bb5-j6lkk              1/1     Running   30 (79m ago)   33d
+cattle-capi-system          capi-controller-manager-7654f98879-zrk2v   1/1     Running   82 (79m ago)   115d
+cattle-fleet-local-system   fleet-agent-598d897c9b-bshfg               1/1     Running   69 (79m ago)   114d
+cattle-fleet-system         fleet-controller-58f99fb59b-cv2qd          3/3     Running   219 (79m ago)  115d
+[...]
+----
+
+Filter lines for a specific application and use wider view.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -A -o wide | grep -i ollama
+NAMESPACE  NAME                      READY   STATUS   RESTARTS  AGE            IP            NODE     NOMINATED NODE   READINESS GATES
+ollama     ollama-6ffbcfc6cf-nlrcr   1/1     Running  9         (89m ago) 13d  10.42.0.177   debian   <none>           <none>
+----
+
+[TIP]
+====
+`kubectl get` can output the actual {kube} object as YAML or JSON, which is useful for debugging.
+Add `-o yaml` or `-o json` to the `kubectl` command line to retrieve more details about an object.
+====
+
+== Get the complete definition of an object
+
+Display the full YAML specification of a Deployment.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get deployment ollama -n ollama -o yaml
+----
+
+Display the full YAML specification and runtime status of a specific Pod.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get pod ollama-6ffbcfc6cf-nlrcr -n ollama -o yaml
+----
+
+Find and inspect the configuration of a Service.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get svc -A | grep -i ollama
+[...]
+{prompt_user}kubectl get svc ollama -n ollama -o yaml
+----
+
+Locate and inspect the YAML definition of a Secret.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get secret -A | grep ollama
+[...]
+{prompt_user}kubectl get secret sh.helm.release.v1.ollama.v1 -n ollama -o yaml
+----
+
+Locate and view the contents of a ConfigMap.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get configmap -A | grep ollama
+[...]
+{prompt_user}kubectl get configmap kube-root-ca.crt -n ollama -o yaml
+----
+
+== Describe detailed resource information and related events
+
+The `kubectl describe` command displays human-readable details about a resource, including runtime conditions and recent cluster events:
+
+* *Scheduling issues:* Explains why a Pod remains in `Pending` state (for example, insufficient CPU/memory, missing GPU resources, or unmet node selector and taint constraints).
+* *Image pull failures:* Highlights why container images cannot be fetched, distinguishing between invalid tags, network timeouts, or missing authentication secrets (`ErrImagePull`, `ImagePullBackOff`).
+* *Volume and mount issues:* Shows persistent volume claims (PVC) binding status, missing secrets or configmaps required for mounts, and storage attachment errors.
+* *Environment and configuration:* Lists resolved environment variables, command arguments, resource limits/requests, and active annotations or labels.
+* *Health checks and probes:* Reports readiness, liveness, and startup probe failures along with exit codes and error messages from failing check scripts.
+* *Container states and restart reasons:* Details whether containers are running, terminated, or crashing (`CrashLoopBackOff`), including exit codes and timestamps of previous terminations.
+* *Events:* Displays chronological {kube} events related to the object (such as successful assignment, pulling, creation, or warning/failure notices from controllers).
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl describe pod ollama-6ffbcfc6cf-nlrcr -n ollama
+----
+
+
+== Inspect logs
+
+Print the current stdout and stderr logs of a Pod.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl logs ollama-6ffbcfc6cf-nlrcr -n ollama
+----
+
+Stream (follow) logs in real time to monitor ongoing activity.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl logs -f ollama-6ffbcfc6cf-nlrcr -n ollama
+----
+
+Retrieve logs from a previously crashed or terminated container instance to identify failure causes.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl logs ollama-6ffbcfc6cf-nlrcr -n ollama --previous
+----
+
+
+== Viewing events
+
+Events sometimes offer more useful information than logs.
+
+View events for the whole cluster.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl events -A
+----
+
+View events for a specific pod.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl events -n ollama --for pod/ollama-6ffbcfc6cf-nlrcr
+----
+
+== Inspecting {helm} charts
+
+Because {kube} applications are commonly {helm}-based, the `helm` command can reveal useful information too.
+
+List all deployed {helm} releases across all namespaces.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm list -A
+----
+
+Display the deployment status, revision number, and post-installation notes for a specific release.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm status ollama -n ollama
+NAME: ollama
+LAST DEPLOYED: Mon Sep 21 12:12:05 2026
+NAMESPACE: ollama
+STATUS: deployed
+REVISION: 1
+NOTES:
+1. Get the application URL by running these commands:
+[...]
+----
+
+Output the rendered {kube} resource manifests generated by the chart.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm get manifest ollama -n ollama
+----
+
+Display the user-supplied values used when installing or upgrading the release.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm get values ollama -n ollama
+----
+
+Retrieve all information about the release, including notes, custom values, and generated manifests.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm get all ollama -n ollama
+----

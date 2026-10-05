@@ -26,6 +26,11 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
+ifndef::root-section-id[]
+:root-section-id: {empty}
+endif::[]
+
+
 [NOTE]
 .What uninstalling removes
 ====
@@ -36,7 +41,6 @@ Remove them explicitly with the steps below if you want a complete removal.
 ====
 
 == Uninstall using {helm}
-
 
 . *Uninstall {saifoperator}*
 .. Uninstall the {saifactory} extension and the operator.
@@ -81,7 +85,7 @@ Remove them explicitly with the steps below if you want a complete removal.
 .. From the main left panel, select the cluster you want to uninstall from, then menu:Apps[Installed Apps].
 .. From the list of installed applications, activate the checkbox of `aif-operator` and click btn:[Delete] above the list.
 +
-[#fig-aif-uninstall]
+[#{root-section-id}fig-aif-uninstall]
 .Uninstalling {saifoperator}
 image::aif-operator-uninstall.png[Screenshot showing how to uninstall {saifoperator},scaledwidth=100%]
 .. Confirm the deletion and wait until it is finished.
@@ -90,7 +94,7 @@ image::aif-operator-uninstall.png[Screenshot showing how to uninstall {saifopera
 .. From the same cluster menu, select menu:More Resources[ai-factory.suse.com > Settingses].
 .. Activate the checkbox of `aif-operator` and click btn:[Delete] above the list.
 +
-[#fig-aif-leftovers-uninstall]
+[#{root-section-id}fig-aif-leftovers-uninstall]
 .Uninstalling {saifoperator} leftovers
 image::aif-leftovers-uninstall.png[Screenshot showing how to uninstall {saifoperator} leftovers,scaledwidth=100%]
 .. Confirm the deletion.
@@ -100,7 +104,7 @@ image::aif-leftovers-uninstall.png[Screenshot showing how to uninstall {saifoper
 .. Filter the list by entering `ai-factory.suse.com` in the search box.
 .. Activate the checkbox of all `ai-factory.suse.com` resources and click btn:[Delete] above the list.
 +
-[#fig-aif-crds-uninstall]
+[#{root-section-id}fig-aif-crds-uninstall]
 .Uninstalling {saifoperator} CRDs
 image::aif-crds-uninstall.png[Screenshot showing how to uninstall {saifoperator} CRDs,scaledwidth=100%]
 .. Confirm the deletion.

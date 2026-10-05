@@ -1,36 +1,54 @@
 include::../common/generic-attributes.adoc[]
-// overridden title?
-ifdef::override-title[]
-= {override-title}
-endif::[]
-ifndef::override-title[]
-= {productname} Troubleshooting
-endif::[]
-// overridden abstract?
-ifdef::override-abstract[]
-{override-abstract}
-endif::[]
-ifndef::override-abstract[]
-{empty}
+= Troubleshooting {productname}
+:docinfo:
+:experimental:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
 endif::[]
 
-// erase the flag for future overrides
-:override-abstract!:
-:override-title!:
-
-:revdate: 2026-10-01
+:revdate: 2026-10-05
 :page-revdate: {revdate}
 
+[abstract]
+--
+Troubleshooting {productname} involves diagnosing issues across {rke2a}, {ranchera}, and containerized AI workloads.
+This guide covers fundamental troubleshooting principles, diagnostic data collection, and debugging techniques using `kubectl` and `{helm}`.
+
+:app: {saifoperator}
+include::../snippets/ai-rancher-multicluster.adoc[]
+--
+
 [#aif-troubleshooting-principles]
-:override-title: General principles
+:override-title: What troubleshooting principles should I follow?
 include::../references/AI-Factory-troubleshooting-principles.adoc[leveloffset=+1]
 
 [#aif-troubleshooting-collecting]
-:override-title: Collecting diagnostics
+:override-title: How do I collect diagnostics?
 include::../references/AI-Factory-troubleshooting-collecting.adoc[leveloffset=+1]
 
+[#aif-troubleshooting-components]
+:override-title: How do I troubleshoot related components?
+include::../references/AI-Factory-troubleshooting-components.adoc[leveloffset=+1]
+
+[#aif-troubleshooting-debugging]
+:override-title: How do I debug issues?
+include::../references/AI-Factory-troubleshooting-debugging.adoc[leveloffset=+1]
+
+
+// - - - - - - - - - -  TOPICS - - - - - - - - - - - - //
+
+:root-section-id: aif-troubleshooting
+:override-title: How do I uninstall {productname} including CRDs?
+include::../tasks/ai-factory-uninstall.adoc[leveloffset=+1]
+
 [#aif-troubleshooting-credentials]
-== What happens when a registry credentials secret is removed?
+== What happens if a registry credentials Secret is deleted?
 
 If a container registry credentials Secret (referenced by `imagePullSecrets`) is removed or invalid, currently running pods continue to operate normally because credentials are only verified during image pull operations.
 
@@ -47,3 +65,9 @@ If a pod is restarted on the *same node*, uses `imagePullPolicy: IfNotPresent`, 
 
 To resolve `ImagePullBackOff` caused by missing credentials, re-create the registry secret and ensure it is referenced in the pod specification or the default ServiceAccount for the namespace.
 Refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html[Post-deployment steps] for more details.
+
+
+[appendix]
+[#ai-factory-release-notes]
+:override-title: Release notes
+include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]
