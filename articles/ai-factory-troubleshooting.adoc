@@ -65,9 +65,3 @@ If a pod is restarted on the *same node*, uses `imagePullPolicy: IfNotPresent`, 
 
 To resolve `ImagePullBackOff` caused by missing credentials, re-create the registry secret and ensure it is referenced in the pod specification or the default ServiceAccount for the namespace.
 Refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html[Post-deployment steps] for more details.
-
-
-[appendix]
-[#ai-factory-release-notes]
-:override-title: Release notes
-include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]
