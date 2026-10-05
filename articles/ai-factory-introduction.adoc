@@ -184,7 +184,7 @@ endif::[]
 You can also create custom blueprints and select your own set of AI applications.
 
 Blueprints are grouped into catalogs.
-In addition to the blueprints bundled with {productname}, administrators can add Git repositories that contain blueprint catalogs, for example catalogs published by partners.
+Besides the blueprints bundled with {productname}, administrators can add Git repositories that contain blueprint catalogs, for example, catalogs published by partners.
 {productname} synchronizes these catalogs into the cluster through {fleeta}, and you can filter the `Blueprints` page by catalog.
 
 [#ai-factory-manager-roles]

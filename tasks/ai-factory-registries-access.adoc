@@ -186,7 +186,7 @@ This result is based on the saved settings, not on unsaved changes in the form.
 . (_Optional_) If your private mirror does not contain the default sample chart, enter a chart that is available in your repository in the `Chart to test` field.
 . Select btn:[Test] and review the results.
 . If you changed the form, select btn:[Apply] and then btn:[Test] again to verify the saved configuration in {ranchera}.
-. If a repository index failed to download, for example because you corrected the credentials or the mirror content, select btn:[Refresh] next to the saved repository.
+. If a repository index failed to download, for example, because you corrected the credentials or the mirror content, select btn:[Refresh] next to the saved repository.
 This asks {ranchera} to download the index again.
 Select btn:[Test] again to check the result.
 
@@ -198,7 +198,7 @@ It does not save your settings and does not refresh repositories.
 Only the listed chart and version in each repository are checked.
 The test does not verify all charts, full chart downloads or application container images.
 
-An {nvidia} GPU Cloud (NGC) key may have access to some {nvidia} team repositories but not to others.
+An {nvidia} GPU Cloud (NGC) key may have access to certain {nvidia} team repositories but not to others.
 An unavailable optional team repository does not mean that the key is invalid for every {nvidia} application.
 ====
 
