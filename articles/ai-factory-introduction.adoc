@@ -184,6 +184,7 @@ endif::[]
 You can also create custom blueprints and select your own set of AI applications.
 
 Blueprints are grouped into catalogs.
+The default bundled blueprints are maintianed at https://github.com/SUSE/aif/tree/main/charts/aif-operator/files/blueprints.
 Besides the blueprints bundled with {productname}, administrators can add Git repositories that contain blueprint catalogs, for example, catalogs published by partners.
 {productname} synchronizes these catalogs into the cluster through {fleeta}, and you can filter the `Blueprints` page by catalog.
 

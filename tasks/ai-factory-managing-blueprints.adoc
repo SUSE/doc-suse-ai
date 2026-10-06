@@ -29,7 +29,7 @@ image::aif-blueprints.png[Screenshot showing a list of AI blueprints,scaledwidth
 
 Blueprints are grouped into catalogs.
 Use the catalog drop-down list on the `Blueprints` page to show only the blueprints of a specific catalog.
-Blueprints bundled with {productname} are listed under `SUSE Blueprints`.
+Blueprints bundled with {productname} are listed under `SUSE Blueprints`. The default bundled blueprints are maintianed at https://github.com/SUSE/aif/tree/main/charts/aif-operator/files/blueprints.
 To add more catalogs, refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html#ai-factory-blueprint-catalogs[How do I add blueprint catalogs?].
 
 [NOTE]
