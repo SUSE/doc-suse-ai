@@ -1,0 +1,83 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-01-26
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= What is a blueprint?
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+In {productname}, blueprints are _custom resources_ (CR) of type `Blueprint` (`+ai-factory.suse.com/v1alpha1+`) that declare a list of {helm} charts and their configuration values.
+You register a blueprint on a cluster with the `kubectl apply` command.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+[NOTE]
+====
+Applying the CR deploys nothing.
+It only _registers_ the blueprint with the {saifoperator}.
+Pods appear when someone creates an _AIWorkload_ from that blueprint in the {productname} UI and selects a target namespace.
+====
+
+A blueprint directory can contain the resource definition itself plus any other assets the stack needs.
+The CR `spec` has five fields:
+
+[width="100%",cols="<50%,<50%",options="header",]
+|===
+|Field |Notes
+|`source` |Always the literal `Custom`.
+
+|`displayName` |Name displayed in the {productname} UI.
+
+|`version` |Dotted semantic version, for example, `1.0.0`.
+
+|`description` |Free text describing what the blueprint does, prerequisites, and intended usage.
+
+|`components[]` |The list of {helm} charts to install.
+|===
+
+Each component entry contains four fields:
+
+[cols="<,<",options="header",]
+|===
+|Field |Notes
+|`chartName` |Name of the chart inside the repository.
+|`chartRepo` |Name of a {rancherprime} `ClusterRepo` resource on the target cluster.
+|`chartVersion` |Target version of the chart (pinned).
+|`values` |Verbatim {helm} values for that chart.
+|===
+
+*Current limitations:*
+
+* *No namespace configuration*: The namespace is selected when creating the `AIWorkload`.
+* *No release name*: Use `fullnameOverride` in `values` to ensure predictable service names when supported by the chart.
+* *No dependency ordering*: Components are not sequenced. If your workload requires ordered initialization (such as populating a database before indexing), coordinate this inside the workload itself (for example, with an orchestrator DAG or init containers), rather than in the CR.
+
+The following example illustrates a Blueprint resource structure:
+
+[source,yaml]
+----
+apiVersion: ai-factory.suse.com/v1alpha1
+kind: Blueprint
+metadata:
+  name: example-blueprint
+spec:
+  source: Custom
+  displayName: "Example Blueprint"
+  version: "1.0.0"
+  description: "An example blueprint definition"
+  components:
+  - chartName: example-chart
+    chartRepo: example-repo
+    chartVersion: 1.0.0
+    values: {}
+----

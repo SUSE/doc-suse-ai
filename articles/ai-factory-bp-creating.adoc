@@ -24,71 +24,9 @@ The instructions assume an operational {kube} cluster with {ranchera} and {produ
 --
 
 [#aif-bp-creating-whatis]
-== What is a blueprint?
+:override-title: What is a blueprint?
+include::../concepts/aif-bp-what-is.adoc[leveloffset=+1]
 
-In {productname}, blueprints are _custom resources_ (CR) of type `Blueprint` (`+ai-factory.suse.com/v1alpha1+`) that declare a list of {helm} charts and their configuration values.
-You register a blueprint on a cluster with the `kubectl apply` command.
-
-[NOTE]
-====
-Applying the CR deploys nothing.
-It only _registers_ the blueprint with the {saifoperator}.
-Pods appear when someone creates an _AIWorkload_ from that blueprint in the {productname} UI and selects a target namespace.
-====
-
-A blueprint directory can contain the resource definition itself plus any other assets the stack needs.
-The CR `spec` has five fields:
-
-[width="100%",cols="<50%,<50%",options="header",]
-|===
-|Field |Notes
-|`source` |Always the literal `Custom`.
-
-|`displayName` |Name displayed in the {productname} UI.
-
-|`version` |Dotted semantic version, for example, `1.0.0`.
-
-|`description` |Free text describing what the blueprint does, prerequisites, and intended usage.
-
-|`components[]` |The list of {helm} charts to install.
-|===
-
-Each component entry contains four fields:
-
-[cols="<,<",options="header",]
-|===
-|Field |Notes
-|`chartName` |Name of the chart inside the repository.
-|`chartRepo` |Name of a {rancherprime} `ClusterRepo` resource on the target cluster.
-|`chartVersion` |Target version of the chart (pinned).
-|`values` |Verbatim {helm} values for that chart.
-|===
-
-*Current limitations:*
-
-* *No namespace configuration*: The namespace is selected when creating the `AIWorkload`.
-* *No release name*: Use `fullnameOverride` in `values` to ensure predictable service names when supported by the chart.
-* *No dependency ordering*: Components are not sequenced. If your workload requires ordered initialization (such as populating a database before indexing), coordinate this inside the workload itself (for example, with an orchestrator DAG or init containers), rather than in the CR.
-
-The following example illustrates a Blueprint resource structure:
-
-[source,yaml]
-----
-apiVersion: ai-factory.suse.com/v1alpha1
-kind: Blueprint
-metadata:
-  name: example-blueprint
-spec:
-  source: Custom
-  displayName: "Example Blueprint"
-  version: "1.0.0"
-  description: "An example blueprint definition"
-  components:
-  - chartName: example-chart
-    chartRepo: example-repo
-    chartVersion: 1.0.0
-    values: {}
-----
 
 [#aif-bp-creating-prerequisites]
 == What are the prerequisites?
@@ -172,7 +110,7 @@ Register the blueprint on the cluster:
 Deploy the workload from the {productname} web interface:
 
 . In the navigation menu, select *Blueprints*.
-. Select *My Demo (Ollama, CPU)* and click *Create AIWorkload*.
+. Select *My Demo ({ollama}, CPU)* and click *Create AIWorkload*.
 . Choose the target namespace.
 . Monitor the pod deployment status:
 
@@ -347,7 +285,7 @@ Key considerations for model management:
 Keep the following operational best practices in mind when constructing blueprints:
 
 * *Set `fullnameOverride`*: Always define `fullnameOverride` where supported. Without it, {helm} prefixes the service name with the generated release name, which breaks port-forwarding scripts and internal DNS resolution.
-* *Pin generated secrets in Airflow*: When using Apache Airflow, pin the generated secret keys so that pod templates remain stable across Fleet reconciliation cycles:
+* *Pin generated secrets in Airflow*: When using Apache Airflow, pin the generated secret keys so that pod templates remain stable across {fleeta} reconciliation cycles:
 
 [source,yaml]
 ----
@@ -377,7 +315,7 @@ Validate and register your blueprint using `kubectl`:
 ----
 
 [#aif-bp-creating-extra-helm-repos]
-== Managing additional Helm repositories
+== Managing additional {helm} repositories
 
 If a component requires a chart repository that is not registered on the cluster by default, create a {rancherprime} `ClusterRepo` resource and store it in `clusterrepos/`. The `metadata.name` value must match the `chartRepo` parameter in the Blueprint CR.
 
@@ -475,7 +413,7 @@ Replace the `{ollama}` component definition with the `{vllm}` component:
 
 Key configuration notes:
 
-* *`name` and `modelURL`*: The `name` parameter provides a resource label compliant with {kube} naming standards. The `modelURL` parameter identifies the Hugging Face model repository to serve.
+* *`name` and `modelURL`*: The `name` parameter provides a resource label compliant with {kube} naming standards. The `modelURL` parameter identifies the {huggingface} model repository to serve.
 * *GPU allocation*: Each entry under `modelSpec` requests dedicated GPU resources (such as `requestGPU: 1`). Multiple models run behind a unified OpenAI-compatible routing endpoint (`vllm-router-service:80`), allowing clients to select models by name.
 * *Memory management*: Tune `maxModelLen` to fit the model within GPU memory before adjusting `gpuMemoryUtilization`.
 * *Common arguments*: Use `--trust-remote-code` and `--limit-mm-per-prompt.image=N` for vision models. Use `--enable-auto-tool-choice --tool-call-parser=hermes` for function calling.
@@ -501,7 +439,7 @@ Because {vllm} provides an OpenAI-compatible API, point your client applications
 [#aif-bp-creating-gated-models]
 === Managing gated models
 
-Certain models require accepting terms of use on Hugging Face before download. To provide credentials securely:
+Certain models require accepting terms of use on {huggingface} before download. To provide credentials securely:
 
 . Configure the `hf_token` key in `modelSpec`.
 . Avoid hardcoding secret tokens directly into the Blueprint CR or git repositories.
@@ -571,7 +509,7 @@ Push changes to your Git repository *before* deploying if the blueprint uses Apa
 
 Deploy and verify the blueprint components in sequence:
 
-. Apply any required custom Helm repository resources:
+. Apply any required custom {helm} repository resources:
 +
 [source,sh,subs="+attributes"]
 ----
