@@ -1,0 +1,197 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-10-07
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Creating a {saifactory} blueprint CR for CPU inference with {ollama}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+To create a blueprint custom resource (CR) for CPU inference, define the metadata, blueprint specification, chart repository, and component values in a single manifest file.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+[#aif-bp-creating-header-metadata]
+== Header and metadata
+
+The metadata section defines the unique identity and labels for the blueprint.
+
+[source,yaml]
+----
+apiVersion: ai-factory.suse.com/v1alpha1
+kind: Blueprint
+metadata:
+  labels:
+    ai-factory.suse.com/blueprint-name: my-demo-ollama
+    ai-factory.suse.com/blueprint-version: 1.0.0
+  name: my-demo-ollama-1-0-0
+----
+
+Add a comment block at the beginning of the file summarizing what the blueprint deploys, which models it serves, and any differences from sibling variants.
+Because `kubectl apply` preserves comments in the repository source, this provides essential context for future maintenance.
+
+[#aif-bp-creating-spec]
+== Defining the blueprint specification
+
+The `spec` section outlines the display metadata and prerequisites.
+
+[source,yaml]
+----
+spec:
+  source: Custom
+  displayName: My Demo (Ollama, CPU)
+  version: 1.0.0
+  description: |
+    Deploys a demonstration stack running local models on CPU using Ollama.
+
+    This blueprint deploys Ollama in-cluster with persistent storage while maintaining a lightweight resource footprint.
+
+    Prerequisites: The SUSE AI Factory operator, the application-collection ClusterRepo and credentials secret, and a default StorageClass. After registering, create an AIWorkload from this blueprint in the Web interface.
+----
+
+Provide a concise description that ends with a clear summary of prerequisites.
+This description is displayed directly to users in the {productname} Web interface.
+
+[#aif-bp-creating-choosing-chartrepo]
+== Selecting a chart repository
+
+The `chartRepo` parameter must reference an active {rancherprime} `ClusterRepo` resource on the target cluster.
+Standard repositories in {productname} include:
+
+[width="100%",cols="<34%,<33%,<33%",options="header",]
+|===
+|Repository (`chartRepo`) |Contents |Pre-registered
+|`application-collection` |{sappco} charts (`ollama`, `vllm`, `apache-airflow`, `postgresql`, `grafana`) |Yes, on {productname} clusters.
+
+|`suse-ai-registry` |{suseai} charts (`qdrant`, `litellm`) |Yes, on {productname} clusters.
+|===
+
+If a chart is not in a pre-registered repository, add a `ClusterRepo` manifest in `clusterrepos/`.
+For more information, see xref:aif-bp-creating-extra-helm-repos[].
+
+To identify available versions of a chart in the repository:
+
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get clusterrepo application-collection \
+  -o yaml | grep -A2 downloadTime
+{prompt_user}helm search repo application-collection/ollama --versions | head
+----
+
+[#aif-bp-creating-example-values]
+== Configuring chart values
+
+Configure chart values under the `values` key:
+
+[source,yaml]
+----
+    values:
+      # Pin the service name to prevent Helm release name prefixes
+      fullnameOverride: ollama
+      image:
+        pullPolicy: IfNotPresent
+        registry: dp.apps.rancher.io
+        repository: containers/ollama
+        tag: 0.21.2-11.48
+      persistentVolume:
+        enabled: true
+        accessModes:
+        - ReadWriteOnce
+        size: 20Gi
+      service:
+        port: 11434
+        type: ClusterIP
+      env:
+      - name: QDRANT_URL
+        value: http://qdrant:6333
+----
+
+Use `ClusterIP` services and forward local ports with `kubectl port-forward` during testing.
+Define an `ingress` block only when a component provides a Web user interface that requires external access.
+
+[#aif-bp-creating-example-ollama]
+== Adding an {ollama} component
+
+The following configuration defines a standard {ollama} CPU component:
+
+[source,yaml]
+----
+  - chartName: ollama
+    chartRepo: application-collection
+    chartVersion: 1.55.0
+    values:
+      fullnameOverride: ollama
+      image:
+        pullPolicy: IfNotPresent
+        registry: dp.apps.rancher.io
+        repository: containers/ollama
+        tag: 0.21.2-11.48
+      ollama:
+        gpu:
+          enabled: false
+          draEnabled: false
+        models:
+          pull:
+          - qwen2.5:0.5b
+          run:
+          - qwen2.5:0.5b
+        port: 11434
+      persistentVolume:
+        enabled: true
+        accessModes:
+        - ReadWriteOnce
+        size: 20Gi
+      service:
+        port: 11434
+        type: ClusterIP
+----
+
+Key considerations for model management:
+
+* Models listed under `models.pull` are downloaded on initial startup. For demonstrations, lightweight models such as `qwen2.5:0.5b`, `llama3.2:1b`, and `moondream:1.8b` (vision) initialize quickly.
+* Models listed under `models.run` remain in memory. When serving multiple models, configure `extraEnv` variables such as `OLLAMA_KEEP_ALIVE` and `OLLAMA_MAX_LOADED_MODELS`.
+* Both embeddings and chat endpoints are served by the same service (`http://ollama:11434` in-cluster).
+
+[#aif-bp-creating-considerations]
+== Operational considerations
+
+Keep the following operational best practices in mind when constructing blueprints:
+
+* *Set `fullnameOverride`*: Always define `fullnameOverride` where supported. Without it, {helm} prefixes the service name with the generated release name, which breaks port-forwarding scripts and internal DNS resolution.
+* *Pin generated secrets in Airflow*: When using Apache Airflow, pin the generated secret keys so that pod templates remain stable across {fleeta} reconciliation cycles:
+
+[source,yaml]
+----
+      # Pin generated secret keys to prevent Fleet reconciliation loops
+      fernetKey: "Nv3aCd-3agJbJG1QxzKMezX5pJZB4fRpZIrqhdS-MA4="
+      jwtSecret: "72873f21d1682ddc023f0815344d1cdc0157e59c9c5480bcb430686d6ed466d3"
+      WebserverSecretKey: "bb3ea2e3f0a3ad96a2f440ab3ca4e3406985aaf72182662ebd339f53a7a28a7a"
+----
+
+[NOTE]
+===
+For production environments, reference pre-created {kube} secrets rather than hardcoding static secrets in the blueprint definition.
+===
+
+* *Disable unused sub-charts*: When using `LocalExecutor` with Airflow, set `redis.enabled: false` and `flower.enabled: false` to avoid deploying unnecessary pods that consume cluster resources.
+
+[#aif-bp-creating-verify]
+== Verifying the blueprint registration
+
+Validate and register your blueprint using `kubectl`:
+
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl apply --dry-run=server -f my-demo-ollama-1-0-0.yaml
+{prompt_user}kubectl apply -f my-demo-ollama-1-0-0.yaml
+{prompt_user}kubectl get blueprint my-demo-ollama-1-0-0 -o yaml
+----

@@ -1,0 +1,127 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-10-07
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= {saifactory} blueprint templates and reference architectures
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+
+[#aif-bp-creating-minimal-skeleton]
+== Minimal two-component blueprint template
+
+[source,yaml]
+----
+apiVersion: ai-factory.suse.com/v1alpha1
+kind: Blueprint
+metadata:
+  labels:
+    ai-factory.suse.com/blueprint-name: my-demo-ollama   # == folder name
+    ai-factory.suse.com/blueprint-version: 1.0.0         # dots
+  name: my-demo-ollama-1-0-0                             # dashes
+# One-paragraph comment: what this demo does, which models it serves, and how it
+# differs from its sibling variant.
+spec:
+  source: Custom  # community, unsupported demo blueprint (CRD enum has no "Community")
+  displayName: My Demo (Ollama, CPU)
+  version: 1.0.0
+  description: |
+    What the demo does and which component does what.
+
+    What this CR deploys versus what runs locally, plus a pointer to the sibling
+    variant.
+
+    Prerequisites: the SUSE AI Factory operator, the application-collection
+    ClusterRepo (+ credentials secret), a default StorageClass. After importing,
+    create an AIWorkload from this Blueprint in the AI Factory UI.
+  components:
+  # ----------------------------------------------------------------------- #
+  # Ollama — local LLM, CPU. Reachable in-cluster at http://ollama:11434.
+  # ----------------------------------------------------------------------- #
+  - chartName: ollama
+    chartRepo: application-collection
+    chartVersion: 1.55.0
+    values:
+      fullnameOverride: ollama          # pin the service name
+      image:
+        pullPolicy: IfNotPresent
+        registry: dp.apps.rancher.io
+        repository: containers/ollama
+        tag: 0.21.2-11.48
+      ollama:
+        gpu:
+          enabled: false
+          draEnabled: false
+        models:
+          pull:
+          - qwen2.5:0.5b                # literal value — never {{MODEL}}
+          run:
+          - qwen2.5:0.5b
+        port: 11434
+      persistentVolume:
+        enabled: true
+        accessModes:
+        - ReadWriteOnce
+        size: 20Gi
+      service:
+        port: 11434
+        type: ClusterIP
+  # ----------------------------------------------------------------------- #
+  # Qdrant — vector store. Reachable in-cluster at http://qdrant:6333 (REST).
+  # ----------------------------------------------------------------------- #
+  - chartName: qdrant
+    chartRepo: suse-ai-registry
+    chartVersion: 1.17.0
+    values:
+      fullnameOverride: qdrant
+      persistence:
+        accessModes: ["ReadWriteOnce"]
+        size: 5Gi
+      service:
+        type: ClusterIP
+----
+
+[#aif-bp-creating-clusterrepo-skeleton]
+== ClusterRepo template
+
+[source,yaml]
+----
+# Registers an upstream Helm repo as a ClusterRepo, so Blueprint CR components with
+# `chartRepo: <NAME>` resolve. Apply BEFORE the Blueprint CR:
+#   kubectl apply -f <NAME>-clusterrepo.yaml
+apiVersion: catalog.cattle.io/v1
+kind: ClusterRepo
+metadata:
+  name: <NAME>          # MUST equal the chartRepo value used in the CR
+spec:
+  url: https://charts.example.com          # or: oci://registry-1.docker.io/<ORG>
+----
+
+[#aif-bp-creating-reference-blueprints]
+== Reference blueprints
+
+[width="100%",cols="<50%,<50%",options="header",]
+|===
+|Architecture pattern |Reference blueprint
+|Minimal single-model CR |`visiongpt-ollama`, `visiongpt-vllm`
+|Full stack (Airflow, PostgreSQL, Qdrant, Ollama) |`dora-compliance-ollama`
+|Upstream third-party Helm repositories |`data-governance-ollama`
+|Custom Airflow images |`fraud-detection-ollama`
+|Multi-model GPU serving |`finops-multimodel-vllm`
+|Hybrid architecture (GPU chat and CPU embeddings) |`insurance-support-vllm`
+|Comprehensive README and DAG documentation |`airflow-genai-rag`
+|===

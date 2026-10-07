@@ -1,0 +1,114 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-10-07
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Creating a {saifactory} blueprint CR for GPU inference with {vllm}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+To deploy GPU-accelerated inference with {vllm}, adapt an existing CPU blueprint by creating a separate hardware variant with dedicated GPU configurations.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+Hardware variants are organized in separate directories. Create a GPU variant from your CPU base configuration:
+
+[source,sh]
+----
+cp -r blueprints/my-demo-ollama blueprints/my-demo-vllm
+cd blueprints/my-demo-vllm
+mv my-demo-ollama-1-0-0.yaml my-demo-vllm-1-0-0.yaml
+----
+
+Update the resource fields following the renaming checklist in xref:aif-bp-creating-quickstart[]:
+
+1. Set `spec.displayName` to `My Demo (vLLM, GPU)`.
+2. Update the `spec.description` text to specify {nvidia} GPU requirements.
+3. Cross-reference the sibling CPU variant in `README.md`.
+
+[#aif-bp-creating-swap-ollama-vllm]
+== Replacing {ollama} with {vllm}
+
+Replace the `{ollama}` component definition with the `{vllm}` component:
+
+[source,yaml]
+----
+  - chartName: vllm
+    chartRepo: application-collection
+    chartVersion: 0.1.10
+    values:
+      servingEngineSpec:
+        runtimeClassName: nvidia
+        modelSpec:
+          - name: qwen25-vl-3b
+            registry: dp.apps.rancher.io
+            repository: containers/vllm-openai
+            tag: "0.19.0-5.29"
+            modelURL: Qwen/Qwen2.5-VL-3B-Instruct
+            replicaCount: 1
+            requestCPU: 6
+            requestMemory: "16Gi"
+            requestGPU: 1
+            pvcStorage: "50Gi"
+            vllmConfig:
+              maxModelLen: 32768
+              dtype: bfloat16
+              gpuMemoryUtilization: 0.9
+              # Vision flags: enable remote code execution and limit images per prompt
+              extraArgs:
+              - "--trust-remote-code"
+              - "--limit-mm-per-prompt.image=2"
+      routerSpec:
+        enableRouter: true
+        serviceType: ClusterIP
+        containerPort: 8000
+        servicePort: 80
+----
+
+Key configuration notes:
+
+* *`name` and `modelURL`*: The `name` parameter provides a resource label compliant with {kube} naming standards. The `modelURL` parameter identifies the {huggingface} model repository to serve.
+* *GPU allocation*: Each entry under `modelSpec` requests dedicated GPU resources (such as `requestGPU: 1`). Multiple models run behind a unified OpenAI-compatible routing endpoint (`vllm-router-service:80`), allowing clients to select models by name.
+* *Memory management*: Tune `maxModelLen` to fit the model within GPU memory before adjusting `gpuMemoryUtilization`.
+* *Common arguments*: Use `--trust-remote-code` and `--limit-mm-per-prompt.image=N` for vision models. Use `--enable-auto-tool-choice --tool-call-parser=hermes` for function calling.
+
+[#aif-bp-creating-reaching-vllm]
+== Accessing the {vllm} service
+
+Test the model endpoint by forwarding the service port locally:
+
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl -n <NAMESPACE> port-forward svc/vllm-router-service 8000:80
+{prompt_user}curl -s localhost:8000/v1/models | python3 -m json.tool
+----
+
+[NOTE]
+===
+If the Helm release uses a custom name, the service follows the naming convention `<RELEASE_NAME>-router-service`.
+===
+
+Because {vllm} provides an OpenAI-compatible API, point your client applications to `/v1/chat/completions` on the router service port.
+
+[#aif-bp-creating-gated-models]
+== Managing gated models
+
+Certain models require accepting terms of use on {huggingface} before download. To provide credentials securely:
+
+. Configure the `hf_token` key in `modelSpec`.
+. Avoid hardcoding secret tokens directly into the Blueprint CR or git repositories.
+. Reference pre-created {kube} secrets containing the token in production environments.
+
+[#aif-bp-creating-useful-hybrid]
+== Configuring hybrid architectures
+
+You can combine GPU and CPU inference components in the same blueprint. For example, deploy `{vllm}` with GPU acceleration for large language and vision models, alongside an `{ollama}` CPU instance dedicated to lightweight text embedding models (such as `nomic-embed-text`). This preserves GPU resources while maintaining high-throughput text embeddings.

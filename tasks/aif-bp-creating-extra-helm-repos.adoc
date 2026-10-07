@@ -1,0 +1,57 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-10-07
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Managing additional {helm} repositories for {saifactory} blueprints
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+If a component requires a chart repository that is not registered on the cluster by default, create a {rancherprime} `ClusterRepo` resource and store it in `clusterrepos/`.
+The `metadata.name` value must match the `chartRepo` parameter in the Blueprint CR.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+For example, to register an HTTPS repository:
+
+[source,yaml]
+----
+apiVersion: catalog.cattle.io/v1
+kind: ClusterRepo
+metadata:
+  name: openmetadata
+spec:
+  url: https://helm.open-metadata.org
+----
+
+To register an OCI registry:
+
+[source,yaml]
+----
+apiVersion: catalog.cattle.io/v1
+kind: ClusterRepo
+metadata:
+  name: bitnami
+spec:
+  url: oci://registry-1.docker.io/bitnamicharts
+----
+
+Apply repository resources before registering the blueprint:
+
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f clusterrepos/
+{prompt_user}kubectl get clusterrepo <REPO_NAME> -o jsonpath='{.status.conditions}'   # Wait for Downloaded status
+{prompt_user}kubectl apply -f my-demo-ollama-1-0-0.yaml
+----
+
+Note upstream chart licensing in the file comment header when using non-SUSE charts.

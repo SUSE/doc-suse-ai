@@ -2,7 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-01-26
+:revdate: 2026-10-07
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
