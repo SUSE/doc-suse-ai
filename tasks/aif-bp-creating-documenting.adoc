@@ -28,7 +28,7 @@ Every blueprint must include a `README.md` providing clear instructions and arch
 
 [source,markdown]
 ----
-# My Demo (Ollama) — SUSE AI Factory Blueprint
+# My Demo (Ollama) — SUSE AI Factory blueprint
 
 Deploys a multi-component demo featuring **Ollama** and **Qdrant**.
 

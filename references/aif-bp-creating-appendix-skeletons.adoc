@@ -47,7 +47,7 @@ spec:
 
     Prerequisites: the SUSE AI Factory operator, the application-collection
     ClusterRepo (+ credentials secret), a default StorageClass. After importing,
-    create an AIWorkload from this Blueprint in the AI Factory UI.
+    create an AIWorkload from this blueprint in the AI Factory UI.
   components:
   # ----------------------------------------------------------------------- #
   # Ollama — local LLM, CPU. Reachable in-cluster at http://ollama:11434.

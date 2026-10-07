@@ -62,7 +62,7 @@ Each component entry contains four fields:
 * *No release name*: Use `fullnameOverride` in `values` to ensure predictable service names when supported by the chart.
 * *No dependency ordering*: Components are not sequenced. If your workload requires ordered initialization (such as populating a database before indexing), coordinate this inside the workload itself (for example, with an orchestrator DAG or init containers), rather than in the CR.
 
-The following example illustrates a Blueprint resource structure:
+The following example illustrates a blueprint resource structure:
 
 [source,yaml]
 ----

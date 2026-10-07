@@ -105,7 +105,7 @@ Because {vllm} provides an OpenAI-compatible API, point your client applications
 Certain models require accepting terms of use on {huggingface} before download. To provide credentials securely:
 
 . Configure the `hf_token` key in `modelSpec`.
-. Avoid hardcoding secret tokens directly into the Blueprint CR or git repositories.
+. Avoid hardcoding secret tokens directly into the blueprint CR or git repositories.
 . Reference pre-created {kube} secrets containing the token in production environments.
 
 [#aif-bp-creating-useful-hybrid]
