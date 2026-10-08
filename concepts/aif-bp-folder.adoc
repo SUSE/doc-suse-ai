@@ -20,6 +20,9 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
+Partner blueprints are maintained in the link:https://github.com/SUSE/partner-blueprints/[SUSE partner-blueprints repository].
+Each blueprint should follow the directory structure described below.
+
 [source,text]
 ----
 blueprints/<ID>/
