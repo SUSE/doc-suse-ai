@@ -20,7 +20,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-31
+:revdate: 2026-10-06
 :page-revdate: {revdate}
 
 
@@ -48,6 +48,14 @@ Restrict which registry hosts the operator may pull from by setting an allowlist
 * *Blueprint portability.* Blueprints reference a chart repository by its identity rather than by its URL.
 The registry endpoints you configure on the `Settings` page determine where that repository is hosted, so the same blueprints deploy unchanged against your local mirror.
 Both the {nvidia} application and {nvidia} blueprint repositories are preserved when mirrored, so {nvidia} blueprints continue to resolve.
+When you switch to a private {nvidia} mirror, all {nvidia} team repository aliases derived from the catalog, such as `nvidia-runai` or `nim-nvidia`, are preserved, so existing workloads can still be upgraded and redeployed.
+
+* *Catalog logos.* Logos of {suseai} charts are bundled with the UI extension, so catalog tiles show the correct logo without access to external URLs.
+Blueprint partner icons given as `https://` URLs do not load in air-gapped environments.
+If you publish blueprints for air-gapped environments, provide icons as base64-encoded `data:` URIs instead.
+
+* *Custom chart repositories.* You can add chart repositories hosted on your private network as custom repositories, as described in link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html#ai-factory-custom-repos[How do I add custom chart repositories?].
+Tests of unsaved repositories cannot reach private network addresses, so apply the settings before you test such a repository.
 
 * *Private CA certificates.* Store the PEM-encoded CA certificate in a secret in the `aif-operator` namespace and select it for {sappco}, {sregistry} and {nvidia} in menu:SUSE AI Factory[Settings].
 {productname} propagates the certificate to {ranchera} and {fleeta}, and handles certificate and credential rotation, so you do not need to disable TLS verification.
@@ -56,7 +64,7 @@ Both the {nvidia} application and {nvidia} blueprint repositories are preserved 
 Git over SSH is not supported.
 
 * *Container images.* Set `global.imageRegistry` on the `aif-operator` chart to redirect every image shipped by the operator and the UI extension to your local registry, and set `global.imagePullSecrets` for the corresponding credentials.
-The CRD lifecycle job additionally requires the `kubectl` image defined by the `crds.image` values, so mirror that image as well.
+The CRD lifecycle job additionally requires the `kubectl` image defined by the `crds.image` values, and the {ranchera} readiness job requires the `kubectl` image defined by the `global.kubectl.image` values, so mirror these images as well.
 
 * *Cluster preparation is a separate task.* {productname} configures its own chart repositories, Git access, credentials and CA trust.
 It does not configure node and {containerd} registry mirrors, registry fallback policy, DNS, host proxies or operating system repositories.

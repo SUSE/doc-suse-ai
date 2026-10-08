@@ -2,7 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:revdate: 2026-01-26
+:revdate: 2026-10-06
 :page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
@@ -45,6 +45,15 @@ endif::[]
 +
 The list sorts charts supported by {productname} first by default (you can also sort by name).
 You can limit the list by entering a search string.
+If an administrator added custom chart repositories, each of them has its own library in the drop-down list.
+For more details, refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html#ai-factory-custom-repos[How do I add custom chart repositories?].
++
+[NOTE]
+.Applications from unavailable repositories
+====
+If the chart repository of an application is unavailable, the application remains visible in the list but cannot be installed.
+The `Overview` page lists the failing repositories with links to *Settings*, where you can verify the repository as described in link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html#ai-factory-verify-repositories[How do I verify access to a chart repository?].
+====
 . Use the `Basic Information` screen of the installation wizard to update the instance name, namespace, and version of the application.
 +
 [#fig-aif-apps-install-basic]

@@ -12,7 +12,7 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-07-01
+:revdate: 2026-10-06
 :page-revdate: {revdate}
 
 [#aif-overview]
@@ -151,12 +151,17 @@ Both running applications and blueprints can be shared across {ranchera}-managed
 The {kube} operator serves a built-in application catalog that the UI loads by default.
 Because this catalog ships with {productname}, you can browse and install applications without the management cluster reaching out to live chart repositories, which also makes the catalog available in air-gapped environments.
 Administrators can optionally enable runtime discovery to populate the catalog from live chart repositories instead.
+Administrators can also add their own {helm}, OCI and Git chart repositories on the `Settings` page.
+Applications from these custom repositories are listed in the catalog alongside the built-in libraries.
 
 Blueprints reference a chart repository by its identity rather than by its URL, and the registry endpoints configured on the `Settings` page determine where that repository is hosted.
 The same blueprints therefore deploy unchanged in a connected environment and against a local mirror in an air-gapped environment.
 
 Running blueprint workloads can be upgraded to a newer blueprint version, rolled back to the previously deployed version, or retried after a failed deployment.
 A version becomes a rollback target only after it has been fully rolled out across all target clusters for the workload.
+
+Before deploying a blueprint, you can override the {helm} values of its components and exclude components you do not need.
+{productname} saves only the values that you change and marks workloads whose configuration differs from the blueprint defaults as `Customized`.
 
 [#ai-factory-blueprints]
 === Blueprints
@@ -177,6 +182,11 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 The {productname} software includes a set of prebuilt {nvidia} blueprints.
 endif::[]
 You can also create custom blueprints and select your own set of AI applications.
+
+Blueprints are grouped into catalogs.
+The default bundled blueprints are maintianed at https://github.com/SUSE/aif/tree/main/charts/aif-operator/files/blueprints.
+Besides the blueprints bundled with {productname}, administrators can add Git repositories that contain blueprint catalogs, for example, catalogs published by partners.
+{productname} synchronizes these catalogs into the cluster through {fleeta}, and you can filter the `Blueprints` page by catalog.
 
 [#ai-factory-manager-roles]
 == What are the workflows and responsibilities?
