@@ -5,4 +5,10 @@ description: Review and polish the selected text or the whole active document ac
 
 # Styleguide Review
 
-Please review the selected text or the whole active document following the numbered prompts from the ai-prompts/ directory.
+Please review the
+
+a) selected text if there is any
+or
+b) the whole active document if no text is selected
+
+following the numbered prompts from the ai-prompts/suse-style-guide/ directory.
