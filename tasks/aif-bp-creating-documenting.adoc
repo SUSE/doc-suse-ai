@@ -1,0 +1,64 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-10-07
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Documenting a custom {saifactory} blueprint
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Documenting your {saifactory} blueprint with a comprehensive `README.md` and an architecture diagram ensures that users understand its components, prerequisites and deployment process.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+
+[#aif-bp-creating-readme]
+== Creating the README file
+
+Every blueprint must include a `README.md` providing clear instructions and architectural context. Structure the file according to the standard blueprint template:
+
+[source,markdown]
+----
+# My Demo (Ollama) — SUSE AI Factory blueprint
+
+Deploys a multi-component demo featuring **Ollama** and **Qdrant**.
+
+Blueprint CR: [`my-demo-ollama-1-0-0.yaml`](my-demo-ollama-1-0-0.yaml)
+
+## Architecture
+![my-demo-ollama architecture diagram](../images/my-demo-ollama.png)
+
+*Every component runs on **SUSE AI Factory** (Kubernetes / Rancher). The demo UI is shown as an example only and is not part of the product. Vector source: [`../images/my-demo-ollama.svg`](../images/my-demo-ollama.svg).*
+
+## Components
+| Component | Chart (App Collection) | Role |
+
+## How it works
+## Prerequisites (on the target downstream cluster)
+## 1. Publish DAGs (git-sync)
+## 2. Register the blueprint
+## 3. Run the workload
+## 4. Run the user interface
+## Customization
+## Cleanup
+----
+
+[#aif-bp-creating-attribution]
+== Providing attribution
+
+If a blueprint derives from an upstream open source project, add an `ATTRIBUTION.md` file detailing:
+
+* Reused components and modifications.
+* Upstream repository URL and SPDX license identifier.
+* Chart and model license requirements (for example, models with non-commercial license terms).
+
+Link to `ATTRIBUTION.md` from the lead section of `README.md`.

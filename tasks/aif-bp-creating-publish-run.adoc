@@ -1,0 +1,79 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-10-07
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Publish and run a {saifactory} blueprint
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+After creating and documenting your {saifactory} blueprint, commit the files to your repository, register the custom resource on the cluster, and launch the workload from the Web interface.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+. Commit the blueprint files to a Git repository.
+For partner blueprints, use the link:https://github.com/SUSE/partner-blueprints/[SUSE partner-blueprints repository].
++
+[source,sh]
+----
+git add blueprints/my-demo-ollama
+git commit -m "Add My Demo (Ollama, CPU) blueprint"
+git push
+----
++
+[IMPORTANT]
+====
+Push changes to your Git repository *before* deploying if the blueprint uses Apache Airflow: git-sync pulls DAGs directly from the pushed branch.
+====
+
+. Deploy and verify the blueprint components in sequence:
+
+.. Apply any required custom {helm} repository resources:
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f blueprints/my-demo-ollama/clusterrepos/
+----
+
+.. Register the blueprint resource on the cluster:
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f blueprints/my-demo-ollama/my-demo-ollama-1-0-0.yaml
+{prompt_user}kubectl get blueprints.ai-factory.suse.com
+----
+
+.. In the {productname} Web interface, navigate to *Blueprints*, select your blueprint, and click *Create AIWorkload*. Choose the target namespace.
+
+.. Verify that the pods and PVCs initialize correctly:
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl -n <NAMESPACE> get pods -w
+{prompt_user}kubectl -n <NAMESPACE> get pvc
+----
+
+.. If using Apache Airflow, unpause and execute the DAGs:
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl -n <NAMESPACE> port-forward svc/apache-airflow-api-server 8080:8080
+----
+
+.. Forward local ports for any service that needs to communicate with the client or user interface.
+
+. To clean up, delete the `AIWorkload` from the {productname} Web interface, then delete the blueprint custom resource:
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl delete -f blueprints/my-demo-ollama/my-demo-ollama-1-0-0.yaml
+----

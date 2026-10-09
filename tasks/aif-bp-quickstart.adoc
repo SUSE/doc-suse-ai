@@ -1,0 +1,63 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-10-07
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Copying existing {saifactory} blueprints
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The fastest path to creating a blueprint is copying and adapting an existing one.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+. Download an example blueprint manifest YAML file.
++
+[source,sh]
+----
+wget https://github.com/SUSE/aif/blob/59be88cd2944b433720de3fe0c27042961f0f7e7/charts/aif-operator/files/blueprints/simple-chatbot-with-rag-1.0.0.yaml
+----
+
+. Edit `my-demo-ollama-1-0-0.yaml` to configure your blueprint.
++
+[width="100%",cols="<34%,<33%,<33%",options="header",]
+|===
+|Parameter |Original value |New value
+|CR file name |`simple-chatbot-with-rag-1.0.0.yaml` |`my-demo-ollama-1-0-0.yaml`
+|`metadata.name` |`simple-chatbot-with-rag-1-0-0` |`my-demo-ollama-1-0-0` (use hyphens)
+|`labels[.../blueprint-name]` |`simple-chatbot-with-rag` |`my-demo-ollama`
+|`spec.displayName` |`Simple Chat Bot with RAG` |`My Demo (Ollama, CPU)`
+|`spec.description` |Original description text |Your customized description
+|===
+
+. Register the blueprint on the cluster.
++
+[source,sh,subs="+attributes"]
+----
+# Run a server-side dry run first to validate schema
+{prompt_user}kubectl apply --dry-run=server -f my-demo-ollama-1-0-0.yaml
+
+# Apply the resource to register it
+{prompt_user}kubectl apply -f my-demo-ollama-1-0-0.yaml
+{prompt_user}kubectl get blueprints.ai-factory.suse.com
+----
+
+. Deploy the workload from the {productname} Web interface.
+.. In the navigation menu, select *Blueprints*.
+.. Select *My Demo ({ollama}, CPU)* and click *Create AIWorkload*.
+.. Choose the target namespace.
+.. Monitor the pod deployment status.
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl -n <NAMESPACE> get pods -w
+----
