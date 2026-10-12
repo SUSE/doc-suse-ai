@@ -1,0 +1,41 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-10-07
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Understanding the {saifactory} blueprint directory structure
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+While only the custom resource definition is mandatory, organizing files in a standardized directory structure ensures consistency across blueprints.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+Partner blueprints are maintained in the link:https://github.com/SUSE/partner-blueprints/[SUSE partner-blueprints repository].
+Each blueprint should follow the directory structure described below.
+
+[source,text]
+----
+blueprints/<ID>/
+  <ID>-1-0-0.yaml        # REQUIRED — the Blueprint CR
+  README.md              # Documentation and architecture details
+  ATTRIBUTION.md         # Attribution details if derived from an upstream open source project
+  clusterrepos/*.yaml    # Additional ClusterRepo definitions to apply before the CR
+----
+
+If the workload requires additional {kube} objects, store them in the same directory and document their deployment procedure in `README.md`.
+
+Naming conventions:
+
+* *Directory ID*: Matches the value in `metadata.labels[ai-factory.suse.com/blueprint-name]`.
+* *CR file name*: Uses the format `<ID>-1-0-0.yaml`. The `metadata.name` field uses hyphens (for example, `my-demo-ollama-1-0-0`), while `spec.version` and the version label use dots (such as `1.0.0`).
+* *Hardware variants*: Maintain CPU and GPU variants in separate sibling directories (such as `<NAME>-ollama` and `<NAME>-vllm`), using `displayName` suffixes such as `(Ollama, CPU)` and `(vLLM, GPU)` and cross-linking them in their respective `README.md` files.

@@ -1,0 +1,62 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-10-07
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= Troubleshooting {saifactory} blueprint deployment issues
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+The following table lists common deployment symptoms and their resolutions:
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+
+[width="100%",cols="<40%,<60%",options="header",]
+|===
+|Symptom |Resolution
+|Ollama attempts to pull `{\{MODEL}}`. |Replace template placeholder strings with literal model identifiers in the CR.
+
+|Charts fail to resolve or pods are not created. |Ensure the target `chartRepo` exists as an active `ClusterRepo`. Apply repository manifests in `clusterrepos/` and verify the `Downloaded` condition.
+
+|Airflow pods restart repeatedly without entering the `Ready` state. |Pin generated secret keys (`fernetKey`, `jwtSecret`, `webserverSecretKey`) to prevent Fleet reconciliation loops.
+
+|Port-forward or cluster DNS lookups fail. |Ensure `fullnameOverride` is specified in chart values to prevent release name prefixes in service names.
+
+|DAGs do not appear in the Airflow interface. |Verify git-sync parameters (`repo`, `subPath`, `branch`), confirm the repository is reachable from the cluster, and ensure local commits have been pushed.
+
+|DAGs appear in Airflow but do not run. |Ensure DAGs are unpaused in the Airflow user interface.
+
+|DAG import fails on third-party packages. |Package required dependencies into a customized container image.
+
+|`FileNotFoundError` on `include/` paths. |Store referenced files within `dags/`, as only `dags/` is synchronized by default.
+
+|Pods remain in `Pending` state on GPU nodes. |Verify that the {nvidia} GPU Operator is running, the `nvidia` RuntimeClass exists, and requested GPUs do not exceed allocatable cluster capacity.
+
+|PVC remains in `Pending` state. |Configure a default `StorageClass` or explicitly define an existing storage class in `values`.
+
+|`ImagePullBackOff` from `dp.apps.rancher.io`. |Verify the `application-collection` credentials secret. Ensure the token string contains only the raw token value without environment variable prefixes.
+
+|vLLM pods terminate with out-of-memory errors. |Reduce `maxModelLen`, then adjust `gpuMemoryUtilization`.
+
+|User interface connects but API calls fail. |Verify active `kubectl port-forward` processes and check whether environment variables point to `localhost` rather than internal cluster service addresses.
+|===
+
+Common diagnostic commands:
+
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl -n <NAMESPACE> get pods,svc,pvc
+{prompt_user}kubectl -n <NAMESPACE> describe pod <POD_NAME>
+{prompt_user}kubectl -n <NAMESPACE> logs deploy/<DEPLOYMENT_NAME> --tail=100
+{prompt_user}kubectl get clusterrepo -o wide
+----

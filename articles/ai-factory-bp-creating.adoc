@@ -1,0 +1,69 @@
+include::../common/generic-attributes.adoc[]
+= Creating {productname} Blueprints
+:docinfo:
+:experimental:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+:revdate: 2026-10-06
+:page-revdate: {revdate}
+
+[abstract]
+--
+This guide walks you through creating custom blueprints for {productname} using the command line.
+Learn how to quickly adapt an existing blueprint and how to build a full multi-component stack from scratch, supporting both CPU ({ollama}) and {nvidia} GPU ({vllm}) inference.
+
+The instructions assume an operational {kube} cluster with {ranchera} and {productname} installed (including {nvidia} GPU support if using {vllm}), and that you maintain your blueprint files in a Git repository.
+--
+
+[#aif-bp-creating-whatis]
+:override-title: What is a blueprint?
+include::../concepts/aif-bp-what-is.adoc[leveloffset=+1]
+
+[#aif-bp-creating-prerequisites]
+:override-title: What are the prerequisites?
+include::../references/aif-bp-prerequisites.adoc[leveloffset=+1]
+
+[#aif-bp-creating-quickstart]
+:override-title: Quick start: copy an existing blueprint
+include::../tasks/aif-bp-quickstart.adoc[leveloffset=+1]
+
+[#aif-bp-creating-folder]
+:override-title: What is the blueprint directory structure?
+include::../concepts/aif-bp-folder.adoc[leveloffset=+1]
+
+[#aif-bp-creating-writing-cr-ollama]
+:override-title: How do I create a blueprint CR for CPU inference with {ollama}?
+include::../tasks/aif-bp-creating-writing-cr-ollama.adoc[leveloffset=+1]
+
+[#aif-bp-creating-writing-cr-vllm]
+:override-title: How do I create a blueprint CR for GPU inference with {vllm}?
+include::../tasks/aif-bp-creating-writing-cr-vllm.adoc[leveloffset=+1]
+
+[#aif-bp-creating-extra-helm-repos]
+:override-title: How do I manage additional {helm} repositories?
+include::../tasks/aif-bp-creating-extra-helm-repos.adoc[leveloffset=+1]
+
+[#aif-bp-creating-documenting]
+:override-title: How do I document a blueprint?
+include::../tasks/aif-bp-creating-documenting.adoc[leveloffset=+1]
+
+[#aif-bp-creating-publish-run]
+:override-title: How do I publish and run a blueprint?
+include::../tasks/aif-bp-creating-publish-run.adoc[leveloffset=+1]
+
+[#aif-bp-creating-troubleshooting]
+:override-title: How do I troubleshoot blueprint deployment issues?
+include::../references/aif-bp-creating-publish-run.adoc[leveloffset=+1]
+
+[appendix]
+[#aif-bp-creating-appendix-skeletons]
+:override-title: Blueprint templates and reference architectures
+include::../references/aif-bp-creating-appendix-skeletons.adoc[leveloffset=+1]

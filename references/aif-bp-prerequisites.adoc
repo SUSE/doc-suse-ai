@@ -1,0 +1,119 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+:revdate: 2026-10-07
+:page-revdate: {revdate}
+endif::[]
+ifndef::override-title[]
+= {saifactory} blueprint prerequisites
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Before creating and registering custom {productname} blueprints, ensure your workstation and target cluster satisfy the necessary prerequisites.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+[#aif-bp-prerequisites-workstation]
+== Workstation requirements
+
+To author, register and inspect blueprints, you need the {kube} command-line tool installed and configured with administrative access to your cluster:
+
+* *{kube} CLI (`kubectl`)*: Must be installed on your local workstation.
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl version --client
+----
+
+* *Git*: Recommended for versioning blueprint manifests, DAG files, and documentation.
+
+[#aif-bp-prerequisites-cluster]
+== Cluster requirements
+
+Cluster prerequisites depend on whether they are required for all blueprints or only for specific workload features.
+
+[#aif-bp-prerequisites-mandatory]
+=== Mandatory requirements
+
+Every {productname} cluster hosting custom blueprints requires:
+
+* *{productname} Operator*:
+The operator manages the `Blueprint` and `AIWorkload` custom resource definitions (CRDs). Without it, the cluster cannot interpret blueprint manifests.
++
+Verify the CRD is registered:
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get crd blueprints.ai-factory.suse.com
+----
+
+* *{sappco} repository (`ClusterRepo`)*:
+Supplies standard {helm} charts packaged for {productname} (such as {ollama}, {vllm}, Apache Airflow, {postgresql}, and {grafana}).
++
+Verify the repository is registered:
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get clusterrepo application-collection
+----
+
+* *Repository pull credentials*:
+An Opaque {kube} secret containing authentication keys (`user` and `token`) so {helm} can pull charts and container images from {sappco}.
++
+Verify the secret exists in the target operator namespace (typically `aif-operator`):
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl -n aif-operator \
+  get secret application-collection \
+  -o jsonpath='{.data}' | head -c 200
+----
+
+[#aif-bp-prerequisites-conditional]
+=== Conditional requirements
+
+Depending on the charts and features declared in your blueprint, the cluster may require additional resources:
+
+* *Default StorageClass* (required for persistent components):
+Blueprints deploying databases (such as {postgresql} or {qdrant}) or caching models on disk require persistent volume claims (PVCs). If chart values do not specify an explicit storage class name, a default `StorageClass` must be defined.
++
+Verify that a default storage class is configured:
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get storageclass | grep '(default)'
+----
+
+* *{certmanager}* (required for TLS {ingress}):
+Needed if any blueprint component configures an external {ingress} with automatic TLS certificates (for example, the Apache Airflow Web user interface).
++
+Verify that the `cert-manager` CRDs exist:
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get crd certificates.cert-manager.io
+----
+
+* *{nvidia} GPU support* (required for GPU inference engines like {vllm}):
+Workloads serving models via {vllm} require physical {nvidia} GPUs and the {nvidia} container runtime.
++
+Verify allocatable GPU capacity and the `nvidia` RuntimeClass:
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get nodes \
+  -o custom-columns=NAME:.metadata.name,GPU:.status.allocatable.nvidia\\.com/gpu
+{prompt_user}kubectl get runtimeclass nvidia
+----
++
+[NOTE]
+====
+Simulated GPU tools (such as kwok or fake-gpu-operator) can schedule GPU workload pods, but functional model inference requires physical GPUs.
+====
