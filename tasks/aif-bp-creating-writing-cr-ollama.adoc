@@ -174,13 +174,13 @@ Keep the following operational best practices in mind when constructing blueprin
       # Pin generated secret keys to prevent Fleet reconciliation loops
       fernetKey: "Nv3aCd-3agJbJG1QxzKMezX5pJZB4fRpZIrqhdS-MA4="
       jwtSecret: "72873f21d1682ddc023f0815344d1cdc0157e59c9c5480bcb430686d6ed466d3"
-      WebserverSecretKey: "bb3ea2e3f0a3ad96a2f440ab3ca4e3406985aaf72182662ebd339f53a7a28a7a"
+      webserverSecretKey: "bb3ea2e3f0a3ad96a2f440ab3ca4e3406985aaf72182662ebd339f53a7a28a7a"
 ----
 
 [NOTE]
-===
+====
 For production environments, reference pre-created {kube} secrets rather than hardcoding static secrets in the blueprint definition.
-===
+====
 
 * *Disable unused sub-charts*: When using `LocalExecutor` with Airflow, set `redis.enabled: false` and `flower.enabled: false` to avoid deploying unnecessary pods that consume cluster resources.
 
