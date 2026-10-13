@@ -1,5 +1,6 @@
 [#ai-system-prompt-benefits]
 = Benefits of using system prompts
+:description: Learn how to use system prompts to improve AI model responses by providing clear instructions, context, and guidelines for specific tasks and audiences
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

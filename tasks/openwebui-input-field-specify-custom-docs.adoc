@@ -1,5 +1,6 @@
 [#openwebui-input-field-specify-custom-docs]
 = Adding custom data sources from the chat input field
+:description: Upload custom documents to use as data sources in the chat input field so AI can respond based on their content
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

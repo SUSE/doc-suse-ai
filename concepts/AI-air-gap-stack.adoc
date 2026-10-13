@@ -1,5 +1,6 @@
 [#ai-air-gap-stack]
 = {productname} air-gapped stack
+:description: Use the air-gapped stack scripts to download and prepare NVIDIA RPM packages and Docker images for air-gap installation on local hosts
 :revdate: 2026-01-22
 :page-revdate: {revdate}
 

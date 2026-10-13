@@ -1,5 +1,6 @@
 include::../common/generic-attributes.adoc[]
 = Configuring {owui} for AI Interaction 
+:description: Configure Open WebUI for AI interaction by setting base models, default prompts, and user roles according to your needs
 :docinfo:
 :doctype: book
 :experimental:

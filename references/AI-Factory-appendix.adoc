@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Learn about the product support lifecycle, including availability, support scope, deprecation policies, and where to find source code and legal information
 endif::[]
 ifndef::override-title[]
 = Appendix

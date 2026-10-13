@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Copy an existing SUSE AI Factory blueprint to create a customized one by editing its YAML file and registering it on the cluster
 :revdate: 2026-10-07
 :page-revdate: {revdate}
 endif::[]

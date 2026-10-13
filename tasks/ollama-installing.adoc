@@ -1,5 +1,6 @@
 [#ollama-installing]
 = Installing {ollama}
+:description: Install Ollama to run and manage language models locally on your computer using a simple interface and without cloud resources
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

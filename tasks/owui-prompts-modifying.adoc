@@ -1,5 +1,6 @@
 [#owui-prompts-modifying]
 = Modifying existing system prompts
+:description: Modify an existing system prompt by using the Open WebUI interface to edit its title and description, then save the changes
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

@@ -3,6 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Create a ClusterRepo repository for AI applications by setting up the SUSE Application Collection and SUSE Registry repositories in Rancher Prime Server
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 endif::[]

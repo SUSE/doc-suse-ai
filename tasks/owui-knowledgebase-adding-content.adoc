@@ -1,5 +1,6 @@
 [#owui-knowledgebase-adding-content]
 = Adding content to a knowledge base
+:description: Add content to a knowledge base by uploading files, adding text, or synchronizing a directory using the Open WebUI interface
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

@@ -1,6 +1,7 @@
 [#openwebui-setting-system-model]
 ifdef::override-title[]
 = {override-title}
+:description: Set the default system AI model to use for all new chats by selecting it in the Default Models section of the Settings screen
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 endif::[]

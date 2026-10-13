@@ -1,6 +1,7 @@
 [#openwebui-chat-window-usage]
 ifdef::override-title[]
 = {override-title}
+:description: Use the Open WebUI chat window to send prompts to an AI model and receive responses. Then edit, copy, or improve them using the tools provided
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 endif::[]

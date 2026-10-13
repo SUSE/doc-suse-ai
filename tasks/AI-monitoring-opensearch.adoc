@@ -1,5 +1,6 @@
 [#ai-monitoring-opensearch]
 = Monitoring {opensearch}
+:description: Monitor OpenSearch using the OpenTelemetry Collectors elasticsearch receiver to collect metrics such as disk usage, cluster health, and node performance
 :revdate: 2026-02-20
 :page-revdate: {revdate}
 

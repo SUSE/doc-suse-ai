@@ -6,6 +6,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Install the Rancher Prime server on a Kubernetes cluster in an air-gapped environment using the Helm CLI
 endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} on a {kube} cluster in air-gapped environments

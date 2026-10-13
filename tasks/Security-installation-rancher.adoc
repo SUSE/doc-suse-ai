@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Install SUSE Security through Rancher Prime Extensions or Apps & Marketplace to add security containers to the default namespace and manage security policies
 endif::[]
 ifndef::override-title[]
 = Installing and managing {ssecurity} through {ranchera} Extensions or Apps & Marketplace

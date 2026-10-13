@@ -1,5 +1,6 @@
 [#ai-requirements-security]
 = {ssecurity} requirements
+:description: Learn the minimum hardware requirements for SUSE Security nodes in an HA setup, including RAM, CPU, and disk space needs
 :revdate: 2026-01-19
 :page-revdate: {revdate}
 

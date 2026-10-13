@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Install and configure vLLM using Open WebUI and custom values files to deploy and manage large language models with specific settings
 endif::[]
 ifndef::override-title[]
 = Examples of {vllm} {helm} chart custom values files

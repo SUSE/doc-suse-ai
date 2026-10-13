@@ -1,5 +1,6 @@
 [#openwebui-downloading-ai-models-from-ollama]
 = Downloading AI models from {ollama}
+:description: Download AI models from Ollama by using the Open WebUI interface to select and pull model tags like gemma3 4b for AI interaction
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

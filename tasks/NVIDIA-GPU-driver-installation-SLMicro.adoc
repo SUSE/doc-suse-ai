@@ -3,6 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Install the NVIDIA GPU drivers on SLE Micro by following the steps to select the driver generation, add repositories, and install required packages
 endif::[]
 ifndef::override-title[]
 = Installing {nvidia} GPU drivers on {slem}

@@ -1,6 +1,7 @@
 [#openwebui-setting-user-system-prompt]
 ifdef::override-title[]
 = {override-title}
+:description: Set the default system prompt for the current user by entering text in the System Prompt field and saving your changes in the Settings menu
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 endif::[]

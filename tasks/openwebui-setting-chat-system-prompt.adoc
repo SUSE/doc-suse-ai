@@ -1,5 +1,6 @@
 [#openwebui-setting-chat-system-prompt]
 = Setting a system prompt for the current chat
+:description: Set a system prompt for the current chat by clicking the Chat controls icon, unfolding the System Prompt tab, and entering your prompt in the input field
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

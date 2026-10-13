@@ -1,5 +1,6 @@
 [#openwebui-ai-models-exporting]
 = Exporting existing AI models
+:description: Export existing AI models using Open WebUI by selecting the model, choosing Export, and saving the JSON file to a specified location
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

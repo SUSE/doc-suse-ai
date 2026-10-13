@@ -1,5 +1,6 @@
 include::../common/generic-attributes.adoc[]
 = {productname} Requirements
+:description: Check the requirements for hardware, GPUs, and applications to prepare your cluster infrastructure before installation
 :docinfo:
 :doctype: book
 :experimental:

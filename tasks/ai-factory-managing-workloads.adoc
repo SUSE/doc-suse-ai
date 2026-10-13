@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Manage AI workloads by inspecting, customizing, upgrading, rolling back, or deleting them using the Rancher Prime UI
 endif::[]
 ifndef::override-title[]
 = How do I manage AI workloads using {productname}?

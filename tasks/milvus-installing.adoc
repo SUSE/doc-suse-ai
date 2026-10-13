@@ -1,5 +1,6 @@
 [#milvus-installing]
 = Installing {milvus}
+:description: Install Milvus by following this procedure to set up the application, its dependencies, and learn about supported configurations and available versions
 
 :revdate: 2025-12-22
 :page-revdate: {revdate}

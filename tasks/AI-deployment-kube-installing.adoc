@@ -3,6 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Install a supported Linux operating system and Kubernetes distribution on cluster nodes to begin deploying applications from scratch
 endif::[]
 ifndef::override-title[]
 = Installing the Linux and {kube} distribution

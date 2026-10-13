@@ -3,6 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Learn how to configure Kubeflow for different environments using scenarios that include NodePort access, HTTP, self-signed TLS, and Lets Encrypt
 endif::[]
 ifndef::override-title[]
 = {kubeflow} configuration scenarios

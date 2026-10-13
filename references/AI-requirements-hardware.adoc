@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Check the hardware requirements for basic and high-availability deployments of SUSE Rancher Prime RKE2 Kubernetes clusters
 endif::[]
 ifndef::override-title[]
 = {productname} hardware requirements

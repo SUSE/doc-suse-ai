@@ -1,5 +1,6 @@
 include::../common/generic-attributes.adoc[]
 = Creating {productname} Blueprints
+:description: Create blueprints to define and deploy AI workloads using the command line, including support for CPU and NVIDIA GPU inference
 :docinfo:
 :experimental:
 

@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Log in to the Helm chart repository, display its values, and review supported configurations before deploying the chart
 endif::[]
 ifndef::override-title[]
 = Listing values list for {ai-app-name} {helm} chart

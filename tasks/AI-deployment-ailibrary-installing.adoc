@@ -3,6 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Install AI Library applications by purchasing an entitlement, creating Kubernetes namespaces, and setting up registry secrets
 endif::[]
 ifndef::override-title[]
 = Installing {ailibrary}

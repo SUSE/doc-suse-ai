@@ -1,5 +1,6 @@
 [#ai-monitoring-user-apps]
 = Monitoring user-managed applications
+:description: Monitor user-managed applications by using OpenTelemetry SDKs or compatible instrumentation providers to collect and send telemetry data for observability
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

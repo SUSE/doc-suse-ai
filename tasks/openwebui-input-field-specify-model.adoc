@@ -1,5 +1,6 @@
 [#openwebui-chat-input]
 = The chat input field
+:description: Use the chat input field to select an AI model and type a prompt for the selected model during a chat session
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

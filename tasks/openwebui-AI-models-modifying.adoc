@@ -1,5 +1,6 @@
 [#openwebui-ai-models-modify]
 = Modifying existing AI models
+:description: Modify an existing AI model using Open WebUI by editing its settings and enabling default MCP services through the model editing screen
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

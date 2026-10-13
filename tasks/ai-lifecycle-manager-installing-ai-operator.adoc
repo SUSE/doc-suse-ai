@@ -3,6 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Install the SUSE AI Operator on the Rancher Prime cluster, then create the InstallAIExtension resource for the lifecycle manager
 :revdate: 2026-02-24
 :page-revdate: {revdate}
 endif::[]

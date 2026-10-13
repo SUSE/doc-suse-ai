@@ -1,6 +1,7 @@
 [#openwebui-ui]
 ifdef::override-title[]
 = {override-title}
+:description: Use the Open WebUI interface to manage chats, select AI models, access the Workspace and Admin Panel, and customize system settings
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 endif::[]

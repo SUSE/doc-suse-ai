@@ -1,5 +1,6 @@
 include::../common/generic-attributes.adoc[]
 = Monitoring SUSE AI with OpenTelemetry and SUSE Observability 
+:description: Monitor SUSE AI with OpenTelemetry and SUSE Observability to collect metrics, logs, and traces for observing and maintaining your environments performance
 :docinfo:
 :doctype: book
 :experimental:

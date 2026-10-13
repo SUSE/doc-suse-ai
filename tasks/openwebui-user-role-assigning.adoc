@@ -1,6 +1,7 @@
 [#openwebui-user-role-assigning]
 ifdef::override-title[]
 = {override-title}
+:description: Assign a role to an existing user in Open WebUI by clicking the role button next to the user name and selecting pending, user, or admin
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 endif::[]

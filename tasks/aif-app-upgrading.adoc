@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Upgrade Rancher Prime or use Helm commands to upgrade the application and manage versions effectively
 endif::[]
 ifndef::override-title[]
 = Upgrading {ai-app-name}

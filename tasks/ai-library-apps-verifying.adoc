@@ -3,6 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Verify AI Library applications hosted on SUSE Application Collection and SUSE Registry by using cosign to check their authenticity and attached attestations
 endif::[]
 ifndef::override-title[]
 = Verifying {suse} {ailibrary} applications

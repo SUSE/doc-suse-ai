@@ -1,5 +1,6 @@
 include::../common/generic-attributes.adoc[]
 = Maintaining Data Integrity of AI Applications
+:description: Learn how to prevent data leaks and maintain correct functioning of your AI application by understanding security threats and safety measures
 :docinfo:
 :doctype: book
 :experimental:

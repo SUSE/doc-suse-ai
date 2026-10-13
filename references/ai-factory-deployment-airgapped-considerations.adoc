@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Plan air-gapped deployments by using local artifact registries, a model cache, and secure TLS endpoints to deploy AI applications without internet access
 endif::[]
 ifndef::override-title[]
 = Considerations for {productname} air-gapped deployments

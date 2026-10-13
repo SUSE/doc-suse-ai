@@ -1,5 +1,6 @@
 [#ai-requirements-rancher]
 = {ranchermanager} requirements
+:description: Find the required Rancher Prime version and hardware specifications for setting up a high-availability cluster
 :revdate: 2026-07-03
 :page-revdate: {revdate}
 

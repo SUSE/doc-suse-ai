@@ -1,5 +1,6 @@
 [#openwebui-input-field-collections]
 = Specifying preconfigured documents, collections or external URLs from the chat input field
+:description: Select preconfigured documents, collections, or external URLs in the chat input field to use as information sources for AI responses
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

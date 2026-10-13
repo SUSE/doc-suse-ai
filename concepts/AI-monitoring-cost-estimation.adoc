@@ -1,6 +1,7 @@
 [#ai-monitoring-cost-estimation]
 ifdef::override-title[]
 = {override-title}
+:description: Calculate cost estimation for chat interactions between Open WebUI user and AI model using multipliers from pricing
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 endif::[]

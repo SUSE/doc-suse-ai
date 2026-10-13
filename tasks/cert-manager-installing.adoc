@@ -1,5 +1,6 @@
 [#cert-manager-installing]
 = Installing {certmanager}
+:description: Install cert-manager to manage X.509 certificates for Kubernetes workloads and ensure they remain valid and up-to-date
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 
