@@ -54,7 +54,7 @@ For more details, refer to link:https://documentation.suse.com/suse-ai-factory/l
 If the chart repository of an application is unavailable, the application remains visible in the list but cannot be installed.
 The `Overview` page lists the failing repositories with links to *Settings*, where you can verify the repository as described in link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html#ai-factory-verify-repositories[How do I verify access to a chart repository?].
 ====
-. Use the `Basic Information` screen of the installation wizard to update the instance name, namespace, and version of the application.
+. Use the `Basic Information` screen of the installation wizard to update the instance name, namespace and version of the application.
 +
 [#fig-aif-apps-install-basic]
 .Basic screen of the application installation wizard
@@ -66,17 +66,17 @@ image::aif-apps-install1.png[Screenshot showing basic information about the inst
 .Target Cluster screen of the application installation wizard
 image::aif-apps-install2.png[Screenshot showing information about the installation target of an application,width=50%]
 +
-. Use the `Configuration` screen to change individual settings in the {helm} chart of the application.
+. On the *Configuration* screen, adjust chart settings as needed.
 +
 [#fig-aif-apps-install-config]
 .Configuration screen of the application installation wizard
 image::aif-apps-install3.png[Screenshot showing information about application configuration,width=50%]
 +
-. The `Review` screen summarizes the basic information about the deployment.
-Start the deployment by selecting the btn:[Install] button.
+. On the *Review* screen, review the deployment summary.
+Click btn:[Install] to start the deployment.
 +
 [#fig-aif-apps-install-review]
-.Configuration screen of the application installation wizard
+.Review screen of the application installation wizard
 image::aif-apps-install4.png[Screenshot reviewing the installation,width=50%]
 +
-. After the installation progress bar reaches 100%, you can check the workload status by selecting menu:SUSE AI Factory[Workloads] from the left menu.
+. After the installation completes, verify the workload status by selecting menu:SUSE AI Factory[Workloads] from the navigation menu.
