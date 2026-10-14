@@ -1,6 +1,6 @@
 [#owui-prompts-exporting]
 = Exporting existing system prompts
-:description: Export a system prompt by using the Export option in the Open WebUI interface and saving the JSON file to a chosen location
+:description: Export a system prompt and save it as a JSON file to a chosen location
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 
