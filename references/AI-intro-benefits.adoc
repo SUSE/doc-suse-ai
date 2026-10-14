@@ -1,7 +1,7 @@
 
 [#ai-intro-benefits]
 = What are the benefits of using {productname}?
-:description: Learn the benefits of using by understanding how it improves data security, performance, and scalability for AI applications
+:description: Learn the benefits of SUSE AI by understanding how it improves data security, performance, and scalability for AI applications
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 
