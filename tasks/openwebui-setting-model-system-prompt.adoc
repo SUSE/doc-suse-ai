@@ -1,6 +1,7 @@
 [#openwebui-setting-model-syste-prompt]
 ifdef::override-title[]
 = {override-title}
+:description: Set the default system prompt for an AI model in Open WebUI by editing the model parameters and saving the changes
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 endif::[]

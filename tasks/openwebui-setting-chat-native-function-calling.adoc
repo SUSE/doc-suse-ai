@@ -1,5 +1,6 @@
 [#openwebui-setting-chat-native-function-calling]
 = Enabling native function calling
+:description: Enable native function calling by configuring Open WebUI to let the client LLM connect directly to the MCP server and use tools with defined arguments
 :revdate: 2026-01-28
 :page-revdate: {revdate}
 

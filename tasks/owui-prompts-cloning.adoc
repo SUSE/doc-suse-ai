@@ -1,5 +1,6 @@
 [#owui-prompts-cloning]
 = Cloning existing system prompts
+:description: Clone an existing system prompt by using the Clone option in the Open WebUI interface and update its title, content, and activating command before saving
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Create a README.md file and an architecture diagram to document your SUSE AI Factory blueprint and explain its components, prerequisites, and deployment process
 :revdate: 2026-10-07
 :page-revdate: {revdate}
 endif::[]

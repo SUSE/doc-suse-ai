@@ -1,5 +1,6 @@
 [#ai-hallucinations-how-to-prevent]
 = How can I prevent AI from generating hallucinations?
+:description: Learn how to prevent AI from generating hallucinations by using clear prompts and retrieval-augmented generation
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

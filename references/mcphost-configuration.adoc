@@ -1,5 +1,6 @@
 [#mcphost-configuration]
 = MCP host configuration
+:description: Configure the MCP host using JSON files to define behavior, security settings, and available tools for specific tasks
 include::../common/generic-attributes.adoc[]
 // overridden title?
 

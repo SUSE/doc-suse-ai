@@ -1,6 +1,7 @@
 [#openwebui-authentication-via-okta]
 ifdef::override-title[]
 = {override-title}
+:description: Configure Open WebUI to use Okta for authentication by setting environment variables with Okta domain, client ID, client secret, and other required values
 :revdate: 2026-01-28
 :page-revdate: {revdate}
 endif::[]

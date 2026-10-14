@@ -1,5 +1,6 @@
 include::../common/generic-attributes.adoc[]
 = Introduction to {productname}
+:description: Learn the basics and benefits of running private AI workloads with secure, auditable capabilities in on-premises, cloud, and air-gapped environments
 :docinfo:
 :experimental:
 

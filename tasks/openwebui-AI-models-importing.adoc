@@ -1,6 +1,7 @@
 [#openwebui-ai-models-importing]
 ifdef::override-title[]
 = {override-title}
+:description: Import AI models using Open WebUI by selecting the Import Models button and specifying the path to the JSON file containing the exported model definitions
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 endif::[]

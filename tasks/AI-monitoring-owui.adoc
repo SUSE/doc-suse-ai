@@ -1,5 +1,6 @@
 [#ai-monitoring-owui]
 = Monitoring {owui}
+:description: Monitor Open WebUI by using the Filter to collect telemetry data and configure pipelines for tracing and metrics
 :revdate: 2026-01-09
 :page-revdate: {revdate}
 

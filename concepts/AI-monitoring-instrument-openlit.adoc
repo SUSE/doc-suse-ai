@@ -1,6 +1,7 @@
 [#ai-monitoring-instrument-openlit]
 ifdef::override-title[]
 = {override-title}
+:description: Instrument applications with the OpenLIT SDK by following Python and TypeScript examples to add telemetry data collection and adjust the OTLP endpoint
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 endif::[]

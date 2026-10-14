@@ -1,5 +1,6 @@
 [#ai-system-prompt-how-works]
 = How does a system prompt work?
+:description: Understand how system prompts guide AI models by learning their structure, purpose, and how they shape responses before user input
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

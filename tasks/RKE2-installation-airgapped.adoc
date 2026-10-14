@@ -6,6 +6,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Load images into an air-gapped environment and install RKE2 Prime using the methods described in this page
 endif::[]
 ifndef::override-title[]
 = Installing {rke2} in air-gapped environments

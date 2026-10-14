@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Install AI applications by selecting them from the SUSE AI Library or NVIDIA AI Library, configuring settings, and deploying to a target cluster
 :revdate: 2026-10-06
 :page-revdate: {revdate}
 endif::[]

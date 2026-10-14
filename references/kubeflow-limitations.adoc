@@ -3,6 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Learn the known Kubeflow limitations that affect deployment, configuration, and operation of components like SeaweedFS, KServe, and Dex
 endif::[]
 ifndef::override-title[]
 = Known {kubeflow} limitations

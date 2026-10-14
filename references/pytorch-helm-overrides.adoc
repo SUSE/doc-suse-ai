@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: You can learn how to create and use PyTorch Helm chart custom values files for different deployment scenarios
 endif::[]
 ifndef::override-title[]
 = Examples of {pytorch} {helm} chart custom values files

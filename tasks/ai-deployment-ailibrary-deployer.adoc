@@ -3,6 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Install AI Library components on a Kubernetes cluster by customizing and using the SUSE AI Deployer Helm chart with example configuration files
 endif::[]
 ifndef::override-title[]
 = Installing {ailibrary} components using {saideployer}

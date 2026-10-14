@@ -1,5 +1,6 @@
 [#ai-requirements-openwebui]
 = {owui} requirements
+:description: Learn the hardware, network, and software requirements for running Open WebUI, including browser compatibility and integration considerations
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

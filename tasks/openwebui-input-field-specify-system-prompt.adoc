@@ -1,5 +1,6 @@
 [#openwebui-input-field-specify-system-prompt]
 = Selecting a preconfigured system prompt from the chat input field
+:description: Select a preconfigured system prompt from the chat input field by typing the / character and choosing one from the drop-down list
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

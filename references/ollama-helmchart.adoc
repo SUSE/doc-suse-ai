@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Configure the Ollama Helm chart by using specific values to set up models, storage, GPU support, and network settings for local language model management
 endif::[]
 ifndef::override-title[]
 = Values for the {ollama} {helm} chart

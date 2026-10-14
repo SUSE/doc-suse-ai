@@ -3,6 +3,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Install and manage AI applications from SUSE registries using role-based workflows in the SUSE AI Lifecycle Manager extension
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 endif::[]

@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Learn about requirements for running GPU hardware
 endif::[]
 ifndef::override-title[]
 = GPU hardware for AI/ML workloads

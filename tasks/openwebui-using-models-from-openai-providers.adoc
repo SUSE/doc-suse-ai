@@ -1,5 +1,6 @@
 [#openwebui-using-models-from-openai-providers]
 = Using AI models from {openai}-compatible providers
+:description: Use the OpenAI-compatible API to access AI models from providers like Groq or LocalAI and configure them in Open WebUI
 :revdate: 2026-01-28
 :page-revdate: {revdate}
 

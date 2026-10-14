@@ -1,5 +1,6 @@
 [#owui-prompts-exporting-all]
 = Exporting all existing system prompts
+:description: Export all existing system prompts and save them to a JSON file
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

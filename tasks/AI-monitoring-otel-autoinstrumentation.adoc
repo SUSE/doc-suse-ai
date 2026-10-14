@@ -1,5 +1,6 @@
 [#ai-monitoring-otel-operator]
 = Monitoring with the {otelemetry} Operator
+:description: Monitor Kubernetes applications with the OpenTelemetry Operator by instrumenting workloads and forwarding telemetry to SUSE Observability
 
 This section describes how to instrument {kube} applications using the {otelemetry} Operator for {kube}.
 It also explains how to forward telemetry (metrics and traces) to {sobservability}.

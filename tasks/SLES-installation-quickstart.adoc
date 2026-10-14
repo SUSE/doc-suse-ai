@@ -1,5 +1,6 @@
 [#sles-installation-quickstart]
 = Installing {sls}
+:description: Install SLE Server by following the procedures in this page, which guide you through using the Unified Installer and selecting modules
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

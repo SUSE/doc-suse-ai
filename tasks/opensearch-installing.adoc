@@ -1,5 +1,6 @@
 [#opensearch-installing]
 = Installing {opensearch}
+:description: Install OpenSearch by using the provided commands and instructions to set up the search and analytics suite with its components and dependencies
 :revdate: 2026-03-24
 :page-revdate: {revdate}
 

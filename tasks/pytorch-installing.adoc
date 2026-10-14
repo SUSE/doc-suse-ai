@@ -1,5 +1,6 @@
 [#pytorch-installing]
 = Installing {pytorch}
+:description: Install PyTorch by using the PyTorch Helm chart to deploy training or inference code on NVIDIA GPUs in your cluster
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

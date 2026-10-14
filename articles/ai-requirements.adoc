@@ -1,5 +1,6 @@
 include::../common/generic-attributes.adoc[]
 = {productname} Requirements
+:description: Read this page to learn the hardware, software, and networking requirements for cluster nodes where you plan to install the SUSE Rancher Prime RKE2 environment
 :docinfo:
 :doctype: book
 :experimental:

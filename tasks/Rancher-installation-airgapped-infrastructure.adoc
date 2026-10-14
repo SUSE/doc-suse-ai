@@ -6,6 +6,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Set up the infrastructure and a private registry for installing the Rancher Prime management server in an air-gapped environment
 :revdate: 2026-01-26
 :page-revdate: {revdate}
 endif::[]

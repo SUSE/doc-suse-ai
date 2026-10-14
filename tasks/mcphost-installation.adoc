@@ -1,5 +1,6 @@
 [#mcphost-installation]
 = MCP host installation
+:description: Install the mcphost package to set up the MCP host on SLE Server using the command sudo zypper in mcphost
 include::../common/generic-attributes.adoc[]
 // overridden title?
 

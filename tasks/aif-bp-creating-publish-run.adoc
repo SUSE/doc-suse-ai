@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Commit the blueprint files to a Git repository and register the custom resource on the cluster to publish and run a SUSE AI Factory blueprint
 :revdate: 2026-10-07
 :page-revdate: {revdate}
 endif::[]

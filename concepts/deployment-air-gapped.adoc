@@ -1,5 +1,6 @@
 [#air-gapped-environments]
 = Air-gapped environments
+:description: Learn how to secure sensitive systems by isolating them in air-gapped environments to prevent cyber threats and unauthorized access
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

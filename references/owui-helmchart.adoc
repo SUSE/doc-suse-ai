@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Configure Open WebUI Helm chart values to set up deployment settings, image sources, security options, and integration with services such as Pipelines
 endif::[]
 ifndef::override-title[]
 = Values for the {owui} {helm} chart

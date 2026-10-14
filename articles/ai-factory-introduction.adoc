@@ -1,5 +1,6 @@
 include::../common/generic-attributes.adoc[]
 = Introduction to {productname}
+:description: Learn how to use blueprints to deploy and manage AI applications on Kubernetes clusters with standardized, version-controlled templates
 :docinfo:
 :experimental:
 

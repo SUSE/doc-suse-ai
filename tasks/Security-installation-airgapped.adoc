@@ -1,5 +1,6 @@
 [#suse-security-installation-airgapped]
 = Installing {ssecurity} in air-gapped environments
+:description: Install SUSE Security in air-gapped environments by using Helm, Skopeo, and ZStandard to download, compress, and transfer images to the local network
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 

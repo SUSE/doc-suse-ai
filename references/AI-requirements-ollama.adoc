@@ -1,5 +1,6 @@
 [#ai-requirements-ollama]
 = {ollama} requirements
+:description: Configure Ollama on an NVIDIA-enabled system by following the steps for setting up hardware and software requirements, including GPU models, RAM, and disk space
 :revdate: 2026-01-19
 :page-revdate: {revdate}
 

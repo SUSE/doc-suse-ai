@@ -2,6 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
+:description: Configure Ollama GPU settings by enabling or disabling the GPU section in the custom values file and following the required installation and configuration steps
 endif::[]
 ifndef::override-title[]
 = Values for the {ollama} {helm} chart

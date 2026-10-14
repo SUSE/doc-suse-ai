@@ -1,6 +1,6 @@
 include::../common/generic-attributes.adoc[]
 = Deploying {productname} in air-gapped environments
-:description: Deploy {productname} in air-gapped environments securely to manage AI platform workloads using reproducible, version-controlled blueprints without external internet.
+:description: Deploy {productname} in air-gapped environments securely to manage AI platform workloads using reproducible, version-controlled blueprints without external internet
 :docinfo:
 :experimental:
 

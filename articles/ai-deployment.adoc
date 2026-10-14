@@ -1,5 +1,6 @@
 include::../common/generic-attributes.adoc[]
 = Deploying and Installing {productname}
+:description: Install and deploy the product and its dependencies using this guide to get all required components ready for use
 :docinfo:
 :doctype: book
 :experimental:
