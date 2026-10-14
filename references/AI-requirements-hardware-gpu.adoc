@@ -2,7 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Configure the NVIDIA GPU Operator to use NVIDIA GPUs in a Kubernetes cluster by installing drivers, container runtimes, and other required components
+:description: Learn about requirements for running GPU hardware
 endif::[]
 ifndef::override-title[]
 = GPU hardware for AI/ML workloads
