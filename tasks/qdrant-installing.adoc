@@ -2,7 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Integrate Qdrant with Open WebUI by editing the owuicustomoverrides.yaml file and redeploying Open WebUI
+:description: Integrate Qdrant with Open WebUI by editing the Open WebUI custom values file and redeploying it
 endif::[]
 ifndef::override-title[]
 = Installing {qdrant}
