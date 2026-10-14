@@ -2,7 +2,7 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Readers can learn about new features in this release, including customizable blueprint deployments and custom chart repositories
+:description: Learn about new features in each release
 endif::[]
 ifndef::override-title[]
 = {productname} release notes
