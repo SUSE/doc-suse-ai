@@ -1,6 +1,6 @@
 [#owui-prompts-deleting]
 = Deleting existing system prompts
-:description: Delete an existing system prompt by clicking the three dots next to it, selecting Delete, and confirming the action in the Open WebUI interface
+:description: Delete an existing system prompt  in the Open WebUI interface
 :revdate: 2025-12-22
 :page-revdate: {revdate}
 
