@@ -1,5 +1,5 @@
 [#owui-more-info]
 = For more information
-:description: Find more information about the upstream Open WebUI documentation by visiting the website at https //docs
+:description: Find more information about the upstream Open WebUI documentation
 
 * The upstream {owui} documentation is hosted at https://docs.openwebui.com/. 
