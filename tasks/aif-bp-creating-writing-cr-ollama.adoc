@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Create a SUSE AI Factory blueprint CR for CPU inference with Ollama by defining metadata, specification, and chart repository
 :revdate: 2026-10-07
 :page-revdate: {revdate}
 endif::[]
@@ -14,7 +13,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-To create a blueprint custom resource (CR) for CPU inference, define the metadata, blueprint specification, chart repository, and component values in a single manifest file.
+To create a blueprint custom resource (CR) for inference, define the metadata, blueprint specification, chart repository, and component values in a single manifest file.
 endif::[]
 
 // erase the flag for future overrides
@@ -122,7 +121,7 @@ Define an `ingress` block only when a component provides a Web user interface th
 [#aif-bp-creating-example-ollama]
 == Adding an {ollama} component
 
-The following configuration defines a standard {ollama} CPU component:
+The following configuration defines a standard {ollama} component with CPU inference:
 
 [source,yaml]
 ----
@@ -138,7 +137,7 @@ The following configuration defines a standard {ollama} CPU component:
         tag: 0.21.2-11.48
       ollama:
         gpu:
-          enabled: false
+          enabled: false <.>
           draEnabled: false
         models:
           pull:
@@ -162,6 +161,9 @@ Key considerations for model management:
 * Models listed under `models.run` remain in memory. When serving multiple models, configure `extraEnv` variables such as `OLLAMA_KEEP_ALIVE` and `OLLAMA_MAX_LOADED_MODELS`.
 * Both embeddings and chat endpoints are served by the same service (`http://ollama:11434` in-cluster).
 
+<.> Set `gpu.enabled: true` to enable GPU inference and hardware acceleration for Ollama. Once enabled you can allocate GPU resources, which will depend on the GPU vendor. Review link:https://documentation.suse.com/cloudnative/rke2/latest/en/add-ons/gpu_operators.html[GPU Operators] and link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/aif-deployment-prepare.html#ai-gpu-nodes-assigning[Assign GPU resources] for additional information. 
+
+
 [#aif-bp-creating-considerations]
 == Operational considerations
 
@@ -175,7 +177,7 @@ Keep the following operational best practices in mind when constructing blueprin
       # Pin generated secret keys to prevent Fleet reconciliation loops
       fernetKey: "Nv3aCd-3agJbJG1QxzKMezX5pJZB4fRpZIrqhdS-MA4="
       jwtSecret: "72873f21d1682ddc023f0815344d1cdc0157e59c9c5480bcb430686d6ed466d3"
-      webserverSecretKey: "bb3ea2e3f0a3ad96a2f440ab3ca4e3406985aaf72182662ebd339f53a7a28a7a"
+      WebserverSecretKey: "bb3ea2e3f0a3ad96a2f440ab3ca4e3406985aaf72182662ebd339f53a7a28a7a"
 ----
 
 [NOTE]
