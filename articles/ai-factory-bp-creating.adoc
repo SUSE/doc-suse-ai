@@ -41,7 +41,7 @@ include::../tasks/aif-bp-quickstart.adoc[leveloffset=+1]
 include::../concepts/aif-bp-folder.adoc[leveloffset=+1]
 
 [#aif-bp-creating-writing-cr-ollama]
-:override-title: How do I create a blueprint CR for CPU inference with {ollama}?
+:override-title: How do I create a blueprint CR for inference with {ollama}?
 include::../tasks/aif-bp-creating-writing-cr-ollama.adoc[leveloffset=+1]
 
 [#aif-bp-creating-writing-cr-vllm]
