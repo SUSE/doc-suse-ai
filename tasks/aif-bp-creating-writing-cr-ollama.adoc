@@ -162,7 +162,7 @@ Key considerations for model management:
 * Models listed under `models.run` remain in memory. When serving multiple models, configure `extraEnv` variables such as `OLLAMA_KEEP_ALIVE` and `OLLAMA_MAX_LOADED_MODELS`.
 * Both embeddings and chat endpoints are served by the same service (`http://ollama:11434` in-cluster).
 
-<.> Set `gpu.enabled: true` to enable GPU inference and hardware acceleration for Ollama. Once enabled you can allocate GPU resources, which will depend on the GPU vendor. Review link:https://documentation.suse.com/cloudnative/rke2/latest/en/add-ons/gpu_operators.html[GPU Operators] and link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/aif-deployment-prepare.html#ai-gpu-nodes-assigning[Assign GPU resources] for additional information. 
+<.> Set `gpu.enabled: true` to enable GPU inference and hardware acceleration for {ollama}. Once enabled you can allocate GPU resources, which will depend on the GPU vendor. Review link:https://documentation.suse.com/cloudnative/rke2/latest/en/add-ons/gpu_operators.html[GPU Operators] and link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/aif-deployment-prepare.html#ai-gpu-nodes-assigning[Assign GPU resources] for additional information. 
 
 
 [#aif-bp-creating-considerations]
