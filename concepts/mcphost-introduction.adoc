@@ -1,6 +1,5 @@
 [#mcphost-introduction]
 = What is the MCP host?
-:description: Learn what the MCP host is and how it acts as a mediator between an LLM and MCP servers to enable safe system access and task execution
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifndef::override-abstract[]
@@ -11,8 +10,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-04-DD03
-:page-revdate: {revdate}
 
 Its primary purpose is to provide a structured environment where an LLM can safely access system information, execute commands, or manage files to perform complex tasks that the model cannot do on its own.
 

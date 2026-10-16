@@ -1,6 +1,5 @@
 include::../common/generic-attributes.adoc[]
 = Deploying and Installing {productname} in Air-Gapped Environments
-:description: Install and deploy in air-gapped environments by following the step-by-step guide that covers all dependencies, hardware, and software requirements
 :docinfo:
 :doctype: book
 :experimental:
@@ -14,8 +13,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-06-02
-:page-revdate: {revdate}
 
 WHAT?::
   This document provides a comprehensive, step-by-step guide for the {productname} air-gapped deployment.

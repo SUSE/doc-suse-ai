@@ -1,8 +1,5 @@
 [#cert-manager-installing]
 = Installing {certmanager}
-:description: Install cert-manager to manage X.509 certificates for Kubernetes workloads and ensure they remain valid and up-to-date
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 {certmanager} is an extensible X.509 certificate controller for {kube} workloads.
 It supports certificates from popular public issuers as well as private issuers.

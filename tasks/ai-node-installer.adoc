@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 [#deploying-with-ai-node-installer]
 ifdef::override-title[]
 = {override-title}
-:description: Deploy RKE2 clusters on SUSE-driven servers using the SUSE AI Node Installer to prepare and configure them for AI workloads
 endif::[]
 ifndef::override-title[]
 = Deploying nodes using {sainodeinstaller}
@@ -18,8 +17,6 @@ endif::[]
 :override-title!:
 :override-abstract!:
 
-:revdate: 2026-01-26
-:page-revdate: {revdate}
 
 {sainodeinstaller} covers the following use cases:
 

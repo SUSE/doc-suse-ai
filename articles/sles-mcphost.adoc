@@ -11,12 +11,9 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-04-02
-:page-revdate: {revdate}
 
 include::../common/generic-attributes.adoc[]
 = Setting up an MCP Host on {productname}
-:description: Setting up an MCP host on SLES lets large language models call system tools and services through the Model Context Protocol
 
 WHAT?::
 The MCP host (mcphost) is a command-line interface that implements the Model Context Protocol, enabling large language models (LLMs) to communicate with specialized tools and system services via MCP servers.

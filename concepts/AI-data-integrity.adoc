@@ -1,8 +1,5 @@
 [#ai-data-integrity-maintaining]
 = Maintaining data integrity of AI applications
-:description: Understand security risks for AI applications by examining components like Open WebUI, Milvus, and Ollama to protect sensitive data and maintain data integrity
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 This topic describes how to avoid compromising AI applications and keep sensitive data secure. 
 

@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Install a supported Linux operating system and Kubernetes distribution on cluster nodes to begin deploying applications from scratch
 endif::[]
 ifndef::override-title[]
 = Installing the Linux and {kube} distribution
@@ -20,8 +19,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-02-18
-:page-revdate: {revdate}
 
 . Install and register a supported Linux operating system on each cluster node.
   We recommend using one of the following operating systems:

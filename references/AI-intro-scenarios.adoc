@@ -1,9 +1,6 @@
 
 [#ai-intro-scenarios]
 = What are typical scenarios for using {productname}?
-:description: See typical scenarios for a private AI instance, including support, knowledge search, reports, content, recommendations, and forecasts
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 [abstract]
 --

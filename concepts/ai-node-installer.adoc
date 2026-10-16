@@ -2,9 +2,6 @@ include::../common/generic-attributes.adoc[]
 [#ai-node-installer]
 ifdef::override-title[]
 = {override-title}
-:description: Install and configure selected cluster components on servers using the SUSE AI Node Installer with Ansible playbooks in a containerized environment
-:revdate: 2026-01-26
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = {sainodeinstaller}

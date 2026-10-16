@@ -1,8 +1,5 @@
 [#openwebui-ai-models-cloning]
 = Cloning existing AI models
-:description: Clone an existing AI model using Open WebUI by selecting the Clone option from the models contextual menu and saving the new model with a modified name
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This procedure shows how to clone an existing custom AI model using {owui}.

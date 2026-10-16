@@ -1,8 +1,5 @@
 [#ai-requirements-milvus]
 = {milvus} requirements
-:description: Find the hardware, software, and network requirements for deploying Milvus and learn what is needed for basic and large-scale setups
-:revdate: 2026-01-19
-:page-revdate: {revdate}
 
 This topic describes requirements for the {milvus} application.
 

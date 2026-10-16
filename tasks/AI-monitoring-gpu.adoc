@@ -1,8 +1,5 @@
 [#ai-monitoring-gpu]
 = Monitoring GPU usage
-:description: Monitor GPU usage by configuring the OpenTelemetry Collector to scrape metrics from the NVIDIA DCGM Exporter deployed with the NVIDIA GPU Operator
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 To effectively monitor the performance and utilization of your GPUs, configure the {otelemetry} Collector to scrape metrics from the {nvidia} DCGM Exporter, which is deployed as part of the {nvoperator}. 
 

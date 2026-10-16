@@ -1,8 +1,5 @@
 [#pytorch-helm-values]
 = Values for the {pytorch} {helm} chart
-:description: Find and use specific values for the PyTorch Helm chart to configure the image, GPU settings, and other deployment options for your application
-:revdate: 2026-01-28
-:page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 

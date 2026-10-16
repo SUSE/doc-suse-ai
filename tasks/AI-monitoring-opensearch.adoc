@@ -1,8 +1,5 @@
 [#ai-monitoring-opensearch]
 = Monitoring {opensearch}
-:description: Monitor OpenSearch using the OpenTelemetry Collectors elasticsearch receiver to collect metrics such as disk usage, cluster health, and node performance
-:revdate: 2026-02-20
-:page-revdate: {revdate}
 
 {opensearch} is monitored using the {otelemetry} Collector's `elasticsearch` receiver.
 This configuration allows you to collect metrics such as disk usage, cluster health, and node performance.

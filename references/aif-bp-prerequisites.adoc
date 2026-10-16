@@ -2,9 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Verify that your workstation and cluster meet the mandatory and conditional prerequisites for creating and registering custom blueprints
-:revdate: 2026-10-07
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = {saifactory} blueprint prerequisites

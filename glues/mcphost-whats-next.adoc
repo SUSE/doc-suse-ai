@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Install the MCP host server, then install and configure MCP servers to ensure proper communication between all components of the system
 endif::[]
 ifndef::override-title[]
 = What's next?
@@ -18,7 +17,5 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-04-07
-:page-revdate: {revdate}
 
 After the MCP host server is installed, you can proceed to installing and configuration of MCP servers:

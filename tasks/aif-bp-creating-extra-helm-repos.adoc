@@ -2,9 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Create a ClusterRepo resource to register an additional Helm repository for SUSE AI Factory blueprints and store it in clusterrepos
-:revdate: 2026-10-07
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Managing additional {helm} repositories for {saifactory} blueprints

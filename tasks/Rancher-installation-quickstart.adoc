@@ -6,9 +6,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Install Rancher on a Kubernetes cluster using the Helm CLI by following the steps in this guide, including setting up the cluster
-:revdate: 2026-09-25
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} on a {kube} cluster
@@ -21,8 +18,6 @@ ifndef::override-abstract[]
 In this section, you'll learn how to deploy Rancher on a Kubernetes cluster using the Helm CLI.
 endif::[]
 
-:revdate: 2026-09-25
-:page-revdate: {revdate}
 
 // erase the flag for future overrides
 :override-abstract!:

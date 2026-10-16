@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Find solutions for common Kubeflow issues like pods not starting, storage problems, and TensorBoard errors by following the troubleshooting steps provided
 endif::[]
 ifndef::override-title[]
 = {kubeflow} troubleshooting
@@ -20,8 +19,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-10
-:page-revdate: {revdate}
 
 [role=qanda]
 Pods are not starting — too many open files::

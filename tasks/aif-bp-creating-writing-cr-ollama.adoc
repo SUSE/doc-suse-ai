@@ -2,9 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Create a SUSE AI Factory blueprint CR for CPU inference with Ollama by defining metadata, specification, and chart repository
-:revdate: 2026-10-07
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Creating a {saifactory} blueprint CR for CPU inference with {ollama}

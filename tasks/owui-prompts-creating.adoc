@@ -1,8 +1,5 @@
 [#owui-prompts-creating]
 = Creating a system prompt
-:description: Create a system prompt by entering its title and content in the Open WebUI interface and saving it with the Save & Create option
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This procedure shows how to create a new system prompt. 

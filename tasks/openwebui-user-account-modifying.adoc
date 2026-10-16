@@ -1,9 +1,6 @@
 [#openwebui-user-account-modifying]
 ifdef::override-title[]
 = {override-title}
-:description: Modify user accounts in Open WebUI by clicking the pen icon next to the user and changing their e-mail, name, or password in the Edit User dialog
-:revdate: 2026-01-26
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Modifying user accounts in {owui}

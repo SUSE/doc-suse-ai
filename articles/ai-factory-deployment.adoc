@@ -1,6 +1,5 @@
 include::../common/generic-attributes.adoc[]
 = Deploying {productname}
-:description: Deploy the SUSE AI Factory Operator on a RKE2 Kubernetes cluster using the Helm command or Rancher Prime UI to manage AI platform workloads
 :docinfo:
 :experimental:
 
@@ -13,8 +12,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-09-01
-:page-revdate: {revdate}
 
 [abstract]
 --

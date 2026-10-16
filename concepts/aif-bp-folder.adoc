@@ -2,9 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Understand the directory structure for SUSE AI Factory blueprints and learn how to organize files and name custom resource definitions
-:revdate: 2026-10-07
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Understanding the {saifactory} blueprint directory structure

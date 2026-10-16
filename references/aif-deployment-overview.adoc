@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Select the correct installation path based on your cluster setup, whether you have clean nodes without SLES or SLES with RKE2 and SUSE Rancher Prime installed
 endif::[]
 ifndef::override-title[]
 = {productname} installation overview
@@ -19,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-18
-:page-revdate: {revdate}
 
 The {productname} installation process differs according to the following scenarios:
 

@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Deploy the NVIDIA AI-Q with RAG blueprint to configure AI-Q with a deep-research agent and local NIMs using a custom ConfigMap and modified Helm values
 endif::[]
 ifndef::override-title[]
 = Pre-built blueprints shipped with {productname}
@@ -20,8 +19,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-07-27
-:page-revdate: {revdate}
 
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
 [#bp-nvidia-ai-q-with-rag]

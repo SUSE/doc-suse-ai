@@ -1,6 +1,5 @@
 include::../common/generic-attributes.adoc[]
 = Deploying and Installing {productname}
-:description: Install and deploy the product and its dependencies using this guide to get all required components ready for use
 :docinfo:
 :doctype: book
 :experimental:
@@ -14,8 +13,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-06-02
-:page-revdate: {revdate}
 
 WHAT?::
   {productname} is a multi-layered enterprise AI solution that consists of several software components and dependencies.

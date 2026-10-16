@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Setting up SUSE Observability for AI workloads covers single-cluster and multi-cluster metrics, logs, and traces
 endif::[]
 ifndef::override-title[]
 = Setting up {sobservability} for {productname}
@@ -21,8 +20,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-19
-:page-revdate: {revdate}
 
 
 [#ai-observability-scenarios]

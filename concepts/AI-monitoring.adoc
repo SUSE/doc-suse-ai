@@ -1,9 +1,6 @@
 [#ai-monitoring-concept]
 ifdef::override-title[]
 = {override-title}
-:description: Monitor your system by collecting telemetry data using OpenTelemetry and SUSE Observability to analyze the performance, health, and behavior of components
-:revdate: 2026-01-26
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Monitoring {productname}

@@ -2,9 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Troubleshoot SUSE AI Factory blueprint deployment issues by identifying common symptoms such as failed chart deployments and pod failures
-:revdate: 2026-10-07
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Troubleshooting {saifactory} blueprint deployment issues

@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Install mcpo to connect AI applications like SUSE AI to external systems using the MCP-to-OpenAPI proxy server from Open WebUI
 endif::[]
 ifndef::override-title[]
 = Installing {mcpo}
@@ -23,8 +22,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-17
-:page-revdate: {revdate}
 
 
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]

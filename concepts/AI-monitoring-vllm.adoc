@@ -1,8 +1,5 @@
 [#ai-monitoring-vllm]
 = Monitoring {vllm}
-:description: Monitor vLLM by configuring the OpenTelemetry Collector to scrape its metrics endpoint every 10 seconds
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 {vllm} is monitored by scraping its {prometheus}-compatible metrics endpoints.
 The {sobservability} Extension uses these metrics to visualize {vllm}'s status and activity. 

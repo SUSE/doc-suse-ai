@@ -1,9 +1,6 @@
 [#suse-ai-deploy-post]
 ifdef::override-title[]
 = {override-title}
-:description: Log in to Open WebUI, change the administrator password, configure a language model, set up user management, and integrate single sign-on
-:revdate: 2026-01-26
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Steps after the {productname} installation is complete

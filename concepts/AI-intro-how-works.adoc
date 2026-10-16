@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Learn about the building blocks that make up the cloud native solution and how they support AI workloads
 endif::[]
 ifndef::override-title[]
 = {productname} architecture
@@ -22,8 +21,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-10
-:page-revdate: {revdate}
 
 [#suse-ai-architecture-building-blocks]
 == {productname} building blocks

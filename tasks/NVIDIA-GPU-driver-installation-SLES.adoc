@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Install the NVIDIA open driver on SLE Server to enable GPU support using pre-built packages from the operating system repositories
 endif::[]
 ifndef::override-title[]
 = Installing {nvidia} GPU drivers on {sles}
@@ -21,8 +20,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-19
-:page-revdate: {revdate}
 
 [#nvidia-gpu-requirements-sles]
 == Requirements

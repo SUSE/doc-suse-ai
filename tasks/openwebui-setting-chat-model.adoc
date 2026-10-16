@@ -1,9 +1,6 @@
 [#openwebui-setting-chat-model]
 ifdef::override-title[]
 = {override-title}
-:description: Select an AI model from the drop-down list to specify which model processes your prompts in the current chat session
-:revdate: 2026-01-26
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Specifying an AI model for the current chat

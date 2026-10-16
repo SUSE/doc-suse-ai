@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Upgrade your Kubeflow deployment by following specific instructions for handling configuration conflicts, credential rotation, and service interruptions
 endif::[]
 ifndef::override-title[]
 = {kubeflow} upgrade notes
@@ -21,8 +20,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-10
-:page-revdate: {revdate}
 
 Always use `--force-conflicts`::
 The `--force-conflicts` flag is required for `helm upgrade`.

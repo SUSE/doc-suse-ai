@@ -1,9 +1,6 @@
 :sectnums!:
 
 = Glossary
-:description: Learn the definitions of technical terms used in AI, networking, and Kubernetes by reading this glossary
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 Air gap::
   

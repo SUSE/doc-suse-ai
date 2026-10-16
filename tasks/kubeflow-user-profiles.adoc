@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Add users to Kubeflow by editing the values file and running helm upgrade to create profiles and deploy required resources in the specified namespace
 endif::[]
 ifndef::override-title[]
 = Managing {kubeflow} user profile and namespaces
@@ -21,8 +20,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-10
-:page-revdate: {revdate}
 
 [#kubeflow-user-profile-at-install]
 == Adding users during installation

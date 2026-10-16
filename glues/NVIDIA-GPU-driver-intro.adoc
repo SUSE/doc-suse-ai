@@ -1,6 +1,5 @@
 [#ai-nvidia-gpu-driver]
 = Installing {nvidia} GPU drivers
-:description: Install the NVIDIA GPU drivers using the open driver from the operating system repositories to simplify deployment
 
 The {nvidia} open driver provides host-level graphics processing unit (GPU) support directly from the core operating system package repositories.
 This built-in configuration eliminates the need to compile drivers manually or load them dynamically using the {nvidia} GPU Operator.

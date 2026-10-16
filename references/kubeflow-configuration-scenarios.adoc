@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Learn how to configure Kubeflow for different environments using scenarios that include NodePort access, HTTP, self-signed TLS, and Lets Encrypt
 endif::[]
 ifndef::override-title[]
 = {kubeflow} configuration scenarios
@@ -21,8 +20,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-10
-:page-revdate: {revdate}
 
 [#kubeflow-config-scenarios-nodeport]
 == Non-production: NodePort access (zero-configuration)
