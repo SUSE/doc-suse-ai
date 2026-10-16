@@ -1,0 +1,73 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Collecting diagnostics for support
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+When contacting {suse} Support, providing comprehensive diagnostic information is crucial.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-10-01
+:page-revdate: {revdate}
+
+== Essential Information to Collect
+
+*Detailed problem description*::
+What happened, when did it happen, what were you doing, what is the expected behavior, and what is the actual behavior?
+
+*Steps to reproduce*::
+Can you reliably reproduce the issue? If so, list the exact steps.
+
+*Component versions*::
+{productname} version, components versions ({rke2a}, {ranchera}).
+
+*Relevant logs*:: 
+* `journalctl` output (filtered by service if possible, or full boot logs).
+* {kube} pod logs (kubectl logs).
+* Metal³/Elemental component logs.
+* EIB build logs and other logs
+
+*System information*::
+* `uname -a`
+* `df -h`
+* `ip a`
+* `/etc/os-release`
+
+*Configuration files*::
+Relevant configuration files such as {helm} chart values, configmaps, etc.
+
+*{kube} information*::
+Nodes, Services, Deployments, etc.
+
+*{kube} objects affected*::
+BMH, MachineRegistration, etc.
+
+== How to collect
+
+*For logs*::
+Redirect command output to files (for example, `journalctl -u k3s > k3s_logs.txt`).
+
+*For {kube} resources*::
+Use `kubectl get <resource> -o yaml > <resource_name>.yaml` to get detailed YAML definitions.
+
+*For system information*::
+Collect output of the commands listed above.
+
+*For RKE2/Rancher*::
+Check the https://www.suse.com/support/kb/doc/?id=000020191[The Rancher v2.x Linux log collector script] article to run The Rancher v2.x Linux log collector script.
+
+
+== Contact Support
+
+Please check the articles available at https://www.suse.com/support/kb/doc/?id=000019452[How-to effectively work with {suse} Technical Support] and the support handbook located at https://www.suse.com/support/handbook/[SUSE Technical Support Handbook] for more details on how to contact {suse} support.

@@ -1,0 +1,58 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= General troubleshooting principles
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Before diving into component-specific issues, consider the following general principles.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-10-01
+:page-revdate: {revdate}
+
+*Check logs*::
+Logs are the primary source of information.
+Most of the times the errors are self explanatory and contain hints on what failed.
+
+*Check clocks*::
+Having clock differences between systems can lead to all kinds of different errors.
+Ensure clocks are in sync.
+
+*Boot Issues*::
+If the system is stuck during boot, note down the last messages displayed.
+Access the console (physical or via BMC) to observe boot messages.
+
+*Network Issues*::
+Verify network interface configuration (`ip a`), routing table (`ip route`), test connectivity from/to other nodes and external services (`ping`, `nc`).
+Ensure firewall rules are not blocking necessary ports.
+
+*Verify component status*::
+Use `kubectl get` and `kubectl describe` for {kube} resources.
+Use `kubectl get events --sort-by='.lastTimestamp' -n <namespace>` to see the events on a particular {kube} namespace.
+
+*Verify services status*::
+Use `systemctl status <service>` for {systemd} services.
+
+*Check syntax*::
+Software expects certain structure and syntax on configuration files.
+For YAML files, for example, use `yamllint` or similar tools to verify the proper syntax.
+
+*Isolate the problem*::
+Try to narrow down the issue to a specific component or layer (for example, network, storage, OS, or {kube}).
+
+*Documentation*::
+Always refer to the official https://documentation.suse.com/suse-ai-factory/[{productname} documentation] and also upstream documentation for detailed information.
+
+*Known issues*::
+For each {productname} release there is a “Known issues” section on the release notes that contains information of issues that will be fixed on future releases but can affect the current one.
