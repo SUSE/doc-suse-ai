@@ -123,7 +123,6 @@ include::../tasks/runai-installing.adoc[leveloffset=+2]
 endif::[]
 
 [#ai-factory-registries-access]
-
 :override-title: Are there any post-deployment steps?
 include::../tasks/ai-factory-registries-access.adoc[leveloffset=+1]
 
