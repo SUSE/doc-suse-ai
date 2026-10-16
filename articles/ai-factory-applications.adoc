@@ -1,7 +1,6 @@
 include::../common/generic-attributes.adoc[]
 ifeval::["{PROF_PRODUCT}" == "saif"]
 = {saifactory} Applications
-:description: Install and configure SUSE AI Factory Applications using Helm charts and custom values files to deploy AI applications on Kubernetes
 endif::[]
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
 = {saifactory} with {nvidia} Applications
@@ -19,8 +18,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-09-21
-:page-revdate: {revdate}
 
 [abstract]
 --

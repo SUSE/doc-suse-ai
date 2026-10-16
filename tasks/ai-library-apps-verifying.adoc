@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Verify AI Library applications hosted on SUSE Application Collection and SUSE Registry by using cosign to check their authenticity and attached attestations
 endif::[]
 ifndef::override-title[]
 = Verifying {suse} {ailibrary} applications
@@ -21,8 +20,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-02-02
-:page-revdate: {revdate}
 
 [#verify-artifacts-saappco]
 .Verifying containers and {helm} charts hosted on the {sappco}

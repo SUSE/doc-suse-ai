@@ -1,6 +1,5 @@
 include::../common/generic-attributes.adoc[]
 = {productname} Requirements
-:description: Check the requirements for hardware, GPUs, and applications to prepare your cluster infrastructure before installation
 :docinfo:
 :doctype: book
 :experimental:
@@ -14,8 +13,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-07-29
-:page-revdate: {revdate}
 
 == Overview
 The deployment and operation of {productname} require several prerequisites to ensure a stable, secure and performant environment.

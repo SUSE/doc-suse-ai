@@ -1,6 +1,5 @@
 include::../common/generic-attributes.adoc[]
 = Using {productname}
-:description: Use the Rancher Prime UI to manage AI applications, blueprints, and workloads on your Kubernetes cluster
 :docinfo:
 :experimental:
 
@@ -13,8 +12,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-06-08
-:page-revdate: {revdate}
 
 == Overview
 

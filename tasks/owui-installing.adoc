@@ -1,8 +1,5 @@
 [#owui-installing]
 = Installing {owui}
-:description: Install Open WebUI by using the provided Helm chart and custom overrides file to configure and deploy the application with specific settings
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 include::../snippets/openwebui-intro.adoc[]
 

@@ -2,9 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Create a minimal blueprint template and reference architectures for AI workloads using specific blueprint names and configuration examples from the page
-:revdate: 2026-10-07
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = {saifactory} blueprint templates and reference architectures

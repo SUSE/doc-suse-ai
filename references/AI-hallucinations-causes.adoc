@@ -1,8 +1,5 @@
 [#ai-hallucinations-causes]
 = What causes AI hallucinations?
-:description: Learn what causes AI hallucinations by understanding the main factors ambiguous prompts, lack of context, and long generation length
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 The most common causes of hallucinations are: 
 

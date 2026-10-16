@@ -1,8 +1,5 @@
 [#owui-knowledgebase-deleting]
 = Deleting a knowledge base
-:description: Delete a knowledge base by clicking the three dots in its tile, selecting Delete, and confirming the action in the Open WebUI interface
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This topic explains how to delete an existing knowledge base.

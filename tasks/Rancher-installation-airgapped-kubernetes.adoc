@@ -6,9 +6,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Install a Kubernetes cluster in air-gapped environments using RKE2 by creating configuration files and setting up a private registry
-:revdate: 2026-01-28
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: install {kube}

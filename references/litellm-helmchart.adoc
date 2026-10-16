@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Configure LiteLLM Helm chart options by setting values for image registry, secrets, deployment settings, and proxy configuration
 endif::[]
 ifndef::override-title[]
 = Values for the {litellm} {helm} chart
@@ -19,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-02-10
-:page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 

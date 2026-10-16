@@ -3,9 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Assign specific user roles in Rancher Prime to allow users to access and use the SUSE AI Lifecycle Manager for deploying and managing AI-powered applications
-:revdate: 2026-01-26
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Managing user roles in {sailifecyclemanager}

@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Choose between direct Fleet bundle, GitOps-driven Fleet publishing, or manual Helm installation to deploy AI applications and blueprints
 endif::[]
 ifndef::override-title[]
 = What deployment types are available for AI applications and blueprints?
@@ -20,8 +19,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-08
-:page-revdate: {revdate}
 
 *{fleeta} Bundle*::
 Deploy the application directly as a {fleeta} bundle managed by {rancherfleet}.

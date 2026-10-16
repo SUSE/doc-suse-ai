@@ -1,6 +1,5 @@
 include::../common/generic-attributes.adoc[]
 = Introduction to {productname}
-:description: Learn the basics and benefits of running private AI workloads with secure, auditable capabilities in on-premises, cloud, and air-gapped environments
 :docinfo:
 :experimental:
 
@@ -13,8 +12,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2025-12-02
-:page-revdate: {revdate}
 
 WHAT?::
   {productname} is an open generative AI solution. It offers

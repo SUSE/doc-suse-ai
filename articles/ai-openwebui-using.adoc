@@ -1,6 +1,5 @@
 include::../common/generic-attributes.adoc[]
 = Using Open WebUI for Effective AI Model Interaction 
-:description: Learn how to use Open WebUI to interact effectively with AI models through its chat interface and input field
 :docinfo:
 :doctype: book
 :experimental:
@@ -14,8 +13,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2025-012-02
-:page-revdate: {revdate}
 
 [abstract]
 --

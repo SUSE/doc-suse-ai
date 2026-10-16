@@ -6,9 +6,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Install SUSE Rancher Prime with the --privileged option to run containers within containers in an air-gapped Kubernetes environment
-:revdate: 2026-01-26
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Installing {ranchermanager} in air-gapped environments: install {rancherprime}

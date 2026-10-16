@@ -6,9 +6,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Install the NVIDIA GPU Operator on an RKE2 cluster to manage GPUs in Kubernetes pods using the provided YAML manifest
-:revdate: 2026-01-29
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Installing the {nvoperator} on the {rke2} cluster
@@ -22,8 +19,6 @@ The {nvidia} operator allows administrators of {k8s} clusters to manage GPUs jus
 It includes everything needed for pods to be able to operate GPUs.
 endif::[]
 
-:revdate: 2026-01-29
-:page-revdate: {revdate}
 
 // erase the flag for future overrides
 :override-abstract!:

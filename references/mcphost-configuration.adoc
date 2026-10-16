@@ -1,6 +1,5 @@
 [#mcphost-configuration]
 = MCP host configuration
-:description: Configure the MCP host using JSON files to define behavior, security settings, and available tools for specific tasks
 include::../common/generic-attributes.adoc[]
 // overridden title?
 
@@ -11,8 +10,6 @@ include::../common/generic-attributes.adoc[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-04-01
-:page-revdate: {revdate}
 
 MCP Host behavior is defined using JSON configuration files.
 While such configuration is optional, defining configuration files has the following benefits:

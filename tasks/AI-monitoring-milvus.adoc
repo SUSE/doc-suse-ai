@@ -1,8 +1,5 @@
 [#ai-monitoring-milvus]
 = Monitoring {milvus}
-:description: Monitor Milvus by scraping its Prometheus-compatible metrics endpoint and configuring the OpenTelemetry Collector to collect and visualize its status
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 {milvus} is monitored by scraping its {prometheus}-compatible metrics endpoint.
 The {sobservability} Extension uses these metrics to visualize {milvus}'s status and activity. 

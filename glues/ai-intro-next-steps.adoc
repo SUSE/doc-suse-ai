@@ -1,7 +1,6 @@
 
 [#ai-intro-next-steps]
 = Next steps
-:description: Study hardware and software requirements and understand the installation procedure
 
 [abstract]
 --

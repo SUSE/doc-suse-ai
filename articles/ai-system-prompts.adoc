@@ -1,6 +1,5 @@
 include::../common/generic-attributes.adoc[]
 = Guiding the AI Model with System Prompts
-:description: Create effective system prompts to guide AI models and ensure responses match your intended goals by clearly defining the task and expected behavior
 :docinfo:
 :doctype: book
 :experimental:
@@ -14,8 +13,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2025-012-02
-:page-revdate: {revdate}
 
 [abstract]
 --

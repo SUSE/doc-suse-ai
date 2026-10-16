@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Deploy AI applications on GPU-enabled clusters by installing and configuring the required NVIDIA operators, including the NIM Operator
 endif::[]
 ifndef::override-title[]
 = {nvidia} requirements
@@ -19,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-29
-:page-revdate: {revdate}
 
 [#ai-reqs-nvidia-operators]
 == What are the NVIDIA operator requirements?

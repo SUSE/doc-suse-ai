@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Deploy Milvus in cluster mode with Apache Kafka using SUSE Storage by creating an XFS storage class and configuring it for Kafka
 endif::[]
 ifndef::override-title[]
 = {milvus}
@@ -19,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-16
-:page-revdate: {revdate}
 
 [#milvus-kafka-limitation]
 == Using {akafka} with {sstorage}

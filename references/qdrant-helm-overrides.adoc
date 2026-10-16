@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Create a basic custom values file for the Qdrant Helm chart when the cluster has no default storage class
 endif::[]
 ifndef::override-title[]
 = Examples of {qdrant} {helm} chart custom values files
@@ -20,8 +19,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-21
-:page-revdate: {revdate}
 
 [#qdrant-chart-example-basic]
 .Basic custom values file when the cluster has no default storage class set.

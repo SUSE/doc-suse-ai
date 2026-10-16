@@ -1,8 +1,5 @@
 [#owui-knowledgebase-removing-content]
 = Removing content from a knowledge base
-:description: Remove content from a knowledge base by clicking the cross sign next to the resources name in the Open WebUI interface
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This topic explains how to remove an existing content from a knowledge base. 

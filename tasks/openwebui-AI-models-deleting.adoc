@@ -1,8 +1,5 @@
 [#openwebui-ai-models-delete]
 = Deleting existing AI models
-:description: Delete existing AI models using the Open WebUI interface by selecting the model and confirming deletion
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 Using the {owui} interface, you can delete previously created AI models. 
 

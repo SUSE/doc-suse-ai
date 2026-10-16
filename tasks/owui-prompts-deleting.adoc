@@ -1,8 +1,5 @@
 [#owui-prompts-deleting]
 = Deleting existing system prompts
-:description: Delete an existing system prompt  in the Open WebUI interface
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This procedure shows how to delete an existing system prompt. 

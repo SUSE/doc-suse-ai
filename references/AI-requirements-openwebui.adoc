@@ -1,8 +1,5 @@
 [#ai-requirements-openwebui]
 = {owui} requirements
-:description: Learn the hardware, network, and software requirements for running Open WebUI, including browser compatibility and integration considerations
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 While {owui} has no specific hardware dependencies beyond those of the underlying platform, consider the following guidelines for optimal performance.
 

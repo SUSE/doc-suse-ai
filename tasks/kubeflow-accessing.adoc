@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Access Kubeflows Web interface using methods like port-forward, NodePort, external IP, or named host names with or without TLS
 endif::[]
 ifndef::override-title[]
 = Accessing {kubeflow}
@@ -23,8 +22,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-10
-:page-revdate: {revdate}
 
 [#kubeflow-accessing-portforward]
 == Option A: Port-forward (local dev)

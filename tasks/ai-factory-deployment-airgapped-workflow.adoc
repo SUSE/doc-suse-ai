@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Download Helm charts, container images, and models to a local data store and transfer them to an air-gapped environment for deployment
 endif::[]
 ifndef::override-title[]
 = {productname} air-gapped deployment workflow
@@ -19,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-01
-:page-revdate: {revdate}
 
 
 . In a connected environment, download all required {helm} charts, container images and models to a local data store as described in xref:ai-factory-deployment-airgapped-workflow-downloading-artifacts[].

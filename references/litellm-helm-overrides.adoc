@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Configure the LiteLLM chart with custom values to deploy PostgreSQL, set up image pull secrets, and access the admin UI through localhost
 endif::[]
 ifndef::override-title[]
 = {litellm} custom values examples
@@ -19,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-11
-:page-revdate: {revdate}
 
 [#litellm-chart-example-basic]
 == Basic custom values file with {postgresql} deployment and an automatically generated master key

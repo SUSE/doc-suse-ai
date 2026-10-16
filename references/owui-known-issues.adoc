@@ -1,9 +1,6 @@
 [#owui-known-issues]
 ifdef::override-title[]
 = {override-title}
-:description: Learn how to reset an Open WebUI user password and fix audio processing issues using commands and steps provided in this page
-:revdate: 2026-01-26
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = {owui} known issues

@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Learn how to request and assign GPU resources to applications running on Kubernetes by defining resource limits and using node selection rules
 endif::[]
 ifndef::override-title[]
 = Assigning GPU resources to applications
@@ -25,8 +24,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-25
-:page-revdate: {revdate}
 
 
 .**Requirements**

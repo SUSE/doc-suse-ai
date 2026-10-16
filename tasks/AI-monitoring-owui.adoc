@@ -1,8 +1,5 @@
 [#ai-monitoring-owui]
 = Monitoring {owui}
-:description: Monitor Open WebUI by using the Filter to collect telemetry data and configure pipelines for tracing and metrics
-:revdate: 2026-01-09
-:page-revdate: {revdate}
 
 The preferred way of retrieving relevant telemetry data from {owui} is to use the https://github.com/SUSE/suse-ai-observability-extension/blob/main/integrations/oi-filter/suse_ai_filter.py[{productname}
         Filter].

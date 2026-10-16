@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Plan air-gapped deployments by using local artifact registries, a model cache, and secure TLS endpoints to deploy AI applications without internet access
 endif::[]
 ifndef::override-title[]
 = Considerations for {productname} air-gapped deployments
@@ -21,8 +20,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-10-06
-:page-revdate: {revdate}
 
 
 * *Application catalog.* By default, the {kube} operator serves a built-in application catalog, so you can browse and install applications without the management cluster reaching out to live chart repositories.

@@ -2,7 +2,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Install SUSE Security using Kubernetes to deploy runtime protection, vulnerability scanning, and compliance auditing with a dedicated manager and controller
 endif::[]
 ifndef::override-title[]
 = Installing {ssecurity} using {kube}
@@ -21,8 +20,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-19
-:page-revdate: {revdate}
 
 The sample file will deploy one manager and 3 controllers.
 It will deploy an enforcer on every node as a daemonset.

@@ -3,7 +3,6 @@ include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
 = {override-title}
-:description: Install the AI Library by preparing the cluster with SUSE Rancher Prime, NVIDIA GPU Operator, and SUSE Observability as described in the procedure
 endif::[]
 ifndef::override-title[]
 = Preparing the cluster for {ailibrary}
@@ -21,8 +20,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-02-18
-:page-revdate: {revdate}
 
 
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]

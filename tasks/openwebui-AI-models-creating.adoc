@@ -1,8 +1,5 @@
 [#openwebui-ai-models-creating]
 = Creating custom AI models
-:description: Create custom AI models by following this procedure to set up models in Open WebUI. Define names, system prompts, and capabilities
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 ifndef::part-of-article[]
 This procedure shows how to create custom AI models using {owui}. 

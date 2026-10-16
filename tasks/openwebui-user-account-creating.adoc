@@ -1,9 +1,6 @@
 [#openwebui-user-account-creating]
 ifdef::override-title[]
 = {override-title}
-:description: Create user accounts in Open WebUI by selecting roles and entering details or importing a CSV file with user information
-:revdate: 2026-01-26
-:page-revdate: {revdate}
 endif::[]
 ifndef::override-title[]
 = Creating user accounts in {owui}
