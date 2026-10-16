@@ -91,8 +91,39 @@ In an air-gapped environment, mirror this image or override the registry.
 [IMPORTANT]
 .Changes to review before upgrading to {aif-latest-version}
 ====
+* *The partner blueprint catalog is enabled by default.*
+The chart creates the {fleeta} `GitRepo` resource `fleet-local/aif-partner-blueprints`, which synchronizes the SUSE partner blueprints from GitHub.
+If you already added a catalog on the `Settings` page that points at the same repository, remove it after upgrading.
+Otherwise, two `GitRepo` resources synchronize the same blueprints and conflict.
+In air-gapped environments, disable the catalog or point it at a mirror, as described in xref:ai-factory-partner-catalog[].
+
+* *Catalogs declared in `blueprintCatalogs` are read-only outside {helm}.*
+Change or remove them only with `helm upgrade`, and always pass `--reuse-values` so that {helm} keeps the other values you set.
+If a catalog added on the `Settings` page has the same name as a {helm}-declared catalog but a different repository, branch or paths, `helm upgrade` fails with a server-side apply conflict.
+Remove or rename that catalog first.
+
+* *Server-side apply is required to combine both kinds of catalogs.*
+If `blueprintCatalogs` is not empty and you also add catalogs on the `Settings` page, upgrade with server-side apply.
+Releases first installed with {helm} 3, including releases upgraded through {ranchera} `Apps`, keep using client-side apply, which drops the catalogs added on the `Settings` page.
+Run one `helm upgrade --server-side=true` to switch the release to server-side apply; later upgrades keep it.
+
+* *Standalone UI extension installations must be migrated.*
+If you install the `aif-ui` chart on its own with `standalone=true`, it now deploys only the extension catalog.
+After upgrading, install the extension from menu:Extensions[Available] in {ranchera}, and update it there after each later upgrade of the chart.
+The chart refuses the release name `aif-ui`.
+If your release uses this name, uninstall it and reinstall it under a different name, for example `aif-ui-server`, with the `--take-ownership` option, and with {helm} 4 also the `--force-conflicts` option.
+Installations of the UI extension through the operator are not affected.
+
+* *Blueprints with `source: Community` require {aif-latest-version}.*
+Operator version 2.3.0 and earlier reject this value.
+If you publish blueprint catalogs, do not use it until {aif-latest-version} is the minimum operator version that you support.
+====
+
+[IMPORTANT]
+.Changes to review when upgrading from 2.2.x
+====
 * *Upgrade the operator and the UI extension to matching versions.*
-Repository chart-access checks, blueprint customization and partner icons require both the {aif-latest-version} operator and the {aif-latest-version} UI extension.
+Repository chart-access checks, blueprint customization and partner icons require both the operator and the UI extension in version 2.3.0 or newer.
 
 * *Mirror the new `kubectl` image in air-gapped environments.*
 The {ranchera} readiness job uses the image defined by `global.kubectl.image`.
@@ -110,7 +141,7 @@ If you install the UI extension chart on its own, without the operator, over an 
 * *Custom repository names are reserved.*
 Custom chart repositories cannot use the names of built-in {productname} repositories, default {ranchera} repositories, {nvidia} team repositories or other existing `ClusterRepo` resources.
 
-* *Blueprints with `source: Partner` require {aif-latest-version}.*
+* *Blueprints with `source: Partner` require 2.3.0 or newer.*
 Operator version 2.2.0 rejects this value.
-If you publish blueprint catalogs, do not use it until {aif-latest-version} is the minimum operator version that you support.
+If you publish blueprint catalogs, do not use it until 2.3.0 is the minimum operator version that you support.
 ====

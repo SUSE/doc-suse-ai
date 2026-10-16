@@ -27,7 +27,7 @@ endif::[]
 [NOTE]
 .What uninstalling removes
 ====
-Uninstalling the operator chart removes the bundled blueprints and the UI extension.
+Uninstalling the operator chart removes the bundled blueprints, the SUSE partner blueprint catalog and the UI extension.
 The CRDs, the `Settings` resource and the `aif-ui-config` ConfigMap of the UI extension are deliberately retained so that a reinstallation preserves your configuration and existing workload resources.
 
 Remove them explicitly with the steps below if you want a complete removal.
