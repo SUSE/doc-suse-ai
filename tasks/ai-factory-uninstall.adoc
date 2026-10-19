@@ -11,13 +11,13 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-To uninstall {productname}, you need to perform the following tasks:
+To uninstall {productname}, you need to perform 3 tasks:
 
 * Uninstall {saifoperator}.
 * Remove installation leftovers.
 * Optionally, remove Custom Resource Definitions (CRDs).
 
-You can uninstall {productname} either using {ranchera} or the command line.
+You can uninstall {productname} either using {ranchera} or the command line (e.g. {helm}).
 endif::[]
 
 // erase the flag for future overrides
@@ -28,9 +28,9 @@ endif::[]
 .What uninstalling removes
 ====
 Uninstalling the operator chart removes the bundled blueprints and the UI extension.
-The CRDs, the `Settings` resource and the `aif-ui-config` ConfigMap of the UI extension are deliberately retained so that a reinstallation preserves your configuration and existing workload resources.
+The CRDs, the `Settings` resource, and the `aif-ui-config` ConfigMap of the UI extension are deliberately retained so that a reinstallation preserves your configuration and existing workload resources.
 
-Remove them explicitly with the steps below if you want a complete removal.
+Leverage the steps below if you want to facilitate a complete removal.
 ====
 
 == Uninstall using {helm}
@@ -84,7 +84,7 @@ Remove them explicitly with the steps below if you want a complete removal.
 
 . *Uninstall the {saifactory} extension and the operator.*
 .. From the main left panel, select the cluster you want to uninstall from, then menu:Apps[Installed Apps].
-.. From the list of installed applications, activate the checkbox of `aif-operator` and click btn:[Delete] above the list.
+.. From the list of installed applications, activate the checkbox of `aif-operator` and click the btn:[Delete] button above the list.
 +
 [#fig-aif-uninstall]
 .Uninstalling {saifoperator}
@@ -93,17 +93,17 @@ image::aif-operator-uninstall.png[Screenshot showing how to uninstall {saifopera
 
 . *Remove installation leftovers*
 .. From the same cluster menu, select menu:More Resources[ai-factory.suse.com > Settingses].
-.. Activate the checkbox of `aif-operator` and click btn:[Delete] above the list.
+.. Activate the checkbox of `aiff-operators` and click btn:[Delete] above the list.
 +
 [#fig-aif-leftovers-uninstall]
 .Uninstalling {saifoperator} leftovers
 image::aif-leftovers-uninstall.png[Screenshot showing how to uninstall {saifoperator} leftovers,scaledwidth=100%]
-.. Confirm the deletion.
+.. Confirm tha deletion.
 .. From the same cluster menu, select menu:Storage[ConfigMaps].
 .. Activate the checkbox of `aif-ui-config` in the `cattle-ui-plugin-system` namespace and click btn:[Delete] above the list.
 .. Confirm the deletion.
 
-. To perform a complete removal of all resources, *remove CRDs*.
+. to perform a complete removal of all resources, *remove CRDs*
 .. From the same cluster menu, select menu:More Resources[API > CustomResourceDefinitions].
 .. Filter the list by entering `ai-factory.suse.com` in the search box.
 .. Activate the checkbox of all `ai-factory.suse.com` resources and click btn:[Delete] above the list.
