@@ -107,13 +107,6 @@ If `blueprintCatalogs` is not empty and you also add catalogs on the `Settings` 
 Releases first installed with {helm} 3, including releases upgraded through {ranchera} `Apps`, keep using client-side apply, which drops the catalogs added on the `Settings` page.
 Run one `helm upgrade --server-side=true` to switch the release to server-side apply; later upgrades keep it.
 
-* *Standalone UI extension installations must be migrated.*
-If you install the `aif-ui` chart on its own with `standalone=true`, it now deploys only the extension catalog.
-After upgrading, install the extension from menu:Extensions[Available] in {ranchera}, and update it there after each later upgrade of the chart.
-The chart refuses the release name `aif-ui`.
-If your release uses this name, uninstall it and reinstall it under a different name, for example `aif-ui-server`, with the `--take-ownership` option, and with {helm} 4 also the `--force-conflicts` option.
-Installations of the UI extension through the operator are not affected.
-
 * *Blueprints with `source: Community` require {aif-latest-version}.*
 Operator version 2.3.0 and earlier reject this value.
 If you publish blueprint catalogs, do not use it until {aif-latest-version} is the minimum operator version that you support.
