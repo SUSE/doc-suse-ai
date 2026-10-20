@@ -455,7 +455,7 @@ Keeping catalogs added on the `Settings` page next to catalogs declared in `blue
 Run one `helm upgrade --server-side=true` to switch the release to server-side apply; later upgrades keep it.
 This does not apply while `blueprintCatalogs` is empty.
 
-A catalog added on the `Settings` page with the same name as a {helm}-declared catalog but a different repository, branch or paths makes `helm upgrade` fail with a conflict.
+Adding a catalog on the `Settings` page with the same name as a {helm}-declared catalog but a different repository, branch or paths makes `helm upgrade` fail with a conflict.
 Remove or rename that catalog before you upgrade.
 
 After `helm uninstall`, the retained `Settings` resource keeps the {helm}-declared catalogs read-only.
