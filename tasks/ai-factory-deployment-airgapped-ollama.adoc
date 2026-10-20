@@ -1,0 +1,317 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Air-gapping {ollama} and blueprints
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Learn how to mirror artifacts, container images and {ollama} models to deploy blueprints in an air-gapped environment.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+[#aif-airgap-placeholders]
+== Placeholders used in this topic
+The following placeholders are used throughout this topic:
+
+[#tab-aif-airgap-placeholders]
+[cols="1,2"]
+|===
+| Placeholder | Meaning
+
+| `my.local.registry.com`
+| The fully qualified domain name (FQDN) or IP address of your private registry inside the air gap
+
+| `<BLUEPRINT>.yaml`
+| The blueprint custom resource (CR) file that you want to deploy
+
+| `<NAMESPACE>`
+| The {kube} namespace where the blueprint workload is deployed
+
+| `<CHART>` or `<CHART_VERSION>`
+| The {helm} chart name or chart version retrieved from the blueprint inventory
+
+| `<IMAGE>:<TAG>`
+| The container image name and tag retrieved from the blueprint inventory
+
+| `<MODEL>`
+| An {ollama} model identifier, such as `llama3:8b` or `mistral:7b`
+|===
+
+
+[#aif-airgap-blueprint-artifacts]
+== Blueprint architecture
+A blueprint depends on three types of artifacts:
+
+[#tab-aif-airgap-blueprint-artifacts]
+[cols="1,1,2"]
+|===
+| Artifact | Referenced by | Air-gap approach
+
+| {helm} charts
+| `chartRepo` (repository *identity*, not URL)
+| Mirror to a private OCI registry and update the repository in menu:SUSE AI Factory[Settings].
+
+| Container images
+| `image.registry/repository/tag` in component values
+| Mirror one-to-one and resolve through {rke2a} registry mirrors.
+
+| {ollama} models
+| `ollama.models.pull` (retrieved from `registry.ollama.ai` at startup)
+| Pre-pull, copy into a persistent volume claim (PVC) and disable `pull`.
+|===
+
+Each artifact category requires a specific air-gap approach:
+
+* *{helm} charts* are resolved through {ranchera} `ClusterRepo` resources by repository identity rather than hardcoded URLs.
+* *Container images* are pulled by {containerd} on each node and redirected to your private registry through mirror configurations.
+* *{ollama} models* are fetched dynamically at startup through {ollama}'s model registry protocol rather than an OCI registry. In an air-gapped cluster, you must pre-populate models into a {kube} PersistentVolumeClaim (PVC)—a shared storage volume configured with ReadWriteMany (RWX) access—so that {ollama} pods can load model weights locally from disk.
+
+
+[#aif-airgap-prerequisites]
+== Prerequisites
+
+The link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment-airgapped/ai-factory-deployment-airgapped-requirements.html[requirements for air-gapped deployments] apply:
+
+* A connected staging host with {helm}, {docker} or {podman} (or regsync, {skopeo}, crane), `yq` and {ollama}.
+* An OCI registry inside the air gap (for example, link:https://apps.rancher.io/applications/harbor[{harbor}]) with a TLS certificate issued by your organization's CA.
+* ReadWriteMany (RWX) storage (such as Longhorn or NFS) for the model cache.
+
+[#aif-airgap-identifying-artifacts]
+== Identifying blueprint artifacts
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}CR=<BLUEPRINT>.yaml
+
+# Helm charts
+{prompt_user}yq '.. | select(has("chartName")) | [.chartName, .chartRepo, .chartVersion] | join(" ")' $CR
+
+# Images set in values
+{prompt_user}yq '.. | select(has("repository") and has("registry")) | .registry + "/" + .repository + ":" + .tag' $CR
+{prompt_user}grep -oE 'image: *"?[a-z0-9.-]+\.[a-z]+/[^ "]+' $CR | sort -u
+
+# Ollama models
+{prompt_user}yq '.. | select(has("chartName") and .chartName == "ollama") | .values.ollama.models' $CR
+----
+
+Charts may also pull container images that only appear in chart defaults and are not explicitly listed in the blueprint custom resource.
+To discover all images that a chart deploys, extract the component's `values` block from `<BLUEPRINT>.yaml` into a local `values.yaml` file, then render the chart templates:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}yq '.spec.components[] | select(.chartName == "<CHART>") | .values' $CR > values.yaml
+{prompt_user}helm template <CHART> --version <CHART_VERSION> -f values.yaml | grep image:
+----
+
+Be sure to account for images from registries other than {suse} (such as `docker.io`, `ghcr.io` or `mcr.microsoft.com`).
+Pin any `:latest` or moving tag to a fixed version or digest before mirroring.
+
+[#aif-airgap-download-connected-host]
+== Downloading artifacts on the connected host
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm registry login dp.apps.rancher.io
+{prompt_user}helm pull oci://dp.apps.rancher.io/charts/<CHART> --version <CHART_VERSION>
+
+{prompt_user}docker login dp.apps.rancher.io
+{prompt_user}docker pull dp.apps.rancher.io/containers/<IMAGE>:<TAG>
+{prompt_user}docker save dp.apps.rancher.io/containers/<IMAGE>:<TAG> -o <IMAGE>.tar
+----
+
+Repeat this process for every chart and image identified in the inventory.
+For {suseai} components, the `SUSE-AI-get-images.sh` and `SUSE-AI-load-images.sh` scripts from the link:https://github.com/SUSE/suse-ai-stack/tree/main/air-gapped-install[{suseai} air-gapped] repository automate this task.
+
+[#aif-airgap-download-ollama-models]
+== Downloading {ollama} models
+
+[source,bash,subs="+attributes"]
+----
+# Repeat for each model
+{prompt_user}ollama pull <MODEL>
+
+# Archive models/blobs and models/manifests
+{prompt_user}tar -C ~/.ollama -czf ollama-models.tgz models
+----
+
+[#aif-airgap-transfer-and-upload]
+== Transferring and uploading artifacts
+
+Transfer the downloaded {helm} chart packages, container image archives, and `ollama-models.tgz` across the air gap using `rsync`, secure copy (`scp`), or approved physical media.
+
+After transferring the files, push the {helm} charts and container images to your local private registry.
+Retain the upstream repository path structure so that rewrite rules in your cluster registry configuration can resolve them seamlessly.
+Optionally, prepend a per-source namespace prefix, such as `suse-app-co/`, to organize images from different upstream registries:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm push <CHART>-<CHART_VERSION>.tgz oci://my.local.registry.com/suse-app-co/charts
+
+{prompt_user}docker load -i <IMAGE>.tar
+{prompt_user}docker tag dp.apps.rancher.io/containers/<IMAGE>:<TAG> \
+            my.local.registry.com/suse-app-co/containers/<IMAGE>:<TAG>
+{prompt_user}docker push my.local.registry.com/suse-app-co/containers/<IMAGE>:<TAG>
+----
+
+[#aif-airgap-point-chart-repos-at-mirror]
+== Pointing chart repositories at the mirror
+
+. In the {ranchera} UI, navigate to menu:SUSE AI Factory[Settings].
+. Set the *SUSE Application Collection* and *SUSE Registry* endpoints to your mirror (for example, pass:c[`oci://my.local.registry.com/suse-app-co/charts`]).
+. Select the CA secret from the `aif-operator` namespace, and click btn:[Apply].
+
+Because blueprints reference chart repositories by identity (`chartRepo` name) rather than by direct URL, you do not need to modify the custom resource for charts.
+If your blueprint references an additional {ranchera} `ClusterRepo` resource outside the default SUSE collections, create or update that `ClusterRepo` with the same name, pointing its `spec.url` to the mirrored chart repository in your local registry.
+
+[#aif-airgap-configure-rke2-registries]
+== Configuring {rke2a} private registries
+
+Container image references defined within blueprint `values` blocks remain unchanged and point to their upstream registry URLs. Because the air-gapped cluster cannot reach external registries, the container runtime ({containerd}) must redirect image pull requests to your private mirror.
+
+On every server and agent node in the cluster, create or update `/etc/rancher/rke2/registries.yaml` (for details, see the link:https://documentation.suse.com/cloudnative/rke2/latest/en/install/private_registry.html[{rke2a} private registry documentation]). Define a mirror entry and rewrite rule for each source registry referenced by your blueprint components:
+
+[source,yaml]
+----
+mirrors:
+  dp.apps.rancher.io:
+    endpoint: ["https://my.local.registry.com"]
+    rewrite:
+      "^(.*)$": "suse-app-co/$1"
+  registry.suse.com:
+    endpoint: ["https://my.local.registry.com"]
+    rewrite:
+      "^(.*)$": "suse-registry/$1"
+  docker.io:
+    endpoint: ["https://my.local.registry.com"]
+    rewrite:
+      "^(.*)$": "docker/$1"
+configs:
+  my.local.registry.com:
+    tls:
+      ca_file: /etc/rancher/rke2/my-ca.pem
+----
+
+After creating or updating the configuration, restart {rke2a} on the node:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_root}systemctl restart rke2-server
+----
+
+On worker nodes, run:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_root}systemctl restart rke2-agent
+----
+
+[#aif-airgap-load-ollama-models-pvc]
+== Loading {ollama} models into a PVC
+
+The {ollama} component requires local access to model weights and metadata in a persistent volume. Because an air-gapped environment prevents dynamic model downloads from the public {ollama} registry (`registry.ollama.ai`), you must pre-populate the models into an RWX PVC.
+
+Create an RWX PVC in `<NAMESPACE>`, then copy and unpack the archived models into the volume using a temporary loader pod:
+
+. Save the following manifest as `ollama-models.yaml`:
++
+[source,yaml]
+----
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ollama-models
+spec:
+  accessModes: [ReadWriteMany]
+  resources:
+    requests:
+      storage: 20Gi              # size for your models
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ollama-loader
+spec:
+  restartPolicy: Never
+  containers:
+  - name: loader
+    image: dp.apps.rancher.io/containers/ollama:<TAG>   # already mirrored
+    command: ["sleep", "infinity"]
+    volumeMounts:
+    - name: data
+      mountPath: /data
+  volumes:
+  - name: data
+    persistentVolumeClaim:
+      claimName: ollama-models
+----
+
+. Apply the manifest, copy the archive and unpack the models:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl -n <NAMESPACE> apply -f ollama-models.yaml
+{prompt_user}kubectl -n <NAMESPACE> cp ollama-models.tgz ollama-loader:/data/
+{prompt_user}kubectl -n <NAMESPACE> exec ollama-loader -- tar -C /data -xzf /data/ollama-models.tgz
+{prompt_user}kubectl -n <NAMESPACE> exec ollama-loader -- rm /data/ollama-models.tgz
+{prompt_user}kubectl -n <NAMESPACE> delete pod ollama-loader
+----
+
+[NOTE]
+====
+The {ollama} container mounts the model volume at `/root/.ollama` by default. When unpacking the archive into `/data`, ensure that the `models/` directory resides directly at the root of the mounted volume, matching the path `/root/.ollama/models`.
+====
+
+[#aif-airgap-configure-ollama-pvc]
+== Configuring the {ollama} component to use the PVC
+
+Connecting the pre-loaded PVC and disabling online model retrieval is the only modification required in the blueprint custom resource.
+In the `values` section of the `ollama` component in `<BLUEPRINT>.yaml`, set `models.pull` to an empty list (`[]`) to prevent startup network calls, define the models to load under `models.run`, and configure `persistentVolume` to reference the existing PVC:
+
+[source,yaml]
+----
+      ollama:
+        models:
+          pull: []              # registry.ollama.ai is unreachable
+          run:
+          - <MODEL>             # must already be in the PVC
+      persistentVolume:
+        enabled: true
+        existingClaim: ollama-models
+----
+
+[#aif-airgap-apply-and-verify]
+== Applying and verifying the deployment
+
+Apply the blueprint and verify the {ollama} deployment:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f <BLUEPRINT>.yaml
+{prompt_user}kubectl -n <NAMESPACE> get pods
+{prompt_user}kubectl -n <NAMESPACE> describe pod -l app.kubernetes.io/name=ollama | grep -i image
+{prompt_user}kubectl -n <NAMESPACE> exec deploy/ollama -- ollama list
+----
+
+[#aif-airgap-considerations]
+== Considerations
+
+Keep the following considerations in mind when planning and deploying in an air-gapped environment:
+
+* *Verify that all models in `run` exist in the volume cache.*
+If an {ollama} pod starts and a model listed under `ollama.models.run` is missing from the volume cache, {ollama} attempts to download it from the internet, which causes network timeouts and leaves the pod in an unhealthy or hanging state.
+* *Account for build-time and runtime package downloads in DAGs and custom images.*
+Blueprints often include workflow orchestrators like Apache Airflow, where data pipelines and AI workloads are defined as Directed Acyclic Graphs (DAGs). If DAG tasks or container entry points run dynamic package installations (such as `pip install` or `npm install`), they fail because external package registries are unreachable in an air-gapped network. To address this:
+** Package all required third-party dependencies into customized container images before transferring them to the air-gapped registry.
+** Deploy an internal package repository mirror (such as a private PyPI or npm server) if dynamic dependencies are required at runtime.
+** If the workflow orchestrator synchronizes DAGs using `git-sync`, ensure the Git repository URL points to an internal Git server accessible within the air gap.
+* *Avoid moving tags.*
+Tags such as `:latest` cannot be verified or updated reliably across an air gap. Always pin images and {helm} chart dependencies to specific semantic versions or immutable cryptographic digests before mirroring.
