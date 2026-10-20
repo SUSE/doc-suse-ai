@@ -121,7 +121,7 @@ image::aif-secrets-sregistry.png[Screenshot showing how to assign secrets for {s
 The list of available applications from the {sregistry} appears.
 
 [#ai-factory-nvidia-registry]
-== How do I access images from {nvidia} AI Library?
+== How do I access images from {nvidia} {ailibrary}?
 
 . Visit {scc} and save the {nvidia} registration code for the {productname} subscription.
 . Add the {nvidia} registry credentials to the {ranchera} _local_ cluster.
@@ -287,7 +287,7 @@ If you host {sappco}, {sregistry} or {nvidia} artifacts in a local registry that
 .. From the main left panel, select menu:local[Storage > Secrets].
 .. Select btn:[Create] in the top right and select btn:[Opaque].
 .. Select the btn:[aif-operator] namespace and enter your preferred secret name (referenced as `<REGISTRY_CA_SECRET_NAME>` in command line tasks).
-.. In the btn:[Data] tab, add a key that holds the PEM-encoded certificate, for example `ca.crt`.
+.. In the btn:[Data] tab, add a key that holds the PEM-encoded certificate, for example, `ca.crt`.
 +
 [TIP]
 .Creating the CA secret on the command line
@@ -341,7 +341,7 @@ For a Git repository accessed over SSH, add a key that holds the SSH private key
 .. In the `Repositories` section, select btn:[Add Repository].
 .. Enter the `Repository Name` and, optionally, a `Display Name (optional)` that is shown in the catalog.
 .. Select the `Repository Type`: `Helm`, `OCI` or `Git`.
-.. For a {helm} or OCI repository, enter the `Repository URL`, for example `\https://example.com/charts` or `oci://example.com/charts`.
+.. For a {helm} or OCI repository, enter the `Repository URL`, for example, `\https://example.com/charts` or `oci://example.com/charts`.
 For a Git repository, enter the `Git Repository URL` and the `Git Branch`.
 .. If the repository requires authentication, select the secret and key in `Username Secret (optional)` and `Token/Password Secret (optional)`.
 For a Git repository accessed over SSH, select the secret and key in `SSH Private Key Secret (optional)` instead.
@@ -363,7 +363,7 @@ A custom repository cannot use the name of a built-in {productname} repository, 
 [NOTE]
 .Single-chart OCI repositories
 ====
-If the OCI repository URL already ends with the chart name, for example `oci://ghcr.io/nvidia/openshell/helm-chart`, {productname} uses the URL as is and does not append the chart name again.
+If the OCI repository URL already ends with the chart name, for example, `oci://ghcr.io/nvidia/openshell/helm-chart`, {productname} uses the URL as is and does not append the chart name again.
 Use this to add the {nvidia} OpenShell charts.
 The OpenShell gateway chart requires the Agent Sandbox CRDs and controller (`agents.x-k8s.io`) to be installed on the target cluster first.
 ====
@@ -372,7 +372,7 @@ The OpenShell gateway chart requires the Agent Sandbox CRDs and controller (`age
 .Testing repositories on private networks
 ====
 Tests of unsaved repositories cannot reach private network addresses.
-If the repository is hosted on a private network, for example a mirror in an air-gapped environment, select btn:[Apply] first and then btn:[Test].
+If the repository is hosted on a private network, for example, a mirror in an air-gapped environment, select btn:[Apply] first and then btn:[Test].
 ====
 
 [NOTE]
@@ -479,9 +479,9 @@ Blueprint `source` values, including `Partner` and `Community`, are declared by 
 ====
 
 [#ai-factory-partner-catalog]
-=== SUSE partner blueprint catalog
+=== {suse} partner blueprint catalog
 
-{productname} synchronizes the SUSE partner blueprint catalog by default.
+{productname} synchronizes the {suse} partner blueprint catalog by default.
 The `aif-operator` chart creates the {fleeta} `GitRepo` resource `fleet-local/aif-partner-blueprints`, which synchronizes the `partners` directory of the `main` branch of link:https://github.com/suse/partner-blueprints[the SUSE partner-blueprints repository].
 The `SUSE Partner Catalog` row in the `Blueprint Catalogs` section of menu:SUSE AI Factory[Settings] shows whether the catalog is synchronized.
 
