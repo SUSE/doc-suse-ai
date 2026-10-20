@@ -22,16 +22,20 @@ Deploying {productname} in air-gapped environments allows organizations to insta
 --
 
 [#ai-factory-deployment-airgapped-considerations]
-:override-title: Considerations
+:override-title: What should I consider before an air-gapped deployment?
 include::../references/ai-factory-deployment-airgapped-considerations.adoc[leveloffset=+1]
 
 [#ai-factory-deployment-airgapped-requirements]
-:override-title: Requirements
+:override-title: What are the requirements for an air-gapped deployment?
 include::../references/ai-factory-deployment-airgapped-requirements.adoc[leveloffset=+1]
 
 [#ai-factory-deployment-airgapped-workflow]
-:override-title: Workflow
+:override-title: How do I deploy {productname} in an air-gapped environment?
 include::../tasks/ai-factory-deployment-airgapped-workflow.adoc[leveloffset=+1]
+
+[#ai-factory-deployment-airgapped-ollama]
+:override-title: How do I air-gap {ollama} and blueprints?
+include::../tasks/ai-factory-deployment-airgapped-ollama.adoc[leveloffset=+1]
 
 [appendix]
 [#ai-factory-release-notes]
