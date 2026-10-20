@@ -93,7 +93,7 @@ In an air-gapped environment, mirror this image or override the registry.
 ====
 * *The partner blueprint catalog is enabled by default.*
 The chart creates the {fleeta} `GitRepo` resource `fleet-local/aif-partner-blueprints`, which synchronizes the SUSE partner blueprints from GitHub.
-If you already added a catalog on the `Settings` page that points at the same repository, remove it after upgrading.
+If you already added a catalog on the `Settings` page that points to the same repository, remove it after upgrading.
 Otherwise, two `GitRepo` resources synchronize the same blueprints and conflict.
 In air-gapped environments, disable the catalog or point it at a mirror, as described in xref:ai-factory-partner-catalog[].
 

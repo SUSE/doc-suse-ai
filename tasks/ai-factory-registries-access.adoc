@@ -487,7 +487,7 @@ The `SUSE Partner Catalog` row in the `Blueprint Catalogs` section of menu:SUSE 
 
 The partner catalog is a chart resource and is not listed under `Custom Catalogs`.
 Upgrading the chart never changes the catalogs added on the `Settings` page.
-If you added a catalog on the `Settings` page that points at the partner repository, remove it.
+If you added a catalog on the `Settings` page that points to the partner repository, remove it.
 Otherwise, two `GitRepo` resources synchronize the same blueprints and conflict.
 
 The catalog is configured with the following values of the `aif-operator` chart:

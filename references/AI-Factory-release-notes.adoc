@@ -35,7 +35,7 @@ This is the {aif-latest-version} release of {productname}, bringing comprehensiv
 
 === Upgrade notes
 - *Partner blueprint catalog in air-gapped installations*: The partner catalog is synchronized from GitHub. In air-gapped installations, disable it with `partnerBlueprints.enabled=false` or point it at an internal mirror link:https://github.com/SUSE/aif/pull/322[#322].
-- *Duplicate partner catalogs*: If you added a catalog on the *Settings* page that points at the SUSE partner-blueprints repository, remove it after upgrading. Otherwise, two {fleeta} `GitRepo` resources synchronize the same blueprints and conflict link:https://github.com/SUSE/aif/pull/322[#322].
+- *Duplicate partner catalogs*: If you added a catalog on the *Settings* page that points to the SUSE partner-blueprints repository, remove it after upgrading. Otherwise, two {fleeta} `GitRepo` resources synchronize the same blueprints and conflict link:https://github.com/SUSE/aif/pull/322[#322].
 - *Server-side apply for {helm}-declared catalogs*: Keeping catalogs added on the *Settings* page next to catalogs declared in `blueprintCatalogs` requires server-side apply. Releases first installed with {helm} 3 keep using client-side apply until you run one `helm upgrade --server-side=true` link:https://github.com/SUSE/aif/pull/322[#322].
 - *`Community` blueprint source*: {saifoperator} 2.3.0 and earlier reject blueprints with the `Community` source. Do not use it until {aif-latest-version} is the minimum operator version in your environment link:https://github.com/SUSE/aif/pull/324[#324].
 
