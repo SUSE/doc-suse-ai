@@ -21,6 +21,151 @@ endif::[]
 :revdate: 2026-10-05
 :page-revdate: {revdate}
 
+== Validating {saifoperator} and UI extension components
+
+Before troubleshooting workload issues, verify that {saifoperator} and its UI components are properly installed and running.
+
+=== Validating that {saifoperator} is running
+
+Check that the operator pod is in the `Running` state and ready in the `aif-operator` namespace:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -n aif-operator
+NAME                            READY   STATUS    RESTARTS   AGE
+aif-operator-7bf464987-mnrw5    1/1     Running   0          2d
+----
+
+Check the operator `Deployment` status:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get deployment aif-operator -n aif-operator
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+aif-operator   1/1     1            1           108d
+----
+
+View the operator logs to verify successful reconciliation without errors:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl logs -n aif-operator -l app.kubernetes.io/name=aif-operator --tail=50
+----
+
+=== Validating that the UI extension is installed
+
+The operator manages the UI extension lifecycle using the `InstallAIExtension` Custom Resource (CR).
+Verify that the extension CR is present and check its status:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get installaiextensions.ai-factory.suse.com -A
+NAME     PHASE       SOURCE   EXTENSION   VERSION   AGE
+aif-ui   Installed   Helm     aif-ui      2.2.0     108d
+----
+
+Alternatively, use the short name `aifext`:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get aifext -A
+----
+
+Inspect the detailed status and conditions of the extension installation:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl describe aifext -n aif-operator
+----
+
+In the {ranchera} UI, navigate to menu:Extensions[Installed Extensions] and confirm that `{saifactory}` is listed as installed and active.
+
+== Inspecting objects created by the operator
+
+{saifoperator} manages custom resources to declare blueprints, AI workloads, settings and UI extensions.
+It also orchestrates {fleeta} bundles and {helm} releases to deploy applications across clusters.
+
+=== Listing {productname} Custom Resources
+
+List all available blueprints (both bundled and custom templates):
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get blueprints.ai-factory.suse.com -A
+----
+
+List all AI workload instances deployed across namespaces:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get aiworkloads.ai-factory.suse.com -A
+----
+
+List configuration settings (registries, GitOps and API access):
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get settings.ai-factory.suse.com -n aif-operator
+----
+
+List UI extension installation resources:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get installaiextensions.ai-factory.suse.com -A
+----
+
+=== Listing {fleeta} GitOps and {helm} deployment objects
+
+When deploying applications and blueprints, the operator generates GitOps bundles and {helm} operations.
+
+List {fleeta} bundles and their deployment status across clusters:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get bundles.fleet.cattle.io -A
+{prompt_user}kubectl get bundledeployments.fleet.cattle.io -A
+----
+
+List {helm} releases and chart definitions:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm list -A
+{prompt_user}kubectl get helmcharts.helm.cattle.io -A
+----
+
+=== Inspecting operator-created object definitions and status
+
+Display the full YAML specification of a blueprint:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get blueprint <blueprint_name> -o yaml
+----
+
+Display the full YAML specification and runtime status of an AI workload:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get aiworkload <workload_name> -n <namespace> -o yaml
+----
+
+Inspect detailed conditions and events for an AI workload:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl describe aiworkload <workload_name> -n <namespace>
+----
+
+Inspect a {fleeta} bundle deployment state:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl describe bundle <bundle_name> -n <fleet_namespace>
+----
+
+
 == Find the namespace and pods
 
 List all installed pods sorted by their namespace.
