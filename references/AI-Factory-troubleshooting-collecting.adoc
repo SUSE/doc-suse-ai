@@ -21,7 +21,7 @@ endif::[]
 :revdate: 2026-10-01
 :page-revdate: {revdate}
 
-== Essential Information to Collect
+== Essential information to collect
 
 *Detailed problem description*::
 What happened, when did it happen, what were you doing, what is the expected behavior, and what is the actual behavior?
@@ -35,8 +35,6 @@ Can you reliably reproduce the issue? If so, list the exact steps.
 *Relevant logs*:: 
 * `journalctl` output (filtered by service if possible, or full boot logs).
 * {kube} pod logs (kubectl logs).
-* Metal³/Elemental component logs.
-* EIB build logs and other logs
 
 *System information*::
 * `uname -a`
@@ -50,9 +48,6 @@ Relevant configuration files such as {helm} chart values, configmaps, etc.
 *{kube} information*::
 Nodes, Services, Deployments, etc.
 
-*{kube} objects affected*::
-BMH, MachineRegistration, etc.
-
 == How to collect
 
 *For logs*::
@@ -61,6 +56,9 @@ Redirect command output to files (for example, `journalctl -u k3s > k3s_logs.txt
 *For {kube} resources*::
 Use `kubectl get <resource> -o yaml > <resource_name>.yaml` to get detailed YAML definitions.
 
+*For {helm} chart values*::
+Redirect `helm get values` output to a file (for example, `helm get values <release_name> -n <namespace> -a > <release_name>-values.yaml`).
+
 *For system information*::
 Collect output of the commands listed above.
 
@@ -68,6 +66,6 @@ Collect output of the commands listed above.
 Check the https://www.suse.com/support/kb/doc/?id=000020191[The Rancher v2.x Linux log collector script] article to run The Rancher v2.x Linux log collector script.
 
 
-== Contact Support
+== Contact support
 
 Please check the articles available at https://www.suse.com/support/kb/doc/?id=000019452[How-to effectively work with {suse} Technical Support] and the support handbook located at https://www.suse.com/support/handbook/[SUSE Technical Support Handbook] for more details on how to contact {suse} support.

@@ -102,9 +102,9 @@ The `kubectl describe` command displays human-readable details about a resource,
 * *Image pull failures:* Highlights why container images cannot be fetched, distinguishing between invalid tags, network timeouts, or missing authentication secrets (`ErrImagePull`, `ImagePullBackOff`).
 * *Volume and mount issues:* Shows persistent volume claims (PVC) binding status, missing secrets or configmaps required for mounts, and storage attachment errors.
 * *Environment and configuration:* Lists resolved environment variables, command arguments, resource limits/requests, and active annotations or labels.
-* *Health checks and probes:* Reports readiness, liveness, and startup probe failures along with exit codes and error messages from failing check scripts.
-* *Container states and restart reasons:* Details whether containers are running, terminated, or crashing (`CrashLoopBackOff`), including exit codes and timestamps of previous terminations.
-* *Events:* Displays chronological {kube} events related to the object (such as successful assignment, pulling, creation, or warning/failure notices from controllers).
+* *Health checks and probes:* Reports readiness, liveness and startup probe failures along with exit codes and error messages from failing check scripts.
+* *Container states and restart reasons:* Details whether containers are running, terminated or crashing (`CrashLoopBackOff`), including exit codes and timestamps of previous terminations.
+* *Events:* Displays chronological {kube} events related to the object (such as successful assignment, pulling, creation or warning/failure notices from controllers).
 
 [,sh,subs="+attributes"]
 ----
@@ -192,6 +192,20 @@ Display the user-supplied values used when installing or upgrading the release.
 [,sh,subs="+attributes"]
 ----
 {prompt_user}helm get values ollama -n ollama
+----
+
+Save the user-supplied values to a file.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm get values ollama -n ollama > ollama-values.yaml
+----
+
+Save all values including chart defaults to a file.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm get values ollama -n ollama -a > ollama-all-values.yaml
 ----
 
 Retrieve all information about the release, including notes, custom values, and generated manifests.
