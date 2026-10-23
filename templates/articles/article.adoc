@@ -11,8 +11,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: YYYY-MM-DD
-:page-revdate: {revdate}
 
 include::../common/generic-attributes.adoc[]
 = Smartdoc article written in AsciiDoc

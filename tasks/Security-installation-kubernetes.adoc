@@ -20,8 +20,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-19
-:page-revdate: {revdate}
 
 The sample file will deploy one manager and 3 controllers.
 It will deploy an enforcer on every node as a daemonset.

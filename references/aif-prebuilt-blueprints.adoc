@@ -19,8 +19,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-07-27
-:page-revdate: {revdate}
 
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
 [#bp-nvidia-ai-q-with-rag]

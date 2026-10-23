@@ -18,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-21
-:page-revdate: {revdate}
 
 
 [#owui-helm-overrides-ollama]

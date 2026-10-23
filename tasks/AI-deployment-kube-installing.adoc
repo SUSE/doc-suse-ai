@@ -19,8 +19,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-02-18
-:page-revdate: {revdate}
 
 . Install and register a supported Linux operating system on each cluster node.
   We recommend using one of the following operating systems:

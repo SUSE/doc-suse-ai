@@ -18,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-16
-:page-revdate: {revdate}
 
 [#milvus-kafka-limitation]
 == Using {akafka} with {sstorage}

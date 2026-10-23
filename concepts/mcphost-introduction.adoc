@@ -10,8 +10,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-04-DD03
-:page-revdate: {revdate}
 
 Its primary purpose is to provide a structured environment where an LLM can safely access system information, execute commands, or manage files to perform complex tasks that the model cannot do on its own.
 

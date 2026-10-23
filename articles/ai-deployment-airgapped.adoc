@@ -13,8 +13,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-06-02
-:page-revdate: {revdate}
 
 WHAT?::
   This document provides a comprehensive, step-by-step guide for the {productname} air-gapped deployment.

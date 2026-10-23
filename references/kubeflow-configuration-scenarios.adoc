@@ -20,8 +20,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-10
-:page-revdate: {revdate}
 
 [#kubeflow-config-scenarios-nodeport]
 == Non-production: NodePort access (zero-configuration)

@@ -17,7 +17,5 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-04-07
-:page-revdate: {revdate}
 
 After the MCP host server is installed, you can proceed to installing and configuration of MCP servers:

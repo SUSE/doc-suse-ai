@@ -12,8 +12,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-06-08
-:page-revdate: {revdate}
 
 == Overview
 

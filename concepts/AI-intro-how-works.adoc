@@ -21,8 +21,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-10
-:page-revdate: {revdate}
 
 [#suse-ai-architecture-building-blocks]
 == {productname} building blocks

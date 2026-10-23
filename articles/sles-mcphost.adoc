@@ -11,8 +11,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-04-02
-:page-revdate: {revdate}
 
 include::../common/generic-attributes.adoc[]
 = Setting up an MCP Host on {productname}

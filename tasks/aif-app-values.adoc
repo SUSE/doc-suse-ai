@@ -18,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-14
-:page-revdate: {revdate}
 
 . (_Optional_) To get the values for a specific {ai-app-name} chart version, log in to {ai-app-registry} and identify the version.
 To prevent the password from being stored in the shell history, save it to the `password.txt` file.

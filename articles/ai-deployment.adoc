@@ -13,8 +13,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-06-02
-:page-revdate: {revdate}
 
 WHAT?::
   {productname} is a multi-layered enterprise AI solution that consists of several software components and dependencies.

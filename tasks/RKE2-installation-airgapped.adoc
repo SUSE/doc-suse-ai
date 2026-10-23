@@ -18,8 +18,6 @@ ifndef::override-abstract[]
 {rke2} can be installed in an air-gapped environment, you must first load the images into the air-gapped environment and then install RKE2.
 endif::[]
 
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 // erase the flag for future overrides
 :override-abstract!:

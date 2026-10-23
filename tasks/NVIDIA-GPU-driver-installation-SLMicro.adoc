@@ -19,8 +19,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-03-09
-:page-revdate: {revdate}
 
 [#nvidia-gpu-requirements-slmicro]
 == Requirements

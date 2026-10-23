@@ -18,8 +18,6 @@ ifndef::override-abstract[]
 This section is about using the {helm} CLI to install the {ranchera} server in an air-gapped environment.
 endif::[]
 
-:revdate: 2025-12-22
-:page-revdate: {revdate}
 
 // erase the flag for future overrides
 :override-abstract!:

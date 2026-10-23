@@ -18,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-29
-:page-revdate: {revdate}
 
 [#ai-reqs-nvidia-operators]
 == What are the NVIDIA operator requirements?

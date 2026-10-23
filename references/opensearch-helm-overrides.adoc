@@ -21,8 +21,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-06
-:page-revdate: {revdate}
 
 include::../snippets/helm-chart-overrides-intro.adoc[]
 

@@ -1,7 +1,5 @@
 [#opensearch-installing]
 = Installing {opensearch}
-:revdate: 2026-03-24
-:page-revdate: {revdate}
 
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 :imgRegistry: {empty}

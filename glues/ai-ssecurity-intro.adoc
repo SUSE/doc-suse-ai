@@ -22,5 +22,3 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-19
-:page-revdate: {revdate}

@@ -18,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-11
-:page-revdate: {revdate}
 
 [#litellm-chart-example-basic]
 == Basic custom values file with {postgresql} deployment and an automatically generated master key
@@ -41,6 +39,31 @@ For production use, we recommend using a storage solution suitable for persisten
 
 The {litellm} chart from {sregistry} makes use of subcharts such as {redis} and {postgresql} from the {sappco} registry.
 Therefore, both registry secrets must be configured.
+
+
+[#litellm-persistent-storage-permissions]
+== Configuring {postgresql} permissions for persistent storage
+
+If you deploy the {litellm} application to a cluster with a storage provider other than `local-path` (such as Longhorn or {sstorage}), the `litellm-postgres` container can fail to start due to file system permission issues on the persistent volume.
+
+To resolve this issue, configure `podSecurityContext` with `fsGroup: 1000` under the `postgresql` block in your values YAML:
+
+[source,yaml,subs="+attributes"]
+----
+global:
+  imagePullSecrets: 
+    - application-collection
+    - suse-ai-registry
+postgresql:
+  persistence:
+    storageClassName: "longhorn" <.>
+  podSecurityContext: <.>
+    enable: true
+    fsGroup: 1000
+----
+<.> Specify your persistent storage class name, such as `longhorn`.
+<.> Sets the file system group permissions so that the {postgresql} container has read and write access to the mounted volume.
+
 
 == Validating the installation
 

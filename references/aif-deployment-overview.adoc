@@ -18,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-18
-:page-revdate: {revdate}
 
 The {productname} installation process differs according to the following scenarios:
 

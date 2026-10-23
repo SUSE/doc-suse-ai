@@ -19,8 +19,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-08-17
-:page-revdate: {revdate}
 
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 :imgRegistry: {empty}

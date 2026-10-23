@@ -18,8 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-29
-:page-revdate: {revdate}
 
 For requirements of individual applications, refer to xref:ai-requirements-hardware-apps[].
 

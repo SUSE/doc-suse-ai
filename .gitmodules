@@ -1,3 +1,6 @@
-[submodule "ai-prompts"]
-	path = ai-prompts
+[submodule "submodules/doc-ai-prompts"]
+	path = submodules/doc-ai-prompts
 	url = https://github.com/openSUSE/doc-ai-prompts.git
+[submodule "submodules/suse-vale-styleguide"]
+	path = submodules/suse-vale-styleguide
+	url = https://github.com/openSUSE/suse-vale-styleguide.git

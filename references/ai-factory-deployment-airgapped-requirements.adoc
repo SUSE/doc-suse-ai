@@ -22,9 +22,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-26
-:page-revdate: {revdate}
-:description: Understand the local infrastructure, staging environment, and OCI-compliant registry requirements for deploying {productname} in an air-gapped environment.
 
 [#ai-factory-deployment-airgapped-requirements-connected]
 == Connected environment with adequate storage

@@ -19,8 +19,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-08
-:page-revdate: {revdate}
 
 *{fleeta} Bundle*::
 Deploy the application directly as a {fleeta} bundle managed by {rancherfleet}.

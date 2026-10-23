@@ -20,8 +20,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-02-02
-:page-revdate: {revdate}
 
 [#verify-artifacts-saappco]
 .Verifying containers and {helm} charts hosted on the {sappco}

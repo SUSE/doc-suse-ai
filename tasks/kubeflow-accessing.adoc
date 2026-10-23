@@ -22,8 +22,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-06-10
-:page-revdate: {revdate}
 
 [#kubeflow-accessing-portforward]
 == Option A: Port-forward (local dev)
