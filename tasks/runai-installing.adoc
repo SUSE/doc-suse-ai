@@ -25,13 +25,14 @@ endif::[]
 
 [#aif-runai-requirements]
 == Prerequisites
-* **DNS resolution**: The {runaia} control plane and cluster URLs must be fully qualified domain names (FQDNs) resolvable via public or private DNS.
+* **DNS resolution and {ingress} controller**: The {runaia} Control Plane and cluster URLs must be fully qualified domain names (FQDNs) resolvable via public or private DNS.
 IP addresses are not supported.
-In a {kube} environment, configure an {ingress} controller and DNS records pointing to the {ingress} IP.
-* **TLS certificates**: A configured `{certmanager}` instance with a valid certificate authority (CA) is required.
-While {runaia} supports local or custom CAs, using a public CA, such as Let's Encrypt, simplifies the setup.
-* **{prometheus} monitoring**: The link:https://github.com/prometheus-community/helm-charts[kube-prometheus-stack] is required.
-The {runaia} Cluster installation depends on the {prometheus} Operator and Custom Resource Definitions (CRDs) provided by this stack.
+In a {kube} environment, you must configure a supported {ingress} controller (such as {nginx}) and DNS records pointing to the {ingress} IP address or host name.
+For more information about {ingress} controller requirements, see the link:https://run-ai-docs.nvidia.com/self-hosted/getting-started/installation/install-using-helm/cp-system-requirements#kubernetes-ingress-controller[{runaia} Kubernetes Ingress Controller requirements].
+* **TLS certificates**: A configured `{certmanager}` instance with a valid certificate authority (CA) or issuer is required.
+While {runaia} supports local or custom CAs, using Let's Encrypt with an HTTP-01 or DNS-01 challenge solver simplifies certificate management.
+* **{prometheus} Operator**: Custom Resource Definitions (CRDs) and monitoring components provided by the {prometheus} Operator are required for the {runaia} Cluster installation.
+You can deploy the link:https://apps.rancher.io/applications/prometheus-operator[{prometheus} Operator from {sappco}] or install the link:https://github.com/prometheus-community/helm-charts[kube-prometheus-stack].
 The Control Plane does not require this stack.
 
 [#aif-runai-limitations]
@@ -46,6 +47,7 @@ Do not select the default `Fleet Bundle` deployment due to an link:https://githu
 
 To allow external access to the {runaia} control plane, you must route your FQDNs to the {kube} cluster's {ingress} controller.
 {rke2a} deploys the {nginx} {ingress} Controller by default.
+For detailed information on supported {ingress} controllers, see the link:https://run-ai-docs.nvidia.com/self-hosted/getting-started/installation/install-using-helm/cp-system-requirements#kubernetes-ingress-controller[{runaia} Kubernetes Ingress Controller requirements].
 
 . Retrieve the external IP address or host name of the {ingress} controller service.
 +
@@ -90,15 +92,6 @@ metadata:
   namespace: kube-system
 type: kubernetes.io/dockerconfigjson
 ---
-apiVersion: v1
-data:
-  apiKey: "<YOUR_ENCODED_CLOUDFLARE_API_TOKEN_HERE>"
-kind: Secret
-metadata:
-  name: cloudflare-api-key
-  namespace: cert-manager
-type: Opaque
----
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
@@ -127,8 +120,8 @@ spec:
 
 [#aif-runai-clusterissuer]
 === Create a ClusterIssuer
-Create a ClusterIssuer to issue production TLS certificates for the {runaia} endpoints.
-Ensure that the `cloudflare-api-key` secret exists in the {certmanager} namespace.
+Create a ClusterIssuer to issue TLS certificates for the {runaia} endpoints.
+The following example configures Let's Encrypt using an HTTP-01 challenge solver with {nginx} {ingress}.
 
 . Create a manifest file named `cluster-issuer.yaml` with the following content.
 Adjust the `email` field to match your email address.
@@ -147,13 +140,15 @@ spec:
     privateKeySecretRef:
       name: suse-ai-letsencrypt-key
     solvers:
-    - dns01:
-        cloudflare:
-          apiTokenSecretRef:
-            key: apiKey
-            name: cloudflare-api-key
-          email: "tux@example.com"
+    - http01:
+        ingress:
+          ingressClassName: nginx
 ----
++
+[NOTE]
+====
+Alternatively, you can use a DNS-01 challenge solver (for example, with Cloudflare or AWS Route 53) by supplying your DNS provider credentials, or use an internal enterprise Certificate Authority.
+====
 
 . Apply the manifest file to create the ClusterIssuer.
 +
@@ -165,7 +160,7 @@ spec:
 [#aif-runai-control-plane]
 == Install {runaia} Control Plane
 Determine a unique fully qualified domain name (FQDN) from your domain for the {runaia} Control Plane UI and API endpoint.
-For example, if your {cloudflare} domain is `exampleclouddev.com`, use an FQDN such as `runai-control-plane.exampleclouddev.com`.
+For example, if your domain is `exampleclouddev.com`, use an FQDN such as `runai-control-plane.exampleclouddev.com`.
 
 [IMPORTANT]
 ====
@@ -314,11 +309,11 @@ Create the `runai-reg-creds` secret in the `runai` namespace using your NVAIE cr
 ----
 
 [#aif-runai-install-prometheus]
-=== Install {prometheus} community stack
-{runaia} cluster has a hard dependency on {prometheus} CRDs available via the {prometheus} community stack.
-Install the {prometheus} community stack via {helm}.
+=== Install {prometheus} Operator
+The {runaia} Cluster requires Custom Resource Definitions (CRDs) and monitoring components provided by the {prometheus} Operator.
+You can install the link:https://apps.rancher.io/applications/prometheus-operator[{prometheus} Operator from {sappco}] or deploy the {prometheus} community stack via {helm}.
 
-. Create a file named `prometheus-community-stack.yaml` with the following content.
+. Create a file named `prometheus-operator.yaml` with the following content.
 +
 [source,yaml]
 ----
@@ -343,11 +338,11 @@ spec:
       enabled: false
 ----
 
-. Apply the manifest file to install the {prometheus} community stack.
+. Apply the manifest file to install the {prometheus} stack.
 +
-[source,yaml]
+[source,sh,subs="+attributes"]
 ----
-{prompt_user}kubectl apply -f prometheus-community-stack.yaml
+{prompt_user}kubectl apply -f prometheus-operator.yaml
 ----
 
 [#aif-runai-install-cluster]
@@ -375,4 +370,14 @@ clusterConfig:
 ----
 
 . Review the configuration and select btn:[Install].
-. Once the deployment is complete, you should see that the cluster has successfully registered itself with the Control Plane.
+
+[#aif-runai-verify]
+== Verify installation
+
+After the {runaia} Cluster installation is complete, verify that the cluster is connected to the {runaia} Control Plane:
+
+. In a web browser, log in to the {runaia} Control Plane UI.
+. In the left navigation menu, select menu:Resources[Clusters].
+. In the *Clusters* table, verify that your cluster is listed and its status is displayed as *Connected*.
++
+For more information about cluster status indicators and cluster management, see the link:https://run-ai-docs.nvidia.com/self-hosted/infrastructure-setup/procedures/clusters#clusters-table[{runaia} Clusters documentation].
