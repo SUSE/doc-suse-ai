@@ -4,6 +4,7 @@ ifdef::override-title[]
 = {override-title}
 endif::[]
 ifndef::override-title[]
+[#aif-troubleshooting-debugging]
 = Debugging issues in {ranchera} / {kube}
 endif::[]
 // overridden abstract?
@@ -18,13 +19,13 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-10-05
-:page-revdate: {revdate}
 
+[#aif-debug-validating-components]
 == Validating {saifoperator} and UI extension components
 
 Before troubleshooting workload issues, verify that {saifoperator} and its UI components are properly installed and running.
 
+[#aif-debug-validating-operator]
 === Validating that {saifoperator} is running
 
 Check that the operator pod is in the `Running` state and ready in the `aif-operator` namespace:
@@ -52,6 +53,7 @@ View the operator logs to verify successful reconciliation without errors:
 {prompt_user}kubectl logs -n aif-operator -l app.kubernetes.io/name=aif-operator --tail=50
 ----
 
+[#aif-debug-validating-ui-extension]
 === Validating that the UI extension is installed
 
 The operator manages the UI extension lifecycle using the `InstallAIExtension` Custom Resource (CR).
@@ -80,11 +82,14 @@ Inspect the detailed status and conditions of the extension installation:
 
 In the {ranchera} UI, navigate to menu:Extensions[Installed Extensions] and confirm that `{saifactory}` is listed as installed and active.
 
+
+[#aif-debug-inspecting-operator-objects]
 == Inspecting objects created by the operator
 
 {saifoperator} manages custom resources to declare blueprints, AI workloads, settings and UI extensions.
 It also orchestrates {fleeta} bundles and {helm} releases to deploy applications across clusters.
 
+[#aif-debug-listing-custom-resources]
 === Listing {productname} Custom Resources
 
 List all available blueprints (both bundled and custom templates):
@@ -115,6 +120,7 @@ List UI extension installation resources:
 {prompt_user}kubectl get installaiextensions.ai-factory.suse.com -A
 ----
 
+[#aif-debug-listing-gitops-helm-objects]
 === Listing {fleeta} GitOps and {helm} deployment objects
 
 When deploying applications and blueprints, the operator generates GitOps bundles and {helm} operations.
@@ -135,37 +141,38 @@ List {helm} releases and chart definitions:
 {prompt_user}kubectl get helmcharts.helm.cattle.io -A
 ----
 
+[#aif-debug-inspecting-object-definitions]
 === Inspecting operator-created object definitions and status
 
 Display the full YAML specification of a blueprint:
 
 [,sh,subs="+attributes"]
 ----
-{prompt_user}kubectl get blueprint <blueprint_name> -o yaml
+{prompt_user}kubectl get blueprint <BLUEPRINT_NAME> -o yaml
 ----
 
 Display the full YAML specification and runtime status of an AI workload:
 
 [,sh,subs="+attributes"]
 ----
-{prompt_user}kubectl get aiworkload <workload_name> -n <namespace> -o yaml
+{prompt_user}kubectl get aiworkload <WORKLOAD_NAME> -n <NAMESPACE> -o yaml
 ----
 
 Inspect detailed conditions and events for an AI workload:
 
 [,sh,subs="+attributes"]
 ----
-{prompt_user}kubectl describe aiworkload <workload_name> -n <namespace>
+{prompt_user}kubectl describe aiworkload <WORKLOAD_NAME> -n <NAMESPACE>
 ----
 
 Inspect a {fleeta} bundle deployment state:
 
 [,sh,subs="+attributes"]
 ----
-{prompt_user}kubectl describe bundle <bundle_name> -n <fleet_namespace>
+{prompt_user}kubectl describe bundle <BUNDLE_NAME> -n <FLEET_NAMESPACE>
 ----
 
-
+[#aif-debug-find-namespace-pods]
 == Find the namespace and pods
 
 List all installed pods sorted by their namespace.
@@ -196,6 +203,7 @@ ollama     ollama-6ffbcfc6cf-nlrcr   1/1     Running  9         (89m ago) 13d  1
 Add `-o yaml` or `-o json` to the `kubectl` command line to retrieve more details about an object.
 ====
 
+[#aif-debug-get-object-definition]
 == Get the complete definition of an object
 
 Display the full YAML specification of a Deployment.
@@ -239,6 +247,7 @@ Locate and view the contents of a ConfigMap.
 {prompt_user}kubectl get configmap kube-root-ca.crt -n ollama -o yaml
 ----
 
+[#aif-debug-describe-resource-info]
 == Describe detailed resource information and related events
 
 The `kubectl describe` command displays human-readable details about a resource, including runtime conditions and recent cluster events:
@@ -248,7 +257,7 @@ The `kubectl describe` command displays human-readable details about a resource,
 * *Volume and mount issues:* Shows persistent volume claims (PVC) binding status, missing secrets or configmaps required for mounts, and storage attachment errors.
 * *Environment and configuration:* Lists resolved environment variables, command arguments, resource limits/requests, and active annotations or labels.
 * *Health checks and probes:* Reports readiness, liveness and startup probe failures along with exit codes and error messages from failing check scripts.
-* *Container states and restart reasons:* Details whether containers are running, terminated or crashing (`CrashLoopBackOff`), including exit codes and timestamps of previous terminations.
+* *Container states and restart reasons:* Details whether containers are running, terminated or crashing (`CrashLoopBackOff`), including exit codes and time stamps of previous terminations.
 * *Events:* Displays chronological {kube} events related to the object (such as successful assignment, pulling, creation or warning/failure notices from controllers).
 
 [,sh,subs="+attributes"]
@@ -257,6 +266,7 @@ The `kubectl describe` command displays human-readable details about a resource,
 ----
 
 
+[#aif-debug-inspect-logs]
 == Inspect logs
 
 Print the current stdout and stderr logs of a Pod.
@@ -281,6 +291,7 @@ Retrieve logs from a previously crashed or terminated container instance to iden
 ----
 
 
+[#aif-debug-view-events]
 == Viewing events
 
 Events sometimes offer more useful information than logs.
@@ -299,6 +310,7 @@ View events for a specific pod.
 {prompt_user}kubectl events -n ollama --for pod/ollama-6ffbcfc6cf-nlrcr
 ----
 
+[#aif-debug-inspecting-helm-charts]
 == Inspecting {helm} charts
 
 Because {kube} applications are commonly {helm}-based, the `helm` command can reveal useful information too.

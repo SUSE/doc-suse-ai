@@ -18,9 +18,6 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-10-02
-:page-revdate: {revdate}
-
 
 * link:https://documentation.suse.com/cloudnative/rke2/latest/en/known_issues.html[{rke2a} Known Issues and Limitations]
 * link:https://documentation.suse.com/cloudnative/rancher-manager/latest/en/troubleshooting/general-troubleshooting.html[{ranchera} Troubleshooting]

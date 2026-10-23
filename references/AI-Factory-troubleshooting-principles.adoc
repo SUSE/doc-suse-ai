@@ -4,6 +4,7 @@ ifdef::override-title[]
 = {override-title}
 endif::[]
 ifndef::override-title[]
+[#aif-troubleshooting-principles]
 = General troubleshooting principles
 endif::[]
 // overridden abstract?
@@ -18,31 +19,28 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-10-01
-:page-revdate: {revdate}
-
 *Check logs*::
 Logs are the primary source of information.
-Most of the times the errors are self explanatory and contain hints on what failed.
+Most of the time, errors are self-explanatory and contain hints on what failed.
 
 *Check clocks*::
 Having clock differences between systems can lead to all kinds of different errors.
 Ensure clocks are in sync.
 
-*Boot Issues*::
+*Boot issues*::
 If the system is stuck during boot, note down the last messages displayed.
 Access the console (physical or via BMC) to observe boot messages.
 
-*Network Issues*::
+*Network issues*::
 Verify network interface configuration (`ip a`), routing table (`ip route`), test connectivity from/to other nodes and external services (`ping`, `nc`).
 Ensure firewall rules are not blocking necessary ports.
 
 *Verify component status*::
 Use `kubectl get` and `kubectl describe` for {kube} resources.
-Use `kubectl get events --sort-by='.lastTimestamp' -n <namespace>` to see the events on a particular {kube} namespace.
+Use `kubectl get events --sort-by='.lastTimestamp' -n <NAMESPACE>` to see the events on a particular {kube} namespace.
 
 *Verify services status*::
-Use `systemctl status <service>` for {systemd} services.
+Use `systemctl status <SERVICE>` for {systemd} services.
 
 *Check syntax*::
 Software expects certain structure and syntax on configuration files.
@@ -55,4 +53,4 @@ Try to narrow down the issue to a specific component or layer (for example, netw
 Always refer to the official https://documentation.suse.com/suse-ai-factory/[{productname} documentation] and also upstream documentation for detailed information.
 
 *Known issues*::
-For each {productname} release there is a “Known issues” section on the release notes that contains information of issues that will be fixed on future releases but can affect the current one.
+For each {productname} release, the release notes contain a "Known issues" section detailing issues that will be fixed in future releases.

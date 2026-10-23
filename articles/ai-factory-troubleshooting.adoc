@@ -12,8 +12,6 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
-:revdate: 2026-10-05
-:page-revdate: {revdate}
 
 [abstract]
 --
@@ -48,7 +46,7 @@ include::../references/AI-Factory-troubleshooting-debugging.adoc[leveloffset=+1]
 include::../tasks/ai-factory-uninstall.adoc[leveloffset=+1]
 
 [#aif-troubleshooting-credentials]
-== What happens if a registry credentials Secret is deleted?
+== What happens if a registry credentials secret is deleted?
 
 If a container registry credentials Secret (referenced by `imagePullSecrets`) is removed or invalid, currently running pods continue to operate normally because credentials are only verified during image pull operations.
 
