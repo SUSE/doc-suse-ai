@@ -19,6 +19,8 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
+:revdate: YYYY-MM-DD
+:page-revdate: {revdate}
 
 [#concept-example-what-is]
 == What is foo bar?

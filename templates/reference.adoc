@@ -19,6 +19,8 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
+:revdate: YYYY-MM-DD
+:page-revdate: {revdate}
 
 [#reference-example-section]
 == Section title

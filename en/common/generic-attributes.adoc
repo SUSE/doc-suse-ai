@@ -14,6 +14,7 @@
 
 // PRODUCT-SPECIFIC ENTITIES
 include::./product-attributes.adoc[]
+include::./l10n-generic-attributes.adoc[]
 include::./network-attributes.adoc[]
 
 // special characters
@@ -330,11 +331,20 @@ include::./network-attributes.adoc[]
 // https://www.fujitsu.com/us/about/local/corporate/subsidiaries/fai/legal/trademarks/index.html
 :fujitsu:                    Fujitsu
 :fujitsureg:                 {fujitsu}{thrdmrk}
+:fujitsumonaka:              FUJITSU-MONAKA
+:fujitsumonakareg:           {fujitsumonaka}{thrdmrk}
 // https://consumer.huawei.com/en/legal/intellectual-property/huawei-trademark-policy/
 :huawei:                     Huawei
 :huaweireg:                  {huawei}{thrdmrk}
 :kunpeng:                    Kunpeng
 :kunpengreg:                 {kunpeng}{thrdmrk}
+// https://www.intel.com/content/www/us/en/legal/trademarks.html
+:intel:                      Intel
+:intelreg:                   {intel}{thrdmrk}
+:optane:                     {intel}{nbsp}Optane
+:optanereg:                  {intelreg}{nbsp}Optane{thrdmrk}
+:optanemem:                  {optane} Memory
+:optanememreg:               {optanereg} Memory
 // Khronos
 :openmax:                    OpenMAX
 :openmaxreg:                 {openmax}{thrdmrk}
@@ -380,6 +390,14 @@ include::./network-attributes.adoc[]
 :nvidiagracereg:             {nvidiagrace}{thrdmrk}
 :nvidiagracehopper:          NVIDIA {gracehopper}
 :nvidiagracehopperreg:       {nvidiagracehopper}{thrdmrk}
+:graceblackwell:             {grace} Blackwell
+:dgxspark:                   DGX Spark
+:dgxsparkreg:                {dgxspark}{thrdmrk}
+:dgxstation:                 DGX Station
+:dgxstationreg:              {dgxstation}{thrdmrk}
+:vera:                       Vera
+:verarubin:                  {vera} Rubin
+:olympus:                    Olympus
 :jetson:                     Jetson
 :jetsonreg:                  {jetson}{thrdmrk}
 :jetpack:                    JetPack
@@ -394,6 +412,8 @@ include::./network-attributes.adoc[]
 :orinreg:                    {orin}{thrdmrk}
 :nvidiaorin:                 NVIDIA {orin}
 :nvidiaorinreg:              {nvidiaorin}{thrdmrk}
+:jetsonorinnano:             {jetson} {orin} Nano
+:jetsonorinnanoreg:          {jetsonorinnano}{thrdmrk}
 :thor:                       Thor
 :thorreg:                    {thor}{thrdmrk}
 :drive:                      DRIVE
@@ -458,7 +478,6 @@ include::./network-attributes.adoc[]
 :kg:                         kGraft
 :klp:                        Kernel Live Patching
 :klpa:                       KLP
-:ulp:                        user space live patching
 :ulpa:                       ULP
 :keylime:                    Keylime
 :kiwi:                       KIWI{nbsp}NG
@@ -524,13 +543,12 @@ include::./network-attributes.adoc[]
 :rear.long:                  Relax-and-Recover
 :sbd:                        SBD
 :stonith:                    STONITH
-:sbd.long:                   {stonith} Block Device
+:sbd.long:                   Storage-Based Death
 :ingress:                    Ingress
 :keepalived:                 Keepalived
 
 // HPC
 :hpc:                        High Performance Computing
-:hpcm:                       HPC module
 
 // SLES FOR SAP
 :sapconf:                    sapconf
@@ -593,7 +611,6 @@ include::./network-attributes.adoc[]
 :cpufreq:                    CPUfreq
 :gpg:                        GPG
 :mariadb:                    MariaDB
-:nautilus:                   {gnome} Files
 :oprof:                      OProfile
 :postgresql:                 PostgreSQL
 :powertop:                   powerTOP

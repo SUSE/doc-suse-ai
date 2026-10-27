@@ -19,6 +19,8 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
+:revdate: YYYY-MM-DD
+:page-revdate: {revdate}
 
 // This is an example of how a glue topic would look like.
 // If your task contains a large number of independent subtasks, make sure to include the glue topic to provide a means of navigation and to tie them together

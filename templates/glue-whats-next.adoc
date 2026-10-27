@@ -19,5 +19,7 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
+:revdate: YYYY-MM-DD
+:page-revdate: {revdate}
 
 Add list of web links to articles relating to this topic that the user might need.
