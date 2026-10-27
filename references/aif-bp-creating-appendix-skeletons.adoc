@@ -34,7 +34,7 @@ metadata:
 # One-paragraph comment: what this demo does, which models it serves, and how it
 # differs from its sibling variant.
 spec:
-  source: Custom  # community, unsupported demo blueprint (CRD enum has no "Community")
+  source: Custom  # use Community once every target operator runs 2.3.1 or newer
   displayName: My Demo (Ollama, CPU)
   version: 1.0.0
   description: |

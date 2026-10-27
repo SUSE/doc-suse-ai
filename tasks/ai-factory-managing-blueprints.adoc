@@ -31,9 +31,10 @@ Blueprints bundled with {productname} are listed under `SUSE Blueprints`. The de
 To add more catalogs, refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html#ai-factory-blueprint-catalogs[How do I add blueprint catalogs?].
 
 [NOTE]
-.Partner blueprints
+.Partner and community blueprints
 ====
-Blueprints can carry a partner logo, which is shown next to the source badge on the `Blueprints` page, and can declare the `Partner` source.
+The SUSE partner blueprint catalog is synchronized by default, as described in link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html#ai-factory-partner-catalog[SUSE partner blueprint catalog].
+Blueprints can carry a partner logo, which is shown next to the source badge on the `Blueprints` page, and can declare the `Partner` or `Community` source.
 The source is declared by the blueprint author and is not verified by {productname}.
 When you copy a blueprint, the copy becomes a custom blueprint without the partner logo.
 ====

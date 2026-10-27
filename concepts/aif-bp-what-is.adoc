@@ -32,7 +32,7 @@ The CR `spec` has five fields:
 [width="100%",cols="<50%,<50%",options="header",]
 |===
 |Field |Notes
-|`source` |Always the literal `Custom`.
+|`source` |Origin of the blueprint: `SUSE`, `Nvidia`, `Partner`, `Community` or `Custom`. Use `Custom` for your own blueprints. `Community` requires {saifoperator} {aif-latest-version} or newer.
 
 |`displayName` |Name displayed in the {productname} UI.
 

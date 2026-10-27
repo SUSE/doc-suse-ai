@@ -22,6 +22,27 @@ endif::[]
 
 == Release {aif-latest-version}
 
+This is the {aif-latest-version} release of {productname}, bringing comprehensive AI workload management capabilities to {ranchera}.
+
+=== Key improvements and fixes
+- Added a default SUSE partner blueprint catalog, controlled by the `partnerBlueprints` {helm} value and enabled by default. Catalogs declared through {helm} are now read-only on the *Settings* page and in the operator API, and are marked `Managed by Helm` link:https://github.com/SUSE/aif/pull/322[#322].
+- Added a `Community` blueprint source. Older operators reject blueprints that use `source: Community` link:https://github.com/SUSE/aif/pull/324[#324].
+- The {ranchera} `Extensions` page now shows the logo and title of the {productname} extension instead of a `Third-Party` card. The operator installs the extension the same way {ranchera} does, and the logo is served from inside the cluster, so it also loads in air-gapped installations link:https://github.com/SUSE/aif/pull/325[#325].
+- Hardened the installation and cleanup of the UI extension. The operator refuses an extension that has the same name as its server release, and the finalizer only deletes a release that its own resource installed link:https://github.com/SUSE/aif/pull/325[#325].
+- Fixed workloads stuck in `Degraded` on clusters whose {fleeta} name differs from the {ranchera} cluster ID. The installation wizards now show cluster display names instead of `c-m-...` IDs link:https://github.com/SUSE/aif/pull/330[#330].
+- Fixed the verification panel on the *Settings* page hiding the NGC chart access results when no {nvidia} mirror is set link:https://github.com/SUSE/aif/pull/321[#321].
+- The weekly {nvidia} AI Enterprise catalog refresh no longer removes applications that lose {nvidia} AI Enterprise support. It only removes their `Supported` label. Each refresh also produces a report of what changed link:https://github.com/SUSE/aif/pull/309[#309], link:https://github.com/SUSE/aif/pull/323[#323].
+
+=== Upgrade notes
+- *Partner blueprint catalog in air-gapped installations*: The partner catalog is synchronized from GitHub. In air-gapped installations, disable it with `partnerBlueprints.enabled=false` or point it at an internal mirror link:https://github.com/SUSE/aif/pull/322[#322].
+- *Duplicate partner catalogs*: If you added a catalog on the *Settings* page that points to the SUSE partner-blueprints repository, remove it after upgrading. Otherwise, two {fleeta} `GitRepo` resources synchronize the same blueprints and conflict link:https://github.com/SUSE/aif/pull/322[#322].
+- *Server-side apply for {helm}-declared catalogs*: Keeping catalogs added on the *Settings* page next to catalogs declared in `blueprintCatalogs` requires server-side apply. Releases first installed with {helm} 3 keep using client-side apply until you run one `helm upgrade --server-side=true` link:https://github.com/SUSE/aif/pull/322[#322].
+- *`Community` blueprint source*: {saifoperator} 2.3.0 and earlier reject blueprints with the `Community` source. Do not use it until {aif-latest-version} is the minimum operator version in your environment link:https://github.com/SUSE/aif/pull/324[#324].
+
+Full Changelog: link:++https://github.com/SUSE/aif/compare/aif-operator-2.3.0...aif-operator-2.3.1++[aif-operator-2.3.0...aif-operator-2.3.1]
+
+== Release 2.3.0
+
 This release builds on the 2.2.x line with customizable blueprint deployments, custom chart repositories and Git-sourced blueprint catalogs, clearer repository and workload health reporting, and a new workload details view, plus several stability and installation improvements.
 
 === What's new
@@ -71,12 +92,12 @@ This release builds on the 2.2.x line with customizable blueprint deployments, c
 === Upgrade notes
 - *Mirror the `kubectl` image for air-gapped installations*: The new {ranchera} readiness hook job uses the `registry.suse.com/suse/kubectl:1.35` image, which you can configure with the `global.kubectl.image` values. The job waits until {ranchera} is ready, limited only by the installer timeout, such as `helm --timeout` or the {fleeta} `helm.timeoutSeconds` value link:https://github.com/SUSE/aif/pull/277[#277], link:https://github.com/SUSE/aif/pull/289[#289].
 - *New CRD and settings*: The `blueprintcatalogs.ai-factory.suse.com` CRD and the `blueprintCatalogs` and `customRepos` settings are added, and the `AIWorkload` and `Blueprint` CRDs are updated. The CRD hook job of the chart applies them on upgrade link:https://github.com/SUSE/aif/pull/281[#281], link:https://github.com/SUSE/aif/pull/244[#244], link:https://github.com/SUSE/aif/pull/265[#265].
-- *Use matching operator and UI extension versions*: Chart access checks, blueprint customization and partner icons require both the {aif-latest-version} operator and the {aif-latest-version} UI extension link:https://github.com/SUSE/aif/pull/242[#242], link:https://github.com/SUSE/aif/pull/265[#265], link:https://github.com/SUSE/aif/pull/292[#292].
+- *Use matching operator and UI extension versions*: Chart access checks, blueprint customization and partner icons require both the 2.3.0 operator and the 2.3.0 UI extension link:https://github.com/SUSE/aif/pull/242[#242], link:https://github.com/SUSE/aif/pull/265[#265], link:https://github.com/SUSE/aif/pull/292[#292].
 - *{helm} workload status may change*: Application workloads that were previously reported as `Running` may now report `Pending` or `Degraded` if their pods are not ready link:https://github.com/SUSE/aif/pull/260[#260].
 - *`aif-ui-config` is retained on uninstall*: Uninstalling the UI extension now leaves the `aif-ui-config` ConfigMap in place. Delete it manually for a clean reinstallation link:https://github.com/SUSE/aif/pull/218[#218].
 - *Standalone installations of the UI extension chart*: Installing or upgrading the `aif-ui` chart with `helm` without the operator, over an existing `aif-ui-config` ConfigMap, requires the `--take-ownership` option, available in {helm} 3.15 and later link:https://github.com/SUSE/aif/pull/218[#218].
 - *Reserved custom repository names*: Custom repositories cannot use the names of the built-in {productname} repositories, the default {ranchera} repositories, the {nvidia} team repositories, or a name already used by another `ClusterRepo` resource link:https://github.com/SUSE/aif/pull/244[#244].
-- *`Partner` blueprint source*: {saifoperator} 2.2.0 rejects blueprints with the `Partner` source. Do not use it until {aif-latest-version} is the minimum operator version in your environment link:https://github.com/SUSE/aif/pull/292[#292].
+- *`Partner` blueprint source*: {saifoperator} 2.2.0 rejects blueprints with the `Partner` source. Do not use it until 2.3.0 is the minimum operator version in your environment link:https://github.com/SUSE/aif/pull/292[#292].
 
 === Known issues and limitations
 - Air-gap support covers private chart repositories, private Git repositories, repository credentials and CA trust. Preparing the cluster remains a separate task: node and {containerd} registry mirrors, DNS, host proxies and operating system repositories are not configured by {productname}.

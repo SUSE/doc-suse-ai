@@ -121,7 +121,7 @@ image::aif-secrets-sregistry.png[Screenshot showing how to assign secrets for {s
 The list of available applications from the {sregistry} appears.
 
 [#ai-factory-nvidia-registry]
-== How do I access images from {nvidia} AI Library?
+== How do I access images from {nvidia} {ailibrary}?
 
 . Visit {scc} and save the {nvidia} registration code for the {productname} subscription.
 . Add the {nvidia} registry credentials to the {ranchera} _local_ cluster.
@@ -287,7 +287,7 @@ If you host {sappco}, {sregistry} or {nvidia} artifacts in a local registry that
 .. From the main left panel, select menu:local[Storage > Secrets].
 .. Select btn:[Create] in the top right and select btn:[Opaque].
 .. Select the btn:[aif-operator] namespace and enter your preferred secret name (referenced as `<REGISTRY_CA_SECRET_NAME>` in command line tasks).
-.. In the btn:[Data] tab, add a key that holds the PEM-encoded certificate, for example `ca.crt`.
+.. In the btn:[Data] tab, add a key that holds the PEM-encoded certificate, for example, `ca.crt`.
 +
 [TIP]
 .Creating the CA secret on the command line
@@ -341,7 +341,7 @@ For a Git repository accessed over SSH, add a key that holds the SSH private key
 .. In the `Repositories` section, select btn:[Add Repository].
 .. Enter the `Repository Name` and, optionally, a `Display Name (optional)` that is shown in the catalog.
 .. Select the `Repository Type`: `Helm`, `OCI` or `Git`.
-.. For a {helm} or OCI repository, enter the `Repository URL`, for example `\https://example.com/charts` or `oci://example.com/charts`.
+.. For a {helm} or OCI repository, enter the `Repository URL`, for example, `\https://example.com/charts` or `oci://example.com/charts`.
 For a Git repository, enter the `Git Repository URL` and the `Git Branch`.
 .. If the repository requires authentication, select the secret and key in `Username Secret (optional)` and `Token/Password Secret (optional)`.
 For a Git repository accessed over SSH, select the secret and key in `SSH Private Key Secret (optional)` instead.
@@ -363,7 +363,7 @@ A custom repository cannot use the name of a built-in {productname} repository, 
 [NOTE]
 .Single-chart OCI repositories
 ====
-If the OCI repository URL already ends with the chart name, for example `oci://ghcr.io/nvidia/openshell/helm-chart`, {productname} uses the URL as is and does not append the chart name again.
+If the OCI repository URL already ends with the chart name, for example, `oci://ghcr.io/nvidia/openshell/helm-chart`, {productname} uses the URL as is and does not append the chart name again.
 Use this to add the {nvidia} OpenShell charts.
 The OpenShell gateway chart requires the Agent Sandbox CRDs and controller (`agents.x-k8s.io`) to be installed on the target cluster first.
 ====
@@ -372,7 +372,7 @@ The OpenShell gateway chart requires the Agent Sandbox CRDs and controller (`age
 .Testing repositories on private networks
 ====
 Tests of unsaved repositories cannot reach private network addresses.
-If the repository is hosted on a private network, for example a mirror in an air-gapped environment, select btn:[Apply] first and then btn:[Test].
+If the repository is hosted on a private network, for example, a mirror in an air-gapped environment, select btn:[Apply] first and then btn:[Test].
 ====
 
 [NOTE]
@@ -439,6 +439,33 @@ blueprintCatalogs:
 ----
 
 The referenced secrets must exist in the operator namespace.
+
+Catalogs declared in `blueprintCatalogs` are managed by {helm}.
+The `Settings` page shows them as `Managed by Helm` without edit or delete controls, and the operator API refuses to change them.
+Change or remove them only with `helm upgrade`, and pass `--reuse-values` so that {helm} keeps the other values you set.
+Because {helm} replaces lists rather than merging them, list every catalog that you want to keep.
+====
+
+[NOTE]
+.Combining {helm}-declared catalogs with catalogs added on the `Settings` page
+====
+Keeping catalogs added on the `Settings` page next to catalogs declared in `blueprintCatalogs` requires server-side apply.
+{helm} 4 on a fresh installation uses server-side apply.
+{helm} 3, and {helm} 4 upgrading a release first installed with {helm} 3, use client-side apply, which drops the catalogs added on the `Settings` page whenever the {helm}-declared list changes.
+Run one `helm upgrade --server-side=true` to switch the release to server-side apply; later upgrades keep it.
+This does not apply while `blueprintCatalogs` is empty.
+
+Adding a catalog on the `Settings` page with the same name as a {helm}-declared catalog but a different repository, branch or paths makes `helm upgrade` fail with a conflict.
+Remove or rename that catalog before you upgrade.
+
+After `helm uninstall`, the retained `Settings` resource keeps the {helm}-declared catalogs read-only.
+To manage them on the `Settings` page again, remove the annotation:
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl annotate settings.ai-factory.suse.com settings -n aif-operator \
+  ai-factory.suse.com/helm-managed-
+----
 ====
 
 [NOTE]
@@ -448,7 +475,65 @@ Blueprints synchronized from a catalog cannot be edited or deleted in {productna
 To customize one, clone it as described in link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-usage/ai-factory-managing-blueprints.html#ai-factory-managing-blueprints-copy[How do I clone a blueprint?].
 You can also override values and exclude components when you deploy it, as described in link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-usage/ai-factory-managing-blueprints.html#ai-factory-managing-blueprints-install[How do I install blueprints?].
 
-Blueprint `source` values, including `Partner`, are declared by the blueprint author and are not verified by {productname}.
+Blueprint `source` values, including `Partner` and `Community`, are declared by the blueprint author and are not verified by {productname}.
+====
+
+[#ai-factory-partner-catalog]
+=== {suse} partner blueprint catalog
+
+{productname} synchronizes the {suse} partner blueprint catalog by default.
+The `aif-operator` chart creates the {fleeta} `GitRepo` resource `fleet-local/aif-partner-blueprints`, which synchronizes the `partners` directory of the `main` branch of link:https://github.com/suse/partner-blueprints[the SUSE partner-blueprints repository].
+The `SUSE Partner Catalog` row in the `Blueprint Catalogs` section of menu:SUSE AI Factory[Settings] shows whether the catalog is synchronized.
+
+The partner catalog is a chart resource and is not listed under `Custom Catalogs`.
+Upgrading the chart never changes the catalogs added on the `Settings` page.
+If you added a catalog on the `Settings` page that points to the partner repository, remove it.
+Otherwise, two `GitRepo` resources synchronize the same blueprints and conflict.
+
+The catalog is configured with the following values of the `aif-operator` chart:
+
+[cols="<,<,<",options="header"]
+|===
+|Value |Description |Default
+|`partnerBlueprints.enabled` |Synchronize the partner catalog. |`true`
+|`partnerBlueprints.git.repoURL` |Git repository to synchronize from. |`\https://github.com/suse/partner-blueprints.git`
+|`partnerBlueprints.git.branch` |Branch to synchronize. |`main`
+|`partnerBlueprints.git.paths` |Repository directories to scan. |`[partners]`
+|===
+
+To disable the partner catalog, run the following command.
+{fleeta} then removes the synchronized partner blueprints.
+
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade aif-operator oci://{aif-operator-registry} \
+  -n aif-operator \
+  --reuse-values \
+  --set partnerBlueprints.enabled=false
+----
+
+[NOTE]
+.Partner catalog in air-gapped environments
+====
+An air-gapped cluster cannot reach GitHub, so the `GitRepo` resource reports clone errors until you disable the catalog or point it at an internal mirror.
+If the mirror requires no credentials and its certificate is trusted by {fleeta}, set `partnerBlueprints.git.repoURL` to the URL of the mirror.
+If the mirror requires credentials or a private CA certificate, set `partnerBlueprints.enabled=false` and add the mirror as an ordinary catalog, either on the `Settings` page or in `blueprintCatalogs`:
+
+[source,yaml]
+----
+partnerBlueprints:
+  enabled: false
+blueprintCatalogs:
+  - name: partner-blueprints
+    repoURL: https://gitea.example.com/mirrors/partner-blueprints.git
+    branch: main
+    paths: [partners]
+    credSecretRef: {name: git-credentials, key: token}
+    caBundleSecretRef: {name: private-ca, key: ca.crt}
+----
+
+Always pass `--reuse-values` when you change these values.
+Without it, {helm} drops every value set earlier, and `--reset-values` enables the partner catalog again.
 ====
 
 [#ai-factory-rancher-api-access]

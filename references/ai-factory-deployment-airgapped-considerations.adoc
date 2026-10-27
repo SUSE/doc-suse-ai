@@ -42,6 +42,11 @@ For multi-node or multi-cluster deployments, the PVC provisioner must support di
 Configure the registry credentials and TLS settings through the `aiExtension.source.helm` values of the `aif-operator` chart.
 For a private CA, provide the CA certificate rather than skipping verification.
 Restrict which registry hosts the operator may pull from by setting an allowlist (`manager.allowedRegistryHosts`); leaving it empty allows all hosts.
+The extension and its logo on the {ranchera} `Extensions` page are served from inside the cluster, so they do not require access to external URLs.
+
+* *Partner blueprint catalog.* The `aif-operator` chart synchronizes the SUSE partner blueprint catalog from GitHub by default.
+In an air-gapped environment, set `partnerBlueprints.enabled=false` or point the catalog at an internal Git mirror, as described in link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html#ai-factory-partner-catalog[SUSE partner blueprint catalog].
+Otherwise, its {fleeta} `GitRepo` resource reports clone errors.
 
 * *Blueprint portability.* Blueprints reference a chart repository by its identity rather than by its URL.
 The registry endpoints you configure on the `Settings` page determine where that repository is hosted, so the same blueprints deploy unchanged against your local mirror.

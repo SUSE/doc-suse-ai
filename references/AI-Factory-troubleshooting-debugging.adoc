@@ -1,0 +1,373 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+[#aif-troubleshooting-debugging]
+= Debugging issues in {ranchera} / {kube}
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+Because {ranchera} runs on {kube}, `kubectl` is the primary tool for debugging workload issues.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+
+[#aif-debug-validating-components]
+== Validating {saifoperator} and UI extension components
+
+Before troubleshooting workload issues, verify that {saifoperator} and its UI components are properly installed and running.
+
+[#aif-debug-validating-operator]
+=== Validating that {saifoperator} is running
+
+Check that the operator pod is in the `Running` state and ready in the `aif-operator` namespace:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -n aif-operator
+NAME                            READY   STATUS    RESTARTS   AGE
+aif-operator-7bf464987-mnrw5    1/1     Running   0          2d
+----
+
+Check the operator `Deployment` status:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get deployment aif-operator -n aif-operator
+NAME           READY   UP-TO-DATE   AVAILABLE   AGE
+aif-operator   1/1     1            1           108d
+----
+
+View the operator logs to verify successful reconciliation without errors:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl logs -n aif-operator -l app.kubernetes.io/name=aif-operator --tail=50
+----
+
+[#aif-debug-validating-ui-extension]
+=== Validating that the UI extension is installed
+
+The operator manages the UI extension lifecycle using the `InstallAIExtension` Custom Resource (CR).
+Verify that the extension CR is present and check its status:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get installaiextensions.ai-factory.suse.com -A
+NAME     PHASE       SOURCE   EXTENSION   VERSION   AGE
+aif-ui   Installed   Helm     aif-ui      2.2.0     108d
+----
+
+Alternatively, use the short name `aifext`:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get aifext -A
+----
+
+Inspect the detailed status and conditions of the extension installation:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl describe aifext -n aif-operator
+----
+
+In the {ranchera} UI, navigate to menu:Extensions[Installed Extensions] and confirm that `{saifactory}` is listed as installed and active.
+
+
+[#aif-debug-inspecting-operator-objects]
+== Inspecting objects created by the operator
+
+{saifoperator} manages custom resources to declare blueprints, AI workloads, settings and UI extensions.
+It also orchestrates {fleeta} bundles and {helm} releases to deploy applications across clusters.
+
+[#aif-debug-listing-custom-resources]
+=== Listing {productname} Custom Resources
+
+List all available blueprints (both bundled and custom templates):
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get blueprints.ai-factory.suse.com -A
+----
+
+List all AI workload instances deployed across namespaces:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get aiworkloads.ai-factory.suse.com -A
+----
+
+List configuration settings (registries, GitOps and API access):
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get settings.ai-factory.suse.com -n aif-operator
+----
+
+List UI extension installation resources:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get installaiextensions.ai-factory.suse.com -A
+----
+
+[#aif-debug-listing-gitops-helm-objects]
+=== Listing {fleeta} GitOps and {helm} deployment objects
+
+When deploying applications and blueprints, the operator generates GitOps bundles and {helm} operations.
+
+List {fleeta} bundles and their deployment status across clusters:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get bundles.fleet.cattle.io -A
+{prompt_user}kubectl get bundledeployments.fleet.cattle.io -A
+----
+
+List {helm} releases and chart definitions:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm list -A
+{prompt_user}kubectl get helmcharts.helm.cattle.io -A
+----
+
+[#aif-debug-inspecting-object-definitions]
+=== Inspecting operator-created object definitions and status
+
+Display the full YAML specification of a blueprint:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get blueprint <BLUEPRINT_NAME> -o yaml
+----
+
+Display the full YAML specification and runtime status of an AI workload:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get aiworkload <WORKLOAD_NAME> -n <NAMESPACE> -o yaml
+----
+
+Inspect detailed conditions and events for an AI workload:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl describe aiworkload <WORKLOAD_NAME> -n <NAMESPACE>
+----
+
+Inspect a {fleeta} bundle deployment state:
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl describe bundle <BUNDLE_NAME> -n <FLEET_NAMESPACE>
+----
+
+[#aif-debug-find-namespace-pods]
+== Find the namespace and pods
+
+List all installed pods sorted by their namespace.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -A
+NAMESPACE                   NAME                                       READY   STATUS    RESTARTS       AGE
+aif-operator                aif-operator-7d6b8f6bb5-j6lkk              1/1     Running   30 (79m ago)   33d
+cattle-capi-system          capi-controller-manager-7654f98879-zrk2v   1/1     Running   82 (79m ago)   115d
+cattle-fleet-local-system   fleet-agent-598d897c9b-bshfg               1/1     Running   69 (79m ago)   114d
+cattle-fleet-system         fleet-controller-58f99fb59b-cv2qd          3/3     Running   219 (79m ago)  115d
+[...]
+----
+
+Filter lines for a specific application and use wider view.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -A -o wide | grep -i ollama
+NAMESPACE  NAME                      READY   STATUS   RESTARTS  AGE            IP            NODE     NOMINATED NODE   READINESS GATES
+ollama     ollama-6ffbcfc6cf-nlrcr   1/1     Running  9         (89m ago) 13d  10.42.0.177   debian   <none>           <none>
+----
+
+[TIP]
+====
+`kubectl get` can output the actual {kube} object as YAML or JSON, which is useful for debugging.
+Add `-o yaml` or `-o json` to the `kubectl` command line to retrieve more details about an object.
+====
+
+[#aif-debug-get-object-definition]
+== Get the complete definition of an object
+
+Display the full YAML specification of a Deployment.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get deployment ollama -n ollama -o yaml
+----
+
+Display the full YAML specification and runtime status of a specific Pod.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get pod ollama-6ffbcfc6cf-nlrcr -n ollama -o yaml
+----
+
+Find and inspect the configuration of a Service.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get svc -A | grep -i ollama
+[...]
+{prompt_user}kubectl get svc ollama -n ollama -o yaml
+----
+
+Locate and inspect the YAML definition of a Secret.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get secret -A | grep ollama
+[...]
+{prompt_user}kubectl get secret sh.helm.release.v1.ollama.v1 -n ollama -o yaml
+----
+
+Locate and view the contents of a ConfigMap.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl get configmap -A | grep ollama
+[...]
+{prompt_user}kubectl get configmap kube-root-ca.crt -n ollama -o yaml
+----
+
+[#aif-debug-describe-resource-info]
+== Describe detailed resource information and related events
+
+The `kubectl describe` command displays human-readable details about a resource, including runtime conditions and recent cluster events:
+
+* *Scheduling issues:* Explains why a Pod remains in `Pending` state (for example, insufficient CPU/memory, missing GPU resources, or unmet node selector and taint constraints).
+* *Image pull failures:* Highlights why container images cannot be fetched, distinguishing between invalid tags, network timeouts, or missing authentication secrets (`ErrImagePull`, `ImagePullBackOff`).
+* *Volume and mount issues:* Shows persistent volume claims (PVC) binding status, missing secrets or configmaps required for mounts, and storage attachment errors.
+* *Environment and configuration:* Lists resolved environment variables, command arguments, resource limits/requests, and active annotations or labels.
+* *Health checks and probes:* Reports readiness, liveness and startup probe failures along with exit codes and error messages from failing check scripts.
+* *Container states and restart reasons:* Details whether containers are running, terminated or crashing (`CrashLoopBackOff`), including exit codes and time stamps of previous terminations.
+* *Events:* Displays chronological {kube} events related to the object (such as successful assignment, pulling, creation or warning/failure notices from controllers).
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl describe pod ollama-6ffbcfc6cf-nlrcr -n ollama
+----
+
+
+[#aif-debug-inspect-logs]
+== Inspect logs
+
+Print the current stdout and stderr logs of a Pod.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl logs ollama-6ffbcfc6cf-nlrcr -n ollama
+----
+
+Stream (follow) logs in real time to monitor ongoing activity.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl logs -f ollama-6ffbcfc6cf-nlrcr -n ollama
+----
+
+Retrieve logs from a previously crashed or terminated container instance to identify failure causes.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl logs ollama-6ffbcfc6cf-nlrcr -n ollama --previous
+----
+
+
+[#aif-debug-view-events]
+== Viewing events
+
+Events sometimes offer more useful information than logs.
+
+View events for the whole cluster.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl events -A
+----
+
+View events for a specific pod.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}kubectl events -n ollama --for pod/ollama-6ffbcfc6cf-nlrcr
+----
+
+[#aif-debug-inspecting-helm-charts]
+== Inspecting {helm} charts
+
+Because {kube} applications are commonly {helm}-based, the `helm` command can reveal useful information too.
+
+List all deployed {helm} releases across all namespaces.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm list -A
+----
+
+Display the deployment status, revision number, and post-installation notes for a specific release.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm status ollama -n ollama
+NAME: ollama
+LAST DEPLOYED: Mon Sep 21 12:12:05 2026
+NAMESPACE: ollama
+STATUS: deployed
+REVISION: 1
+NOTES:
+1. Get the application URL by running these commands:
+[...]
+----
+
+Output the rendered {kube} resource manifests generated by the chart.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm get manifest ollama -n ollama
+----
+
+Display the user-supplied values used when installing or upgrading the release.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm get values ollama -n ollama
+----
+
+Save the user-supplied values to a file.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm get values ollama -n ollama > ollama-values.yaml
+----
+
+Save all values including chart defaults to a file.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm get values ollama -n ollama -a > ollama-all-values.yaml
+----
+
+Retrieve all information about the release, including notes, custom values, and generated manifests.
+
+[,sh,subs="+attributes"]
+----
+{prompt_user}helm get all ollama -n ollama
+----
