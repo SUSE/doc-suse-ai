@@ -1,9 +1,9 @@
 [submodule "submodules/doc-ai-prompts"]
 	path = submodules/doc-ai-prompts
 	url = https://github.com/openSUSE/doc-ai-prompts.git
-	ignore = dirty
+	ignore = all
 
 [submodule "submodules/suse-vale-styleguide"]
 	path = submodules/suse-vale-styleguide
 	url = https://github.com/openSUSE/suse-vale-styleguide.git
-	ignore = dirty
+	ignore = all
