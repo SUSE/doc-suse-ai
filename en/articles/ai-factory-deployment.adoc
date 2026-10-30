@@ -127,7 +127,6 @@ endif::[]
 include::../tasks/ai-factory-registries-access.adoc[leveloffset=+1]
 
 
-
 :override-title: How do I upgrade {productname}?
 include::../tasks/ai-factory-upgrade.adoc[leveloffset=+1]
 

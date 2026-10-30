@@ -11,7 +11,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-{runaia} is a graphics processing unit (GPU) orchestration and optimization platform designed to maximize compute resource use for artificial intelligence (AI) workloads in a {kube} environment.
+{runaia} (link:https://docs.nvidia.com/run-ai/self-hosted/documentation/getting-started/overview[{runaia} official documentation]) is a graphics processing unit (GPU) orchestration and optimization platform designed to maximize compute resource use for artificial intelligence (AI) workloads in a {kube} environment.
 Installing {runaia} via {saifactory} enables dynamic GPU resource allocation, efficient workload scheduling, and centralized cluster management.
 endif::[]
 
@@ -19,41 +19,39 @@ endif::[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-09-08
-:page-revdate: {revdate}
-
 
 [#aif-runai-requirements]
 == Prerequisites
 * **DNS resolution and {ingress} controller**: The {runaia} Control Plane and cluster URLs must be fully qualified domain names (FQDNs) resolvable via public or private DNS.
 IP addresses are not supported.
-In a {kube} environment, you must configure a supported {ingress} controller (such as {nginx}) and DNS records pointing to the {ingress} IP address or host name.
-For more information about {ingress} controller requirements, see the link:https://run-ai-docs.nvidia.com/self-hosted/getting-started/installation/install-using-helm/cp-system-requirements#kubernetes-ingress-controller[{runaia} Kubernetes Ingress Controller requirements].
+In a {kube} environment, you must configure a supported {ingress} controller (such as {traefik}) and DNS records pointing to the {ingress} IP address or host name.
+For more information about {ingress} controller requirements, see the link:https://run-ai-docs.nvidia.com/self-hosted/getting-started/installation/install-using-helm/cp-system-requirements#kubernetes-ingress-controller[{runaia} {kube} {ingress} Controller requirements].
 * **TLS certificates**: A configured `{certmanager}` instance with a valid certificate authority (CA) or issuer is required.
 While {runaia} supports local or custom CAs, using Let's Encrypt with an HTTP-01 or DNS-01 challenge solver simplifies certificate management.
 * **{prometheus} Operator**: Custom Resource Definitions (CRDs) and monitoring components provided by the {prometheus} Operator are required for the {runaia} Cluster installation.
-You can deploy the link:https://apps.rancher.io/applications/prometheus-operator[{prometheus} Operator from {sappco}] or install the link:https://github.com/prometheus-community/helm-charts[kube-prometheus-stack].
+You can deploy the link:https://apps.rancher.io/applications/prometheus-operator[{prometheus} Operator from {sappco}] (recommended) or install the upstream link:https://github.com/prometheus-community/helm-charts[kube-prometheus-stack].
 The Control Plane does not require this stack.
 
-[#aif-runai-limitations]
-=== Limitations
-* Due to the complexity of {runaia}, blueprints currently do not support deploying either the Control Plane or the Cluster.
+[IMPORTANT]
+.Limitations
+====
+Due to the complexity of {runaia}, blueprints currently do not support deploying either the Control Plane or the Cluster.
 Deploy them from the menu:SUSE AI Factory[Apps] catalog instead.
-* Select the *{helm}* deployment type during the `Target Cluster` step of the deployment wizard.
-Do not select the default `Fleet Bundle` deployment due to an link:https://github.com/rancher/fleet/issues/5630[existing bug in {fleeta}].
+====
+
 
 [#aif-runai-ingress-dns]
 === Configure DNS resolution for {ingress}
 
 To allow external access to the {runaia} control plane, you must route your FQDNs to the {kube} cluster's {ingress} controller.
-{rke2a} deploys the {nginx} {ingress} Controller by default.
-For detailed information on supported {ingress} controllers, see the link:https://run-ai-docs.nvidia.com/self-hosted/getting-started/installation/install-using-helm/cp-system-requirements#kubernetes-ingress-controller[{runaia} Kubernetes Ingress Controller requirements].
+{rke2a} deploys the {traefik} {ingress} Controller by default.
+For detailed information on supported {ingress} controllers, see the link:https://run-ai-docs.nvidia.com/self-hosted/getting-started/installation/install-using-helm/cp-system-requirements#kubernetes-ingress-controller[{runaia} {kube} {ingress} Controller requirements].
 
 . Retrieve the external IP address or host name of the {ingress} controller service.
 +
 [source,sh,subs="+attributes"]
 ----
-{prompt_user}kubectl get service -n kube-system rke2-ingress-nginx-controller
+{prompt_user}kubectl get service -n kube-system rke2-traefik
 ----
 
 . In your DNS provider's management console, create a DNS record (A or CNAME) pointing your FQDN (for example, `runai-control-plane.exampleclouddev.com`) to the retrieved IP address or host name.
@@ -121,7 +119,7 @@ spec:
 [#aif-runai-clusterissuer]
 === Create a ClusterIssuer
 Create a ClusterIssuer to issue TLS certificates for the {runaia} endpoints.
-The following example configures Let's Encrypt using an HTTP-01 challenge solver with {nginx} {ingress}.
+The following example configures Let's Encrypt using an HTTP-01 challenge solver with {traefik} {ingress}.
 
 . Create a manifest file named `cluster-issuer.yaml` with the following content.
 Adjust the `email` field to match your email address.
@@ -142,7 +140,7 @@ spec:
     solvers:
     - http01:
         ingress:
-          ingressClassName: nginx
+          ingressClassName: traefik
 ----
 +
 [NOTE]
@@ -207,7 +205,7 @@ spec:
 [#aif-runai-runai-reg-creds-secret]
 === Create the `runai-reg-creds` secret
 {runaia} images are hosted in the secure `nvcr.io` registry.
-Create a secret named `runai-reg-creds` in the `runai-backend` namespace using your {nvidia} AI Enterprise (NVAIE) credentials, such as a service key, to pull images from `nvcr.io`.
+For {productname} with {nvidia}, the required {nvidia} registry service key is already provided in link:https://scc.suse.com/[{scc}] under your subscription details, so no separate {nvidia} AI Enterprise license purchase is required.
 
 [source,sh,subs="+attributes"]
 ----
@@ -237,7 +235,7 @@ image::aif-runai-install1.png[Screenshot showing {nvidia} applications including
 global:
   domain: "runai-control-plane.exampleclouddev.com"
   ingress:
-    ingressClass: nginx
+    ingressClass: traefik
     tlsSecretName: runai-tls-cert
 tenantsManager:
   config:
@@ -288,7 +286,7 @@ Other wizard steps, such as setting up SAML (Security Assertion Markup Language)
 [#aif-runai-create-namespace]
 === Create the `runai` namespace
 The {runaia} Cluster must be installed in the `runai` namespace.
-+
+
 [source,sh,subs="+attributes"]
 ----
 {prompt_user}kubectl create namespace runai
@@ -297,8 +295,8 @@ The {runaia} Cluster must be installed in the `runai` namespace.
 [#aif-runai-cluster-reg-creds-secret]
 === Create the `runai-reg-creds` secret
 {runaia} images are hosted in the secure `nvcr.io` registry.
-Create the `runai-reg-creds` secret in the `runai` namespace using your NVAIE credentials (such as a service key) to pull the images.
-+
+Create the `runai-reg-creds` secret in the `runai` namespace using the {nvidia} service key obtained from {scc} to pull the images.
+
 [source,sh,subs="+attributes"]
 ----
 {prompt_user}kubectl create secret docker-registry runai-reg-creds \
@@ -311,10 +309,65 @@ Create the `runai-reg-creds` secret in the `runai` namespace using your NVAIE cr
 [#aif-runai-install-prometheus]
 === Install {prometheus} Operator
 The {runaia} Cluster requires Custom Resource Definitions (CRDs) and monitoring components provided by the {prometheus} Operator.
-You can install the link:https://apps.rancher.io/applications/prometheus-operator[{prometheus} Operator from {sappco}] or deploy the {prometheus} community stack via {helm}.
+SUSE recommends installing the link:https://apps.rancher.io/applications/prometheus-operator[{prometheus} Operator from {sappco}].
+Alternatively, you can deploy the upstream {prometheus} community stack.
 
 . Create a file named `prometheus-operator.yaml` with the following content.
+Adjust the credentials to match your environment.
 +
+[source,yaml]
+----
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+---
+*apiVersion*: v1
+data:
+  .dockerconfigjson: "<YOUR_ENCODED_APPCO_CREDENTIAL_HERE>"
+kind: Secret
+metadata:
+  name: application-collection
+  namespace: monitoring
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: v1
+data:
+  .dockerconfigjson: "<YOUR_ENCODED_APPCO_CREDENTIAL_HERE>"
+kind: Secret
+metadata:
+  name: application-collection
+  namespace: kube-system
+type: kubernetes.io/dockerconfigjson
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: prometheus-operator
+  namespace: kube-system
+spec:
+  chart: oci://dp.apps.rancher.io/charts/prometheus-operator
+  targetNamespace: monitoring
+  dockerRegistrySecret:
+    name: application-collection
+  valuesContent: |-
+    global:
+      imagePullSecrets:
+        - application-collection
+----
+
+. Apply the manifest file to install the {prometheus} Operator.
++
+[source,sh,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f prometheus-operator.yaml
+----
+
+[TIP]
+====
+If you prefer to deploy the upstream `kube-prometheus-stack` instead of the {sappco} chart, you can use the following `HelmChart` manifest:
+
 [source,yaml]
 ----
 ---
@@ -337,13 +390,7 @@ spec:
     grafana:
       enabled: false
 ----
-
-. Apply the manifest file to install the {prometheus} stack.
-+
-[source,sh,subs="+attributes"]
-----
-{prompt_user}kubectl apply -f prometheus-operator.yaml
-----
+====
 
 [#aif-runai-install-cluster]
 === Install {runaia} cluster
@@ -366,7 +413,7 @@ cluster:
 clusterConfig:
   global:
     ingress:
-      ingressClass: nginx
+      ingressClass: traefik
 ----
 
 . Review the configuration and select btn:[Install].
