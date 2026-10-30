@@ -38,6 +38,7 @@ Ensure firewall rules are not blocking necessary ports.
 *Verify component status*::
 Use `kubectl get` and `kubectl describe` for {kube} resources.
 Use `kubectl get events --sort-by='.lastTimestamp' -n <NAMESPACE>` to see the events on a particular {kube} namespace.
+Use `kubectl get events --sort-by='.metadata.creationTimestamp' -n <NAMESPACE>` to sort events by creation time on a particular {kube} namespace.
 
 *Verify services status*::
 Use `systemctl status <SERVICE>` for {systemd} services.

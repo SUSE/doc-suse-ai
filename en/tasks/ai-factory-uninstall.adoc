@@ -13,6 +13,7 @@ endif::[]
 ifndef::override-abstract[]
 To uninstall {productname}, you need to perform the following tasks:
 
+* Optionally, back up configuration, secrets and custom resources.
 * Uninstall {saifoperator}.
 * Remove installation leftovers.
 * Optionally, remove Custom Resource Definitions (CRDs).
@@ -32,25 +33,76 @@ endif::[]
 [NOTE]
 .What uninstalling removes
 ====
-Uninstalling the operator chart removes the bundled blueprints, the SUSE partner blueprint catalog and the UI extension.
-The CRDs, the `Settings` resource and the `aif-ui-config` ConfigMap of the UI extension are deliberately retained so that a reinstallation preserves your configuration and existing workload resources.
+Uninstalling the operator chart removes the bundled blueprints, the {suse} partner blueprint catalog, and the UI extension.
+The CRDs, the `Settings` resource, and the `aif-ui-config` ConfigMap of the UI extension are deliberately retained so that a reinstallation preserves your configuration and existing workload resources.
 
 Remove them explicitly with the steps below if you want a complete removal.
 ====
 
+[#{root-section-id}aif-uninstall-backup]
+== Back up {productname} resources and configuration (optional)
+
+Before uninstalling {productname}, back up your configuration, secrets and custom resources to preserve them for future use or reinstallation:
+
+. *Back up {helm} chart values*
++
+Export the values used to deploy `{saifoperator}`:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}helm get values aif-operator -n aif-operator -a > aif-operator-values-backup.yaml
+----
+
+. *Back up settings*
++
+Export the `Settings` custom resource in the `aif-operator` namespace:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get settings settings -n aif-operator -o yaml > aif-settings-backup.yaml
+----
+
+. *Back up secrets*
++
+Export all secrets (including registry credentials, Git access tokens, and CA certificates) configured in the `aif-operator` namespace:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get secrets -n aif-operator -o yaml > aif-secrets-backup.yaml
+----
+
+. *Back up UI extension configuration*
++
+Export the `aif-ui-config` ConfigMap from the `cattle-ui-plugin-system` namespace:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get configmap aif-ui-config -n cattle-ui-plugin-system -o yaml > aif-ui-config-backup.yaml
+----
+
+. *Back up {productname} custom resources*
++
+Export all existing blueprints, blueprint catalogs, AI workloads, and extension install resources:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get blueprints,blueprintcatalogs,aiworkloads,installaiextensions -A -o yaml > aif-cr-backup.yaml
+----
+
+[#{root-section-id}aif-uninstall-helm]
 == Uninstall using {helm}
 
 . *Uninstall {saifoperator}*
 .. Uninstall the {saifactory} extension and the operator.
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}helm uninstall aif-operator -n aif-operator
 ----
 
 .. Verify that the resources have been removed by running the following commands.
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}kubectl get all -n aif-operator
 {prompt_user}kubectl get aifext
@@ -60,21 +112,21 @@ Remove them explicitly with the steps below if you want a complete removal.
 . *Remove installation leftovers*
 .. Remove the related settings resource.
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}kubectl delete settings settings -n aif-operator
 ----
 .. Remove the configuration of the UI extension.
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}kubectl delete configmap aif-ui-config -n cattle-ui-plugin-system
 ----
 
 . To perform a complete removal of all resources, *remove CRDs*.
-.. Delete `ai-factory` CRDs.
+.. Delete {productname} CRDs.
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}kubectl delete crd \
   aiworkloads.ai-factory.suse.com \
@@ -84,6 +136,7 @@ Remove them explicitly with the steps below if you want a complete removal.
   settings.ai-factory.suse.com
 ----
 
+[#{root-section-id}aif-uninstall-rancher]
 == Uninstall using {ranchera}
 
 . *Uninstall the {saifactory} extension and the operator.*

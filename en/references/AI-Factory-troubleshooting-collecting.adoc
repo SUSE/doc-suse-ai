@@ -51,7 +51,7 @@ Nodes, Services, Deployments, etc.
 == How to collect
 
 *For logs*::
-Redirect command output to files (for example, `journalctl -u k3s > k3s_logs.txt`).
+Redirect command output to files (for example, `journalctl -u rke2-server > rke2_logs.txt`).
 
 *For {kube} resources*::
 Use `kubectl get <RESOURCE> -o yaml > <RESOURCE_NAME>.yaml` to get detailed YAML definitions.
@@ -62,7 +62,7 @@ Redirect `helm get values` output to a file (for example, `helm get values <RELE
 *For system information*::
 Collect output of the commands listed above.
 
-*For RKE2/Rancher*::
+*For {rke2a}/{ranchera}*::
 Check the https://www.suse.com/support/kb/doc/?id=000020191[The Rancher v2.x Linux log collector script] article to run The Rancher v2.x Linux log collector script.
 
 [#aif-collect-contact-support]
