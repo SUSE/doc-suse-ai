@@ -150,7 +150,7 @@ image::aif-rancher-secrets-nvidia.png[Screenshot showing how to add secrets for 
 ====
 . Assign {nvidia} registry secrets to {saifactory}.
 .. From the main left panel, select menu:SUSE AI Factory[Settings].
-.. In the `NVIDIA` section, select the secret name corresponding to your `<NVIDIA_SECRETS_NAME>` from the `Secret name` drop-down list.
+.. In the `NVIDIA AI Library` section, select the secret name corresponding to your `<NVIDIA_SECRETS_NAME>` from the `Secret name` drop-down list.
 .. Select `user` for menu:Username Secret[Secret Key] and `token` for menu:Access Token Secret[Secret Key].
 +
 [#fig-aif-secrets-nvidia]
@@ -167,7 +167,7 @@ The list of available applications from the {nvidia} registry appears.
 == How do I verify access to a chart repository?
 
 A successful registry login does not guarantee that you can read the charts in the repository, or that {ranchera} has downloaded the repository index.
-The btn:[Test] button in the `SUSE Application Collection`, `SUSE Registry` and `NVIDIA` sections therefore reports three separate results in the `Verify repository access` panel:
+The btn:[Test] button in the `SUSE Application Collection`, `SUSE Registry` and `NVIDIA AI Library` sections therefore reports three separate results in the `Verify repository access` panel:
 
 Registry connection (current form)::
 Whether the registry responds to the endpoint and credentials entered in the form.
@@ -301,13 +301,41 @@ If you host {sappco}, {sregistry} or {nvidia} artifacts in a local registry that
 ====
 . Assign the CA certificate to the registry.
 .. From the main left panel, select menu:SUSE AI Factory[Settings].
-.. In the `SUSE Application Collection`, `SUSE Registry` or `NVIDIA` section, select the secret name corresponding to your `<REGISTRY_CA_SECRET_NAME>` and the key that holds the certificate.
+.. In the `SUSE Application Collection`, `SUSE Registry` or `NVIDIA AI Library` section, select the secret name corresponding to your `<REGISTRY_CA_SECRET_NAME>` and the key that holds the certificate.
 .. Confirm by selecting btn:[Apply] in the bottom-right corner.
 
 [NOTE]
 .Certificate rotation
 ====
 When you replace the certificate or the credentials of a registry, {productname} refreshes the corresponding chart repositories automatically.
+====
+
+[#ai-factory-secret-references]
+== How do I change or remove secret references in the settings?
+
+Each credential or CA certificate field on the `Settings` page references a key in a secret in the `aif-operator` namespace.
+A reference is valid only when both the secret and the key are selected.
+
+* *To change a reference*, select another secret and key, and confirm with btn:[Apply].
+* *To remove a reference*, set the secret to `None` and confirm with btn:[Apply].
+This also removes references that were set by the `credentials` {helm} values of the `aif-operator` chart or by the `rancherCatalog.token` and `rancherCatalog.tokenSecret` values.
+
+If a field has a secret selected but no key, btn:[Apply] is blocked.
+The message names each incomplete field, for example, `NVIDIA AI Library - Username Secret: select a key in Secret "nvidia-registry", or set the Secret to None.`, and opens its section.
+Select a key or set the secret to `None`, and select btn:[Apply] again.
+The operator API and the `Settings` CRD reject incomplete references as well.
+
+[NOTE]
+.Automatically assigned registry secrets
+====
+{productname} automatically assigns registry credentials from secrets with the following names in the `aif-operator` namespace:
+
+* {sappco}: `appco` or `application-collection`
+* {sregistry}: `suse-registry`
+* {nvidia} {ailibrary}: `nvidia` or `nvidia-registry`
+
+If you set the credentials of a registry to `None` while such a secret exists, the operator assigns it again.
+To keep the credentials removed, delete the secret or rename it.
 ====
 
 [#ai-factory-custom-repos]
@@ -384,6 +412,7 @@ As a workaround, enable `Skip TLS verification (development only)` for that repo
 * Chart access is checked only for `https://` {helm} and `oci://` repositories.
 A plain `http://` {helm} repository can pass the connection test but reports a configuration error for chart access.
 * Testing is not available for Git repositories accessed over SSH.
+* Charts from Git repositories are subject to a size limit, as described in xref:ai-factory-rancher-api-access[].
 ====
 
 [#ai-factory-blueprint-catalogs]
@@ -485,6 +514,11 @@ Blueprint `source` values, including `Partner` and `Community`, are declared by 
 The `aif-operator` chart creates the {fleeta} `GitRepo` resource `fleet-local/aif-partner-blueprints`, which synchronizes the `partners` directory of the `main` branch of link:https://github.com/suse/partner-blueprints[the SUSE partner-blueprints repository].
 The `SUSE Partner Catalog` row in the `Blueprint Catalogs` section of menu:SUSE AI Factory[Settings] shows whether the catalog is synchronized.
 
+The catalog includes blueprints from partners such as Tensormesh, Traefik Labs and Zentience Labs (AlchemiStudio).
+For the current list, refer to link:https://github.com/SUSE/partner-blueprints/blob/main/partners/catalog.yaml[the catalog file] and the `README` file of each partner in the repository.
+Because the catalog is synchronized from the `main` branch, new partner blueprints appear without upgrading {productname}.
+Support for each partner blueprint is provided by the contributing partner.
+
 The partner catalog is a chart resource and is not listed under `Custom Catalogs`.
 Upgrading the chart never changes the catalogs added on the `Settings` page.
 If you added a catalog on the `Settings` page that points to the partner repository, remove it.
@@ -565,7 +599,14 @@ The {ranchera} CA certificate is discovered automatically, so TLS verification o
 [TIP]
 .Chart size limit
 ====
-Charts resolved from a Git-backed `ClusterRepo` are delivered as an embedded {fleeta} `Bundle` and are subject to the {kube} object-size limit.
-A chart that is too large fails to deploy with a clear error.
-Host oversized charts in an OCI or HTTP `ClusterRepo` instead.
+Charts resolved from a Git-backed `ClusterRepo`, including custom Git chart repositories, are delivered as an embedded {fleeta} `Bundle` and are subject to the {kube} object-size limit.
+{productname} stores the chart files compressed, so most charts fit even if they are larger than 1 MiB unpacked.
+For example, a chart of 2 MB unpacked is stored in about 0.43 MB.
+The following limits apply:
+
+* The chart archive (`.tgz`) can be up to 4 MiB.
+* The unpacked chart can be up to 32 MiB.
+* The compressed chart files stored in the `Bundle` can be up to 1 MiB.
+
+A chart that exceeds a limit fails to deploy with a `ChartTooLarge` error.
 ====

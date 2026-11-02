@@ -101,6 +101,7 @@ ifeval::["{PROF_PRODUCT}" == "saifnv"]
 . From the list of existing blueprints, select the {nvidia} blueprint to install, specify the deployment version, and select the btn:[Install] button.
 endif::[]
 . On the `Basic Info` screen, customize the default name and target namespace for your workload.
+The wizard suggests a new namespace with a random suffix, for example, `chatbot-k3x9q2a`, so that each installation of the same blueprint uses its own namespace.
 . On the `Target` screen, specify the deployment type and the target cluster for your workload.
 You can also review the estimated hardware requirements for the workload.
 . (_Optional_) On the `Configuration` screen, customize the blueprint for this deployment.

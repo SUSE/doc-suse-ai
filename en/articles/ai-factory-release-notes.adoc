@@ -13,6 +13,8 @@ ifdef::env-github[]
 :warning-caption: :warning:
 endif::[]
 
+include::../references/AI-Factory-release-notes-2-4-0.adoc[leveloffset=+1]
+
 include::../references/AI-Factory-release-notes-2-3-1.adoc[leveloffset=+1]
 
 include::../references/AI-Factory-release-notes-2-3-0.adoc[leveloffset=+1]

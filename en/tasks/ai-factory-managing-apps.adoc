@@ -54,6 +54,9 @@ The `Overview` page lists the failing repositories with links to *Settings*, whe
 ====
 . Use the `Basic Information` screen of the installation wizard to update the instance name, namespace, and version of the application.
 +
+The wizard suggests a new namespace with a random suffix, for example, `ollama-k3x9q2a`, so that each installation of the same application uses its own namespace.
+You can replace it with any valid namespace name.
++
 [#fig-aif-apps-install-basic]
 .Basic screen of the application installation wizard
 image::aif-apps-install1.png[Screenshot showing basic information about the installed application,width=50%]
