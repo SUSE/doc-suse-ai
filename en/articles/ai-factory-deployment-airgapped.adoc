@@ -36,8 +36,3 @@ include::../tasks/ai-factory-deployment-airgapped-workflow.adoc[leveloffset=+1]
 [#ai-factory-deployment-airgapped-ollama]
 :override-title: How do I air-gap {ollama} and blueprints?
 include::../tasks/ai-factory-deployment-airgapped-ollama.adoc[leveloffset=+1]
-
-[appendix]
-[#ai-factory-release-notes]
-:override-title: Release notes
-include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]

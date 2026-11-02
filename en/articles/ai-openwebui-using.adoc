@@ -67,13 +67,3 @@ include::../tasks/openwebui-input-field-specify-custom-docs.adoc[leveloffset=+2]
 include::../tasks/openwebui-input-field-specify-system-prompt.adoc[leveloffset=+2]
 include::../tasks/openwebui-input-field-specify-mcpo-tools.adoc[leveloffset=+2]
 include::../tasks/openwebui-setting-chat-native-function-calling.adoc[leveloffset=+2]
-
-
-[appendix]
-include::../references/AI-glossary.adoc[leveloffset=+1]
-
-[appendix]
-include::../common/common_copyright_gfdl.adoc[]
-
-[appendix]
-include::../common/common_license_gfdl1.2.adoc[]

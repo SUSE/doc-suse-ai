@@ -50,12 +50,3 @@ include::../concepts/AI-monitoring-cost-estimation.adoc[leveloffset=+1]
 [appendix]
 :override-title: Instrument applications with {openlit} SDK
 include::../concepts/AI-monitoring-instrument-openlit.adoc[leveloffset=+1]
-
-[appendix]
-include::../references/AI-glossary.adoc[leveloffset=+1]
-
-[appendix]
-include::../common/common_copyright_gfdl.adoc[]
-
-[appendix]
-include::../common/common_license_gfdl1.2.adoc[]

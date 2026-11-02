@@ -139,12 +139,3 @@ include::../tasks/owui-prompts-exporting-all.adoc[leveloffset=+2]
 include::../tasks/owui-prompts-deleting.adoc[leveloffset=+2]
 :override-title: Authenticating via {okta}
 include::../tasks/openwebui-authentication-via-okta.adoc[leveloffset=+1]
-
-[appendix]
-include::../references/AI-glossary.adoc[leveloffset=+1]
-
-[appendix]
-include::../common/common_copyright_gfdl.adoc[]
-
-[appendix]
-include::../common/common_license_gfdl1.2.adoc[]

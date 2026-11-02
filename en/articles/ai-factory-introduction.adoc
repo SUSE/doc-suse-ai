@@ -199,9 +199,10 @@ The workflow is defined by a user role and is different for a user and an admini
 include::../references/AI-glossary.adoc[leveloffset=+1]
 
 [appendix]
-[#ai-factory-release-notes]
-:override-title: Release notes
-include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]
+include::../common/common_copyright_gfdl.adoc[]
+
+[appendix]
+include::../common/common_license_gfdl1.2.adoc[]
 
 [appendix]
 [#ai-factory-appendix]

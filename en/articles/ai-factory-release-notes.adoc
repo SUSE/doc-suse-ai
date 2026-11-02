@@ -1,0 +1,32 @@
+include::../common/generic-attributes.adoc[]
+= {productname} Release Notes
+
+:experimental:
+:docinfo:
+
+ifdef::env-github[]
+:imagesdir: ../images/
+:tip-caption: :bulb:
+:note-caption: :information_source:
+:important-caption: :heavy_exclamation_mark:
+:caution-caption: :fire:
+:warning-caption: :warning:
+endif::[]
+
+include::../references/AI-Factory-release-notes-2-3-1.adoc[leveloffset=+1]
+
+include::../references/AI-Factory-release-notes-2-3-0.adoc[leveloffset=+1]
+
+include::../references/AI-Factory-release-notes-2-2-0.adoc[leveloffset=+1]
+
+include::../references/AI-Factory-release-notes-2-1-0.adoc[leveloffset=+1]
+
+include::../references/AI-Factory-release-notes-2-0-1.adoc[leveloffset=+1]
+
+include::../references/AI-Factory-release-notes-2-0-0.adoc[leveloffset=+1]
+
+[appendix]
+include::../common/common_copyright_gfdl.adoc[]
+
+[appendix]
+include::../common/common_license_gfdl1.2.adoc[]

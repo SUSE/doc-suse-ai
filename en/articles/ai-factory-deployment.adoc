@@ -135,8 +135,3 @@ include::../tasks/ai-factory-upgrade.adoc[leveloffset=+1]
 [#ai-factory-deployment-uninstall]
 :override-title: How do I uninstall {productname}?
 include::../tasks/ai-factory-uninstall.adoc[leveloffset=+1]
-
-[appendix]
-[#ai-factory-release-notes]
-:override-title: Release notes
-include::../references/AI-Factory-release-notes.adoc[leveloffset=+1]
