@@ -42,7 +42,7 @@ This release builds on the 2.3.x line with new partner blueprints, new {suseai} 
 - *New default namespace pattern*: New installations get a `<APP>-<RANDOM>` namespace instead of `<APP>-system`. If your scripts or policies expect `<APP>-system`, set the namespace explicitly in the installation wizard. The btn:[Manage] action still finds instances installed in the earlier `<APP>-system` namespace link:https://github.com/SUSE/aif/pull/338[#338].
 
 == Known issues and limitations
-- Charts from Git chart repositories are limited to a 4 MiB archive, 32 MiB unpacked, and 1 MiB of compressed files in the {fleeta} `Bundle`.
+- Charts from Git chart repositories are limited to a 4 MiB archive, 32 MiB unpacked and 1 MiB of compressed files in the {fleeta} `Bundle`.
 - Non-administrator users get access to the UI extension through a `cluster-owner` role binding for their user on the `local` cluster. Users who are cluster owners only through a group, for example, an LDAP group or a GitHub organization, are refused access.
 - The {vllm} application is superseded by `vLLM Production Stack` and will be deprecated in a future release.
 

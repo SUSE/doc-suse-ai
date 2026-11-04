@@ -54,7 +54,7 @@ image::aif-rancher-secrets-keys.png[Screenshot showing how to add secrets to {sa
 [TIP]
 .Creating the secrets on the command line
 ====
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}kubectl create secret generic <APPCO_SECRETS_NAME> \
   --from-literal=user=<APPCO_USERNAME> \
@@ -97,7 +97,7 @@ image::aif-rancher-secrets-sregistry.png[Screenshot showing how to add secrets f
 [TIP]
 .Creating the secrets on the command line
 ====
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}kubectl create secret generic <REGISTRY_SECRETS_NAME> \
   --from-literal=user=regcode \
@@ -140,7 +140,7 @@ image::aif-rancher-secrets-nvidia.png[Screenshot showing how to add secrets for 
 [TIP]
 .Creating {nvidia} secrets on the command line
 ====
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}kubectl create secret generic <NVIDIA_SECRETS_NAME> \
   --from-literal=user=$oauthtoken \
@@ -167,7 +167,7 @@ The list of available applications from the {nvidia} registry appears.
 == How do I verify access to a chart repository?
 
 A successful registry login does not guarantee that you can read the charts in the repository, or that {ranchera} has downloaded the repository index.
-The btn:[Test] button in the `SUSE Application Collection`, `SUSE Registry` and `NVIDIA AI Library` sections therefore reports three separate results in the `Verify repository access` panel:
+Selecting btn:[Test] in the `SUSE Application Collection`, `SUSE Registry` and `NVIDIA AI Library` sections therefore reports three separate results in the `Verify repository access` panel:
 
 Registry connection (current form)::
 Whether the registry responds to the endpoint and credentials entered in the form.
@@ -235,7 +235,7 @@ image::aif-rancher-secrets-git.png[Screenshot showing how to add secrets for Git
 [TIP]
 .Creating Git secrets on the command line
 ====
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}kubectl create secret generic <GIT_SECRETS_NAME> \
   --from-literal=token=<GIT_PAT_TOKEN> \
@@ -292,7 +292,7 @@ If you host {sappco}, {sregistry} or {nvidia} artifacts in a local registry that
 [TIP]
 .Creating the CA secret on the command line
 ====
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}kubectl create secret generic <REGISTRY_CA_SECRET_NAME> \
   --from-file=ca.crt=<PATH_TO_CA_CERTIFICATE> \
@@ -356,7 +356,7 @@ For a Git repository accessed over SSH, add a key that holds the SSH private key
 [TIP]
 .Creating the secrets on the command line
 ====
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}kubectl create secret generic <CUSTOM_REPO_SECRETS_NAME> \
   --from-literal=user=<USERNAME> \
@@ -490,7 +490,7 @@ Remove or rename that catalog before you upgrade.
 After `helm uninstall`, the retained `Settings` resource keeps the {helm}-declared catalogs read-only.
 To manage them on the `Settings` page again, remove the annotation:
 
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}kubectl annotate settings.ai-factory.suse.com settings -n aif-operator \
   ai-factory.suse.com/helm-managed-
@@ -538,7 +538,7 @@ The catalog is configured with the following values of the `aif-operator` chart:
 To disable the partner catalog, run the following command.
 {fleeta} then removes the synchronized partner blueprints.
 
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}helm upgrade aif-operator oci://{aif-operator-registry} \
   -n aif-operator \

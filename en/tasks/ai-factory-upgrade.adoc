@@ -50,7 +50,7 @@ Omit `--version` to display the latest chart.
 . Upgrade {saifoperator}.
 Omit `--version` to upgrade to the latest chart.
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
   aif-operator oci://{aif-operator-registry} \
