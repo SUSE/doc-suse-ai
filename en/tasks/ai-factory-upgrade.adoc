@@ -50,7 +50,7 @@ Omit `--version` to display the latest chart.
 . Upgrade {saifoperator}.
 Omit `--version` to upgrade to the latest chart.
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install \
   aif-operator oci://{aif-operator-registry} \
@@ -91,6 +91,24 @@ In an air-gapped environment, mirror this image or override the registry.
 [IMPORTANT]
 .Changes to review before upgrading to {aif-latest-version}
 ====
+* *Upgrade the operator and the UI extension to matching versions.*
+The fixes for `None` and partial secret references on the `Settings` page require both the operator and the UI extension in version {aif-latest-version}.
+
+* *The `Settings` and `InstallAIExtension` CRDs are updated.*
+The `name` and `key` of a secret reference must not be empty.
+The CRD job applies this change during the upgrade.
+On {kube} 1.30 and later, a `Settings` resource that already stores a secret reference without a key, or a key without a secret, can still be updated as long as that field is not changed.
+Complete or clear such references the next time you edit the settings, as described in xref:ai-factory-secret-references[].
+
+* *New installations use a random default namespace.*
+The installation wizards suggest a namespace such as `<APP>-k3x9q2a` instead of `<APP>-system`.
+If your scripts or policies expect `<APP>-system`, enter that namespace explicitly in the wizard.
+Existing workloads keep their namespace.
+====
+
+[IMPORTANT]
+.Changes to review when upgrading from 2.3.0
+====
 * *The partner blueprint catalog is enabled by default.*
 The chart creates the {fleeta} `GitRepo` resource `fleet-local/aif-partner-blueprints`, which synchronizes the SUSE partner blueprints from GitHub.
 If you already added a catalog on the `Settings` page that points to the same repository, remove it after upgrading.
@@ -107,9 +125,9 @@ If `blueprintCatalogs` is not empty and you also add catalogs on the `Settings` 
 Releases first installed with {helm} 3, including releases upgraded through {ranchera} `Apps`, keep using client-side apply, which drops the catalogs added on the `Settings` page.
 Run one `helm upgrade --server-side=true` to switch the release to server-side apply; later upgrades keep it.
 
-* *Blueprints with `source: Community` require {aif-latest-version}.*
+* *Blueprints with `source: Community` require 2.3.1 or newer.*
 Operator version 2.3.0 and earlier reject this value.
-If you publish blueprint catalogs, do not use it until {aif-latest-version} is the minimum operator version that you support.
+If you publish blueprint catalogs, do not use it until 2.3.1 is the minimum operator version that you support.
 ====
 
 [IMPORTANT]

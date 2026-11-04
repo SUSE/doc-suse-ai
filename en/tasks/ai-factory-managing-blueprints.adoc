@@ -27,7 +27,7 @@ image::aif-blueprints.png[Screenshot showing a list of AI blueprints,scaledwidth
 
 Blueprints are grouped into catalogs.
 Use the catalog drop-down list on the `Blueprints` page to show only the blueprints of a specific catalog.
-Blueprints bundled with {productname} are listed under `SUSE Blueprints`. The default bundled blueprints are maintianed at https://github.com/SUSE/aif/tree/main/charts/aif-operator/files/blueprints.
+Blueprints bundled with {productname} are listed under `SUSE Blueprints`. The default bundled blueprints are maintained at link:https://github.com/SUSE/aif/tree/main/charts/aif-operator/files/blueprints[the SUSE aif repository].
 To add more catalogs, refer to link:https://documentation.suse.com/suse-ai-factory/latest/html/AI-Factory-deployment/ai-factory-post-deployment.html#ai-factory-blueprint-catalogs[How do I add blueprint catalogs?].
 
 [NOTE]
@@ -95,12 +95,13 @@ endif::[]
 . From the main left panel, select menu:SUSE AI Factory[Blueprints].
 +
 ifeval::["{PROF_PRODUCT}" == "saif"]
-. From the list of existing blueprints, select the template to install, specify the deployment version, and select the btn:[Install] button.
+. From the list of existing blueprints, select the template to install, specify the deployment version, and select btn:[Install].
 endif::[]
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
-. From the list of existing blueprints, select the {nvidia} blueprint to install, specify the deployment version, and select the btn:[Install] button.
+. From the list of existing blueprints, select the {nvidia} blueprint to install, specify the deployment version, and select btn:[Install].
 endif::[]
 . On the `Basic Info` screen, customize the default name and target namespace for your workload.
+The wizard suggests a new namespace with a random suffix, for example, `chatbot-k3x9q2a`, so that each installation of the same blueprint uses its own namespace.
 . On the `Target` screen, specify the deployment type and the target cluster for your workload.
 You can also review the estimated hardware requirements for the workload.
 . (_Optional_) On the `Configuration` screen, customize the blueprint for this deployment.
@@ -125,7 +126,7 @@ A workload whose configuration differs from the blueprint defaults is marked as 
 If the workload stays in the Pending state for an extended period after installation, a configuration value is missing or incorrect.
 To identify the issue, check the pod status directly:
 
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 {prompt_user}kubectl get pods -n <WORKLOAD_NAMESPACE>
 {prompt_user}kubectl describe pod <POD_NAME> -n <WORKLOAD_NAMESPACE>
 

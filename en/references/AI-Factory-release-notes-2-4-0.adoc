@@ -1,0 +1,49 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+[#aif-release-notes-2-4-0]
+= Release 2.4.0
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{empty}
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+This release builds on the 2.3.x line with new partner blueprints, new {suseai} applications in the catalog, and unique default namespaces for new installations, plus fixes for secret references on the *Settings* page, large Git-hosted charts and extension access checks.
+
+== What's new
+- *New partner blueprints*: The {suse} partner blueprint catalog now includes blueprints from three partners: `AlchemiStudio + vLLM` (Zentience Labs), `Tensormesh Platform on SUSE AI (vLLM)` (Tensormesh), and `Traefik Hub AI and MCP Gateway Installer` and `Traefik Hub AI and MCP Governance Demo` (Traefik Labs). Support for each blueprint is provided by its partner. Large partner charts such as AlchemiStudio now install from Git chart repositories link:https://github.com/SUSE/aif/pull/348[#348].
+- *New {suseai} applications*: `vLLM Production Stack`, which supersedes the existing {vllm} application, plus `Slurm Operator` and `Slurm Bridge` for running Slurm alongside {kube} link:https://github.com/SUSE/aif/pull/357[#357].
+- *{nvidia} catalog refresh*: The weekly {nvidia} AI Enterprise catalog refreshes are included. `DOCA Weave Service` (`dpf-weave`) is added to the {nvidia} {ailibrary} link:https://github.com/SUSE/aif/pull/335[#335], link:https://github.com/SUSE/aif/pull/350[#350], link:https://github.com/SUSE/aif/pull/358[#358].
+- *Random default namespace for new installations*: The application and blueprint installation wizards now suggest a namespace with a random suffix, such as `coredns-k3x9q2a`, instead of `coredns-system`. Each new installation gets its own namespace, so installing the same application twice no longer fails because a deployment with the same name already exists in the shared namespace. You can still change the namespace, and existing installations keep theirs link:https://github.com/SUSE/aif/pull/338[#338].
+- *Incomplete secret references are caught before saving*: btn:[Apply] on the *Settings* page is now blocked when a secret field has a secret selected but no key. The message names each such field and opens its section. The operator API rejects these partial references with HTTP `400`, and the CRDs reject them from any client link:https://github.com/SUSE/aif/pull/349[#349].
+
+== Key fixes
+- Setting the {sappco}, {sregistry} or {nvidia} credentials, or the {ranchera} catalog token and CA certificate secrets, to `None` now saves. Previously, the page reloaded with the old credentials filled in, or saving failed with errors such as `spec.applicationCollection.tokenSecretRef.name: Required value`. This also happened when the reference was set by {helm} values or discovered by the operator link:https://github.com/SUSE/aif/pull/349[#349].
+- Clearing every field of a section on the *Settings* page no longer fails with `spec.rancherCatalog in body must be of type object` link:https://github.com/SUSE/aif/pull/349[#349].
+- Secret fields of custom repositories no longer silently drop a secret that has no key. Previously, saving appeared to succeed but stored `None` link:https://github.com/SUSE/aif/pull/349[#349].
+- Charts from Git chart repositories that are larger than 1 MiB unpacked now install. Previously, they failed with `ChartTooLarge` or `etcdserver: request is too large`. Chart files are now stored compressed, so a 2 MB chart takes about 0.43 MB link:https://github.com/SUSE/aif/pull/348[#348].
+- Global administrators are no longer refused access to the UI extension on their first navigation, for example, right after creating a cluster, with the message `Access check failed`. The extension now waits up to 30 seconds for {ranchera} to load its management data before checking access, and a failed check is retried on the next navigation link:https://github.com/SUSE/aif/pull/302[#302].
+
+== Upgrade notes
+- *Updated `Settings` and `InstallAIExtension` CRDs*: The `name` and `key` of secret references must not be empty, and the `fleet`, `applicationCollection`, `suseRegistry`, `nvidia`, `appCatalog` and `rancherCatalog` sections of `Settings` accept `null`. The CRD hook job of the chart applies the CRDs on upgrade link:https://github.com/SUSE/aif/pull/349[#349].
+- *Existing partial secret references*: On {kube} 1.30 and later, a `Settings` resource that already stores a secret reference without a key, or a key without a secret, can still be updated as long as that field is not changed. Complete or clear these references the next time you edit the settings link:https://github.com/SUSE/aif/pull/349[#349].
+- *Use matching operator and UI extension versions*: The fixes for `None` and partial secret references change both the operator API and the *Settings* page, and require both the 2.4.0 operator and the 2.4.0 UI extension link:https://github.com/SUSE/aif/pull/349[#349].
+- *New default namespace pattern*: New installations get a `<APP>-<RANDOM>` namespace instead of `<APP>-system`. If your scripts or policies expect `<APP>-system`, set the namespace explicitly in the installation wizard. The btn:[Manage] action still finds instances installed in the earlier `<APP>-system` namespace link:https://github.com/SUSE/aif/pull/338[#338].
+
+== Known issues and limitations
+- Charts from Git chart repositories are limited to a 4 MiB archive, 32 MiB unpacked and 1 MiB of compressed files in the {fleeta} `Bundle`.
+- Non-administrator users get access to the UI extension through a `cluster-owner` role binding for their user on the `local` cluster. Users who are cluster owners only through a group, for example, an LDAP group or a GitHub organization, are refused access.
+- The {vllm} application is superseded by `vLLM Production Stack` and will be deprecated in a future release.
+
+Full Changelog: link:++https://github.com/SUSE/aif/compare/aif-operator-2.3.1...aif-operator-2.4.0++[aif-operator-2.3.1...aif-operator-2.4.0]

@@ -54,6 +54,9 @@ The `Overview` page lists the failing repositories with links to *Settings*, whe
 ====
 . Use the `Basic Information` screen of the installation wizard to update the instance name, namespace, and version of the application.
 +
+The wizard suggests a new namespace with a random suffix, for example, `ollama-k3x9q2a`, so that each installation of the same application uses its own namespace.
+You can replace it with any valid namespace name.
++
 [#fig-aif-apps-install-basic]
 .Basic screen of the application installation wizard
 image::aif-apps-install1.png[Screenshot showing basic information about the installed application,width=50%]
@@ -71,10 +74,10 @@ image::aif-apps-install2.png[Screenshot showing information about the installati
 image::aif-apps-install3.png[Screenshot showing information about application configuration,width=50%]
 +
 . The `Review` screen summarizes the basic information about the deployment.
-Start the deployment by selecting the btn:[Install] button.
+Start the deployment by selecting btn:[Install].
 +
 [#fig-aif-apps-install-review]
-.Configuration screen of the application installation wizard
+.Review screen of the application installation wizard
 image::aif-apps-install4.png[Screenshot reviewing the installation,width=50%]
 +
 . After the installation progress bar reaches 100%, you can check the workload status by selecting menu:SUSE AI Factory[Workloads] from the left menu.
