@@ -254,11 +254,6 @@ include::../tasks/aif-app-removing.adoc[leveloffset=+2]
 // include::../tasks/mcpo-installing.adoc[leveloffset=+1]
 
 
-// [#mlflow-installing]
-// :override-title: {mlflow}
-// include::../tasks/mlflow-installing.adoc[leveloffset=+1]
-
-
 :ai-app-string: qdrant
 :ai-app-name: {qdrant}
 :ai-app-registry: {sregistry}
@@ -310,6 +305,41 @@ include::../tasks/aif-app-installing.adoc[leveloffset=+2]
 [#{ai-app-string}-helm-overrides]
 :override-title: What custom values examples are available for {ai-app-name}?
 include::../references/vllm-helm-overrides.adoc[leveloffset=+2]
+[#{ai-app-string}-upgrading]
+:override-title: How do I upgrade {ai-app-name}?
+include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
+[#{ai-app-string}-removing]
+:override-title: How do I remove {ai-app-name}?
+include::../tasks/aif-app-removing.adoc[leveloffset=+2]
+
+:ai-app-string!:
+:ai-app-name!:
+:ai-app-registry!:
+
+:ai-app-string: mlflow
+:ai-app-name: {mlflow}
+:ai-app-registry: {sappco}
+
+[#aif-apps-{ai-app-string}]
+== {ai-app-name}
+
+{mlflow} (link:https://mlflow.org[]) is an open-source platform for managing the end-to-end machine learning lifecycle.
+It provides a centralized model registry to track and manage the entire lifecycle of machine learning models.
+{mlflow} includes tools for experiment tracking, model packaging, versioning and deployment.
+This helps streamline the transition from development to production, ensuring reproducibility and collaboration among data science teams.
+
+[#{ai-app-string}-helm-values]
+:override-title: How do I get the values list for {ai-app-name} {helm} chart?
+include::../tasks/aif-app-values.adoc[leveloffset=+2]
+[#{ai-app-string}-installing]
+:override-title: How do I install {ai-app-name}?
+include::../tasks/aif-app-installing.adoc[leveloffset=+2]
+[#{ai-app-string}-installing-pgsql]
+:override-title: How do I install {mlflow} with {postgresql}?
+include::../tasks/mlflow-installing-pgsql.adoc[leveloffset=+2]
+[#{ai-app-string}-accessing]
+:override-title: How do I access {ai-app-name}?
+include::../tasks/mlflow-accessing.adoc[leveloffset=+2]
 [#{ai-app-string}-upgrading]
 :override-title: How do I upgrade {ai-app-name}?
 include::../tasks/aif-app-upgrading.adoc[leveloffset=+2]
