@@ -24,7 +24,7 @@ endif::[]
 | Component | Chart source | Namespace | Purpose
 
 | Dex
-| SUSE Application Collection `dex-idp` 0.23.0 (0.24.0 incompatible — see link:/SUSE/suse-ai-charts/blob/main/kubeflow/docs/troubleshooting.md#known-limitations[Known Limitations])
+| SUSE Application Collection `dex-idp` 0.23.0 (0.24.0 incompatible — see link:https://github.com/SUSE/suse-ai-charts/blob/main/kubeflow/docs/troubleshooting.md#known-limitations[Known Limitations])
 | kubeflow
 | OIDC identity provider
 

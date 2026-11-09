@@ -357,7 +357,7 @@ The chart flattens the Knative route host to a single `\{name\}-\{namespace\}.\{
 Consequently, the dedicated `kserve-ingress-gateway` serves `*.<kserveDomain>` on port `:443` with a separate certificate named `kserve-wildcard-tls`.
 Because this gateway is separate from the dashboard gateway, a DNS-01 failure on the wildcard does not affect the dashboard TLS.
 The Helm chart validation fails during rendering if the configuration is incomplete.
-This includes a missing `hostname`, an invalid `tls.source`, an HTTP-01 solver, an unpopulated Cloudflare block, or a disabled OAuth2 proxy.
+This includes a missing `hostname`, an invalid `tls.source`, an HTTP-01 solver, an unpopulated {cloudflare} block, or a disabled OAuth2 proxy.
 
 === Requirements, security model, and caveats
 
@@ -367,12 +367,12 @@ This includes a missing `hostname`, an invalid `tls.source`, an HTTP-01 solver, 
   Consequently, the wildcard server on `*.<kserveDomain>:443` publishes the inference endpoints of all tenants without authentication.
   Therefore, the chart does not render the wildcard server and fails validation if `global.kserveExternalHttps: true` is combined with `global.oauth2Proxy.enabled: false`.
   If you use custom gateway authentication, do not enable this option.
-  Expose the inference service through your own authenticated ingress instead.
+  Expose the inference service through your own authenticated {ingress} instead.
 * *Requires a DNS-01 solver* (`solver: cloudflare`).
   Let's Encrypt HTTP-01 cannot issue wildcard certificates.
   The `apiTokenSecretRef` secret must exist in the namespace of cert-manager.
   A `ClusterIssuer` resolves solver secrets in that namespace, not in the release namespace.
-  Scope the Cloudflare API token to *Zone > DNS > Edit* and *Zone > Zone > Read* for zone discovery.
+  Scope the {cloudflare} API token to *Zone > DNS > Edit* and *Zone > Zone > Read* for zone discovery.
   Apply this scope to the specific zones that cover `kserveDomain` or the dashboard host, rather than selecting all zones.
   This restriction ensures that a leaked token can only access those specific zones.
 * *The Knative route host is flattened to `\{name\}-\{namespace\}.\{domain\}`* to allow a single `+++*.\{domain\}+++` wildcard to cover them.
@@ -385,12 +385,12 @@ This includes a missing `hostname`, an invalid `tls.source`, an HTTP-01 solver, 
   Consequently, two different name and namespace pairs can resolve to the identical host.
   For example, the name `victim-team` in the `alpha` namespace and the name `victim` in the `team-alpha` namespace both resolve to `victim-team-alpha.\{domain\}`.
   Similarly, the name `a` in the `b-c` namespace collides with the name `a-b` in the `c` namespace.
-  Istio resolves host collisions by prioritizing the oldest `VirtualService`.
+  {istio} resolves host collisions by prioritizing the oldest `VirtualService`.
   A user who can create an `InferenceService` in any namespace can hijack or deny the inference host of another user with a colliding name.
   Because the user chooses the name, admin-provisioned namespaces do not prevent this risk.
   Only enable the wildcard option when you trust every namespace that can host an `InferenceService`.
   This applies to single-tenant environments or mutually trusting teams.
-  Avoid using namespace names that are hyphenated suffixes of other hostnames.
+  Avoid using namespace names that are hyphenated suffixes of other host names.
   For strict isolation between namespaces on an untrusted cluster, keep inference traffic cluster-local and disable this option.
   Alternatively, issue one wildcard certificate per namespace using the dotted `\{name\}.\{namespace\}.\{domain\}` host format.
 * *The gateway authenticates but does not authorize per tenant.*
@@ -413,8 +413,8 @@ This includes a missing `hostname`, an invalid `tls.source`, an HTTP-01 solver, 
   You must budget for the ten-character `-predictor` suffix.
   Long InferenceService or namespace names can exceed the limit.
 * *External access requires a Bearer token or session cookie.*
-  Serving over HTTPS does not bypass Kubeflow authentication.
-  See the link:../tutorial.md#programmatic--external-access-bearer-token[Tutorial: Programmatic Access] for instructions on how to authenticate external `curl` or Python clients.
+  Serving over HTTPS does not bypass {kubeflow} authentication.
+  See the link:https://github.com/SUSE/suse-ai-charts/blob/main/kubeflow/docs/tutorial.md#programmatic--external-access-bearer-token[Tutorial: Programmatic Access] for instructions on how to authenticate external `curl` or Python clients.
 * *The configuration path for custom certificates differs.*
   For more information, see xref:kubeflow-config-scenarios-byo-cert[].
 * *To keep inference on plain HTTP, leave the `kserveExternalHttps` parameter set to `false`.*
