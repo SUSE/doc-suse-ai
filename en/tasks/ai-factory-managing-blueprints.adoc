@@ -43,7 +43,7 @@ When you copy a blueprint, the copy becomes a custom blueprint without the partn
 == How do I create custom blueprints?
 
 . From the main left panel, select menu:SUSE AI Factory[Blueprints > Create].
-. On the `Basic Info` screen, enter the name, version, and optional description of the blueprint.
+. On the `Basic Info` screen, enter the name, version and optional description of the blueprint.
 +
 [#fig-aif-bps-create-basic]
 .Basic information about a blueprint
@@ -217,3 +217,86 @@ Because this template serves the production cluster, name the blueprint `bluepri
 ====
 To apply a new blueprint version during future maintenance window upgrades, select menu:SUSE AI Factory[Workloads] and select the corresponding btn:[Upgrade] button.
 ====
+
+
+[#ai-factory-blueprints-customize-cmdline]
+== How do I customize AI blueprints on the command line?
+
+When you deploy a blueprint through the {ranchera} Web interface, {productname} creates an `AIWorkload` custom resource (`ai-factory.suse.com/v1alpha1`).
+You can also author and apply this resource manifest directly with `kubectl`.
+This approach enables automated GitOps workflows and command-line deployments with custom configuration values.
+
+.Key manifest considerations
+* **Managed fields:** Do not include runtime metadata or operator-managed fields such as `spec.fleetBundleNames`, `metadata.uid`, `metadata.resourceVersion`, or `metadata.finalizers`.
+The {saifactory} operator automatically resolves the blueprint components and computes the `fleetBundleNames` list during deployment.
+* **Workload naming:** By convention, set `metadata.name` to `<blueprint-name>-<cluster-id>` (for example, `simple-chatbot-with-rag-local` or `simple-chatbot-with-rag-vllm-c-56b6m`).
+* **Target cluster:** In `spec.targetClusters`, specify the {ranchera} cluster ID (such as `local` for the local management cluster or a downstream cluster ID like `c-56b6m`).
+* **Component value overrides:** In `spec.componentValues`, specify only the values that differ from the blueprint defaults, such as {ingress} hosts, model specifications or storage configurations.
+Array values (such as model lists) are replaced wholesale rather than merged item by item.
+
+.Prerequisites
+* An operational {kube} cluster with {productname} installed.
+* The `kubectl` command-line tool configured to access the cluster.
+* A registered blueprint available on the cluster (bundled, catalog or custom resource).
+
+.Procedure
+. Create the target namespace for the workload if it does not already exist:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl create namespace simple-chatbot-with-rag-system
+----
+
+. Create a YAML manifest file (for example, `aiworkload-custom.yaml`) defining the `AIWorkload` custom resource with your customized component values:
++
+[source,yaml]
+----
+apiVersion: ai-factory.suse.com/v1alpha1
+kind: AIWorkload
+metadata:
+  name: simple-chatbot-with-rag-local
+  namespace: simple-chatbot-with-rag-system
+spec:
+  displayName: Simple Chatbot with RAG
+  source:
+    sourceType: Blueprint
+    blueprint:
+      name: simple-chatbot-with-rag
+      version: 1.0.2
+  deployStrategy: FleetBundle
+  targetClusters:
+  - local
+  targetNamespace: simple-chatbot-with-rag-system
+  componentValues:
+  - componentName: ollama
+    values:
+      ollama:
+        models:
+          pull:
+            - qwen2.5:0.5b
+          run:
+            - qwen2.5:0.5b
+      persistentVolume:
+        enabled: true
+        size: 10Gi
+  - componentName: open-webui
+    values:
+      ingress:
+        host: owui.127.0.0.1.sslip.io
+        tls: false
+----
+
+. Apply the manifest to the cluster:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f aiworkload-custom.yaml
+----
+
+. Verify the status of the workload resource and monitor the deployment of pods:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get aiworkloads -n simple-chatbot-with-rag-system
+{prompt_user}kubectl get pods -n simple-chatbot-with-rag-system -w
+----

@@ -22,7 +22,7 @@ ifeval::["{PROF_PRODUCT}" == "saif"]
 * installing and managing AI applications and blueprints from {ailibrary}
 endif::[]
 ifeval::["{PROF_PRODUCT}" == "saifnv"]
-* installing and managing AI applications and blueprints from {nvidia} AI Library
+* installing and managing AI applications and blueprints from {nvidia} {ailibrary}
 endif::[]
 * creating and managing custom blueprints
 * managing running workloads
@@ -50,3 +50,4 @@ include::../tasks/ai-factory-managing-blueprints.adoc[leveloffset=+1]
 :override-title: How do I manage AI workloads?
 :override-abstract: {productname} helps you manage the lifecycle of workloads that you install on your {kube} cluster.
 include::../tasks/ai-factory-managing-workloads.adoc[leveloffset=+1]
+
