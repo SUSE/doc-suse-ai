@@ -1,0 +1,65 @@
+[#mcphost-configuration]
+= MCP host configuration
+include::../common/generic-attributes.adoc[]
+// overridden title?
+
+// overridden abstract?
+
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: 2026-04-01
+:page-revdate: {revdate}
+
+MCP Host behavior is defined using JSON configuration files.
+While such configuration is optional, defining configuration files has the following benefits:
+
+* Performance optimization: Even large LLMs have limited context windows. Minimizing the number of exposed tools helps achieve faster and more accurate results.
+* Better security: Configurations allow for "minimal exposure" by restricting the LLM's access to only the specific directories and tools required.
+* Behavior standardization: You can predefine "system prompts" to enforce specific response formats.
+* Operations simplification: Storing technical details like provider URLs and model names eliminates repetitive manual input.
+
+[#mcphost-configuration-parameters]
+== Structure of configuration files
+
+A standard configuration file typically contains:
+
+* `systemPrompt`: Defines the core instructions, behavioral rules and persona of the AI assistant for a specific session.
+
+* `model`: Specifies the identifier of the target LLM.
+* `provider-url`: Specifies the URL of the target LLM. When running the model locally, use the format `http:localhost:<port_number>`. The listening port number depends on your LLM provider.
+* `mcpServers`: Defines the tools that the host can access (for example, file system, monitoring or systemd tools). A single configuration file can include multiple MCP servers.
+
+.An example of Ollama as the LLM and an MCP server intended to read configuration files:
+[source,json]
+{
+"system-prompt": "You are a System Security Auditor for SLES 16.0. Your goal is to analyze system health and security logs. You may read configurations and run diagnostic commands, but you must never attempt to modify the system state.",
+"model": "ollama:gpt-oss:20b",
+"provider-url": "http://localhost:11434/",
+"mcpServers": {
+"read_only_configs": {
+"type": "builtin",
+"name": "fs",
+"options": {
+"allowed_directories": [ "/etc", "/var/log" ]
+},
+"allowedTools": [ "read_file", "list_directory" ]
+},
+"diagnostics": {
+"type": "builtin",
+"name": "bash"
+}
+}
+}
+
+The example above restricts the LLM to access only `/etc`` and `/var/log`, to use only bash tools and read and list operations. The delete and write operations are not available to the LLM. To run the MCP host with such a configuration file, issue the command:
+
+
+[source,bash]
+mcphost  --config PATH_TO_THE_JSON_CONFIGURAION_FILE
+
+
+
+

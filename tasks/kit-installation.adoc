@@ -7,7 +7,7 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-Kit is not installed on {productname} by default. To use it, install the `mcphost` package.
+Kit is not installed on {productname} by default. To use it, install the `kit` package.
 endif::[]
 
 // erase the flag for future overrides
@@ -40,3 +40,13 @@ and then reboot the system
 [source,bash]
 sudo reboot
 ----
+
+To verify the installation, run the following command:
+
+----
+[source,bash]
+
+kit --help
+----
+
+Besides the Kit binary, the package installs the default configuration `.kit.yml` to your home directory. The default configuration disables tools provided by Kit. You can enable them after the installation, however, we recommend to sandbox Kit in case you enable the default tools. For details, refer to
