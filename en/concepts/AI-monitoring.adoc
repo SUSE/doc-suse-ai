@@ -10,10 +10,13 @@ endif::[]
 
 This document focuses on techniques for gathering telemetry data from all {productname} components. 
 
+Before you start, refer to xref:ai-monitoring-integrations[] for the software, versions and artifacts that each product requires.
+A StackPack does not instrument your applications.
+
 For most of the components, it presents two distinct paths: 
 
 Recommended settings::
-Straightforward configurations designed to utilize the {sobservability} Extension, providing a quick solution for your environment. 
+Configurations for collecting telemetry and displaying it with the {sobservability} Extension.
 
 Advanced configuration::
 For users who require deeper and more granular control.

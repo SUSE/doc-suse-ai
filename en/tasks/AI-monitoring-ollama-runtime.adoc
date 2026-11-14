@@ -1,0 +1,151 @@
+[#ai-monitoring-ollama-runtime]
+= Collecting {ollama} runtime metrics
+
+The {suseai} {ollama} exporter reads the `/api/tags` and `/api/ps` endpoints of {ollama} and exposes the result as {prometheus} metrics.
+Both endpoints are read-only.
+The exporter runs as a sidecar container in each {ollama} pod and does not send inference requests.
+It reports the models available in {ollama}, their size on disk and whether they are loaded.
+For loaded models, it also reports model and VRAM allocation and context length.
+For request duration and token usage, refer to xref:ai-monitoring-native-owui[].
+
+[#ai-monitoring-ollama-runtime-requirements]
+.Requirements
+* An {ollama} deployment with the `/api/tags` and `/api/ps` endpoints.
+* The {suseai} StackPack {ai-stackpack-version} and the {ollama} exporter {ai-ollama-exporter-version}.
+Both are required to show available models in {sobservability}.
+* The Collector configured as described in xref:ai-monitoring-native-collector[].
+
+[#ai-monitoring-ollama-runtime-install]
+== Adding the exporter sidecar
+
+. *Create the patch file.*
+Create a file named `ollama-exporter-patch.yaml` with the following content.
++
+[source,yaml,subs="+attributes"]
+----
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: suse-ai-registry <.>
+      containers:
+        - name: ollama-runtime-metrics
+          image: {ai-ollama-exporter-image}:{ai-ollama-exporter-version} <.>
+          ports:
+            - name: ollama-metrics
+              containerPort: 11435
+          resources:
+            requests: {cpu: 10m, memory: 32Mi}
+            limits: {cpu: 100m, memory: 64Mi}
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL]}
+            seccompProfile: {type: RuntimeDefault}
+          readinessProbe:
+            httpGet: {path: /healthz, port: ollama-metrics}
+          livenessProbe:
+            httpGet: {path: /healthz, port: ollama-metrics}
+----
+<.> A pull secret for the {sregistry} in the {ollama} namespace.
+The user name is `regcode` and the password is the {scca} registration code of your {productname} subscription.
+<.> For air-gapped installations, replace `registry.suse.com` with your local registry.
++
+The exporter reads `http://127.0.0.1:11434/api/tags` and `http://127.0.0.1:11434/api/ps`.
+If {ollama} listens on another port, add `+args: [--ollama-url, http://127.0.0.1:<PORT>]+` to the container.
+. *Apply the patch.*
+Applying the patch restarts the {ollama} pods, which reload their models.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl -n <SAIF_NAMESPACE> patch deployment ollama \
+  --type strategic --patch-file ollama-exporter-patch.yaml
+{prompt_user}kubectl -n <SAIF_NAMESPACE> rollout status deployment/ollama
+----
++
+If you manage {ollama} with GitOps, add the container to the pod template in your repository instead.
+
+[#ai-monitoring-ollama-runtime-collector]
+== Enabling the Collector profile
+
+. Add the profile and its variables to `otel-native-values.yaml`:
++
+[source,yaml]
+----
+command:
+  extraArgs:
+    - --config=/otelcol/collector-config.yaml
+    - --config=/otelcol/ollama-runtime.yaml
+extraEnvs:
+  # Keep the existing entries.
+  - name: OLLAMA_NAMESPACE
+    value: "<SAIF_NAMESPACE>"
+  - name: OLLAMA_SERVICE_NAME
+    value: "ollama" <.>
+----
+<.> Use the same service name as in the valves of the {owui} Function.
+. Upgrade the Collector as described in xref:ai-monitoring-native-collector-deploy[].
+
+The profile scrapes each pod with the label `app.kubernetes.io/name=ollama` and the port `ollama-metrics` every 30 seconds.
+It uses the pod UID as `service.instance.id`.
+
+[#ai-monitoring-ollama-runtime-verify]
+== Verifying the metrics
+
+. Forward the ports of an {ollama} pod:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl -n <SAIF_NAMESPACE> port-forward pod/<OLLAMA_POD> 11434:11434 11435:11435
+----
+. In another terminal, compare the {ollama} API with the exporter output:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}curl --fail http://127.0.0.1:11434/api/tags
+{prompt_user}curl --fail http://127.0.0.1:11434/api/ps
+{prompt_user}curl --fail http://127.0.0.1:11435/metrics
+----
+. In {sobservability}, check the same metrics for the {ollama} service.
+
+[cols="2,3",options="header"]
+|===
+|Metric |Description
+
+|`ollama_api_up` |`1` if the last `/api/tags` and `/api/ps` requests both succeeded, `0` otherwise.
+|`+ollama_model_info{model,family,parameter_size,quantization}+` |`1` for each model available in `/api/tags`, whether loaded or not.
+|`+ollama_model_loaded{model}+` |`1` if the available model is loaded in this {ollama} process, `0` otherwise.
+|`+ollama_model_disk_size_bytes{model}+` |Size of the available model on disk, as reported by `/api/tags`.
+|`ollama_loaded_models` |Number of models loaded in this {ollama} process.
+|`+ollama_model_size_bytes{model}+` |Reported `size` of the loaded model.
+|`+ollama_model_vram_bytes{model}+` |Reported `size_vram` of the loaded model.
+`0` for an available model that is not loaded.
+|`+ollama_model_context_length{model}+` |Reported `context_length` of the loaded model, if available.
+|===
+
+The memory values are allocations reported by {ollama}, not measured GPU utilization.
+The disk size of a model and its loaded allocation are different quantities.
+If either API request fails, the exporter reports only `ollama_api_up 0` and no model data.
+The `/healthz` endpoint checks the exporter, not {ollama}.
+
+[#ai-monitoring-ollama-runtime-models]
+== Viewing available models
+
+The {suseai} StackPack creates a served model component for each model in `/api/tags`.
+
+. In {sobservability}, open menu:SUSE AI[Models].
+. Check that each available {ollama} model is listed with its namespace, cluster and {ollama} service.
+. Select the service link to open the {ollama} service, or select a model to open its charts.
+
+A model stays in the list after {ollama} unloads it from memory.
+Its loaded state and VRAM allocation then drop to `0`, and its context length and loaded allocation are not reported.
+A model that is available on any observed replica of the service is shown once for that service.
+Open a model to view its inventory and runtime metrics.
+
+Deleting a model or losing access to the {ollama} API stops observations of that model.
+The model and its service relation expire about 15 minutes after the last successful observation.
+Models also expire if you replace the exporter with a version that does not support `/api/tags`.
+Allocation charts for loaded models continue to work with that exporter.

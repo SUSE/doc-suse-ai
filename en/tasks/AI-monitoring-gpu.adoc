@@ -1,7 +1,13 @@
 [#ai-monitoring-gpu]
 = Monitoring GPU usage
 
-To effectively monitor the performance and utilization of your GPUs, configure the {otelemetry} Collector to scrape metrics from the {nvidia} DCGM Exporter, which is deployed as part of the {nvoperator}. 
+To monitor GPU performance and utilization, configure the {otelemetry} Collector to scrape metrics from the {nvidia} DCGM exporter.
+The {nvoperator} deploys the exporter.
+
+The DCGM exporter image is supplied by {nvidia}.
+For the native integration, refer to xref:ai-monitoring-native-gpu[].
+The following example uses a chart-managed Collector configuration.
+It does not modify the bundled configuration selected by the native integration.
 
 [#ai-monitoring-gpu-metrics]
 .Collect GPU metrics (recommended)

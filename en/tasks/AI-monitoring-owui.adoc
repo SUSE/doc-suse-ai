@@ -1,9 +1,12 @@
 [#ai-monitoring-owui]
-= Monitoring {owui}
+= Monitoring {owui} with the 2.x Pipelines filter
 
-The preferred way of retrieving relevant telemetry data from {owui} is to use the https://github.com/SUSE/suse-ai-observability-extension/blob/main/integrations/oi-filter/suse_ai_filter.py[{productname}
+This procedure describes the released 2.x integration using the https://github.com/SUSE/suse-ai-observability-extension/blob/v2.0.0/integrations/oi-filter/suse_ai_filter.py[{productname}
         Filter].
 It requires enabling and configuring {owui} Pipelines. 
+
+For the native integration, refer to xref:ai-monitoring-native-owui[].
+Do not enable both integrations for the same {owui} instance.
 
 [#ai-monitoring-owui-pipelines-cmdline]
 .Configuring pipeline filter during {owui} installation (recommended)
@@ -93,6 +96,7 @@ image::ai-observability-connection.png["Connections settings page within an admi
 
 If you already have a running instance of {owui} with the pipelines enabled and configured, you can set up the {productname} Filter in its Web user interface.
 
+[#ai-monitoring-owui-requirements]
 .Requirements
 * {empty}
 +
