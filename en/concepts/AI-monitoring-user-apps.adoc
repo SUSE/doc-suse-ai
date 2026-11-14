@@ -1,7 +1,12 @@
 [#ai-monitoring-user-apps]
 = Monitoring user-managed applications
 
-To monitor other applications, you can utilize {otelemetry} SDKs or any other instrumentation provider compatible with {otelemetry}'s semantics, for example, {openlit} SDK.
+Agent, RAG, tool and training telemetry requires instrumentation in the application code.
+The Collector cannot infer values that the application does not report.
+For an overview, refer to xref:ai-monitoring-integration-coverage[].
+
+To monitor other applications, use {otelemetry} SDKs or another provider compatible with {otelemetry} semantic conventions.
+For example, you can use the {openlit} SDK.
 For more details, refer to xref:ai-monitoring-instrument-openlit[]. 
 
 {otelemetry} offers several instrumentation techniques for different deployment scenarios and applications.
@@ -13,11 +18,58 @@ One of the most straightforward ways of getting started with {otelemetry} is usi
       guide] on how to use this operator for instrumenting your applications. 
 ====
 
+[#ai-monitoring-native-applications]
+== Instrumenting applications for the native integration
+
+The native integration accepts standard {otelemetry} traces and metrics.
+It does not require the {openlit} SDK or the `RequestsTotal` metric.
+
+.Resource attributes
+Set the following resource attributes for each application:
+
+* A stable `service.name`.
+* A non-empty `service.namespace`.
+* A unique `service.instance.id` for each instance.
+On {kube}, use the pod UID.
+
+Use distinct logical `service.namespace` values for services with the same name that must remain separate across clusters.
+Propagate the trace context across service calls.
+
+.GenAI attributes
+For each call to a model provider, create a client span with the following attributes:
+
+* `gen_ai.operation.name`, `gen_ai.provider.name` and `gen_ai.request.model`.
+* `server.address` and `server.port` of the provider endpoint.
+* `gen_ai.usage.input_tokens` and `gen_ai.usage.output_tokens`, only if the provider reports them.
+
+For agents, set `gen_ai.agent.name`.
+
+.GenAI metrics
+The following example defines the standard GenAI client metrics with the {otelemetry} Python SDK:
+
+[source,python]
+----
+from opentelemetry import metrics
+
+meter = metrics.get_meter("example.ai")
+duration = meter.create_histogram("gen_ai.client.operation.duration", unit="s")
+tokens = meter.create_histogram("gen_ai.client.token.usage", unit="{token}")
+----
+
+Record the duration of the complete provider call, including streaming, failures and cancellations.
+Record token usage with `gen_ai.token.type` set to `input` or `output`.
+If your framework already initializes an {otelemetry} SDK, reuse it.
+
+RAG document counts, tool outcomes and training metrics require custom measurements in your code.
+Automatic HTTP instrumentation does not provide them.
+
+To verify, run a real operation, including a failed one, and check the trace and metrics in {sobservability}.
+
 [#ai-monitoring-telemetry-data-capture]
-== Ensuring that the telemetry data is properly captured by the {sobservability} Extension
+== Telemetry requirements of the {sobservability} Extension 2.x
 
 
-For the {sobservability} Extension to acknowledge an application as a GenAI application, it needs to have a meter configured.
+For the {sobservability} Extension 2.x to acknowledge an application as a GenAI application, it needs to have a meter configured.
 It must provide at least the `RequestsTotal` metric with the following attributes: 
 
 * `TelemetrySDKLanguage`
@@ -125,7 +177,8 @@ No metrics received from {vllm}. ::
 * Verify if the {vllm} chart configuration is exposing the metrics endpoint. 
 * Verify if the metrics receiver scraper is properly configured, in particular, the placeholders. 
 * If some metrics are present, but not usage-related ones, verify if you actually made requests to {vllm}. 
-* If {vllm} was not identified and/or {vllm} metrics have the prefix "vllm:" , check the collector configuration. You may be using {sobservability} 2.6.2, which requires additional configuration. 
+* The native Collector preserves `vllm:` metric names.
+Use the configuration described in xref:ai-monitoring-native-inference-vector[].
 
 
 
@@ -145,14 +198,15 @@ No tracing data received from any components. ::
 
 No tracing data received from {owui}. ::
 
-* Verify if the {suseai} Observability Filter was installed and configured properly. 
+* For the native integration, verify the SDK and Function configuration as described in xref:ai-monitoring-native-owui[].
+For Extension 2.x, check the Pipelines filter configuration.
 * Verify if chat requests actually happened. 
 
 
 
 Cost estimation is far from real values. ::
 
-Recalculate the multipliers for the `PRICING_JSON` in the {suseai} Observability Filter. 
+For the Extension 2.x Pipelines filter, recalculate the multipliers in `PRICING_JSON` as described in xref:ai-monitoring-cost-estimation[].
 
 There is high demand for storage volume. ::
 

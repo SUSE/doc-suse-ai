@@ -1,0 +1,176 @@
+[#ai-monitoring-native-collector]
+= Configuring the {otelemetry} Collector for the native integration
+
+The native integration uses the {suseai} {otelemetry} Collector {ai-collector-version}.
+The Collector image includes the native pipeline configuration and the optional product profiles.
+You select them with {helm} values instead of maintaining your own Collector configuration.
+
+This procedure installs or upgrades the `opentelemetry-collector` {helm} release using the `otel-values.yaml` file from the {sobservability} setup procedure.
+It replaces the Collector pipeline configuration in that file with the configuration bundled in the image.
+
+[#ai-monitoring-native-collector-requirements]
+.Requirements
+* {sobservability} with the {otelemetry} StackPack and the {suseai} StackPack {ai-stackpack-version}.
+* The {sobservability} Agent on each observed cluster.
+* The `observability` namespace, Collector credentials and `otel-values.yaml` file prepared in the {sobservability} setup procedure.
+* The OTLP endpoint of {sobservability} in the `host:port` format.
+This endpoint differs from the Web UI URL.
+
+[#ai-monitoring-native-collector-deploy]
+== Installing or upgrading the Collector
+
+. *Add product credentials to the Collector secret.*
+If you enable the {opensearch} profile, add its password to the `open-telemetry-collector` secret that already holds the API key.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl -n observability patch secret open-telemetry-collector \
+  --type merge -p '{"stringData":{"ELASTICSEARCH_PASSWORD":"<OPENSEARCH_PASSWORD>"}}'
+----
+. *Create the native values file.*
+Create a file named `otel-native-values.yaml` with the following content.
++
+[source,yaml,subs="+attributes"]
+----
+image:
+  registry: registry.suse.com <.>
+  repository: ai/containers/suse/suse-ai-opentelemetry-collector
+  tag: {ai-collector-version}
+configMap:
+  create: false <.>
+  existingName: ""
+command:
+  name: otelcol/otelcol-custom <.>
+  extraArgs:
+    - --config=/otelcol/collector-config.yaml <.>
+podSecurityContext: <.>
+  runAsUser: 10001
+  runAsGroup: 10001
+  fsGroup: 10001
+extraEnvs: <.>
+  - name: K8S_CLUSTER_NAME
+    value: "<CLUSTER_NAME>"
+  - name: SUSE_AI_NAMESPACE
+    value: "<SAIF_NAMESPACE>"
+  - name: OTLP_ENDPOINT
+    value: "<OTLP_HOST>:<OTLP_PORT>" <.>
+  - name: OTLP_INSECURE
+    value: "false"
+clusterRole:
+  create: true
+  rules: <.>
+    - apiGroups: [""]
+      resources: ["pods", "namespaces", "nodes", "services", "endpoints"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["apps"]
+      resources: ["replicasets", "deployments", "statefulsets", "daemonsets"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: ["batch"]
+      resources: ["jobs", "cronjobs"]
+      verbs: ["get", "list", "watch"]
+----
+<.> For air-gapped installations, set the registry and repository to your locally mirrored Collector image.
+<.> The Collector uses the configuration bundled in the image, so the chart does not create a configuration map.
+<.> The path of the Collector binary in the image.
+<.> Add one `--config` argument for each product profile that you enable.
+Refer to xref:ai-monitoring-native-collector-overlays[].
+<.> The image runs as user and group `10001`.
+The group allows the Collector to read mounted secrets.
+<.> {helm} replaces lists instead of merging them, so this list replaces the `extraEnvs` list in `otel-values.yaml`.
+Replace `<CLUSTER_NAME>` with the cluster name and `<SAIF_NAMESPACE>` with the namespace of the {productname} applications.
+<.> Replace with the OTLP gRPC endpoint of {sobservability}, for example, `otlp-observability.example.com:443`.
+For a private certificate authority, mount a CA bundle that includes it at `/etc/ssl/certs/ca-certificates.crt`.
+For a plain-text endpoint inside the cluster, set `OTLP_INSECURE` to `"true"`.
+<.> The Collector reads workload owners to attach the correct identity to each pod.
+. *Install or upgrade the Collector.*
+Pass both values files.
+The second file overrides the first.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade --install opentelemetry-collector \
+  oci://dp.apps.rancher.io/charts/opentelemetry-collector \
+  -f otel-values.yaml -f otel-native-values.yaml --namespace observability
+----
+. *Verify the rollout.*
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl -n observability rollout status deployment/opentelemetry-collector
+{prompt_user}kubectl -n observability logs deployment/opentelemetry-collector --since=5m
+----
+
+Applications send OTLP gRPC to `http://opentelemetry-collector.observability.svc.cluster.local:4317` and OTLP HTTP to port `4318`.
+These receivers use plain text inside the cluster.
+For senders in another cluster, expose a TLS-protected endpoint.
+
+[#ai-monitoring-native-collector-overlays]
+== Enabling product profiles
+
+The base configuration collects OTLP telemetry and scrapes {vllm} and the {nvidia} DCGM exporter.
+Enable a profile for each other product that you run.
+Load the base configuration first, then add product profiles in any order.
+Choose only one of the two {litellm} profiles.
+
+[cols="2,3",options="header"]
+|===
+|Profile |Description
+
+|`/otelcol/milvus.yaml`
+|{milvus} server metrics with pod discovery.
+Refer to xref:ai-monitoring-native-inference-vector[].
+
+|`/otelcol/qdrant.yaml`
+|{qdrant} server metrics with pod discovery.
+Refer to xref:ai-monitoring-native-inference-vector[].
+
+|`/otelcol/opensearch.yaml`
+|{opensearch} cluster and node metrics.
+Refer to xref:ai-monitoring-native-search[].
+
+|`/otelcol/ollama-runtime.yaml`
+|{ollama} runtime metrics and available models.
+Refer to xref:ai-monitoring-ollama-runtime[].
+
+|`/otelcol/litellm-receiver.yaml` or `/otelcol/litellm-receiver-no-auth.yaml`
+|{litellm} proxy metrics, with or without metrics authentication.
+Refer to xref:ai-monitoring-native-litellm[].
+
+|`/otelcol/workload-probes.yaml`
+|Availability probes for {mlflow}, {mcpo}, Model Registry, {opensearch} and {ollama}.
+Refer to xref:ai-monitoring-native-workload-probes[].
+
+|`/otelcol/kubeflow.yaml`
+|{kubeflow} Pipelines, Workflow Controller, KServe Controller and model pod metrics.
+Refer to xref:ai-monitoring-native-kubeflow[].
+|===
+
+To enable a profile, add its path to `command.extraArgs` and its variables to `extraEnvs` in `otel-native-values.yaml`.
+Then run the `helm upgrade` command again.
+The following example enables the {ollama} runtime profile:
+
+[source,yaml]
+----
+command:
+  extraArgs:
+    - --config=/otelcol/collector-config.yaml
+    - --config=/otelcol/ollama-runtime.yaml
+----
+
+[#ai-monitoring-native-collector-verify]
+== Verifying telemetry delivery
+
+. Generate traffic in the instrumented applications.
+. In {sobservability}, open the {otelemetry} services and check for new traces and metrics.
+. Check that `service.instance.id` of each application matches its pod UID.
+Check that the cluster and namespace attributes describe the sending application, not the Collector.
+. Check the topology synchronization with the `sts` CLI:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}sts topology-sync list
+{prompt_user}sts topology-sync describe --id <SYNC_ID>
+----
++
+A running synchronization can still report errors.
+Check the error details of each synchronization.

@@ -24,6 +24,8 @@ endif::[]
 .{owui} custom values file with {ollama} included
 ====
 The values file installs {ollama} during the {owui} installation.
+Its observability settings use the Extension 2.x Pipelines filter.
+For Extension 3.0.0, omit that filter and follow the link:{dsc}/suse-ai/1.0/html/AI-monitoring/index.html#ai-monitoring-native-owui[native {owui} instrumentation procedure].
 
 [source,yaml,subs="+attributes"]
 ----

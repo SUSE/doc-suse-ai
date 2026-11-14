@@ -3,6 +3,14 @@ include::../common/generic-attributes.adoc[]
 :docinfo:
 :doctype: book
 :experimental:
+:revdate: 2026-11-13
+// Artifacts of the native AI integration.
+:ai-stackpack-version: 3.0.0
+:ai-collector-image: registry.suse.com/ai/containers/suse/suse-ai-opentelemetry-collector
+:ai-collector-version: 0.165.0
+:ai-ollama-exporter-image: registry.suse.com/ai/containers/suse/suse-ai-ollama-exporter
+:ai-ollama-exporter-version: 3.0.0
+:ai-extension-tag: v3.0.0
 
 ifdef::env-github[]
 :imagesdir: ../images/
@@ -35,16 +43,33 @@ GOAL::
 
 :override-title: Introduction
 include::../concepts/AI-monitoring.adoc[leveloffset=+1]
+
+include::../references/AI-monitoring-integrations.adoc[leveloffset=+1]
+
+include::../tasks/AI-monitoring-native-collector.adoc[leveloffset=+1]
+
+include::../tasks/AI-monitoring-native-owui.adoc[leveloffset=+1]
+
+include::../tasks/AI-monitoring-ollama-runtime.adoc[leveloffset=+1]
+
+include::../tasks/AI-monitoring-native-products.adoc[leveloffset=+1]
+
 include::../tasks/AI-monitoring-gpu.adoc[leveloffset=+1]
+
 include::../tasks/AI-monitoring-owui.adoc[leveloffset=+1]
+
 include::../tasks/AI-monitoring-milvus.adoc[leveloffset=+1]
+
 include::../tasks/AI-monitoring-opensearch.adoc[leveloffset=+1]
+
 include::../concepts/AI-monitoring-vllm.adoc[leveloffset=+1]
+
 include::../concepts/AI-monitoring-user-apps.adoc[leveloffset=+1]
+
 include::../tasks/AI-monitoring-otel-autoinstrumentation.adoc[leveloffset=+1]
 
 [appendix]
-:override-title: Cost estimation
+:override-title: Cost estimation with the 2.x Pipelines filter
 include::../concepts/AI-monitoring-cost-estimation.adoc[leveloffset=+1]
 
 [appendix]

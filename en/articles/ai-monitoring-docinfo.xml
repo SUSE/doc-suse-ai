@@ -1,4 +1,21 @@
 <revhistory xml:id="rh-ai-monitoring">
+  <revision><date>2026-11-13</date>
+    <revdescription>
+      <para>
+        Updated for SUSE AI Observability Extension 3.0.0 and Collector
+        0.165.0, including Kubeflow configuration and migration from 2.x.
+      </para>
+    </revdescription>
+  </revision>
+  <revision><date>2026-10-26</date>
+    <revdescription>
+      <para>
+        Added the native OpenTelemetry integration: instrumentation
+        requirements, versions, artifact sources and procedures
+        for the Collector, Open WebUI, Ollama and other AI products.
+      </para>
+    </revdescription>
+  </revision>
   <revision><date>2026-02-04</date>
     <revdescription>
       <para>
@@ -24,7 +41,7 @@
 <!-- add author's e-mail -->
 <meta name="maintainer" content="tbazant@suse.com" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
 <!-- ISO date of last update as YYYY-MM-DD -->
-<meta name="updated" content="2025-11-07" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
+<meta name="updated" content="2026-11-13" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
 <meta name="architecture"><phrase>{x86-64}</phrase><phrase>{power}</phrase>
 </meta>
 <!-- enter one or more product names and version -->

@@ -54,6 +54,8 @@ It includes configurations that are essential for full observability.
 ====
 Applications from the {sappco} are not instrumented by default.
 If you want to monitor your AI applications, you need to follow the instrumentation guidelines that we provide in the document link:https://documentation.suse.com/suse-ai/1.0/html/AI-monitoring/index.html[Monitoring {productname} with {otelemetry} and {sobservability}].
+Some signals require an exporter image, an {owui} Function or application code.
+The {helm} chart of the extension does not install them.
 ====
 
 [#ai-observability-2clusters]
@@ -93,10 +95,12 @@ It means that you can confidently use the internal {kube} DNS.
 Refer to link:https://documentation.suse.com/cloudnative/suse-observability/next/en/setup/install-stackstate/kubernetes_openshift/ingress.html[Exposing {sobservability} outside of the cluster] or link:https://documentation.suse.com/cloudnative/suse-observability/next/en/setup/otel/otlp-apis.html#_self_hosted_suse_observability[Self-hosted {sobservability}] for details about exposing it.
 ** The {sobservability} API.
 Refer to link:https://documentation.suse.com/cloudnative/suse-observability/next/en/setup/install-stackstate/kubernetes_openshift/ingress.html[Exposing {sobservability} outside of the cluster] for details about exposing it.
-** {milvus} metrics and traces can be scraped by the {otelemetry} Collector with simple configurations, provided below.
+** The {otelemetry} Collector scrapes {milvus} metrics with the corresponding product profile.
+Client traces require instrumentation in the calling application.
 The same is true for GPU metrics.
-** To get information from {owui}, {ollama} or {vllm}, you must have a specific instrumentation set.
-It can be an application instrumented with the {openlit} SDK or other form of instrumentation following the same patterns.
+** {vllm} exposes metrics that the Collector scrapes directly.
+{ollama} runtime metrics require the {suseai} {ollama} exporter.
+Calls from {owui} to {ollama} require the {suseai} Observability Function and the bundled {owui} {otelemetry} SDK.
 
 [IMPORTANT]
 ====
@@ -129,6 +133,9 @@ For multi-cluster setups, you must expose the {sobservability} API and collector
 Refer to the guide on link:https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/ingress.html[exposing {sobservability} outside of the cluster].
 ====
 . *Install the {sobservability} extension.*
+This procedure installs the {suseai} Observability Extension chart 3.0.0 and its native StackPack.
+The chart uses the setup image `dp.apps.rancher.io/containers/suse-ai-observability-extension-setup:3.0.0-9.1`.
+Before upgrading from 2.x, follow the link:{dsc}/suse-ai/1.0/html/AI-monitoring/index.html#ai-monitoring-integration-upgrade[upgrade procedure], including exporting your customizations.
 Create a new {helm} values file named `genai_values.yaml`.
 Before creating the file, review the placeholders below.
 +
@@ -213,6 +220,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 ----
 {prompt_user}helm upgrade --install ai-obs \
   oci://dp.apps.rancher.io/charts/suse-ai-observability-extension \
+  --version 3.0.0 \
   -f genai_values.yaml --namespace so-extensions --create-namespace
 ----
 endif::[]
@@ -220,7 +228,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install ai-obs \
-  charts/suse-ai-observability-extension-2.0.0.tgz \
+  charts/suse-ai-observability-extension-3.0.0.tgz \
   -f genai_values.yaml --namespace so-extensions --create-namespace
 ----
 endif::[]
@@ -236,24 +244,26 @@ Alternatively, consider running the extension in the same cluster as {sobservabi
 [NOTE]
 .{otelemetry} GenAI Semantic Conventions compatibility
 ====
-The {suseai} Observability Extension is compatible with the link:https://opentelemetry.io/docs/specs/semconv/gen-ai/[{otelemetry} Semantic Conventions for Generative AI] as defined in version v1.40.0.
-These conventions are currently in *Development* status within the {otelemetry} specification.
+The {suseai} Observability Extension uses native {otelemetry} service identities and GenAI attributes from application traces and metrics.
 ====
 +
 [IMPORTANT]
-.Upgrading from version 1.5.0 to 2.0.0
+.Upgrading from Extension 2.x to 3.0.0
 ====
-When upgrading the {suseai} Observability Extension from version 1.5.0 to 2.0.0, you must also update the {otelemetry} Collector and the {suseai} Filter (`suse_ai_filter.py`) to their corresponding versions.
-These components are designed to work together, and running mismatched versions may result in missing telemetry data or broken topology views.
+Export customized StackPack settings, monitor overrides and custom views before upgrading.
+The setup Job upgrades the existing instance with `--unlocked-strategy overwrite`, replacing unlocked settings.
+Old synthetic component history, saved links, component-specific monitor overrides and custom views are not migrated automatically.
+Retarget cloned monitors that refer to old components.
+The StackPack upgrade does not update the Collector, exporters or application instrumentation.
+Follow the link:{dsc}/suse-ai/1.0/html/AI-monitoring/index.html#ai-monitoring-integration-upgrade[native integration upgrade procedure] to update these components and verify telemetry.
 ====
 +
-After the installation is complete, a new menu called btn:[GenAI] is added to the Web interface and also a {kube} cron job is created that synchronizes the topology view with the components found in the {productname} cluster.
+After installation, the menu:SUSE AI[] group appears in the Web interface.
+Native mappings extend the {otelemetry} and {kube} integrations.
 
 . *Verify {sobservability} extension.*
-After the installation, you can verify that a new lateral menu appears:
-+
-.New GenAI Observability menu item
-image::ai-observability-genai-menu.png[An image of a new left menu item GenAI Observability,width=30%]
+Verify that menu:SUSE AI[] contains Overview, Applications & agents, Models, Inference, Data services and GPUs.
+Check the installed StackPack version and topology synchronization status.
 --
 
 [#ai-observability-ai-cluster]
@@ -268,15 +278,15 @@ Communication relies on externally exposed endpoints of the {sobservability} clu
 The difference between deployment scenarios affects the *OTEL Collector exporter configuration* and the *{sobservability} Agent URL*.
 Adjust the following values to match your {sobservability} configuration.
 
-SUSE_OBSERVABILITY_API_URL::
-The URL of the {sobservability} API.
+OTLP_ENDPOINT::
+The OTLP gRPC endpoint of {sobservability}, in `host:port` format.
 +
-*Single-cluster example:* \http://suse-observability-otel-collector.suse-observability.svc.cluster.local:4317
+*Single-cluster example:* `suse-observability-otel-collector.suse-observability.svc.cluster.local:4317`
 +
-*Multi-cluster example:* \https://suse-observability-api.your-domain.com
+*Multi-cluster example:* `otlp-observability.example.com:443`
 
-SUSE_OBSERVABILITY_COLLECTOR_ENDPOINT::
-The endpoint of the {sobservability} Collector.
+SUSE_OBSERVABILITY_AGENT_ENDPOINT::
+The endpoint used by the {sobservability} Agent.
 +
 *Single-cluster example:* \http://suse-observability-router.suse-observability.svc.cluster.local:8080/receiver/stsAgent
 +
@@ -316,6 +326,8 @@ The username is `regcode` and the password is the {scca} registration code of yo
 ----
 +
 Create a new file named `otel-values.yaml` with the following content.
+The file retains the 2.x pipeline configuration for existing deployments.
+For Extension 3.0.0, the native values file specified below replaces that configuration with the bundled Collector configuration.
 +
 ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 [source,yaml]
@@ -340,8 +352,8 @@ clusterRole:
       verbs: ["get", "list", "watch"]
 image:
   registry: registry.suse.com
-  repository: ai/containers/suse-ai-opentelemetry-collector
-  tag: 0.156.0
+  repository: ai/containers/suse/suse-ai-opentelemetry-collector
+  tag: 0.165.0
   pullPolicy: IfNotPresent
 ports:
   metrics:
@@ -691,7 +703,7 @@ clusterRole:
 image:
   registry: <LOCAL_DOCKER_REGISTRY_URL>:5043
   repository: suse-ai-opentelemetry-collector
-  tag: 0.156.0
+  tag: 0.165.0
   pullPolicy: IfNotPresent
 ports:
   metrics:
@@ -1018,13 +1030,16 @@ Remember that the value can be distinct, depending on the deployment pattern.
 For production usage, we recommend using TLS communication.
 endif::[]
 +
-Finally, run the installation command.
+Create `otel-native-values.yaml` as described in link:{dsc}/suse-ai/1.0/html/AI-monitoring/index.html#ai-monitoring-native-collector-deploy[Installing or upgrading the Collector].
+This file selects the bundled native configuration, environment variables and metadata permissions required by Extension 3.0.0.
+For an air-gapped deployment, set its image registry and repository to the locally mirrored Collector image.
+Pass both values files to install the Collector:
 +
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install opentelemetry-collector \
   oci://dp.apps.rancher.io/charts/opentelemetry-collector \
-  -f otel-values.yaml --namespace observability
+  -f otel-values.yaml -f otel-native-values.yaml --namespace observability
 ----
 +
 Verify the installation by checking the existence of a new deployment and service in the observability namespace.
@@ -1048,8 +1063,6 @@ Verify the installation by checking the existence of a new deployment and servic
 . *Install {productname}.*
 Refer to xref:aif-deployment[] for the complete procedure.
 
-include::../snippets/observability-warning-262.adoc[]
-
 [#ai-observability-openlit]
 == Instrument applications
 
@@ -1057,5 +1070,6 @@ Instrumentation is the act of configuring your applications for telemetry data a
 Our stack employs {otelemetry} standards as a vendor-neutral and open base for our telemetry.
 For a comprehensive guide on how to set up your instrumentation, please refer to link:https://documentation.suse.com/suse-ai/1.0/html/AI-monitoring/index.html[Monitoring {productname} with {otelemetry} and {sobservability}].
 
-By following the instructions in the document referenced above, you will be able to retrieve all relevant telemetry data from {owui}, {ollama}, {milvus} and {vllm} by simply applying specific configuration to their {helm} chart values.
+Follow the product-specific instructions to enable metrics profiles, deploy exporters and configure the {owui} Function.
+Application-specific signals require instrumentation in your application code.
 You can find links for advanced use cases (auto-instrumentation with the OTEL Operator) at the end of the document.

@@ -1,0 +1,207 @@
+[#ai-monitoring-integrations]
+= Instrumentation requirements and artifacts
+
+A StackPack adds topology mappings, charts and monitors to {sobservability}.
+It does not instrument the applications that you monitor.
+This reference lists the software that each signal requires, the release versions and the source of each artifact.
+
+[#ai-monitoring-integration-generations]
+== Which integration should I use?
+
+This guide describes the native integration and retains instructions for existing 2.x deployments:
+
+Native {otelemetry} integration::
+Uses the {suseai} StackPack {ai-stackpack-version} and the {suseai} {otelemetry} Collector {ai-collector-version}.
+Calls from {owui} to {ollama} also require the `suse_ai_ollama.py` Function in {owui}.
+Products that expose metrics natively need only Collector configuration.
+Refer to xref:ai-monitoring-native-collector[], xref:ai-monitoring-native-owui[], xref:ai-monitoring-ollama-runtime[] and xref:ai-monitoring-native-products[].
+
+{sobservability} Extension 2.x::
+Uses the {owui} Pipelines filter `suse_ai_filter.py` and the `RequestsTotal` metric convention.
+Refer to xref:ai-monitoring-owui[] and xref:ai-monitoring-telemetry-data-capture[].
+
+Install the {suseai} StackPack {ai-stackpack-version} in {sobservability} before you configure the native integration.
+Use the {sobservability} Extension chart {ai-stackpack-version} from https://apps.rancher.io/applications/suse-ai-observability-extension[{sappco}].
+The chart installs the native StackPack through its setup Job.
+
+[#ai-monitoring-integration-upgrade]
+== Upgrading from Extension 2.x
+
+. Export customized StackPack settings, monitor overrides and custom views before upgrading.
+The upgrade uses `--unlocked-strategy overwrite`, which replaces unlocked settings.
+Test the migration on a separate instance before upgrading your production deployment.
+. Keep the {otelemetry} and {kube} integrations configured for the observed clusters.
+Prepare stable application service identities and the Collector, exporter and instrumentation changes described in the following sections.
+Upgrading the StackPack does not update these components.
+. Upgrade the existing extension {helm} release with your `genai_values.yaml` file:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade ai-obs \
+  oci://dp.apps.rancher.io/charts/suse-ai-observability-extension \
+  --version {ai-stackpack-version} \
+  -f genai_values.yaml --namespace so-extensions
+----
++
+Use the release name and namespace of your existing installation.
+Keep its server URL, authentication, cluster list and TLS settings.
+For an air-gapped deployment, use the downloaded `suse-ai-observability-extension-{ai-stackpack-version}.tgz` chart and locally mirrored images.
+The setup Job upgrades the existing StackPack instance in place.
+. Configure the Collector as described in xref:ai-monitoring-native-collector[] and migrate {owui} as described in xref:ai-monitoring-native-owui-migration[].
+Update the {ollama} exporter as described in xref:ai-monitoring-ollama-runtime[].
+. Verify the installed StackPack version, topology synchronizations, native mappings and populated views.
+After verifying native telemetry, retire the legacy topology exporter and synthetic provider and model copies.
+
+[IMPORTANT]
+.Customization and history migration
+====
+Version 3.0.0 replaces the old synthetic component identities with native service identities or explicit AI concept identities.
+Old synthetic component history, saved links, component-specific monitor overrides and custom views are not migrated automatically.
+Review queries that refer to old component types, IDs, domains or layers.
+Retarget cloned monitors that refer to old components, even when the clone and its customized thresholds survive the upgrade.
+Review exported customizations before adapting them to the new identities and schema.
+====
+
+[#ai-monitoring-integration-coverage]
+== What does each product require?
+
+[cols="1,2,2",options="header"]
+|===
+|Product or signal |Required software or configuration |Coverage
+
+|{owui} HTTP telemetry
+|Enable the {otelemetry} SDK bundled with {owui}.
+|HTTP traces and metrics.
+
+|{owui} calls to {ollama}
+|Install the {suseai} `suse_ai_ollama.py` Function in {owui}.
+|Provider client spans, duration, outcome and reported input and output tokens.
+Collector configuration alone cannot produce these signals.
+
+|{ollama} runtime
+|Add the {suseai} {ollama} exporter as a sidecar to each {ollama} pod.
+|Available models, loaded state, disk size, model allocation, VRAM allocation and context length.
+Available models require the exporter {ai-ollama-exporter-version} and the {suseai} StackPack {ai-stackpack-version}.
+Does not measure request latency, tokens or GPU utilization.
+
+|{vllm}, {milvus}, {qdrant}
+|{vllm} is scraped by the base Collector configuration.
+Enable the {milvus} and {qdrant} Collector profiles.
+|Server metrics with individual pod identities.
+Client traces require instrumentation in the calling application.
+The database profiles provide an optional exact association with a native service in the same cluster.
+Refer to xref:ai-monitoring-native-database-association[].
+
+|{opensearch}
+|Enable the {opensearch} Collector profile.
+|Cluster and node metrics without pod identity.
+The Collector adds the local cluster identity for verified local targets.
+
+|{litellm}
+|Enable the `prometheus` callback and the Collector {litellm} profile.
+|Proxy, token and guardrail metrics.
+Traces require the separate `otel` callback.
+
+|GPU hardware
+|Deploy the {nvoperator}, which includes the {nvidia} DCGM exporter.
+|Hardware metrics.
+Workload association also requires the {sobservability} Agent.
+
+|{mlflow}, {mcpo}, Model Registry
+|Enable the Collector workload probe profile.
+|Endpoint availability only.
+Training metrics, tool outcomes and registry operations require application instrumentation.
+
+|KServe, {kubeflow} Pipelines
+|Enable the `/otelcol/kubeflow.yaml` Collector profile.
+Refer to xref:ai-monitoring-native-kubeflow[].
+|Pipelines API, controller, workflow and model server metrics.
+Model execution and pipeline step traces require instrumentation in the serving or step image.
+
+|{pytorch}, agents, RAG and tools
+|Add an {otelemetry} SDK and instrumentation to the application.
+|Application-specific metrics, such as retrieved documents, tool outcomes and training loss.
+
+|Automatic HTTP and database instrumentation
+|Deploy the {otelemetry} Operator and its language-specific instrumentation images.
+|HTTP and database spans.
+Does not add GenAI, RAG or tool attributes.
+|===
+
+[#ai-monitoring-integration-versions]
+== Which versions does this guide use?
+
+The native integration uses the following release versions and {owui} adapter compatibility boundary.
+
+[cols="2,2,3",options="header"]
+|===
+|Component |Version |Notes
+
+|{sobservability} |2.11.1 |With the {otelemetry} StackPack 0.1.4.
+|{sobservability} Extension |{ai-stackpack-version} |Chart and native {suseai} StackPack.
+|{suseai} {otelemetry} Collector |{ai-collector-version} |Includes the native configuration and the optional product profiles.
+|{owui} |0.6.41 |The Function uses the bundled {otelemetry} SDK.
+|{ollama} exporter |{ai-ollama-exporter-version} |Available model inventory and runtime metrics.
+|===
+
+The {owui} Function depends on internal {owui} code.
+Validate the Function again before you upgrade {owui} to a version not listed here.
+
+[#ai-monitoring-integration-artifacts]
+== Where do I get the artifacts?
+
+[cols="2,3,1",options="header"]
+|===
+|Artifact |Source |Supplier
+
+|{sobservability} Extension chart
+|`oci://dp.apps.rancher.io/charts/suse-ai-observability-extension`, version `{ai-stackpack-version}`
+|{suse}
+
+|Extension setup image
+|`dp.apps.rancher.io/containers/suse-ai-observability-extension-setup:3.0.0-9.1`
+|{suse}
+
+|{suseai} {otelemetry} Collector
+|`{ai-collector-image}:{ai-collector-version}`
+|{suse}
+
+|Collector configuration and product profiles
+|Included in the Collector image in the `/otelcol/` directory
+|{suse}
+
+|{owui} Function
+|`integrations/open-webui/suse_ai_ollama.py` in the `{ai-extension-tag}` release of https://github.com/SUSE/suse-ai-observability-extension
+|{suse}
+
+|{ollama} exporter
+|`{ai-ollama-exporter-image}:{ai-ollama-exporter-version}`
+|{suse}
+
+|{nvidia} DCGM exporter
+|Deployed by the {nvoperator} from `nvcr.io`
+|{nvidia}
+
+|{otelemetry} Operator and instrumentation images
+|`ghcr.io/open-telemetry`
+|{otelemetry} project
+
+|Application SDKs
+|The package repository of the language, for example PyPI
+|Upstream projects
+|===
+
+For air-gapped installations, mirror the images to your local registry and download the {owui} Function before you disconnect the environment.
+Update the image references in your {helm} values to the local registry.
+
+[#ai-monitoring-integration-release-gaps]
+== Where is the {sobservability} Agent required?
+
+Run the {sobservability} Agent on each observed cluster to provide {kube} topology and GPU workload context.
+
+[#ai-monitoring-integration-verify]
+== How do I verify a signal?
+
+For each enabled signal, run a real operation and check its service identity, timestamps and values in {sobservability}.
+An empty chart can mean that instrumentation or traffic is missing.
+It does not indicate a zero value.

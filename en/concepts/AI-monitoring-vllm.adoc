@@ -2,10 +2,14 @@
 = Monitoring {vllm}
 
 {vllm} is monitored by scraping its {prometheus}-compatible metrics endpoints.
-The {sobservability} Extension uses these metrics to visualize {vllm}'s status and activity. 
+The {sobservability} Extension uses these metrics to visualize the status and activity of {vllm}.
+
+For the native integration, refer to xref:ai-monitoring-native-inference-vector[].
+The following example uses a chart-managed Collector configuration.
+It does not modify the bundled configuration selected by the native integration.
 
 [#ai-monitoring-vllm-scraping]
-== Metrics Scraping (recommended)
+== Scraping metrics with a custom configuration
 
 Add the following job to the `scrape_configs` section of your {otelemetry} Collector's configuration.
 This configures the collector to scrape the `/metrics` endpoint from all {vllm} services every 10 seconds.
@@ -38,5 +42,3 @@ config:
                 action: keep
                 regex: '.*VLLM_RELEASE_NAME.*'
 ----
-
-include::../snippets/observability-warning-262.adoc[leveloffset=2]

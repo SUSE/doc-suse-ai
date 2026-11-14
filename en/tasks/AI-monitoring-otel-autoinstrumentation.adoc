@@ -14,6 +14,12 @@ The guidance is presented in two paths:
 [#ai-monitoring-otel-operator-prereqs]
 == Prerequisites
 
+The {otelemetry} Operator and its instrumentation images are supplied by the {otelemetry} project, not by {suse}.
+For air-gapped deployments, mirror the Operator image and each instrumentation image that you use.
+Instrumentation applies only to pods created after you add the annotation.
+Do not inject instrumentation into {owui}, which uses its bundled SDK.
+Automatic instrumentation does not add GenAI, RAG or tool attributes.
+
 Ensure the following are in place before proceeding:
 
 * A {kube} cluster managed with {ranchera}.
@@ -83,6 +89,8 @@ This enables auto-instrumentation without replacing the Collector.
 
 Ensure your Collector is configured to receive OTLP telemetry from instrumented workloads.
 Enable at least one OTLP protocol (gRPC or HTTP).
+The native Collector configuration already enables both protocols.
+If you use that configuration, continue with xref:ai-monitoring-otel-operator-instrumentation[].
 
 The following snippet shows a {productname} example `otel-values.yaml`:
 
@@ -307,6 +315,7 @@ image::ai-observability-monitoring-traces-view.png["Screenshot showing the trace
 == Path B: Use an Operator-managed Collector
 
 If you prefer the Operator to manage the Collector deployment and configuration, use the `OpenTelemetryCollector` custom resource.
+The following example is a custom configuration; it does not load the bundled native integration profiles.
 
 [#ai-monitoring-otel-operator-path-b-imagepull]
 === Configure image pulls from the Application Collection

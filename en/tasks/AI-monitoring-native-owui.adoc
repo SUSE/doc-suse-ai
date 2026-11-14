@@ -1,0 +1,163 @@
+[#ai-monitoring-native-owui]
+= Instrumenting {owui} calls to {ollama}
+
+The {suseai} {ollama} Observability Function measures the {ollama} calls that {owui} makes.
+The Function runs inside {owui} and uses its bundled {otelemetry} SDK.
+It records the duration, outcome and token usage of each `/api/chat` call, including streaming, failed and canceled requests.
+It does not record prompts or generated text.
+
+This Function belongs to the native integration.
+For the {sobservability} Extension 2.x, refer to xref:ai-monitoring-owui[].
+
+[#ai-monitoring-native-owui-requirements]
+.Requirements
+* {owui} 0.6.41 and administrator access to its Admin Panel.
+* {ollama} with at least one chat model.
+* The Collector configured as described in xref:ai-monitoring-native-collector[].
+
+[#ai-monitoring-native-owui-otel]
+== Enabling {otelemetry} in {owui}
+
+. *Create the {otelemetry} values file.*
+Create a file named `open-webui-otel-values.yaml` with the following content.
++
+[source,yaml]
+----
+extraEnvVars:
+  - name: POD_UID
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.uid
+  - name: POD_NAMESPACE
+    valueFrom:
+      fieldRef:
+        fieldPath: metadata.namespace
+  - name: ENABLE_OTEL
+    value: "true"
+  - name: ENABLE_OTEL_TRACES
+    value: "true"
+  - name: ENABLE_OTEL_METRICS
+    value: "true"
+  - name: ENABLE_OTEL_LOGS
+    value: "true"
+  - name: OTEL_SERVICE_NAME
+    value: open-webui
+  - name: OTEL_EXPORTER_OTLP_ENDPOINT
+    value: http://opentelemetry-collector.observability.svc.cluster.local:4317 <.>
+  - name: OTEL_EXPORTER_OTLP_INSECURE
+    value: "true"
+  - name: OTEL_RESOURCE_ATTRIBUTES
+    value: service.namespace=$(POD_NAMESPACE),service.instance.id=$(POD_UID),k8s.pod.uid=$(POD_UID),k8s.namespace.name=$(POD_NAMESPACE),k8s.cluster.name=<CLUSTER_NAME>,suse.ai.product=open-webui <.>
+----
+<.> The gRPC receiver of the Collector.
+Do not use port `4318` with this exporter.
+<.> Replace `<CLUSTER_NAME>` with the cluster name.
++
+{helm} replaces lists, so this `extraEnvVars` list replaces the list in your existing values file.
+Copy any existing `extraEnvVars` entries into this file.
+. *Upgrade {owui}.*
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}helm upgrade open-webui oci://dp.apps.rancher.io/charts/open-webui \
+  --namespace <SAIF_NAMESPACE> --version <OPEN_WEBUI_CHART_VERSION> \
+  -f <EXISTING_VALUES_FILE> -f open-webui-otel-values.yaml
+{prompt_user}kubectl -n <SAIF_NAMESPACE> rollout status statefulset/open-webui
+----
+
+Use a chart version that deploys {owui} 0.6.41, the compatibility boundary of this Function.
+
+[#ai-monitoring-native-owui-function]
+== Installing the Function
+
+. *Download the Function.*
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}curl --fail --location --output suse_ai_ollama.py \
+  https://raw.githubusercontent.com/SUSE/suse-ai-observability-extension/refs/tags/{ai-extension-tag}/integrations/open-webui/suse_ai_ollama.py
+----
+. *Create the Function.*
+Log in to {owui} as an administrator and open menu:Admin Panel[Functions].
+Create a Function named `SUSE AI Ollama Observability` and paste the complete content of `suse_ai_ollama.py`.
+. *Activate the Function.*
+Save the Function and turn on its toggle.
+To observe all models, open its menu and select btn:[Global].
+To observe selected models only, add the Function to the filters of those models.
+
+A global Function runs for every chat.
+It instruments calls to {ollama} only, not calls to other OpenAI-compatible providers.
+
+[#ai-monitoring-native-owui-peers]
+== Linking {owui} to the {ollama} service
+
+The Function exports token and duration telemetry without further configuration.
+To show the relationship between {owui} and {ollama} in the topology, open the valves of the Function and set the {ollama} endpoint:
+
+[source,json]
+----
+{
+  "enabled": true,
+  "caller_cluster": "<CLUSTER_NAME>",
+  "caller_namespace": "<SAIF_NAMESPACE>",
+  "endpoints": [
+    {
+      "cluster": "<CLUSTER_NAME>",
+      "kubernetes_namespace": "<OLLAMA_NAMESPACE>",
+      "kubernetes_service": "ollama",
+      "port": 11434,
+      "service_namespace": "<OLLAMA_NAMESPACE>",
+      "service_name": "ollama"
+    }
+  ]
+}
+----
+
+`caller_namespace`::
+The namespace of {owui}.
+`kubernetes_service`, `kubernetes_namespace` and `port`::
+The {kube} service of {ollama}.
+`service_name` and `service_namespace`::
+The {ollama} service as shown in {sobservability}.
+These values can differ from the {kube} service name.
+`dns_domain`::
+Optional.
+Set it if the cluster does not use the `cluster.local` DNS domain.
+
+The relationship requires the {suseai} StackPack and an observed {ollama} service.
+To observe {ollama} directly, enable xref:ai-monitoring-ollama-runtime[runtime metrics] or a workload probe.
+
+[#ai-monitoring-native-owui-migration]
+== Migrating from the Pipelines filter
+
+For the StackPack upgrade and customization migration limits, refer to xref:ai-monitoring-integration-upgrade[].
+
+. Save the source and valves of `suse_ai_filter.py`.
+. Remove `suse_ai_filter.py` from the startup configuration and filter directory of {owui} Pipelines.
+Keep other Pipelines filters.
+. Restart the Pipelines workers.
+. Verify that the filter no longer sends telemetry, then install the Function.
+
+Valve changes apply to the next request.
+After you change the Python source of the Function, restart all {owui} pods.
+To remove the Function, delete it and restart all {owui} pods.
+
+[#ai-monitoring-native-owui-validation]
+== Verifying the Function
+
+. Send a chat request and a streaming chat request to an {ollama} model.
+. In {sobservability}, open the traces of the `open-webui` service.
+. Find a client span named `chat <MODEL>` with the instrumentation scope `suse.ai.open_webui.ollama`.
+The span is part of the same trace as the HTTP request span.
+. Check that the span has `gen_ai.provider.name=ollama`, the model and the token counts reported by {ollama}.
+. Check the `gen_ai.client.operation.duration` and `gen_ai.client.token.usage` metrics.
+. Cancel a streaming request and check that its span reports `error.type=cancelled`.
+
+{owui} can send extra requests for chat titles and tags.
+A single chat can therefore produce several provider calls.
+
+The duration and token metrics belong to {owui}, the caller.
+{sobservability} does not attach them to the served {ollama} model components described in xref:ai-monitoring-ollama-runtime-models[].
+A model name and server address do not reliably identify the serving {ollama} service.
+The address can refer to a proxy or alias.
+The model name can omit its tag, for example `llama3.2` instead of `llama3.2:latest`.

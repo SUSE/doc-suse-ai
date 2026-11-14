@@ -398,3 +398,5 @@ To resolve this issue, enable local accounts before attempting to register a clu
 ----
 az aks update --resource-group <resource-group> --name <cluster-name> --enable-local-accounts
 ----
+
+endif::[]
