@@ -18,6 +18,9 @@ Both are required to show available models in {sobservability}.
 [#ai-monitoring-ollama-runtime-install]
 == Adding the exporter sidecar
 
+Use the exporter image from GitHub Container Registry.
+The example pins the image by digest to the https://github.com/SUSE/suse-ai-observability-extension/releases/tag/{ai-extension-tag}[{ai-ollama-exporter-version} release].
+
 . *Create the patch file.*
 Create a file named `ollama-exporter-patch.yaml` with the following content.
 +
@@ -26,11 +29,9 @@ Create a file named `ollama-exporter-patch.yaml` with the following content.
 spec:
   template:
     spec:
-      imagePullSecrets:
-        - name: suse-ai-registry <.>
       containers:
         - name: ollama-runtime-metrics
-          image: {ai-ollama-exporter-image}:{ai-ollama-exporter-version} <.>
+          image: {ai-ollama-exporter-image}@{ai-ollama-exporter-digest} <.>
           ports:
             - name: ollama-metrics
               containerPort: 11435
@@ -50,9 +51,7 @@ spec:
           livenessProbe:
             httpGet: {path: /healthz, port: ollama-metrics}
 ----
-<.> A pull secret for the {sregistry} in the {ollama} namespace.
-The user name is `regcode` and the password is the {scca} registration code of your {productname} subscription.
-<.> For air-gapped installations, replace `registry.suse.com` with your local registry.
+<.> For air-gapped installations, mirror this image to your local registry and update the image reference.
 +
 The exporter reads `http://127.0.0.1:11434/api/tags` and `http://127.0.0.1:11434/api/ps`.
 If {ollama} listens on another port, add `+args: [--ollama-url, http://127.0.0.1:<PORT>]+` to the container.

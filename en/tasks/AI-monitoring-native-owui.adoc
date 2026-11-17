@@ -6,8 +6,7 @@ The Function runs inside {owui} and uses its bundled {otelemetry} SDK.
 It records the duration, outcome and token usage of each `/api/chat` call, including streaming, failed and canceled requests.
 It does not record prompts or generated text.
 
-This Function belongs to the native integration.
-For the {sobservability} Extension 2.x, refer to xref:ai-monitoring-owui[].
+To replace an existing Pipelines filter, follow xref:ai-monitoring-native-owui-migration[].
 
 [#ai-monitoring-native-owui-requirements]
 .Requirements
@@ -131,6 +130,9 @@ To observe {ollama} directly, enable xref:ai-monitoring-ollama-runtime[runtime m
 == Migrating from the Pipelines filter
 
 For the StackPack upgrade and customization migration limits, refer to xref:ai-monitoring-integration-upgrade[].
+
+The Function reports token usage and duration.
+It does not use `PRICING_JSON` or calculate inference costs.
 
 . Save the source and valves of `suse_ai_filter.py`.
 . Remove `suse_ai_filter.py` from the startup configuration and filter directory of {owui} Pipelines.

@@ -5,19 +5,23 @@ The native integration uses the {suseai} {otelemetry} Collector {ai-collector-ve
 The Collector image includes the native pipeline configuration and the optional product profiles.
 You select them with {helm} values instead of maintaining your own Collector configuration.
 
-This procedure installs or upgrades the `opentelemetry-collector` {helm} release using the `otel-values.yaml` file from the {sobservability} setup procedure.
-It replaces the Collector pipeline configuration in that file with the configuration bundled in the image.
+This procedure installs or upgrades the `opentelemetry-collector` {helm} release with a single values file, `otel-native-values.yaml`.
 
 [#ai-monitoring-native-collector-requirements]
 .Requirements
-* {sobservability} with the {otelemetry} StackPack and the {suseai} StackPack {ai-stackpack-version}.
+* {sobservability} 2.11 or later with the {otelemetry} StackPack and the {suseai} StackPack {ai-stackpack-version}.
 * The {sobservability} Agent on each observed cluster.
-* The `observability` namespace, Collector credentials and `otel-values.yaml` file prepared in the {sobservability} setup procedure.
+* The `observability` namespace and the `open-telemetry-collector` secret containing the {sobservability} API key as `API_KEY`.
+* The `suse-ai-registry` image pull secret for the Collector image registry.
+Create the namespace and secrets as described in the {sobservability} setup procedure.
 * The OTLP endpoint of {sobservability} in the `host:port` format.
 This endpoint differs from the Web UI URL.
 
 [#ai-monitoring-native-collector-deploy]
 == Installing or upgrading the Collector
+
+For an existing Collector, use its release name and namespace in the commands below.
+Copy any required resource limits, scheduling settings, secret references and certificate mounts from your existing values file into `otel-native-values.yaml`.
 
 . *Add product credentials to the Collector secret.*
 If you enable the {opensearch} profile, add its password to the `open-telemetry-collector` secret that already holds the API key.
@@ -32,10 +36,15 @@ Create a file named `otel-native-values.yaml` with the following content.
 +
 [source,yaml,subs="+attributes"]
 ----
+global:
+  imagePullSecrets:
+    - suse-ai-registry <.>
+mode: deployment
 image:
   registry: registry.suse.com <.>
   repository: ai/containers/suse/suse-ai-opentelemetry-collector
   tag: {ai-collector-version}
+  pullPolicy: IfNotPresent
 configMap:
   create: false <.>
   existingName: ""
@@ -47,6 +56,9 @@ podSecurityContext: <.>
   runAsUser: 10001
   runAsGroup: 10001
   fsGroup: 10001
+extraEnvsFrom: <.>
+  - secretRef:
+      name: open-telemetry-collector
 extraEnvs: <.>
   - name: K8S_CLUSTER_NAME
     value: "<CLUSTER_NAME>"
@@ -56,6 +68,9 @@ extraEnvs: <.>
     value: "<OTLP_HOST>:<OTLP_PORT>" <.>
   - name: OTLP_INSECURE
     value: "false"
+ports:
+  metrics:
+    enabled: true
 clusterRole:
   create: true
   rules: <.>
@@ -69,6 +84,7 @@ clusterRole:
       resources: ["jobs", "cronjobs"]
       verbs: ["get", "list", "watch"]
 ----
+<.> The pull secret must authenticate to the registry that hosts the Collector image.
 <.> For air-gapped installations, set the registry and repository to your locally mirrored Collector image.
 <.> The Collector uses the configuration bundled in the image, so the chart does not create a configuration map.
 <.> The path of the Collector binary in the image.
@@ -76,22 +92,24 @@ clusterRole:
 Refer to xref:ai-monitoring-native-collector-overlays[].
 <.> The image runs as user and group `10001`.
 The group allows the Collector to read mounted secrets.
-<.> {helm} replaces lists instead of merging them, so this list replaces the `extraEnvs` list in `otel-values.yaml`.
+<.> Load the API key and any product credentials from the Collector secret.
+<.> Keep these entries when adding product-specific environment variables.
 Replace `<CLUSTER_NAME>` with the cluster name and `<SAIF_NAMESPACE>` with the namespace of the {productname} applications.
 <.> Replace with the OTLP gRPC endpoint of {sobservability}, for example, `otlp-observability.example.com:443`.
 For a private certificate authority, mount a CA bundle that includes it at `/etc/ssl/certs/ca-certificates.crt`.
 For a plain-text endpoint inside the cluster, set `OTLP_INSECURE` to `"true"`.
 <.> The Collector reads workload owners to attach the correct identity to each pod.
 . *Install or upgrade the Collector.*
-Pass both values files.
-The second file overrides the first.
+Use `otel-native-values.yaml` for both a new installation and an upgrade from Extension 2.x.
 +
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install opentelemetry-collector \
   oci://dp.apps.rancher.io/charts/opentelemetry-collector \
-  -f otel-values.yaml -f otel-native-values.yaml --namespace observability
+  -f otel-native-values.yaml --namespace observability
 ----
++
+For an air-gapped deployment, replace the OCI chart reference with the downloaded `charts/opentelemetry-collector-<CHART_VERSION>.tgz` archive.
 . *Verify the rollout.*
 +
 [source,bash,subs="+attributes"]

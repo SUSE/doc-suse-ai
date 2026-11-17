@@ -6,23 +6,18 @@ It does not instrument the applications that you monitor.
 This reference lists the software that each signal requires, the release versions and the source of each artifact.
 
 [#ai-monitoring-integration-generations]
-== Which integration should I use?
+== Configuring the version {ai-stackpack-version} integration
 
-This guide describes the native integration and retains instructions for existing 2.x deployments:
-
-Native {otelemetry} integration::
-Uses the {suseai} StackPack {ai-stackpack-version} and the {suseai} {otelemetry} Collector {ai-collector-version}.
+The native {otelemetry} integration uses the {suseai} StackPack {ai-stackpack-version} and the {suseai} {otelemetry} Collector {ai-collector-version}.
 Calls from {owui} to {ollama} also require the `suse_ai_ollama.py` Function in {owui}.
 Products that expose metrics natively need only Collector configuration.
 Refer to xref:ai-monitoring-native-collector[], xref:ai-monitoring-native-owui[], xref:ai-monitoring-ollama-runtime[] and xref:ai-monitoring-native-products[].
 
-{sobservability} Extension 2.x::
-Uses the {owui} Pipelines filter `suse_ai_filter.py` and the `RequestsTotal` metric convention.
-Refer to xref:ai-monitoring-owui[] and xref:ai-monitoring-telemetry-data-capture[].
-
 Install the {suseai} StackPack {ai-stackpack-version} in {sobservability} before you configure the native integration.
 Use the {sobservability} Extension chart {ai-stackpack-version} from https://apps.rancher.io/applications/suse-ai-observability-extension[{sappco}].
 The chart installs the native StackPack through its setup Job.
+
+For an existing 2.x deployment, follow xref:ai-monitoring-integration-upgrade[] before changing the installed components.
 
 [#ai-monitoring-integration-upgrade]
 == Upgrading from Extension 2.x
@@ -123,7 +118,7 @@ Model execution and pipeline step traces require instrumentation in the serving 
 |Application-specific metrics, such as retrieved documents, tool outcomes and training loss.
 
 |Automatic HTTP and database instrumentation
-|Deploy the {otelemetry} Operator and its language-specific instrumentation images.
+|Deploy the {otelemetry} Operator from {sappco} and configure an instrumentation image for the workload language.
 |HTTP and database spans.
 Does not add GenAI, RAG or tool attributes.
 |===
@@ -131,13 +126,13 @@ Does not add GenAI, RAG or tool attributes.
 [#ai-monitoring-integration-versions]
 == Which versions does this guide use?
 
-The native integration uses the following release versions and {owui} adapter compatibility boundary.
+The following table lists the minimum {sobservability} version and the component versions used in this guide.
 
 [cols="2,2,3",options="header"]
 |===
 |Component |Version |Notes
 
-|{sobservability} |2.11.1 |With the {otelemetry} StackPack 0.1.4.
+|{sobservability} |2.11 or later |Requires the {otelemetry} StackPack.
 |{sobservability} Extension |{ai-stackpack-version} |Chart and native {suseai} StackPack.
 |{suseai} {otelemetry} Collector |{ai-collector-version} |Includes the native configuration and the optional product profiles.
 |{owui} |0.6.41 |The Function uses the bundled {otelemetry} SDK.
@@ -175,16 +170,25 @@ Validate the Function again before you upgrade {owui} to a version not listed he
 |{suse}
 
 |{ollama} exporter
-|`{ai-ollama-exporter-image}:{ai-ollama-exporter-version}`
+|`{ai-ollama-exporter-image}@{ai-ollama-exporter-digest}` from GitHub Container Registry
 |{suse}
 
 |{nvidia} DCGM exporter
 |Deployed by the {nvoperator} from `nvcr.io`
 |{nvidia}
 
-|{otelemetry} Operator and instrumentation images
-|`ghcr.io/open-telemetry`
-|{otelemetry} project
+|{otelemetry} Operator chart
+|`oci://dp.apps.rancher.io/charts/opentelemetry-operator` from {sappco}
+|{suse}
+
+|Go automatic instrumentation image
+|`dp.apps.rancher.io/containers/opentelemetry-autoinstrumentation-go`, with the tag selected by the Operator chart
+|{suse}
+
+|Other language instrumentation images
+|Configure a compatible image in the `Instrumentation` resource for each workload language.
+Refer to xref:ai-monitoring-otel-operator-instrumentation[].
+|Supplier of the selected image
 
 |Application SDKs
 |The package repository of the language, for example PyPI

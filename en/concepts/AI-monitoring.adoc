@@ -8,22 +8,44 @@ endif::[]
 
 :override-title!:
 
-This document focuses on techniques for gathering telemetry data from all {productname} components. 
+The {suseai} Observability Extension {ai-stackpack-version} connects AI application telemetry with service and infrastructure views in {sobservability}.
+You can inspect model usage, inference services, data services and GPU resources in the same environment.
+This guide explains how to configure telemetry collection and migrate from Extension 2.x.
 
 Before you start, refer to xref:ai-monitoring-integrations[] for the software, versions and artifacts that each product requires.
-A StackPack does not instrument your applications.
+These features require telemetry from the corresponding applications or exporters.
 
-For most of the components, it presents two distinct paths: 
+[#ai-monitoring-new-features]
+== What is new in version 3.0.0?
 
-Recommended settings::
-Configurations for collecting telemetry and displaying it with the {sobservability} Extension.
+Native service integration::
+The extension uses StackPack schema 2.0 to add AI metrics and relationships to existing {otelemetry} services and service instances.
+Their trace context remains available.
 
-Advanced configuration::
-For users who require deeper and more granular control.
-Advanced options unlock additional observability signals that are relevant for specialized analysis and fine-tuning. 
+Product views and icons::
+The menu:SUSE AI[] group organizes applications, agents, models, inference services, data services and GPUs.
+Eight product views show metrics for {vllm}, {ollama}, {litellm}, {milvus}, {qdrant}, {opensearch}, {mlflow} and {mcpo}.
+Recognized products have distinct icons in the topology.
 
-Several setups are specific to the product, while others{mdash}particularly for scraping metrics{mdash}are configured directly within the {otelemetry} Collector.
-By implementing the recommended settings, you can visualize the complete topology of your services and operations, bringing clarity to your {productname} environment. 
+Dashboards::
+The _SUSE AI {mdash} Overview_ and _SUSE AI {mdash} Model serving_ dashboards show AI application and inference activity.
+_SUSE AI {mdash} Gateway & spend_ covers gateway activity and reported costs.
+_SUSE AI {mdash} GPU fleet_ covers GPU utilization, memory and temperature.
+The dashboards include comparisons with measurements from one hour earlier.
+
+Models and agents::
+You can inspect named agents, models hosted by inference services and model usage reported by applications separately.
+Available {ollama} models remain visible after unloading.
+Their details show loaded state, disk size, memory allocation and context length.
+
+GPU workload context::
+Physical GPU devices link to their {kube} nodes and the workload pods allocated to them.
+
+Health monitors::
+The 33 monitors cover application operations, model availability and latency, agent dependencies and product health.
+They include troubleshooting guidance.
+
+For migration requirements and changes to existing customizations, refer to xref:ai-monitoring-integration-upgrade[].
 
 [#what-is-ai-monitoring]
 == What is {productname} monitoring?

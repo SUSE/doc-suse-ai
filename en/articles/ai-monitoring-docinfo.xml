@@ -1,4 +1,17 @@
 <revhistory xml:id="rh-ai-monitoring">
+  <revision><date>2026-11-16</date>
+    <revdescription>
+      <para>
+        Added an overview of the version 3.0.0 features and updated the
+        Ollama exporter instructions to use GitHub Container Registry.
+        Simplified the Collector setup to use one values file.
+        Removed older setup walkthroughs from the guide and retained
+        the migration instructions.
+        Set the minimum SUSE Observability version to 2.11 and recommended
+        the OpenTelemetry Operator from SUSE Application Collection.
+      </para>
+    </revdescription>
+  </revision>
   <revision><date>2026-11-13</date>
     <revdescription>
       <para>
@@ -41,7 +54,7 @@
 <!-- add author's e-mail -->
 <meta name="maintainer" content="tbazant@suse.com" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
 <!-- ISO date of last update as YYYY-MM-DD -->
-<meta name="updated" content="2026-11-13" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
+<meta name="updated" content="2026-11-16" its:translate="no" xmlns:its="http://www.w3.org/2005/11/its"/>
 <meta name="architecture"><phrase>{x86-64}</phrase><phrase>{power}</phrase>
 </meta>
 <!-- enter one or more product names and version -->

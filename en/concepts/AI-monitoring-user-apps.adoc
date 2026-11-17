@@ -22,7 +22,6 @@ One of the most straightforward ways of getting started with {otelemetry} is usi
 == Instrumenting applications for the native integration
 
 The native integration accepts standard {otelemetry} traces and metrics.
-It does not require the {openlit} SDK or the `RequestsTotal` metric.
 
 .Resource attributes
 Set the following resource attributes for each application:
@@ -66,83 +65,12 @@ Automatic HTTP instrumentation does not provide them.
 To verify, run a real operation, including a failed one, and check the trace and metrics in {sobservability}.
 
 [#ai-monitoring-telemetry-data-capture]
-== Telemetry requirements of the {sobservability} Extension 2.x
+== Migrating application telemetry from Extension 2.x
 
-
-For the {sobservability} Extension 2.x to acknowledge an application as a GenAI application, it needs to have a meter configured.
-It must provide at least the `RequestsTotal` metric with the following attributes: 
-
-* `TelemetrySDKLanguage`
-* `ServiceName`
-* `ServiceInstanceId`
-* `ServiceNamespace`
-* `GenAIEnvironment`
-* `GenAiApplicationName`
-* `GenAiSystem`
-* `GenAiOperationName`
-* `GenAiRequestModel`
-
-Both the meter and the tracer must contain the following resource attributes: 
-
-service.name::
-The logical name of the service.
-Defaults to 'My App'. 
-
-service.version::
-The version of the service.
-Defaults to '1.0'. 
-
-deployment.environment::
-The name of the deployment environment, such as 'production' or 'staging'.
-Defaults to 'default'. 
-
-telemetry.sdk.name::
-The value must be 'openlit'. 
-
-The following metrics are utilized in the graphs of the {sobservability} Extension: 
-
-gen_ai.client.token.usage::
-Measures the number of used input and output tokens. 
-+
-*Type:* histogram 
-+
-*Unit:* token 
-
-gen_ai.total.requests::
-Number of requests. 
-+
-*Type:* counter 
-+
-*Unit:* integer 
-
-gen_ai.usage.cost::
-The distribution of GenAI request costs.
-This is a non-standard metric, available only when explicitly set by the application or when the application is instrumented with {openlit}.
-+
-*Type:* histogram
-+
-*Unit:* USD
-
-gen_ai.usage.input_tokens::
-Number of prompt tokens processed. 
-+
-*Type:* counter 
-+
-*Unit:* integer 
-
-gen_ai.usage.output_tokens::
-Number of completion tokens processed. 
-+
-*Type:* counter 
-+
-*Unit:* integer 
-
-gen_ai.client.token.usage::
-Number of tokens processed. 
-+
-*Type:* counter 
-+
-*Unit:* integer 
+Update application instrumentation to provide the attributes and measurements described in xref:ai-monitoring-native-applications[].
+You can keep an existing {otelemetry} SDK; the integration does not require {openlit} or the `RequestsTotal` metric.
+For {owui} calls to {ollama}, replace the Pipelines filter as described in xref:ai-monitoring-native-owui-migration[].
+Verify telemetry delivery as described in xref:ai-monitoring-native-collector-verify[] before retiring the previous configuration.
 
 // TODO change this to real qanda
 [role=qanda]
@@ -158,8 +86,8 @@ No metrics received from any components. ::
 
 No metrics received from the GPU. ::
 +
-* Verify that the `clusterRole` configuration is included in the `otel-values.yaml` and the collector has been installed or upgraded with it.
-* Verify if the metrics receiver scraper is configured. 
+* Verify that the Collector uses the permissions in `otel-native-values.yaml`, as described in xref:ai-monitoring-native-collector-deploy[].
+* Verify that the Collector loads the bundled base configuration, which includes GPU metric collection.
 * Check the {nvidia} DCGM Exporter for errors. 
 
 
@@ -198,15 +126,16 @@ No tracing data received from any components. ::
 
 No tracing data received from {owui}. ::
 
-* For the native integration, verify the SDK and Function configuration as described in xref:ai-monitoring-native-owui[].
-For Extension 2.x, check the Pipelines filter configuration.
+* Verify the SDK and Function configuration as described in xref:ai-monitoring-native-owui[].
 * Verify if chat requests actually happened. 
 
 
 
-Cost estimation is far from real values. ::
+Cost charts are empty. ::
 
-For the Extension 2.x Pipelines filter, recalculate the multipliers in `PRICING_JSON` as described in xref:ai-monitoring-cost-estimation[].
+Verify that the application or gateway reports cost metrics.
+The {owui} Function reports token usage and duration but does not calculate inference costs.
+For {litellm} gateway metrics, follow xref:ai-monitoring-native-litellm[].
 
 There is high demand for storage volume. ::
 

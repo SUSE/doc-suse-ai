@@ -3,6 +3,7 @@ include::../common/generic-attributes.adoc[]
 :docinfo:
 :doctype: book
 :experimental:
+:revdate: 2026-11-16
 
 ifdef::env-github[]
 :imagesdir: ../images/
