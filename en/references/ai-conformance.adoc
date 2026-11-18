@@ -594,7 +594,7 @@ When the {nvoperator} is deployed, the `nvidia-dcgm-exporter` service exposes pe
 ----
 {prompt_user}svcIP=$(kubectl get svc nvidia-dcgm-exporter -n gpu-operator -o jsonpath='{.spec.clusterIP}')
 {prompt_user}svcPort=$(kubectl get svc nvidia-dcgm-exporter -n gpu-operator -o jsonpath='{.spec.ports[0].port}')
-{prompt_user}curl -sL http://${svcIP}:${svcPort}/metrics
+{prompt_user}curl -sL http://$\{svcIP}:$\{svcPort}/metrics
 ----
 
 [#ai-conformance-service-metrics]
@@ -690,9 +690,9 @@ spec:
 
 Workload sandboxing provides strong kernel-level isolation for running untrusted, model-generated code or AI agents.
 
-{productname} on {rke2a} supports sandboxing using link:https://documentation.suse.com/cloudnative/rke2/latest/en/add-ons/kata.html[{kata}] (Technology Preview), running pods inside lightweight microVMs rather than sharing the host kernel.
+{productname} on {rke2a} supports sandboxing using link:https://documentation.suse.com/cloudnative/rke2/latest/en/add-ons/kata.html[Kata] (Technology Preview), running pods inside lightweight microVMs rather than sharing the host kernel.
 
-Deploy {kata} via the `kata-deploy` {helm} chart:
+Deploy Kata via the `kata-deploy` {helm} chart:
 
 [source,yaml]
 ----
