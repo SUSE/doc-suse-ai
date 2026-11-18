@@ -15,7 +15,7 @@ endif::[]
 
 
 == Overview
-The deployment and operation of {productname} require several prerequisites to ensure a stable, secure and performant environment.
+The deployment and operation of {productname} require several prerequisites to ensure a stable and secure environment.
 These requirements span physical or virtual hardware resources, accelerated compute infrastructure (such as compatible GPUs), and specific configuration guidelines for core stack applications like cluster management, security and observability.
 Review the following sections to prepare your cluster infrastructure before initiating the installation.
 
@@ -32,6 +32,7 @@ include::../references/AI-requirements-hardware-gpu.adoc[leveloffset=+1]
 We recommend running each application on nodes that meet or exceed the corresponding hardware requirements.
 
 include::../references/AI-requirements-rancher.adoc[leveloffset=+2]
+include::../references/AI-requirements-milvus.adoc[leveloffset=+2]
 include::../references/AI-requirements-security.adoc[leveloffset=+2]
 include::../references/AI-requirements-observability.adoc[leveloffset=+2]
 
