@@ -58,7 +58,7 @@ Running {milvus} requires specific versions of the following software:
 
 Disk and storage::
 * *Storage type:* SSDs or NVMe SSDs are highly recommended for fast read/write access to large datasets and high-performance vector retrieval.
-* *Metadata and data storage:* For large-scale deployments, ensure that metadata and vector data are stored on fast disks (SSD or NVMe).
+* *Metadata and data storage:* For large-scale deployments, ensure that metadata and vector data is stored on fast disks (SSD or NVMe).
 Network:: For high-performance clusters, especially for large-scale deployments, ensure high-bandwidth network connectivity between nodes.
 
 [#ai-req-milvus-moreinfo]
