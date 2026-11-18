@@ -1,5 +1,5 @@
-[#mcphost-installation]
-= MCP host installation
+[#kit-installation]
+= Kit installation and main configuration file
 include::../common/generic-attributes.adoc[]
 // overridden title?
 
@@ -17,6 +17,7 @@ endif::[]
 :revdate: 2026-04-03
 :page-revdate: {revdate}
 
+== Installing Kit
 
 To install the package, run the command:
 
@@ -49,4 +50,22 @@ To verify the installation, run the following command:
 kit --help
 ----
 
-Besides the Kit binary, the package installs the default configuration `.kit.yml` to your home directory. The default configuration disables tools provided by Kit. You can enable them after the installation, however, we recommend to sandbox Kit in case you enable the default tools. For details, refer to
+== Kit main configuration
+
+The package installs the default configuration  file `.kit.yml` to your home directory if it is not already present. It is the primary declarative configuration file for the Kit AI agent. Its purpose is to persist your preferred LLM provider settings, generation parameters, system prompts, and external Model Context Protocol (MCP) server connections so you do not have to pass them via CLI flags or environment variables on every run.
+
+The default location of the file in your home directory is applied across the system as the baseline configuration. You can also place the configuration file to other locations:
+
+* Project-local:: When placed in a working directory it overrides the default one in your home directory. This path is ignored if when `kit` is run with the `--bare` option.
+* Custom path:: You can pass a specific path to Kit using the `--config <path>` option. This option overrides the default configuration file.
+
+In the config you configure:
+
+* MCP servers: for details, refer to
+* LLM behavior
+* Provider Gateways & Custom Models
+* Skills, Agents & UI
+
+All configuration options are provided in 
+
+The default configuration disables tools provided by Kit. You can enable them after the installation, however, we recommend to sandbox Kit in case you enable the default tools. For details, refer to

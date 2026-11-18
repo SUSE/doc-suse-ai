@@ -1,5 +1,5 @@
 [#mcphost-configuration]
-= MCP host configuration
+= Configuring LLMs to be used by Kit
 include::../common/generic-attributes.adoc[]
 // overridden title?
 
@@ -10,56 +10,90 @@ include::../common/generic-attributes.adoc[]
 :override-abstract!:
 :override-title!:
 
-:revdate: 2026-04-01
+:revdate: 2026-11-16
 :page-revdate: {revdate}
 
-MCP Host behavior is defined using JSON configuration files.
-While such configuration is optional, defining configuration files has the following benefits:
+Kit decouples agent execution from the underlying language model using a unified `model` format and configurable wire protocols (`openai`, `openai-compat`, `anthropic`, `google`). Administrators can connect Kit to an internal LLM gateway, a local inference server (e.g., Ollama, vLLM), or a cloud provider without altering the agent's operational workflow. 
 
-* Performance optimization: Even large LLMs have limited context windows. Minimizing the number of exposed tools helps achieve faster and more accurate results.
-* Better security: Configurations allow for "minimal exposure" by restricting the LLM's access to only the specific directories and tools required.
-* Behavior standardization: You can predefine "system prompts" to enforce specific response formats.
-* Operations simplification: Storing technical details like provider URLs and model names eliminates repetitive manual input.
+A simple configuration of a local LLM looks as follows:
 
-[#mcphost-configuration-parameters]
-== Structure of configuration files
+[source,yaml]
+----
+# ~/.kit.yml
+model: <PROVIDER_NAME>/<MODEL_ID>
+system-prompt: |
+  You are a system administration assistant. Always verify system state before 
+  making changes, prefer least-invasive operations, and report exact commands 
+  and outcomes.
+----
 
-A standard configuration file typically contains:
+If an internal gateway is used, then the configuration may looks as follows:
 
-* `systemPrompt`: Defines the core instructions, behavioral rules and persona of the AI assistant for a specific session.
 
-* `model`: Specifies the identifier of the target LLM.
-* `provider-url`: Specifies the URL of the target LLM. When running the model locally, use the format `http:localhost:<port_number>`. The listening port number depends on your LLM provider.
-* `mcpServers`: Defines the tools that the host can access (for example, file system, monitoring or systemd tools). A single configuration file can include multiple MCP servers.
+You can connect Kit to external LLMs in two ways: using authentication via CLI or through an internal gateway. 
+[source,yaml]
+----
+# ~/.kit.yml
+model: <GATEWAY_NAME>/<MODEL_ID>
 
-.An example of Ollama as the LLM and an MCP server intended to read configuration files:
-[source,json]
-{
-"system-prompt": "You are a System Security Auditor for SLES 16.0. Your goal is to analyze system health and security logs. You may read configurations and run diagnostic commands, but you must never attempt to modify the system state.",
-"model": "ollama:gpt-oss:20b",
-"provider-url": "http://localhost:11434/",
-"mcpServers": {
-"read_only_configs": {
-"type": "builtin",
-"name": "fs",
-"options": {
-"allowed_directories": [ "/etc", "/var/log" ]
-},
-"allowedTools": [ "read_file", "list_directory" ]
-},
-"diagnostics": {
-"type": "builtin",
-"name": "bash"
-}
-}
-}
+providers:
+  <GATEWAY_NAME>:
+    name: "Internal LLM Gateway"
+    wire: <WIRE_PROTOCOL>               # openai-compat | openai | anthropic | google
+    baseUrl: "https://<LLM_GATEWAY_HOST>/v1"
+    apiKeyEnv: ["<LLM_API_KEY_ENV_VAR>"]
+    headers:
+      X-Environment: "sysadmin"
+----
 
-The example above restricts the LLM to access only `/etc`` and `/var/log`, to use only bash tools and read and list operations. The delete and write operations are not available to the LLM. To run the MCP host with such a configuration file, issue the command:
 
+
+
+== Environment Variables / CLI Authentication
+
+Credentials stored via `kit auth login` are written to `$XDG_CONFIG_HOME/.kit/credentials.json` (defaults to `~/.config/.kit/credentials.json` with `0600` permissions) and take precedence over environment variables.
+
+Authenticate and store the API key for your provider non-interactively while setting its default model as the system default:
++
+[source,bash]
+----
+kit auth login <PROVIDER_NAME> --api-key "<LLM_API_KEY>" --set-default
+----
+
+. Verify that the credentials are registered and active:
++
+[source,bash]
+----
+kit auth status
+----
+
+Alternatively, export the model and API key via environment variables in the service or shell profile.
 
 [source,bash]
-mcphost  --config PATH_TO_THE_JSON_CONFIGURAION_FILE
+----
+export KIT_MODEL="<PROVIDER_NAME>/<MODEL_ID>"
+export KIT_PROVIDER_API_KEY="<LLM_API_KEY>"
+----
 
+== Configuring connection through internal LLM gateway
 
+If your organization routes LLM traffic through an internal proxy/gateway or self-hosted server, declare a provider override in `~/.kit.yml`. Set `wire` to match the API protocol spoken by your endpoint (`openai-compat`, `openai`, `anthropic`, or `google`):
+
+[source,yaml]
+----
+# ~/.kit.yml
+model: <GATEWAY_NAME>/<MODEL_ID>
+
+providers:
+  <GATEWAY_NAME>:
+    name: "Internal LLM Gateway"
+    wire: <WIRE_PROTOCOL>               # openai-compat | openai | anthropic | google
+    baseUrl: "https://<LLM_GATEWAY_HOST>/v1"
+    apiKeyEnv: ["<LLM_API_KEY_ENV_VAR>"]
+    headers:
+      X-Environment: "sysadmin"
+----
+
+== Configuring the used model and context in `.kit.yml`
 
 

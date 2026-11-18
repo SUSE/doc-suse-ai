@@ -1,5 +1,5 @@
-[#mcpkithost-introduction]
-= What is the MCP host?
+[#kit-introduction]
+= What is Kit?
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifndef::override-abstract[]
@@ -24,3 +24,5 @@ Kit operates as an orchestrator between the administrator, the configured Large 
 . *Tool Execution:* Kit executes the requested operations locally or dispatches `tools/call` requests to the MCP server (synchronously or via asynchronous MCP tasks for long-running jobs).
 . *Iterative Evaluation Loop:* Kit returns the execution results (command output, system state, log entries, or configuration contents) to the LLM. The LLM analyzes the output and, if further investigation or remediation is needed, issues subsequent tool calls (bounded by `--max-steps`).
 . *Final Response:* Once the administrative check or change is complete, the LLM generates a summary of findings and actions taken, which Kit renders back to the administrator (as formatted text in the TUI or structured JSON via `--json`).
+
+

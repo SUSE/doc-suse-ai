@@ -1,0 +1,42 @@
+[#reference-example]
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Reference
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+An introductory paragraph.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+:revdate: YYYY-MM-DD
+:page-revdate: {revdate}
+
+[#reference-example-section]
+== Section title
+
+A paragraph of text.
+
+.A title
+a command --with-options::
+  A paragraph of text.
+another command --with-options::
+  Another paragraph of text.
+
+.A table title
+[cols="1,1"]
+|===
+| an entry | another entry
+| an entry | another entry
+| an entry | another entry
+|===
