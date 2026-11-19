@@ -77,7 +77,13 @@ endif::copyrightstart[]
 
 :aif-latest-version: 2.4.0
 :aif-operator-registry: ghcr.io/suse/chart/aif-operator
+:aif-release-manifest: ghcr.io/suse/aif-uc-release-manifest
 
 :copyrightholder: SUSE LLC
 
+// deployment using Elemental
+:elemental-image: registry.suse.com/elemental/elemental:3.0
+
+:elem30: {selemental} 3.0
+:elem31: {selemental} 3.1
 
