@@ -25,7 +25,7 @@ endif::[]
 [#aif-elemental-overview]
 == How does the {selemental} 3 deployment work?
 {selemental} 3 uses a _release manifest_ that pins a tested set of components: the operating system image, the {rke2a} version, {helm} charts and system extensions.
-{productname} publishes its own release manifest that extends the {selemental} core platform with {ranchera}, cert-manager, the NVIDIA GPU Operator, {sstorage}, the local path provisioner and {saifoperator}.
+{productname} publishes its own release manifest that extends the {selemental} core platform with {ranchera}, {certmanager}, the {nvoperator}, {sstorage}, the local path provisioner and {saifoperator}.
 
 The deployment consists of the following steps:
 
@@ -33,7 +33,7 @@ The deployment consists of the following steps:
 . Run the `elemental3 customize` command to build a RAW disk image or ISO installation media.
 With {elem31} or later, you can also build a qcow2 image.
 . Boot every node from the image.
-On the first boot, Ignition applies the operating system configuration, {rke2a} creates the cluster, and the {helm} charts are installed.
+On the first boot, {ignition} applies the operating system configuration, {rke2a} creates the cluster, and the {helm} charts are installed.
 . Verify the deployment and continue with the post-deployment steps.
 
 The operating system is immutable and image-based.
@@ -106,7 +106,7 @@ aif-elemental/
 Required.
 <2> Bootloader, kernel command line, image size and installation device.
 Required.
-<3> Users, SSH keys, files and systemd units applied by Ignition on the first boot.
+<3> Users, SSH keys, files and systemd units applied by {ignition} on the first boot.
 <4> Nodes, API VIP and load-balancing mode, extra charts and manifests.
 <5> {rke2a} configuration for control-plane (`server`) and worker (`agent`) nodes.
 <6> {helm} values files referenced from `release.yaml`.
@@ -117,7 +117,7 @@ If the directory is missing, the nodes use DHCP.
 
 Create the directory and restrict its permissions, because several files contain credentials:
 
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}mkdir -p aif-elemental/kubernetes/{config,helm/values,manifests}
 {prompt_user}chmod 700 aif-elemental
@@ -148,14 +148,15 @@ components:
 ----
 <1> System extension with the open-iscsi tools that {sstorage} needs.
 Omit it if you use the local path provisioner instead.
-<2> cert-manager is installed automatically because the `rancher` chart depends on it in the release manifest.
-<3> Install the GPU Operator only if the nodes have {nvidia} GPUs.
+<2> {certmanager} is installed automatically because the `rancher` chart depends on it in the release manifest.
+<3> Install the {nvoperator} only if the nodes have {nvidia} GPUs.
 <4> Charts from {sappco} need the `credentials` block.
 It authenticates only the download of the chart.
 The container images need an image pull secret, as described in xref:aif-elemental-manifests[].
 
 The {productname} release manifest provides the following components:
 
+[#aif-elemental-components-table]
 [cols="1,1,3",options="header"]
 |===
 | Component | Type | Description
@@ -170,7 +171,7 @@ The {productname} release manifest provides the following components:
 
 | `gpu-operator`
 | {helm} chart
-| {nvidia} GPU Operator configured for precompiled {nvidia} drivers from {sregistry}.
+| {nvoperator} configured for precompiled {nvidia} drivers from {sregistry}.
 
 | `suse-storage`
 | {helm} chart
@@ -205,7 +206,7 @@ Pods that use the volume are always scheduled on that node, and the data is lost
 
 To review the content of a release manifest, run:
 
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}podman run --rm {elemental-image} release-info \
   oci://{aif-release-manifest}:{aif-latest-version}
@@ -226,7 +227,7 @@ iso:
 # cryptoPolicy: fips                                 <4>
 ----
 <1> Parameters appended to the kernel command line.
-On a cloud provider ({elem31} or later), add the Ignition platform identifier, for example, `ignition.platform.id=aws`, so that Ignition reads the per-node configuration from the instance user data.
+On a cloud provider ({elem31} or later), add the {ignition} platform identifier, for example, `ignition.platform.id=aws`, so that {ignition} reads the per-node configuration from the instance user data.
 <2> Size of the RAW disk image.
 For qcow2 images ({elem31} or later), this is the virtual disk size.
 <3> Target disk for the installation from ISO media.
@@ -245,6 +246,7 @@ If you boot the image without resizing the disk, the root file system keeps the 
 === Disk layout and data persistence
 {selemental} creates the following partitions:
 
+[#aif-elemental-partitions-table]
 [cols="1,1,1,3",options="header"]
 |===
 | Label | File system | Mount point | Purpose
@@ -266,12 +268,12 @@ During an upgrade, local changes are merged into the new snapshot, and a rollbac
 Never store data there.
 
 To use additional disks, for example, a dedicated disk for {sstorage} or model storage, define the partitions, file systems and mounts in `butane.yaml`.
-Ignition configures them on the first boot.
+{ignition} configures them on the first boot.
 
 [#aif-elemental-butane]
 == Configuring users, SSH access and files (`butane.yaml`)
 The `butane.yaml` file contains a link:https://coreos.github.io/butane/[Butane] configuration.
-{selemental} converts it to an Ignition configuration that runs on the first boot of every node.
+{selemental} converts it to an {ignition} configuration that runs on the first boot of every node.
 
 The following example creates the `root` user and an unprivileged user with SSH keys, disables SSH logins as `root` and sets up the `root` shell for `kubectl`:
 
@@ -319,16 +321,16 @@ storage:
 <1> Generate password hashes with `openssl passwd -6`.
 <2> The image does not include `sudo`.
 Log in as the unprivileged user and switch to `root` with `su -`.
-<3> `/home` is not mounted while Ignition runs.
+<3> `/home` is not mounted while {ignition} runs.
 Declaring the subvolume creates the home directories on the persistent subvolume instead of a directory that is hidden after the boot.
 <4> Specify file modes as decimal numbers, for example, `384` for `0600` and `416` for `0640`.
 
 Observe the following rules when writing `butane.yaml`:
 
 * Write files only to read-write paths, such as `/etc`, `/var` or `/opt`.
-A write to a read-only path, such as `/usr`, fails Ignition and the node stops in the emergency shell of the initrd.
+A write to a read-only path, such as `/usr`, fails {ignition} and the node stops in the emergency shell of the initrd.
 * Store scripts that must persist after the first boot in `/var/lib/elemental`.
-* The Ignition `kernelArguments` section is not supported.
+* The {ignition} `kernelArguments` section is not supported.
 Use `kernelCmdLine` in `install.yaml` instead.
 * Changing `butane.yaml` requires rebuilding the image.
 
@@ -414,7 +416,7 @@ bootstrapPassword: "<RANCHER_BOOTSTRAP_PASSWORD>"
 ----
 
 The `hostname` value is an example.
-Unless a tool such as external-dns manages your DNS records, create a DNS record for the host name manually that points to the ingress address, as described in xref:aif-elemental-lb-managed[].
+Unless a tool such as {externaldns} manages your DNS records, create a DNS record for the host name manually that points to the {ingress} address, as described in xref:aif-elemental-lb-managed[].
 For test deployments without DNS, you can use a host name from a wildcard DNS service such as link:https://sslip.io[sslip.io], for example, `rancher.192.168.122.11.sslip.io`.
 
 Example of `kubernetes/helm/values/aif-operator.yaml`:
@@ -503,6 +505,7 @@ Configure it in the `network` section of `kubernetes/cluster.yaml`.
 With {elem30}, setting `apiVIP` or `apiVIP6` always deploys the embedded MetalLB load balancer.
 {elem31} adds the `apiVIPMode` option, which selects who provides the address:
 
+[#aif-elemental-lb-modes-table]
 [cols="1,2,2",options="header"]
 |===
 | Mode | Load balancer | Use for
@@ -547,7 +550,7 @@ For IPv6, use `apiVIP6`.
 If you set both `apiVIP` and `apiVIP6`, a dual-stack service is created.
 
 The address pool created by {selemental} is reserved for the API VIP.
-To give other services, such as the ingress controller or an application, their own `LoadBalancer` address, add the following resources as manifests in `kubernetes/manifests`:
+To give other services, such as the {ingress} controller or an application, their own `LoadBalancer` address, add the following resources as manifests in `kubernetes/manifests`:
 
 * An `IPAddressPool` with the additional addresses, in the `metallb-system` namespace.
 Set `autoAssign: false` so that addresses are only given to services that request them.
@@ -557,9 +560,9 @@ Set `autoAssign: false` so that addresses are only given to services that reques
 Do not use the `-priority.yaml` suffix for these manifests, because the MetalLB CRDs exist only after the {helm} charts are installed.
 For a complete example, see xref:aif-elemental-examples-ingress[].
 
-The default {rke2a} Traefik ingress controller listens on ports 80 and 443 of every node.
+The default {rke2a} {traefik} ingress controller listens on ports 80 and 443 of every node.
 Point the {ranchera} host name to the IP address of a node or to a DNS record with all node addresses.
-To publish the ingress on its own highly available address instead, expose the Traefik service as a `LoadBalancer` with a MetalLB address, as shown in xref:aif-elemental-examples-ingress[].
+To publish the {ingress} on its own highly available address instead, expose the Traefik service as a `LoadBalancer` with a MetalLB address, as shown in xref:aif-elemental-examples-ingress[].
 
 [#aif-elemental-lb-external]
 === Using a cloud load balancer
@@ -586,13 +589,13 @@ Before building the image, create the following resources:
 
 * An internal load balancer that forwards TCP ports 6443 and 9345 to every control-plane node.
 Worker nodes must reach it on both ports.
-* Optionally, a second load balancer that forwards TCP ports 80 and 443 to the ingress controller, to make the {ranchera} UI and {productname} applications available outside the cluster.
+* Optionally, a second load balancer that forwards TCP ports 80 and 443 to the {ingress} controller, to make the {ranchera} UI and {productname} applications available outside the cluster.
 
 The load balancer address is stored in the image.
 If you re-create the load balancer with a different address, rebuild the image.
 
 The {kube} API load balancer must exist before the cluster, so you always create it yourself.
-For other services of type `LoadBalancer`, such as the ingress controller or applications, you can let the cloud provider create the load balancers automatically instead of creating them in advance.
+For other services of type `LoadBalancer`, such as the {ingress} controller or applications, you can let the cloud provider create the load balancers automatically instead of creating them in advance.
 Install the load balancer controller of the provider, for example, the link:https://github.com/kubernetes-sigs/aws-load-balancer-controller[AWS Load Balancer Controller] on Amazon Web Services.
 The controller watches the services and provisions, updates and deletes a cloud load balancer for each of them.
 You can add the controller as an additional {helm} chart in `kubernetes/cluster.yaml`.
@@ -602,7 +605,7 @@ For the requirements, see the documentation of the controller.
 [IMPORTANT]
 .Load balancers with PROXY protocol
 ====
-If the ingress load balancer uses the PROXY protocol, configure the Traefik `web` and `websecure` entry points to trust it, using a `HelmChartConfig` for `rke2-traefik` in `kubernetes/manifests`.
+If the {ingress} load balancer uses the PROXY protocol, configure the Traefik `web` and `websecure` entry points to trust it, using a `HelmChartConfig` for `rke2-traefik` in `kubernetes/manifests`.
 Otherwise, Traefik rejects the connections.
 ====
 
@@ -678,7 +681,7 @@ Do not combine nmstate files and the script in the same directory.
 ====
 With {elem30}, use the static node list.
 ====
-Omit the `nodes` list and the `network` directory, and provide the role of every node when you create it, as Ignition user data.
+Omit the `nodes` list and the `network` directory, and provide the role of every node when you create it, as {ignition} user data.
 The image does not depend on the set of nodes, so you can add nodes without rebuilding it.
 This method is required on cloud providers and is useful with provisioning tools such as Metal3.
 
