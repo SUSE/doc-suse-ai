@@ -685,7 +685,7 @@ Omit the `nodes` list and the `network` directory, and provide the role of every
 The image does not depend on the set of nodes, so you can add nodes without rebuilding it.
 This method is required on cloud providers and is useful with provisioning tools such as Metal3.
 
-The per-node Ignition configuration must write the following files:
+The per-node {ignition} configuration must write the following files:
 
 * `/etc/hostname` with the host name of the node.
 * `/var/lib/elemental/runtime.env` with the role:
@@ -718,9 +718,9 @@ storage:
           IS_INIT_NODE=true
 ----
 
-Convert it to Ignition and pass the result as the user data of the instance:
+Convert it to {ignition} and pass the result as the user data of the instance:
 
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}butane --strict --pretty aif-cp1.bu > aif-cp1.ign
 ----
@@ -733,7 +733,7 @@ You can also use it for other node-specific settings, for example, the `node-ip`
 Run `elemental3 customize` from the {selemental} container image.
 The configuration directory is mounted at `/config`, and the image is written there.
 
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_sudo}podman run --rm -it --network host \
   -v $PWD/aif-elemental:/config:Z \
@@ -755,7 +755,7 @@ Path of the image.
 When running in a container, use a path under `/config`, otherwise the image stays inside the container.
 `--mode split`::
 Stores the first-boot configuration in a separate directory instead of a partition in the image.
-Use it when another tool, such as Metal3 or Cluster API, delivers the Ignition configuration.
+Use it when another tool, such as Metal3 or Cluster API, delivers the {ignition} configuration.
 `--overlay node1,node2`::
 With `--type qcow2`, creates a thin qcow2 overlay for each node on top of the image.
 Requires {elem31} or later.
@@ -776,20 +776,20 @@ For hypervisors and cloud platforms that expect the qcow2 format, convert the RA
 . Convert the image.
 The `-c` option compresses the output, which is useful when uploading the image to a cloud platform:
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}qemu-img convert -p -f raw -O qcow2 -c aif-elemental/aif.raw aif.qcow2
 ----
 . Optionally, grow the virtual disk to the final size of the node disk.
 The system partition fills the disk on the first boot:
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}qemu-img resize aif.qcow2 100G
 ----
 . Verify the result:
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}qemu-img info aif.qcow2
 ----
@@ -797,7 +797,7 @@ The system partition fills the disk on the first boot:
 To boot several virtual machines from one converted image without copying it, create a thin overlay for each node that uses the image as its backing file.
 Do not modify or boot the base image after creating the overlays:
 
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_user}qemu-img create -f qcow2 -F qcow2 -b aif.qcow2 aif-cp1.qcow2 100G
 ----
@@ -807,7 +807,7 @@ Do not modify or boot the base image after creating the overlays:
 ====
 Build the qcow2 image and the per-node overlays directly, without converting:
 
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_sudo}podman run --rm -it --network host \
   -v $PWD/aif-elemental:/config:Z \
@@ -832,7 +832,7 @@ Alternatively, write the RAW image directly to the disk.
 Virtual machines::
 Create a UEFI virtual machine from a qcow2 copy of the image, converted as described in xref:aif-elemental-qcow2[], for example:
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_sudo}qemu-img convert -p -f raw -O qcow2 aif-elemental/aif.raw /var/lib/libvirt/images/aif-cp1.qcow2
 {prompt_sudo}qemu-img resize /var/lib/libvirt/images/aif-cp1.qcow2 100G
@@ -843,28 +843,28 @@ Create a UEFI virtual machine from a qcow2 copy of the image, converted as descr
   --graphics none --console pty,target_type=serial
 ----
 Cloud providers ({elem31} or later)::
-Import the RAW image, or the converted qcow2 image if the platform requires it, as a custom image or snapshot, create the load balancers, and create the instances with the per-node Ignition configuration as user data.
+Import the RAW image, or the converted qcow2 image if the platform requires it, as a custom image or snapshot, create the load balancers, and create the instances with the per-node {ignition} configuration as user data.
 
 [#aif-elemental-verify]
 == Verifying the deployment
 
 . Log in to a control-plane node and check that all nodes are `Ready`:
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_root}kubectl get nodes
 ----
 . Check that the {helm} charts are installed.
 Each chart has an install job in the `kube-system` namespace:
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_root}kubectl get helmcharts -n kube-system
 {prompt_root}kubectl get jobs -n kube-system
 ----
 . Check that {saifoperator} is running:
 +
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_root}kubectl get pods -n aif-operator
 ----
@@ -872,7 +872,7 @@ Each chart has an install job in the `kube-system` namespace:
 
 If the cluster does not come up, check the following systemd units on the nodes:
 
-[source,bash,subs="+attributes"]
+[source,console,subs="+attributes"]
 ----
 {prompt_root}journalctl -b -t ignition                  # first-boot configuration (initrd)
 {prompt_root}journalctl -u k8s-config-installer          # RKE2 configuration
@@ -887,9 +887,9 @@ After the deployment, continue with xref:ai-factory-post-deployment[].
 The following examples show complete configuration directories for a typical {productname} setup with two highly available clusters:
 
 * A _management cluster_ with {ranchera} and {saifoperator}.
-* A _downstream cluster_ with cert-manager, the {nvidia} GPU Operator and {sstorage}, which runs the AI workloads.
+* A _downstream cluster_ with {certmanager}, the {nvoperator} and {sstorage}, which runs the AI workloads.
 
-Both examples use only {elem30} features: a static node list, the embedded MetalLB load balancer for the {kube} API, and a second MetalLB address for the Traefik ingress controller.
+Both examples use only {elem30} features: a static node list, the embedded MetalLB load balancer for the {kube} API, and a second MetalLB address for the {traefik} ingress controller.
 
 [IMPORTANT]
 .The files are examples
@@ -904,24 +904,24 @@ For all options, see the link:https://github.com/SUSE/elemental/tree/main/docs[{
 
 [#aif-elemental-examples-ingress]
 === How is the ingress configured?
-{rke2a} deploys the Traefik ingress controller as a DaemonSet that listens on ports 80 and 443 of every node.
-To give the ingress a single highly available address, both examples expose Traefik through a `LoadBalancer` service with a dedicated MetalLB address:
+{rke2a} deploys the {traefik} ingress controller as a DaemonSet that listens on ports 80 and 443 of every node.
+To give the ingress a single highly available address, both examples expose {traefik} through a `LoadBalancer` service with a dedicated MetalLB address:
 
-* A `-priority.yaml` manifest with a `HelmChartConfig` for `rke2-traefik` enables the `LoadBalancer` service and requests the ingress address.
-It must be applied before {rke2a} installs Traefik.
-* A second manifest creates the MetalLB `IPAddressPool` and `L2Advertisement` for the ingress address.
+* A `-priority.yaml` manifest with a `HelmChartConfig` for `rke2-traefik` enables the `LoadBalancer` service and requests the {ingress} address.
+It must be applied before {rke2a} installs {traefik}.
+* A second manifest creates the MetalLB `IPAddressPool` and `L2Advertisement` for the {ingress} address.
 It is applied after the {helm} charts, when the MetalLB CRDs exist.
 The pool has `autoAssign: false`, so the address is only given to the service that requests it.
 
-The ingress address must be an unused address in the node subnet, different from the API VIP and outside the DHCP range.
-Create a DNS record for the {ranchera} host name, or a wildcard record for all applications, that points to the ingress address.
+The {ingress} address must be an unused address in the node subnet, different from the API VIP and outside the DHCP range.
+Create a DNS record for the {ranchera} host name, or a wildcard record for all applications, that points to the {ingress} address.
 
 [NOTE]
 .Cloud load balancers
 ====
-With {elem31} or later and an external load balancer, do not use MetalLB for the ingress.
-If a load balancer controller of the cloud provider is installed, expose Traefik as a `LoadBalancer` service with the annotations of the controller, and the controller creates the load balancer, as described in xref:aif-elemental-lb-external[].
-If you create the ingress load balancer yourself, pin Traefik to the nodes behind the load balancer with a `nodeSelector`, and if the load balancer uses the PROXY protocol, add its source network to `ports.web.proxyProtocol.trustedIPs` and `ports.websecure.proxyProtocol.trustedIPs` in the `HelmChartConfig`.
+With {elem31} or later and an external load balancer, do not use MetalLB for the {ingress}.
+If a load balancer controller of the cloud provider is installed, expose {traefik} as a `LoadBalancer` service with the annotations of the controller, and the controller creates the load balancer, as described in xref:aif-elemental-lb-external[].
+If you create the ingress load balancer yourself, pin {traefik} to the nodes behind the load balancer with a `nodeSelector`, and if the load balancer uses the PROXY protocol, add its source network to `ports.web.proxyProtocol.trustedIPs` and `ports.websecure.proxyProtocol.trustedIPs` in the `HelmChartConfig`.
 ====
 
 [#aif-elemental-example-mgmt]
@@ -929,13 +929,14 @@ If you create the ingress load balancer yourself, pin Traefik to the nodes behin
 The management cluster has three control-plane nodes and no worker nodes.
 It uses the following values:
 
+[#aif-elemental-mgmt-cluster-table]
 [cols="1,2",options="header"]
 |===
 | Item | Value
 
 | Nodes | `mgmt1`, `mgmt2`, `mgmt3` (`192.168.122.21`–`23`), all `server`
 | API VIP and host name | `192.168.122.10`, `api.mgmt.aif.example.com`
-| Ingress address | `192.168.122.11`
+| {ingress} address | `192.168.122.11`
 | {ranchera} host name | `rancher.aif.example.com`
 |===
 
@@ -963,7 +964,7 @@ mgmt/
 ----
 
 `release.yaml` enables only {ranchera} and {saifoperator}.
-cert-manager is added automatically as a dependency of {ranchera}:
+{certmanager} is added automatically as a dependency of {ranchera}:
 
 [source,yaml,subs="+attributes"]
 ----
@@ -1108,7 +1109,7 @@ credentials:
     password: "<NGC_API_KEY>"
 ----
 
-`kubernetes/manifests/traefik-priority.yaml` exposes Traefik on the ingress address:
+`kubernetes/manifests/traefik-priority.yaml` exposes {traefik} on the ingress address:
 
 [source,yaml]
 ----
@@ -1132,10 +1133,10 @@ spec:
           enabled: true                 <2>
 ----
 <1> Preserves the client IP address.
-MetalLB announces the address from a node that runs a Traefik pod.
-<2> Writes the ingress address to the status of the `Ingress` resources.
+MetalLB announces the address from a node that runs a {traefik} pod.
+<2> Writes the {ingress} address to the status of the `Ingress` resources.
 
-`kubernetes/manifests/ingress-ip.yaml` creates the MetalLB pool for the ingress address:
+`kubernetes/manifests/ingress-ip.yaml` creates the MetalLB pool for the {ingress} address:
 
 [source,yaml]
 ----
@@ -1163,11 +1164,12 @@ Build the image as described in xref:aif-elemental-build[] and boot `mgmt1` firs
 When the cluster is ready, open `https://rancher.aif.example.com`.
 
 [#aif-elemental-example-downstream]
-=== Downstream cluster with GPU Operator and {sstorage}
+=== Downstream cluster with {nvoperator} and {sstorage}
 The downstream cluster has three control-plane nodes and two GPU worker nodes.
 It does not run {ranchera}.
 After the deployment, you import it into the {ranchera} instance of the management cluster.
 
+[#aif-elemental-downstream-cluster-table]
 [cols="1,2",options="header"]
 |===
 | Item | Value
@@ -1175,7 +1177,7 @@ After the deployment, you import it into the {ranchera} instance of the manageme
 | Control-plane nodes | `cp1`, `cp2`, `cp3` (`192.168.122.41`–`43`), `server`
 | GPU worker nodes | `gpu1`, `gpu2` (`192.168.122.51`–`52`), `agent`
 | API VIP and host name | `192.168.122.30`, `api.gpu.aif.example.com`
-| Ingress address | `192.168.122.31`
+| {ingress} address | `192.168.122.31`
 |===
 
 [source,text]
@@ -1199,7 +1201,7 @@ downstream/
         └── ingress-ip.yaml
 ----
 
-`release.yaml` enables cert-manager, the GPU Operator and {sstorage} with its system extension:
+`release.yaml` enables {certmanager}, the {nvoperator} and {sstorage} with its system extension:
 
 [source,yaml,subs="+attributes"]
 ----
@@ -1324,7 +1326,7 @@ selinux: true
 
 `kubernetes/manifests/appco-pull-secret-priority.yaml` creates the `longhorn-system` namespace and the `application-collection` image pull secret for the {sstorage} images, as shown in xref:aif-elemental-pull-secret[].
 
-`kubernetes/manifests/traefik-priority.yaml` runs Traefik on the control-plane nodes only, so the GPU nodes do not serve ingress traffic:
+`kubernetes/manifests/traefik-priority.yaml` runs {traefik} on the control-plane nodes only, so the GPU nodes do not serve ingress traffic:
 
 [source,yaml]
 ----
@@ -1382,7 +1384,7 @@ Volumes are stored on the node of the pod and are lost with that node.
 ====
 
 [#aif-elemental-more-info]
-== More information
+== For more information
 
 * link:https://github.com/SUSE/elemental/tree/main/docs[{selemental} 3 documentation]
 * link:https://github.com/SUSE/elemental/blob/main/docs/configuration-directory.md[Configuration directory guide]
