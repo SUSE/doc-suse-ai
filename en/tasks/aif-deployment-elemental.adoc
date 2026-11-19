@@ -1,0 +1,1392 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= Deploying {productname} with {selemental} 3
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+{selemental} 3 builds one bootable image that contains the operating system, {rke2a} and the {productname} {helm} charts.
+Every cluster node boots from this image, installs itself, and joins the {kube} cluster.
+{ranchera} and {saifoperator} are deployed automatically, so the manual steps described in xref:aif-deployment-prepare[] and xref:aif-deployment[] are not needed.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+// local attributes
+
+[#aif-elemental-overview]
+== How does the {selemental} 3 deployment work?
+{selemental} 3 uses a _release manifest_ that pins a tested set of components: the operating system image, the {rke2a} version, {helm} charts and system extensions.
+{productname} publishes its own release manifest that extends the {selemental} core platform with {ranchera}, {certmanager}, the {nvoperator}, {sstorage}, the local path provisioner and {saifoperator}.
+
+The deployment consists of the following steps:
+
+. Create a configuration directory that describes the desired state of the nodes.
+. Run the `elemental3 customize` command to build a RAW disk image or ISO installation media.
+With {elem31} or later, you can also build a qcow2 image.
+. Boot every node from the image.
+On the first boot, {ignition} applies the operating system configuration, {rke2a} creates the cluster, and the {helm} charts are installed.
+. Verify the deployment and continue with the post-deployment steps.
+
+The operating system is immutable and image-based.
+It has no package manager, and the `/usr` file system is always read-only.
+Additional software, such as the open-iscsi tools required by {sstorage}, is delivered as _systemd system extensions_ listed in the release manifest.
+
+The configuration files in this chapter are examples.
+{selemental} 3 supports many more customizations than described here.
+For complete configuration directories of a management cluster and a downstream cluster, see xref:aif-elemental-examples[].
+
+[#aif-elemental-versions]
+=== Which {selemental} version do I need?
+This section describes {elem30}, which supports bare-metal servers and virtual machines with a static list of nodes.
+Use the 3.0.0 release or later.
+Pre-release 3.0 versions use a different configuration format, for example, a top-level `kubernetes.yaml` file instead of `kubernetes/cluster.yaml`, and do not work with the examples in this chapter.
+The following features require {elem31} or later and are marked in the text:
+
+* qcow2 images and per-node qcow2 overlays built directly by `elemental3 customize`
+* the `apiVIPMode` option and external load balancers, required on cloud providers
+* node roles provided at boot time with `runtime.env`, required on cloud providers
+* the `--airgap` and `--cache` options of `elemental3 customize`
+
+[#aif-elemental-prereq]
+== Prerequisites
+
+* A customization host with the `x86_64` architecture, {podman} and access to the following registries: `registry.suse.com`, `ghcr.io`, `dp.apps.rancher.io`, `charts.rancher.com`, `charts.jetstack.io` and `helm.ngc.nvidia.com`.
+The image build downloads several gigabytes, so reserve at least 50{nbsp}GB of free disk space.
+* Credentials for {sappco}.
+The {sstorage} and local path provisioner charts are pulled from {sappco}.
+* Optionally, a {sregistry} registration code and an {nvidia} NGC API key.
+{saifoperator} uses them to access applications and blueprints right after the deployment.
+* Cluster nodes, bare-metal or virtual, that boot with UEFI.
+The images built by {selemental} are EFI-only.
+We recommend at least 100{nbsp}GB of disk space for each node.
+The image itself can be smaller, because the system partition grows to fill the disk on the first boot, as described in xref:aif-elemental-install[].
+* The planned network values:
+** the API virtual IP address (VIP) and an optional host name for the {kube} API,
+** the host name for the {ranchera} UI and a DNS record for it,
+** host names and MAC addresses of the nodes if you use the static node list described in xref:aif-elemental-roles-static[].
+On the first boot, each node identifies its network configuration, host name and role by its MAC address.
+
+[#aif-elemental-config-dir]
+== Creating the configuration directory
+The configuration directory holds every file that `elemental3 customize` reads.
+The following example shows the files used for a {productname} cluster:
+
+[source,text]
+----
+aif-elemental/
+├── release.yaml                      <1>
+├── install.yaml                      <2>
+├── butane.yaml                       <3>
+├── kubernetes/
+│   ├── cluster.yaml                  <4>
+│   ├── config/
+│   │   ├── server.yaml               <5>
+│   │   └── agent.yaml                <5>
+│   ├── helm/
+│   │   └── values/                   <6>
+│   │       ├── rancher.yaml
+│   │       └── aif-operator.yaml
+│   └── manifests/                    <7>
+│       └── appco-pull-secret-priority.yaml
+├── network/                          <8>
+└── custom/                           <9>
+    ├── files/
+    └── scripts/
+----
+<1> Release manifest and enabled components.
+Required.
+<2> Bootloader, kernel command line, image size and installation device.
+Required.
+<3> Users, SSH keys, files and {systemd} units applied by {ignition} on the first boot.
+<4> Nodes, API VIP and load-balancing mode, extra charts and manifests.
+<5> {rke2a} configuration for control-plane (`server`) and worker (`agent`) nodes.
+<6> {helm} values files referenced from `release.yaml`.
+<7> Additional {kube} manifests applied to the cluster.
+<8> Static network configuration.
+If the directory is missing, the nodes use DHCP.
+<9> Custom scripts and files executed on the first boot.
+
+Create the directory and restrict its permissions, because several files contain credentials:
+
+[source,console,subs="+attributes"]
+----
+{prompt_user}mkdir -p aif-elemental/kubernetes/{config,helm/values,manifests}
+{prompt_user}chmod 700 aif-elemental
+----
+
+[#aif-elemental-release]
+== Selecting the release and components (`release.yaml`)
+The `release.yaml` file references the {productname} release manifest and enables components from it.
+Components that are not listed are not installed.
+
+[source,yaml,subs="+attributes"]
+----
+manifestURI: oci://{aif-release-manifest}:{aif-latest-version}
+components:
+  kubernetes: {}
+  systemd:
+    - extension: suse-storage           <1>
+  helm:
+    - chart: rancher                    <2>
+      valuesFile: rancher.yaml
+    - chart: gpu-operator               <3>
+    - chart: suse-storage               <4>
+      credentials:
+        username: "<APPCO_USERNAME>"
+        password: "<APPCO_TOKEN>"
+    - chart: aif-operator
+      valuesFile: aif-operator.yaml
+----
+<1> System extension with the open-iscsi tools that {sstorage} needs.
+Omit it if you use the local path provisioner instead.
+<2> {certmanager} is installed automatically because the `rancher` chart depends on it in the release manifest.
+<3> Install the {nvoperator} only if the nodes have {nvidia} GPUs.
+<4> Charts from {sappco} need the `credentials` block.
+It authenticates only the download of the chart.
+The container images need an image pull secret, as described in xref:aif-elemental-manifests[].
+
+The {productname} release manifest provides the following components:
+
+[#aif-elemental-components-table]
+[cols="1,1,3",options="header"]
+|===
+| Component | Type | Description
+
+| `rancher`
+| {helm} chart
+| {ranchera}. Requires the `hostname` and `bootstrapPassword` values.
+
+| `cert-manager`
+| {helm} chart
+| Certificate management. Added as a dependency of `rancher`.
+
+| `gpu-operator`
+| {helm} chart
+| {nvoperator} configured for precompiled {nvidia} drivers from {sregistry}.
+
+| `suse-storage`
+| {helm} chart
+| {sstorage} (Longhorn). Requires the `suse-storage` system extension. Recommended for multi-node clusters.
+
+| `local-path-provisioner`
+| {helm} chart
+| Storage on the local disk of a node. Recommended for single-node clusters. See xref:aif-elemental-storage-choice[].
+
+| `aif-operator`
+| {helm} chart
+| {saifoperator} and the {productname} {ranchera} UI extension.
+
+| `suse-storage`
+| System extension
+| open-iscsi tools under `/usr`.
+|===
+
+[#aif-elemental-storage-choice]
+[IMPORTANT]
+.Enable only one storage provider
+====
+Both `suse-storage` and `local-path-provisioner` configure themselves as the default storage class.
+Do not enable them together.
+
+* For multi-node clusters, use {sstorage}.
+It replicates volumes across nodes, so pods can move between nodes and the data survives the failure of a node.
+* For single-node clusters, use the local path provisioner.
+It also works in multi-node clusters, but a volume exists only on the node where it was created.
+Pods that use the volume are always scheduled on that node, and the data is lost if the node fails.
+====
+
+To review the content of a release manifest, run:
+
+[source,console,subs="+attributes"]
+----
+{prompt_user}podman run --rm {elemental-image} release-info \
+  oci://{aif-release-manifest}:{aif-latest-version}
+----
+
+[#aif-elemental-install]
+== Configuring the installation and disk image (`install.yaml`)
+
+[source,yaml]
+----
+schema: v0
+bootloader: grub
+kernelCmdLine: "console=tty0 console=ttyS0,115200"   <1>
+raw:
+  diskSize: 20G                                      <2>
+iso:
+  device: /dev/sda                                   <3>
+# cryptoPolicy: fips                                 <4>
+----
+<1> Parameters appended to the kernel command line.
+On a cloud provider ({elem31} or later), add the {ignition} platform identifier, for example, `ignition.platform.id=aws`, so that {ignition} reads the per-node configuration from the instance user data.
+<2> Size of the RAW disk image.
+For qcow2 images ({elem31} or later), this is the virtual disk size.
+<3> Target disk for the installation from ISO media.
+<4> Enables the FIPS crypto policy.
+Enable it only if every node is FIPS-ready.
+
+[TIP]
+.Keep the RAW image small
+====
+On the first boot, the system partition grows to fill the whole disk.
+Keep `diskSize` small to speed up copying the image, and resize the target disk to its final size before the first boot, for example, with `qemu-img resize` for virtual machines.
+If you boot the image without resizing the disk, the root file system keeps the size of the image.
+====
+
+[#aif-elemental-disks]
+=== Disk layout and data persistence
+{selemental} creates the following partitions:
+
+[#aif-elemental-partitions-table]
+[cols="1,1,1,3",options="header"]
+|===
+| Label | File system | Mount point | Purpose
+
+| `EFI` | vfat | `/boot/efi` | Bootloader, kernel and initrd.
+| `RECOVERY` | ext4 | -- | Installation and restore operations.
+| `SYSTEM` | btrfs | `/` | Operating system and user data. Uses all remaining space.
+| `CONFIG` | ext4 | -- | First-boot configuration. Created only when needed.
+|===
+
+The root subvolume is read-only.
+The `/etc`, `/var`, `/root`, `/home`, `/opt`, `/srv` and `/usr/local` directories are separate read-write subvolumes:
+
+* `/etc` is snapshotted with the operating system.
+During an upgrade, local changes are merged into the new snapshot, and a rollback also restores `/etc`.
+* `/var` has copy-on-write disabled and persists across upgrades and rollbacks.
+{kube} data in `/var/lib/rancher` and the {sstorage} data in `/var/lib/longhorn` are stored there.
+* `/usr` is replaced on every upgrade.
+Never store data there.
+
+To use additional disks, for example, a dedicated disk for {sstorage} or model storage, define the partitions, file systems and mounts in `butane.yaml`.
+{ignition} configures them on the first boot.
+
+[#aif-elemental-butane]
+== Configuring users, SSH access and files (`butane.yaml`)
+The `butane.yaml` file contains a link:https://coreos.github.io/butane/[Butane] configuration.
+{selemental} converts it to an {ignition} configuration that runs on the first boot of every node.
+
+The following example creates the `root` user and an unprivileged user with SSH keys, disables SSH logins as `root` and sets up the `root` shell for `kubectl`:
+
+[source,yaml]
+----
+variant: fcos
+version: 1.6.0
+passwd:
+  users:
+    - name: root
+      password_hash: "<ROOT_PASSWORD_HASH>"           <1>
+    - name: suse                                      <2>
+      password_hash: "<USER_PASSWORD_HASH>"
+      shell: /bin/bash
+      ssh_authorized_keys:
+        - "<SSH_PUBLIC_KEY>"
+systemd:
+  units:
+    - name: sshd.service
+      enabled: true
+storage:
+  filesystems:
+    - device: /dev/disk/by-partlabel/SYSTEM           <3>
+      format: btrfs
+      wipe_filesystem: false
+      path: /home
+      mount_options:
+        - subvol=/@/home
+  files:
+    - path: /etc/ssh/sshd_config.d/sshd.conf
+      mode: 384                                       <4>
+      overwrite: true
+      contents:
+        inline: |
+          PermitRootLogin no
+          AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys.d/ignition
+    - path: /root/.profile
+      mode: 416
+      overwrite: true
+      contents:
+        inline: |
+          export KUBECONFIG=/etc/rancher/rke2/rke2.yaml
+          export PATH=${PATH}:/var/lib/rancher/rke2/bin
+----
+<1> Generate password hashes with `openssl passwd -6`.
+<2> The image does not include `sudo`.
+Log in as the unprivileged user and switch to `root` with `su -`.
+<3> `/home` is not mounted while {ignition} runs.
+Declaring the subvolume creates the home directories on the persistent subvolume instead of a directory that is hidden after the boot.
+<4> Specify file modes as decimal numbers, for example, `384` for `0600` and `416` for `0640`.
+
+Observe the following rules when writing `butane.yaml`:
+
+* Write files only to read-write paths, such as `/etc`, `/var` or `/opt`.
+A write to a read-only path, such as `/usr`, fails {ignition} and the node stops in the emergency shell of the initrd.
+* Store scripts that must persist after the first boot in `/var/lib/elemental`.
+* The {ignition} `kernelArguments` section is not supported.
+Use `kernelCmdLine` in `install.yaml` instead.
+* Changing `butane.yaml` requires rebuilding the image.
+
+[#aif-elemental-selinux]
+=== {selnx} considerations
+{selnx} runs in enforcing mode on the operating system.
+The `selinux: true` option in the {rke2a} configuration enables {selnx} support for {rke2a} and its containers.
+For details, see the link:https://docs.rke2.io/security/selinux[{rke2a} {selnx} documentation].
+Take the following into account when adding units, scripts or directories:
+
+* Files in `/var/lib/elemental` have the `var_lib_t` label, which {systemd} is not allowed to execute.
+A unit with `ExecStart=/var/lib/elemental/script.sh` fails with the `203/EXEC` status.
+Run the script through the interpreter instead:
++
+[source,ini]
+----
+ExecStart=/usr/bin/bash /var/lib/elemental/script.sh
+----
+* Directories used by containers need the `container_file_t` label.
+For example, the local path provisioner stores data in `/opt/local-path-provisioner`.
+Create the directory at boot with `mkdir -pZ /opt/local-path-provisioner` in a {systemd} unit ordered before `rke2-server.service` and `rke2-agent.service`, so that it gets the label defined by the `rke2-selinux` policy.
+* {selnx} labels in `/etc` are not merged during upgrades.
+The directory is relabeled according to the current policy.
+
+[#aif-elemental-storage-iscsi]
+=== Preparing nodes for {sstorage}
+The `suse-storage` system extension installs `iscsid` under `/usr`, but nothing under `/etc`.
+Without an initiator name and the `iscsid` configuration, Longhorn volumes are created, but pods cannot attach them.
+Add a {systemd} unit to `butane.yaml` that runs on every boot after `systemd-sysext.service` and performs the following tasks:
+
+. Creates `/etc/iscsi/initiatorname.iscsi` with a unique name, for example, generated by `iscsi-iname`.
+. Copies a default `/etc/iscsi/iscsid.conf` if it does not exist.
+. Starts `iscsid` with `systemctl start --no-block iscsid.service`.
+
+To place the default Longhorn disk only on selected nodes, set `defaultSettings.createDefaultDiskLabeledNodes: true` in a values file for the `suse-storage` chart, referenced with `valuesFile` in `release.yaml`, and add the `node.longhorn.io/create-default-disk=true` node label in the {rke2a} configuration of those nodes.
+
+[#aif-elemental-kubernetes]
+== Configuring the {kube} cluster (`kubernetes/`)
+
+[#aif-elemental-rke2-config]
+=== {rke2a} configuration
+The files in `kubernetes/config` are standard link:https://docs.rke2.io/install/configuration[{rke2a} configuration files].
+{selemental} adds the address that nodes use to join the cluster, based on the API VIP from `kubernetes/cluster.yaml`.
+The API VIP is provided either by the embedded MetalLB load balancer or by an external load balancer, as described in xref:aif-elemental-loadbalancer[].
+
+Example of `kubernetes/config/server.yaml`:
+
+[source,yaml]
+----
+token: "<RKE2_TOKEN>"                 <1>
+selinux: true
+write-kubeconfig-group: suse          <2>
+write-kubeconfig-mode: "0640"
+ingress-controller: traefik
+tls-san:
+  - api.aif.example.com
+----
+<1> Shared secret for joining the cluster.
+Use the same value in `agent.yaml`, for example, generated with `openssl rand -hex 32`.
+<2> Allows the unprivileged user to read `/etc/rancher/rke2/rke2.yaml`.
+
+Example of `kubernetes/config/agent.yaml`:
+
+[source,yaml]
+----
+token: "<RKE2_TOKEN>"
+----
+
+To use a private registry mirror, add a `kubernetes/config/registries.yaml` file.
+It is applied to all nodes.
+
+[#aif-elemental-helm-values]
+=== {helm} values
+Place one values file for each chart that has `valuesFile` set in `release.yaml` into `kubernetes/helm/values`.
+The values are merged with the defaults from the release manifest.
+
+Example of `kubernetes/helm/values/rancher.yaml`:
+
+[source,yaml]
+----
+hostname: rancher.aif.example.com
+bootstrapPassword: "<RANCHER_BOOTSTRAP_PASSWORD>"
+----
+
+The `hostname` value is an example.
+Unless a tool such as {externaldns} manages your DNS records, create a DNS record for the host name manually that points to the {ingress} address, as described in xref:aif-elemental-lb-managed[].
+For test deployments without DNS, you can use a host name from a wildcard DNS service such as link:https://sslip.io[sslip.io], for example, `rancher.192.168.122.11.sslip.io`.
+
+Example of `kubernetes/helm/values/aif-operator.yaml`:
+
+[source,yaml]
+----
+credentials:
+  applicationCollection:
+    username: "<APPCO_USERNAME>"
+    password: "<APPCO_TOKEN>"
+  suseRegistry:
+    username: "regcode"
+    password: "<REGISTRATION_CODE>"
+  nvidia:
+    username: "$oauthtoken"
+    password: "<NGC_API_KEY>"
+----
+
+For details about the credentials, see xref:aif-credentials-install[].
+
+[TIP]
+.Quote credentials
+====
+Quote every credential in the YAML files.
+Unquoted values containing characters such as `:`, `#` or `"` are not parsed correctly.
+====
+
+[#aif-elemental-manifests]
+=== Additional manifests
+{kube} manifests in `kubernetes/manifests` are applied after the {kube} API is available.
+
+[NOTE]
+.Manifest ordering
+====
+Manifests with names ending in `-priority.yaml` are applied right after the {rke2a} core charts, before the {helm} charts from `release.yaml`.
+The other manifests are applied only after every {helm} chart is installed.
+Use the `-priority.yaml` suffix for manifests that must not depend on the charts, such as pull secrets and `HelmChartConfig` resources.
+====
+
+[#aif-elemental-pull-secret]
+==== Image pull secret for {sappco}
+The `credentials` block in `release.yaml` authenticates only the download of the {helm} charts.
+The container images of {sstorage} and the local path provisioner are also hosted in {sappco} and cannot be pulled anonymously.
+As described in the link:https://documentation.suse.com/cloudnative/storage/latest/en/installation-setup/installation/install-using-helm.html[{sstorage} installation guide], the pods pull the images with an image pull secret referenced in the `global.imagePullSecrets` chart value.
+
+The {productname} release manifest already sets `global.imagePullSecrets` to `application-collection` for both charts.
+You only need to create the secret in the namespace of the chart: `longhorn-system` for {sstorage}, or `local-path-provisioner` for the local path provisioner.
+
+Example of `kubernetes/manifests/appco-pull-secret-priority.yaml` for {sstorage}:
+
+[source,yaml]
+----
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: longhorn-system                       <1>
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: application-collection                <2>
+  namespace: longhorn-system
+type: kubernetes.io/dockerconfigjson
+stringData:
+  .dockerconfigjson: |
+    {
+      "auths": {
+        "dp.apps.rancher.io": {
+          "username": "<APPCO_USERNAME>",
+          "password": "<APPCO_TOKEN>"
+        }
+      }
+    }
+----
+<1> The namespace does not exist yet when `-priority.yaml` manifests are applied, so the manifest creates it.
+<2> The name must match the `global.imagePullSecrets` value from the release manifest.
+
+The `-priority.yaml` suffix makes sure that the secret exists before the chart is installed.
+For the local path provisioner, use `local-path-provisioner` as the namespace.
+
+[#aif-elemental-loadbalancer]
+== Choosing how to expose the {kube} API
+In a multi-node cluster, the {kube} API (port 6443) and the {rke2a} supervisor (port 9345) are served on a virtual IP address that is shared by the control-plane nodes.
+Configure it in the `network` section of `kubernetes/cluster.yaml`.
+
+With {elem30}, setting `apiVIP` or `apiVIP6` always deploys the embedded MetalLB load balancer.
+{elem31} adds the `apiVIPMode` option, which selects who provides the address:
+
+[#aif-elemental-lb-modes-table]
+[cols="1,2,2",options="header"]
+|===
+| Mode | Load balancer | Use for
+
+| `managed` (default)
+| {selemental} deploys MetalLB and the endpoint copier operator, and announces the VIP from one of the control-plane nodes using layer 2 (ARP).
+| Bare-metal servers and virtual machines on the same layer 2 network.
+
+| `external` ({elem31} or later)
+| A load balancer that you provide, such as a cloud provider load balancer, forwards the traffic to the control-plane nodes.
+| Cloud providers and networks where layer 2 announcements are not possible.
+|===
+
+[#aif-elemental-lb-managed]
+=== Using the embedded load balancer (MetalLB)
+On bare-metal servers and on-premises virtual machines, no infrastructure component provides load balancer addresses to {kube}.
+MetalLB fills this gap: it assigns addresses to services of type `LoadBalancer` and announces them on the local network.
+Use the embedded MetalLB in these environments.
+On cloud providers, use the load balancers of the provider instead, as described in xref:aif-elemental-lb-external[].
+
+Example of `kubernetes/cluster.yaml` with the managed VIP:
+
+[source,yaml]
+----
+network:
+  apiVIP: 192.168.122.10
+  apiHost: api.aif.example.com
+  # apiVIPMode: managed             <1>
+----
+<1> {elem31} or later only.
+`managed` is the default, so you can omit the option.
+With {elem30}, do not set it.
+
+With the embedded load balancer, {selemental} performs the following steps automatically:
+
+* Adds the `metallb` and `endpoint-copier-operator` charts from the core platform release manifest.
+* Creates an `IPAddressPool` containing only the API VIP, an `L2Advertisement`, and the `kubernetes-vip` service of type `LoadBalancer` in the `default` namespace.
+* Configures the endpoint copier operator to keep the endpoints of the `kubernetes-vip` service in sync with the control-plane nodes, so that the VIP keeps working when a node is down.
+
+The API VIP must be an unused address in the node subnet, outside the DHCP range and outside any other MetalLB address pool.
+For IPv6, use `apiVIP6`.
+If you set both `apiVIP` and `apiVIP6`, a dual-stack service is created.
+
+The address pool created by {selemental} is reserved for the API VIP.
+To give other services, such as the {ingress} controller or an application, their own `LoadBalancer` address, add the following resources as manifests in `kubernetes/manifests`:
+
+* An `IPAddressPool` with the additional addresses, in the `metallb-system` namespace.
+Set `autoAssign: false` so that addresses are only given to services that request them.
+* An `L2Advertisement` that references the pool.
+* The `metallb.io/loadBalancerIPs` annotation on the service, to request a specific address from the pool.
+
+Do not use the `-priority.yaml` suffix for these manifests, because the MetalLB CRDs exist only after the {helm} charts are installed.
+For a complete example, see xref:aif-elemental-examples-ingress[].
+
+The default {rke2a} {traefik} {ingress} controller listens on ports 80 and 443 of every node.
+Point the {ranchera} host name to the IP address of a node or to a DNS record with all node addresses.
+To publish the {ingress} on its own highly available address instead, expose the Traefik service as a `LoadBalancer` with a MetalLB address, as shown in xref:aif-elemental-examples-ingress[].
+
+[#aif-elemental-lb-external]
+=== Using a cloud load balancer
+[NOTE]
+.Requires {selemental} 3.1 or later
+====
+{elem30} always deploys MetalLB for the API VIP and does not support external load balancers.
+====
+
+Example of `kubernetes/cluster.yaml` with an external load balancer:
+
+[source,yaml]
+----
+network:
+  apiVIP: 10.0.1.100                <1>
+  apiHost: api.aif.example.com      <2>
+  apiVIPMode: external
+----
+<1> Private IP address of the internal load balancer.
+<2> Host name of the load balancer.
+Add it to `tls-san` in `server.yaml` if clients use a different name.
+
+Before building the image, create the following resources:
+
+* An internal load balancer that forwards TCP ports 6443 and 9345 to every control-plane node.
+Worker nodes must reach it on both ports.
+* Optionally, a second load balancer that forwards TCP ports 80 and 443 to the {ingress} controller, to make the {ranchera} UI and {productname} applications available outside the cluster.
+
+The load balancer address is stored in the image.
+If you re-create the load balancer with a different address, rebuild the image.
+
+The {kube} API load balancer must exist before the cluster, so you always create it yourself.
+For other services of type `LoadBalancer`, such as the {ingress} controller or applications, you can let the cloud provider create the load balancers automatically instead of creating them in advance.
+Install the load balancer controller of the provider, for example, the link:https://github.com/kubernetes-sigs/aws-load-balancer-controller[AWS Load Balancer Controller] on Amazon Web Services.
+The controller watches the services and provisions, updates and deletes a cloud load balancer for each of them.
+You can add the controller as an additional {helm} chart in `kubernetes/cluster.yaml`.
+It usually needs cloud permissions, for example, an IAM role for the nodes, and provider-specific annotations on the services.
+For the requirements, see the documentation of the controller.
+
+[IMPORTANT]
+.Load balancers with PROXY protocol
+====
+If the {ingress} load balancer uses the PROXY protocol, configure the Traefik `web` and `websecure` entry points to trust it, using a `HelmChartConfig` for `rke2-traefik` in `kubernetes/manifests`.
+Otherwise, Traefik rejects the connections.
+====
+
+[#aif-elemental-node-roles]
+== Assigning node roles
+Each node needs a host name and a role: control-plane (`server`) or worker (`agent`).
+Exactly one control-plane node initializes the cluster.
+{selemental} supports two methods to assign the roles: a static node list, available in {elem30}, and roles provided at boot time, which require {elem31} or later.
+
+[#aif-elemental-roles-static]
+=== Static node list
+List the nodes in `kubernetes/cluster.yaml` and configure the network of each node in the `network` directory.
+On the first boot, each node finds its configuration by matching its MAC address and takes the host name and role from the list.
+
+[source,yaml]
+----
+nodes:
+  - hostname: aif-cp1.example.com
+    type: server
+    init: true                      <1>
+  - hostname: aif-cp2.example.com
+    type: server
+  - hostname: aif-cp3.example.com
+    type: server
+  - hostname: aif-gpu1.example.com
+    type: agent
+network:
+  apiVIP: 192.168.122.10
+  apiHost: api.aif.example.com
+----
+<1> If no node has `init: true`, the first server in the list initializes the cluster.
+
+For every node, create a link:https://nmstate.io[nmstate] file named after its host name, for example, `network/aif-cp1.example.com.yaml`:
+
+[source,yaml]
+----
+interfaces:
+  - name: eth0
+    type: ethernet
+    state: up
+    mac-address: 52:54:00:00:00:01
+    ipv4:
+      enabled: true
+      address:
+        - ip: 192.168.122.21
+          prefix-length: 24
+    ipv6:
+      enabled: false
+routes:
+  config:
+    - destination: 0.0.0.0/0
+      next-hop-address: 192.168.122.1
+      next-hop-interface: eth0
+dns-resolver:
+  config:
+    server:
+      - 192.168.122.1
+----
+
+The files are processed on the first boot by the link:https://github.com/suse-edge/nm-configurator[NetworkManager Configurator (`nmc`)], which matches them to the node by the `mac-address` value.
+The interface name in the file, `eth0` in this example, is only a logical name.
+If the interface has a different name on the node, for example, a predictable name such as `enp1s0`, `nmc` uses the actual name.
+Specify the MAC address of every Ethernet interface of the node.
+
+The same image is used for the whole cluster, but adding or removing a node requires rebuilding it.
+For network setups that nmstate files cannot express, provide a `network/configure-network.sh` script instead.
+Do not combine nmstate files and the script in the same directory.
+
+[#aif-elemental-roles-runtime]
+=== Roles provided at boot time
+[NOTE]
+.Requires {selemental} 3.1 or later
+====
+With {elem30}, use the static node list.
+====
+Omit the `nodes` list and the `network` directory, and provide the role of every node when you create it, as {ignition} user data.
+The image does not depend on the set of nodes, so you can add nodes without rebuilding it.
+This method is required on cloud providers and is useful with provisioning tools such as Metal3.
+
+The per-node {ignition} configuration must write the following files:
+
+* `/etc/hostname` with the host name of the node.
+* `/var/lib/elemental/runtime.env` with the role:
++
+[source,bash]
+----
+NODETYPE=server          # server or agent
+IS_INIT_NODE=true        # true only on the node that initializes the cluster
+----
+
+The following Butane example creates this configuration for the initializing node:
+
+[source,yaml]
+----
+variant: fcos
+version: 1.6.0
+storage:
+  files:
+    - path: /etc/hostname
+      mode: 420
+      overwrite: true
+      contents:
+        inline: aif-cp1
+    - path: /var/lib/elemental/runtime.env
+      mode: 420
+      overwrite: true
+      contents:
+        inline: |
+          NODETYPE=server
+          IS_INIT_NODE=true
+----
+
+Convert it to {ignition} and pass the result as the user data of the instance:
+
+[source,console,subs="+attributes"]
+----
+{prompt_user}butane --strict --pretty aif-cp1.bu > aif-cp1.ign
+----
+
+The per-node configuration is merged with the configuration from `butane.yaml` that is stored in the image.
+You can also use it for other node-specific settings, for example, the `node-ip` or node labels in `/etc/rancher/rke2/config.yaml.d/`.
+
+[#aif-elemental-build]
+== Building the image
+Run `elemental3 customize` from the {selemental} container image.
+The configuration directory is mounted at `/config`, and the image is written there.
+
+[source,console,subs="+attributes"]
+----
+{prompt_sudo}podman run --rm -it --network host \
+  -v $PWD/aif-elemental:/config:Z \
+  -v $PWD/cache:/cache:Z \
+  {elemental-image} \
+  customize --type raw --output /config/aif.raw
+----
+
+The command takes several minutes, because it downloads the operating system, {rke2a} and the {helm} charts.
+When it finishes, the configuration directory contains the image and its SHA256 checksum, for example, `aif.raw` and `aif.raw.sha256`.
+
+Useful options of `elemental3 customize`:
+
+`--type raw|iso|qcow2`::
+RAW disk image or ISO installation media.
+The `qcow2` type, a sparse qcow2 disk image, requires {elem31} or later.
+`--output`::
+Path of the image.
+When running in a container, use a path under `/config`, otherwise the image stays inside the container.
+`--mode split`::
+Stores the first-boot configuration in a separate directory instead of a partition in the image.
+Use it when another tool, such as Metal3 or Cluster API, delivers the {ignition} configuration.
+`--overlay node1,node2`::
+With `--type qcow2`, creates a thin qcow2 overlay for each node on top of the image.
+Requires {elem31} or later.
+`--local`::
+Uses only the artifacts already in the cache and does not download anything.
+`--cache auto|offline|refresh|off`::
+Controls the reuse of downloaded artifacts in `/cache`.
+Requires {elem31} or later.
+`--airgap`::
+Embeds the {helm} charts and container images into the image for deployments without network access.
+Requires {elem31} or later.
+
+[#aif-elemental-qcow2]
+=== Converting the RAW image to qcow2
+{elem30} does not produce qcow2 images.
+For hypervisors and cloud platforms that expect the qcow2 format, convert the RAW image with `qemu-img`:
+
+. Convert the image.
+The `-c` option compresses the output, which is useful when uploading the image to a cloud platform:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}qemu-img convert -p -f raw -O qcow2 -c aif-elemental/aif.raw aif.qcow2
+----
+. Optionally, grow the virtual disk to the final size of the node disk.
+The system partition fills the disk on the first boot:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}qemu-img resize aif.qcow2 100G
+----
+. Verify the result:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}qemu-img info aif.qcow2
+----
+
+To boot several virtual machines from one converted image without copying it, create a thin overlay for each node that uses the image as its backing file.
+Do not modify or boot the base image after creating the overlays:
+
+[source,console,subs="+attributes"]
+----
+{prompt_user}qemu-img create -f qcow2 -F qcow2 -b aif.qcow2 aif-cp1.qcow2 100G
+----
+
+[NOTE]
+.Requires {selemental} 3.1 or later
+====
+Build the qcow2 image and the per-node overlays directly, without converting:
+
+[source,console,subs="+attributes"]
+----
+{prompt_sudo}podman run --rm -it --network host \
+  -v $PWD/aif-elemental:/config:Z \
+  <ELEMENTAL_3.1_IMAGE> \
+  customize --type qcow2 --output /config/aif.qcow2 \
+  --overlay aif-cp1,aif-cp2,aif-cp3
+----
+
+The command creates `aif.qcow2` and the `aif-cp1.qcow2`, `aif-cp2.qcow2` and `aif-cp3.qcow2` overlays next to it.
+The virtual disk size is `raw.diskSize` from `install.yaml`.
+Keep the base image in the same directory as the overlays, because the overlays reference it by a relative path.
+====
+
+[#aif-elemental-boot]
+== Booting the cluster nodes
+Boot the node that initializes the cluster first, then the other control-plane nodes, then the worker nodes.
+
+Bare-metal servers::
+Boot the ISO media from a USB drive, virtual media of the BMC or the network.
+The installer writes the image to the disk set in `iso.device` and reboots.
+Alternatively, write the RAW image directly to the disk.
+Virtual machines::
+Create a UEFI virtual machine from a qcow2 copy of the image, converted as described in xref:aif-elemental-qcow2[], for example:
++
+[source,console,subs="+attributes"]
+----
+{prompt_sudo}qemu-img convert -p -f raw -O qcow2 aif-elemental/aif.raw /var/lib/libvirt/images/aif-cp1.qcow2
+{prompt_sudo}qemu-img resize /var/lib/libvirt/images/aif-cp1.qcow2 100G
+{prompt_sudo}virt-install --name aif-cp1 --ram 16384 --vcpus 4 \
+  --disk path=/var/lib/libvirt/images/aif-cp1.qcow2,format=qcow2 \
+  --network network=default,model=virtio,mac=52:54:00:00:00:01 \
+  --osinfo detect=on,name=sle-unknown --boot uefi --import \
+  --graphics none --console pty,target_type=serial
+----
+Cloud providers ({elem31} or later)::
+Import the RAW image, or the converted qcow2 image if the platform requires it, as a custom image or snapshot, create the load balancers, and create the instances with the per-node {ignition} configuration as user data.
+
+[#aif-elemental-verify]
+== Verifying the deployment
+
+. Log in to a control-plane node and check that all nodes are `Ready`:
++
+[source,console,subs="+attributes"]
+----
+{prompt_root}kubectl get nodes
+----
+. Check that the {helm} charts are installed.
+Each chart has an install job in the `kube-system` namespace:
++
+[source,console,subs="+attributes"]
+----
+{prompt_root}kubectl get helmcharts -n kube-system
+{prompt_root}kubectl get jobs -n kube-system
+----
+. Check that {saifoperator} is running:
++
+[source,console,subs="+attributes"]
+----
+{prompt_root}kubectl get pods -n aif-operator
+----
+. Open the {ranchera} host name in a browser and log in with the bootstrap password.
+
+If the cluster does not come up, check the following systemd units on the nodes:
+
+[source,console,subs="+attributes"]
+----
+{prompt_root}journalctl -b -t ignition                  # first-boot configuration (initrd)
+{prompt_root}journalctl -u k8s-config-installer          # RKE2 configuration
+{prompt_root}journalctl -u rke2-server                   # or rke2-agent
+{prompt_root}journalctl -u k8s-resource-installer        # Helm charts and manifests
+----
+
+After the deployment, continue with xref:ai-factory-post-deployment[].
+
+[#aif-elemental-examples]
+== Example deployments
+The following examples show complete configuration directories for a typical {productname} setup with two highly available clusters:
+
+* A _management cluster_ with {ranchera} and {saifoperator}.
+* A _downstream cluster_ with {certmanager}, the {nvoperator} and {sstorage}, which runs the AI workloads.
+
+Both examples use only {elem30} features: a static node list, the embedded MetalLB load balancer for the {kube} API, and a second MetalLB address for the {traefik} {ingress} controller.
+
+[IMPORTANT]
+.The files are examples
+====
+The files in this section, and in the rest of this chapter, are examples that show one possible configuration.
+Replace the IP addresses, host names, MAC addresses and credentials with your own values.
+
+{selemental} 3 can do much more than shown here.
+You can add any {helm} chart or {kube} manifest, configure bonds, VLANs and other network setups with nmstate, add disks, users, files and systemd units with Butane, run custom first-boot scripts, use a private registry, and more.
+For all options, see the link:https://github.com/SUSE/elemental/tree/main/docs[{selemental} 3 documentation].
+====
+
+[#aif-elemental-examples-ingress]
+=== How is the {ingress} configured?
+{rke2a} deploys the {traefik} {ingress} controller as a DaemonSet that listens on ports 80 and 443 of every node.
+To give the {ingress} a single highly available address, both examples expose {traefik} through a `LoadBalancer` service with a dedicated MetalLB address:
+
+* A `-priority.yaml` manifest with a `HelmChartConfig` for `rke2-traefik` enables the `LoadBalancer` service and requests the {{ingress}} address.
+It must be applied before {rke2a} installs {traefik}.
+* A second manifest creates the MetalLB `IPAddressPool` and `L2Advertisement` for the {ingress} address.
+It is applied after the {helm} charts, when the MetalLB CRDs exist.
+The pool has `autoAssign: false`, so the address is only given to the service that requests it.
+
+The {ingress} address must be an unused address in the node subnet, different from the API VIP and outside the DHCP range.
+Create a DNS record for the {ranchera} host name, or a wildcard record for all applications, that points to the {ingress} address.
+
+[NOTE]
+.Cloud load balancers
+====
+With {elem31} or later and an external load balancer, do not use MetalLB for the {ingress}.
+If a load balancer controller of the cloud provider is installed, expose {traefik} as a `LoadBalancer` service with the annotations of the controller, and the controller creates the load balancer, as described in xref:aif-elemental-lb-external[].
+If you create the {ingress} load balancer yourself, pin {traefik} to the nodes behind the load balancer with a `nodeSelector`, and if the load balancer uses the PROXY protocol, add its source network to `ports.web.proxyProtocol.trustedIPs` and `ports.websecure.proxyProtocol.trustedIPs` in the `HelmChartConfig`.
+====
+
+[#aif-elemental-example-mgmt]
+=== Management cluster with {ranchera} and {saifoperator}
+The management cluster has three control-plane nodes and no worker nodes.
+It uses the following values:
+
+[#aif-elemental-mgmt-cluster-table]
+[cols="1,2",options="header"]
+|===
+| Item | Value
+
+| Nodes | `mgmt1`, `mgmt2`, `mgmt3` (`192.168.122.21`–`23`), all `server`
+| API VIP and host name | `192.168.122.10`, `api.mgmt.aif.example.com`
+| {ingress} address | `192.168.122.11`
+| {ranchera} host name | `rancher.aif.example.com`
+|===
+
+[source,text]
+----
+mgmt/
+├── release.yaml
+├── install.yaml
+├── butane.yaml
+├── network/
+│   ├── mgmt1.aif.example.com.yaml
+│   ├── mgmt2.aif.example.com.yaml
+│   └── mgmt3.aif.example.com.yaml
+└── kubernetes/
+    ├── cluster.yaml
+    ├── config/
+    │   └── server.yaml
+    ├── helm/
+    │   └── values/
+    │       ├── rancher.yaml
+    │       └── aif-operator.yaml
+    └── manifests/
+        ├── traefik-priority.yaml
+        └── ingress-ip.yaml
+----
+
+`release.yaml` enables only {ranchera} and {saifoperator}.
+{certmanager} is added automatically as a dependency of {ranchera}:
+
+[source,yaml,subs="+attributes"]
+----
+manifestURI: oci://{aif-release-manifest}:{aif-latest-version}
+components:
+  kubernetes: {}
+  helm:
+    - chart: rancher
+      valuesFile: rancher.yaml
+    - chart: aif-operator
+      valuesFile: aif-operator.yaml
+----
+
+`install.yaml`:
+
+[source,yaml]
+----
+schema: v0
+bootloader: grub
+kernelCmdLine: "console=tty0 console=ttyS0,115200"
+raw:
+  diskSize: 20G
+----
+
+`butane.yaml` creates the users, as described in xref:aif-elemental-butane[]:
+
+[source,yaml]
+----
+variant: fcos
+version: 1.6.0
+passwd:
+  users:
+    - name: root
+      password_hash: "<ROOT_PASSWORD_HASH>"
+    - name: suse
+      password_hash: "<USER_PASSWORD_HASH>"
+      shell: /bin/bash
+      ssh_authorized_keys:
+        - "<SSH_PUBLIC_KEY>"
+systemd:
+  units:
+    - name: sshd.service
+      enabled: true
+storage:
+  filesystems:
+    - device: /dev/disk/by-partlabel/SYSTEM
+      format: btrfs
+      wipe_filesystem: false
+      path: /home
+      mount_options:
+        - subvol=/@/home
+  files:
+    - path: /etc/ssh/sshd_config.d/sshd.conf
+      mode: 384
+      overwrite: true
+      contents:
+        inline: |
+          PermitRootLogin no
+          AuthorizedKeysFile .ssh/authorized_keys .ssh/authorized_keys.d/ignition
+----
+
+`kubernetes/cluster.yaml` lists the nodes and the API VIP:
+
+[source,yaml]
+----
+nodes:
+  - hostname: mgmt1.aif.example.com
+    type: server
+    init: true
+  - hostname: mgmt2.aif.example.com
+    type: server
+  - hostname: mgmt3.aif.example.com
+    type: server
+network:
+  apiVIP: 192.168.122.10
+  apiHost: api.mgmt.aif.example.com
+----
+
+`network/mgmt1.aif.example.com.yaml`.
+Create the same file for `mgmt2` and `mgmt3` with their MAC and IP addresses:
+
+[source,yaml]
+----
+interfaces:
+  - name: eth0
+    type: ethernet
+    state: up
+    mac-address: 52:54:00:00:00:01
+    ipv4:
+      enabled: true
+      address:
+        - ip: 192.168.122.21
+          prefix-length: 24
+    ipv6:
+      enabled: false
+routes:
+  config:
+    - destination: 0.0.0.0/0
+      next-hop-address: 192.168.122.1
+      next-hop-interface: eth0
+dns-resolver:
+  config:
+    server:
+      - 192.168.122.1
+----
+
+`kubernetes/config/server.yaml`:
+
+[source,yaml]
+----
+token: "<RKE2_TOKEN>"
+selinux: true
+ingress-controller: traefik
+write-kubeconfig-group: suse
+write-kubeconfig-mode: "0640"
+tls-san:
+  - api.mgmt.aif.example.com
+----
+
+`kubernetes/helm/values/rancher.yaml` runs three {ranchera} replicas, one on each node:
+
+[source,yaml]
+----
+hostname: rancher.aif.example.com
+bootstrapPassword: "<RANCHER_BOOTSTRAP_PASSWORD>"
+replicas: 3
+----
+
+`kubernetes/helm/values/aif-operator.yaml`:
+
+[source,yaml]
+----
+credentials:
+  applicationCollection:
+    username: "<APPCO_USERNAME>"
+    password: "<APPCO_TOKEN>"
+  suseRegistry:
+    username: "regcode"
+    password: "<REGISTRATION_CODE>"
+  nvidia:
+    username: "$oauthtoken"
+    password: "<NGC_API_KEY>"
+----
+
+`kubernetes/manifests/traefik-priority.yaml` exposes {traefik} on the {ingress} address:
+
+[source,yaml]
+----
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    service:
+      enabled: true
+      type: LoadBalancer
+      annotations:
+        metallb.io/loadBalancerIPs: 192.168.122.11
+      spec:
+        externalTrafficPolicy: Local    <1>
+    providers:
+      kubernetesIngress:
+        publishedService:
+          enabled: true                 <2>
+----
+<1> Preserves the client IP address.
+MetalLB announces the address from a node that runs a {traefik} pod.
+<2> Writes the {ingress} address to the status of the `Ingress` resources.
+
+`kubernetes/manifests/ingress-ip.yaml` creates the MetalLB pool for the {ingress} address:
+
+[source,yaml]
+----
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: ingress-ip
+  namespace: metallb-system
+spec:
+  addresses:
+    - 192.168.122.11/32
+  autoAssign: false
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: ingress-ip-l2-adv
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - ingress-ip
+----
+
+Build the image as described in xref:aif-elemental-build[] and boot `mgmt1` first, then `mgmt2` and `mgmt3`.
+When the cluster is ready, open `https://rancher.aif.example.com`.
+
+[#aif-elemental-example-downstream]
+=== Downstream cluster with {nvoperator} and {sstorage}
+The downstream cluster has three control-plane nodes and two GPU worker nodes.
+It does not run {ranchera}.
+After the deployment, you import it into the {ranchera} instance of the management cluster.
+
+[#aif-elemental-downstream-cluster-table]
+[cols="1,2",options="header"]
+|===
+| Item | Value
+
+| Control-plane nodes | `cp1`, `cp2`, `cp3` (`192.168.122.41`–`43`), `server`
+| GPU worker nodes | `gpu1`, `gpu2` (`192.168.122.51`–`52`), `agent`
+| API VIP and host name | `192.168.122.30`, `api.gpu.aif.example.com`
+| {ingress} address | `192.168.122.31`
+|===
+
+[source,text]
+----
+downstream/
+├── release.yaml
+├── install.yaml
+├── butane.yaml
+├── network/
+│   ├── cp1.aif.example.com.yaml
+│   ├── ...
+│   └── gpu2.aif.example.com.yaml
+└── kubernetes/
+    ├── cluster.yaml
+    ├── config/
+    │   ├── server.yaml
+    │   └── agent.yaml
+    └── manifests/
+        ├── appco-pull-secret-priority.yaml
+        ├── traefik-priority.yaml
+        └── ingress-ip.yaml
+----
+
+`release.yaml` enables {certmanager}, the {nvoperator} and {sstorage} with its system extension:
+
+[source,yaml,subs="+attributes"]
+----
+manifestURI: oci://{aif-release-manifest}:{aif-latest-version}
+components:
+  kubernetes: {}
+  systemd:
+    - extension: suse-storage
+  helm:
+    - chart: cert-manager
+    - chart: gpu-operator
+    - chart: suse-storage
+      credentials:
+        username: "<APPCO_USERNAME>"
+        password: "<APPCO_TOKEN>"
+----
+
+`install.yaml` is the same as for the management cluster.
+Give the nodes enough disk space, because {sstorage} stores the volumes in `/var/lib/longhorn` on the system disk.
+
+`butane.yaml` creates the same users as for the management cluster and adds the `iscsi-prep` unit that {sstorage} needs, as described in xref:aif-elemental-storage-iscsi[].
+Add the following entries to the `systemd.units` and `storage.files` lists:
+
+[source,yaml]
+----
+systemd:
+  units:
+    - name: iscsi-prep.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Seed /etc for the open-iscsi system extension and start iscsid
+        Wants=systemd-sysext.service
+        After=systemd-sysext.service local-fs.target
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/usr/bin/bash /var/lib/elemental/iscsi-prep.sh
+
+        [Install]
+        WantedBy=multi-user.target
+storage:
+  files:
+    - path: /var/lib/elemental/iscsi-prep.sh
+      mode: 493
+      overwrite: true
+      contents:
+        inline: |
+          #!/usr/bin/env bash
+          set -euo pipefail
+          # Wait until the system extension is merged.
+          for _ in $(seq 1 30); do
+            [ -x /usr/sbin/iscsid ] && break
+            sleep 2
+          done
+          [ -x /usr/sbin/iscsid ] || exit 0
+          mkdir -p /etc/iscsi
+          if [ ! -s /etc/iscsi/initiatorname.iscsi ]; then
+            if command -v iscsi-iname >/dev/null 2>&1; then
+              name="$(iscsi-iname)"
+            else
+              name="iqn.2016-04.com.open-iscsi:$(hostname)"
+            fi
+            echo "InitiatorName=${name}" > /etc/iscsi/initiatorname.iscsi
+            chmod 0600 /etc/iscsi/initiatorname.iscsi
+          fi
+          if [ ! -s /etc/iscsi/iscsid.conf ]; then
+            printf '%s\n' \
+              'iscsid.startup = /bin/systemctl start iscsid.socket' \
+              'node.startup = manual' \
+              'node.session.timeo.replacement_timeout = 120' \
+              > /etc/iscsi/iscsid.conf
+            chmod 0600 /etc/iscsi/iscsid.conf
+          fi
+          systemctl start --no-block iscsid.service
+----
+
+`kubernetes/cluster.yaml`:
+
+[source,yaml]
+----
+nodes:
+  - hostname: cp1.aif.example.com
+    type: server
+    init: true
+  - hostname: cp2.aif.example.com
+    type: server
+  - hostname: cp3.aif.example.com
+    type: server
+  - hostname: gpu1.aif.example.com
+    type: agent
+  - hostname: gpu2.aif.example.com
+    type: agent
+network:
+  apiVIP: 192.168.122.30
+  apiHost: api.gpu.aif.example.com
+----
+
+Create one nmstate file in `network/` for each of the five nodes, as for the management cluster.
+
+`kubernetes/config/server.yaml` and `kubernetes/config/agent.yaml`:
+
+[source,yaml]
+----
+# server.yaml
+token: "<RKE2_TOKEN>"
+selinux: true
+ingress-controller: traefik
+write-kubeconfig-group: suse
+write-kubeconfig-mode: "0640"
+tls-san:
+  - api.gpu.aif.example.com
+----
+
+[source,yaml]
+----
+# agent.yaml
+token: "<RKE2_TOKEN>"
+selinux: true
+----
+
+`kubernetes/manifests/appco-pull-secret-priority.yaml` creates the `longhorn-system` namespace and the `application-collection` image pull secret for the {sstorage} images, as shown in xref:aif-elemental-pull-secret[].
+
+`kubernetes/manifests/traefik-priority.yaml` runs {traefik} on the control-plane nodes only, so the GPU nodes do not serve {ingress} traffic:
+
+[source,yaml]
+----
+apiVersion: helm.cattle.io/v1
+kind: HelmChartConfig
+metadata:
+  name: rke2-traefik
+  namespace: kube-system
+spec:
+  valuesContent: |-
+    nodeSelector:
+      node-role.kubernetes.io/control-plane: "true"
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      - key: CriticalAddonsOnly
+        operator: Exists
+    service:
+      enabled: true
+      type: LoadBalancer
+      annotations:
+        metallb.io/loadBalancerIPs: 192.168.122.31
+      spec:
+        externalTrafficPolicy: Local
+    providers:
+      kubernetesIngress:
+        publishedService:
+          enabled: true
+----
+
+`kubernetes/manifests/ingress-ip.yaml` is the same as for the management cluster, with the `192.168.122.31/32` address.
+
+Build the image and boot `cp1` first, then the other nodes.
+When the cluster is ready, import it into {ranchera} on the management cluster as described in xref:aif-deployment-connect-cluster[], and assign the GPU nodes as described in xref:ai-gpu-nodes-assigning[].
+
+[TIP]
+.Local storage instead of {sstorage}
+====
+For a test cluster, you can use the local path provisioner instead of {sstorage}.
+Volumes are stored on the node of the pod and are lost with that node.
+
+. In `release.yaml`, remove the `suse-storage` extension and chart, and add the chart without a values file:
++
+[source,yaml]
+----
+    - chart: local-path-provisioner
+      credentials:
+        username: "<APPCO_USERNAME>"
+        password: "<APPCO_TOKEN>"
+----
+. Remove the `iscsi-prep` unit and script from `butane.yaml`.
+. In `kubernetes/manifests/appco-pull-secret-priority.yaml`, change the namespace from `longhorn-system` to `local-path-provisioner`, as described in xref:aif-elemental-pull-secret[].
+. Create the `/opt/local-path-provisioner` directory with the SELinux label for containers, as described in xref:aif-elemental-selinux[].
+====
+
+[#aif-elemental-more-info]
+== For more information
+
+* link:https://github.com/SUSE/elemental/tree/main/docs[{selemental} 3 documentation]
+* link:https://github.com/SUSE/elemental/blob/main/docs/configuration-directory.md[Configuration directory guide]
+* link:https://github.com/SUSE/elemental/blob/main/docs/cloud-enablement.md[Deploying {selemental} on cloud providers]
+* link:https://coreos.github.io/butane/specs/[Butane specification]
