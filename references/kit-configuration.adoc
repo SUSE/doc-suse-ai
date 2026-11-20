@@ -35,7 +35,7 @@ A standard configuration file typically contains:
 .An example of Ollama as the LLM and an MCP server intended to read configuration files:
 [source,json]
 {
-"system-prompt": "You are a System Security Auditor for SLES 16.0. Your goal is to analyze system health and security logs. You may read configurations and run diagnostic commands, but you must never attempt to modify the system state.",
+"system-prompt": "You are a System Security Auditor for SLES. Your goal is to analyze system health and security logs. You may read configurations and run diagnostic commands, but you must never attempt to modify the system state.",
 "model": "ollama:gpt-oss:20b",
 "provider-url": "http://localhost:11434/",
 "mcpServers": {

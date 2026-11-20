@@ -1,8 +1,8 @@
-[#reference-example]
+[#kit-main-config]
 include::../common/generic-attributes.adoc[]
 // overridden title?
 ifdef::override-title[]
-= {override-title}
+= Complete Kit configuration reference
 endif::[]
 ifndef::override-title[]
 = Reference
@@ -12,31 +12,428 @@ ifdef::override-abstract[]
 {override-abstract}
 endif::[]
 ifndef::override-abstract[]
-An introductory paragraph.
+The central point of Kit configuration is `.kit.yml` (also recognized as `.kit.yaml` or `.kit.json`). However, you can use other means to change Kit behavior: CLI, environment variables and so on. This sections describes how the configuration is handled and also provides a full list of Kit configuration values.
 endif::[]
 
 // erase the flag for future overrides
 :override-abstract!:
 :override-title!:
 
-:revdate: YYYY-MM-DD
+:revdate: 2026-11-20
 :page-revdate: {revdate}
 
-[#reference-example-section]
-== Section title
 
-A paragraph of text.
+== Configuration values precedence
 
-.A title
-a command --with-options::
-  A paragraph of text.
-another command --with-options::
-  Another paragraph of text.
+Kit resolves configuration values in the following priority order (highest to lowest):
 
-.A table title
-[cols="1,1"]
+. *CLI Flags* (e.g., `--model`, `--max-tokens`, `--mcp`)
+. *SDK Options* (when embedding Kit as a Go library)
+. *Environment Variables* (`KIT_*` variables, where hyphens become underscores, e.g., `KIT_MAX_TOKENS`)
+. *Project-Local Config:* `./.kit.yml`, `./.kit.yaml`, or `./.kit.json` in the current working directory (skipped when running with `--bare`)
+. *Global Config:* `~/.kit.yml`, `~/.kit.yaml`, or `~/.kit.json` in the user's home directory (or custom path passed via `--config <path>`)
+. *Per-Model Defaults:* `modelSettings` or `customModels` parameters
+. *Built-in Defaults*
+
+== The `kit.yml` file
+
+The file `kit.yml` is the declarative configuration file for Kit. It is not created automatically during installation; administrators create it manually to persist model settings, provider routing, system prompts, and MCP server definitions. The following sections provide a complete list of configuration values.
+
+
+=== Top-Level Scalar & List Keys
+
+These keys sit at the root of `.kit.yml` and control general agent behavior, LLM generation parameters, and skill discovery:
+
+[cols="2,1,1,4", options="header"]
 |===
-| an entry | another entry
-| an entry | another entry
-| an entry | another entry
+| Key | Type | Default | Description
+
+| `model`
+| string
+| `anthropic/claude-sonnet-latest`
+| Active model in `provider/model` format.
+
+| `system-prompt`
+| string
+| —
+| Inline system prompt text or path to a file containing the system prompt.
+
+| `max-steps`
+| int
+| `0`
+| Maximum number of agent tool-execution steps per turn (`0` = unlimited).
+
+| `thinking-level`
+| string
+| `off`
+| Reasoning effort level (`off`, `none`, `minimal`, `low`, `medium`, `high`, `xhigh`, `max`). `off` omits the effort field; `none` passes literal `none`.
+
+| `max-tokens`
+| int
+| `8192`
+| Base cap for output tokens (auto-raised up to `32768` if the model's catalog ceiling is higher and no explicit value is set).
+
+| `temperature`
+| float
+| `0.7`
+| Sampling randomness (`0.0` to `1.0`).
+
+| `top-p`
+| float
+| `0.95`
+| Nucleus sampling threshold (`0.0` to `1.0`).
+
+| `top-k`
+| int
+| `40`
+| Top-K token sampling limit.
+
+| `frequency-penalty`
+| float
+| `0.0`
+| Penalize frequent tokens (`0.0` to `2.0`).
+
+| `presence-penalty`
+| float
+| `0.0`
+| Penalize present tokens (`0.0` to `2.0`).
+
+| `stop-sequences`
+| list
+| —
+| Custom token sequences that halt generation.
+
+| `stream`
+| bool
+| `true`
+| Stream LLM responses as they are generated.
+
+| `compact`
+| bool
+| `false`
+| Enable compact UI output mode.
+
+| `debug`
+| bool
+| `false`
+| Enable verbose debug logging.
+
+| `provider-api-key`
+| string
+| —
+| Direct API key for the active provider (prefer `credentials.json` or environment variables instead).
+
+| `provider-url`
+| string
+| —
+| Base URL override for the provider API.
+
+| `provider-wire`
+| string
+| —
+| Wire protocol override: `openai`, `openai-compat`, `anthropic`,  `google` and so on.
+
+| `tls-skip-verify`
+| bool
+| `false`
+| Skip TLS certificate verification for HTTPS connections.
+
+| `prompt-templates`
+| bool
+| `true`
+| Enable loading of slash-command prompt templates.
+
+| `prompt-template`
+| string
+| —
+| Specific prompt template to load by name.
+
+| `no-skills`
+| bool
+| `false`
+| Disable all skill loading (both auto-discovered and explicit).
+
+| `skill`
+| list
+| —
+| Explicit list of skill files or directories to load (disables skill auto-discovery).
+
+| `skills-dir`
+| string
+| —
+| Directory path to scan directly for skills (overrides standard auto-discovery locations).
+
+| `skill-disable`
+| list
+| —
+| List of skill names to hide from the model's automatic catalog (still invokable manually via `/<name>`).
+
+| `no-agents`
+| bool
+| `false`
+| Disable discovery of named subagents.
+
+| `theme`
+| string / map
+| —
+| Path to an external theme YAML file, or inline color hex overrides.
 |===
+
+=== Section 1: `mcpServers` (External Tool Servers)
+
+The `mcpServers` map registers local (`stdio`) and remote (`streamable HTTP`) Model Context Protocol servers. Each key under `mcpServers` is a unique server alias.
+
+[cols="2,1,4", options="header"]
+|===
+| Field | Type | Description
+
+| `type`
+| string
+| `local` (spawns a local child process over `stdio`) or `remote` (connects over streamable HTTP).
+
+| `command`
+| list
+| *(Local only)* Executable and arguments array, e.g., `["/usr/local/bin/mcp-admin", "--read-only"]`.
+
+| `environment`
+| map
+| *(Local only)* Key-value map of environment variables passed to the spawned MCP process.
+
+| `url`
+| string
+| *(Remote only)* HTTP/HTTPS endpoint URL of the remote MCP server.
+
+| `headers`
+| list
+| *(Remote only)* HTTP headers attached to every request as `"Key: Value"` strings. Supports `${env://VAR}` (required) and `${env://VAR:-default}` (optional with fallback) variable expansion.
+
+| `noOAuth`
+| bool
+| *(Remote only)* Set to `true` to skip OAuth dynamic client registration for public or header-authenticated servers.
+
+| `tasksMode`
+| string
+| Controls asynchronous MCP task polling for long-running tools: `auto` (default; uses tasks if server advertises support), `always` (always request async task execution), or `never` (force synchronous calls).
+
+| `allowedTools`
+| list
+| Whitelist of tool names to expose from this server.
+
+| `excludedTools`
+| list
+| Blacklist of tool names to hide from the agent.
+|===
+
+=== Section 2: `providers` (Gateway & Protocol Overrides)
+
+The `providers` map patches known providers in the built-in model database or declares brand-new providers (such as an internal corporate LLM gateway).
+
+[cols="2,1,4", options="header"]
+|===
+| Field | Type | Description
+
+| `name`
+| string
+| Human-readable display name for the provider.
+
+| `wire`
+| string
+| API wire protocol: `openai` (Responses API), `openai-compat` (Chat Completions), `anthropic`, or `google`.
+
+| `baseUrl`
+| string
+| Base URL of the provider or internal proxy endpoint.
+
+| `apiKeyEnv`
+| list
+| Ordered list of environment variable names Kit checks to resolve the API key.
+
+| `headers`
+| map
+| Key-value map of custom HTTP headers included on every request to this provider.
+
+| `project`
+| string
+| Google Cloud project ID (used only for `google-vertex` and `google-vertex-anthropic`).
+
+| `region`
+| string
+| Cloud region (used for `google-vertex` and `google-vertex-anthropic`).
+|===
+
+=== Section 3: `customModels` (Self-Hosted OpenAI-Compatible Models)
+
+The `customModels` map defines individual self-hosted models (e.g., vLLM, llama.cpp, Ollama) accessed under the `custom/<model-key>` provider prefix using the OpenAI-compatible wire protocol.
+
+[cols="2,1,1,4", options="header"]
+|===
+| Field | Type | Required | Description
+
+| `name`
+| string
+| Yes
+| Display name for the model.
+
+| `limit.context`
+| int
+| Yes
+| Maximum context window size in tokens.
+
+| `limit.output`
+| int
+| No
+| Maximum output tokens.
+
+| `baseUrl`
+| string
+| No
+| Endpoint URL (e.g., `http://localhost:8000/v1`).
+
+| `apiKey`
+| string
+| No
+| API key for the endpoint.
+
+| `apiModelName`
+| string
+| No
+| Model identifier sent in the API payload (defaults to the YAML map key if omitted).
+
+| `reasoning`
+| bool
+| No
+| Whether the model supports reasoning/thinking tokens.
+
+| `reasoningLevels`
+| list
+| No
+| Supported reasoning effort strings (requires `reasoning: true`; e.g., `[low, medium, high]`).
+
+| `temperature`
+| bool
+| No
+| Whether the model accepts temperature adjustments.
+
+| `cost.input`
+| float
+| No
+| Cost per 1K input tokens (for usage tracking).
+
+| `cost.output`
+| float
+| No
+| Cost per 1K output tokens (for usage tracking).
+|===
+
+=== The `modelSettings` attributes 
+
+The `modelSettings` map applies specific generation defaults or system prompts whenever a given `provider/model` is active. Note that keys inside `modelSettings` use `camelCase`:
+
+* `temperature` (float)
+* `maxTokens` (int)
+* `topP` (float)
+* `topK` (int)
+* `frequencyPenalty` (float)
+* `presencePenalty` (float)
+* `stopSequences` (list)
+* `thinkingLevel` (string)
+* `systemPrompt` (string)
+
+=== Complete Annotated `.kit.yml` Example
+
+Below is a full example showing how all sections fit together inside `~/.kit.yml`:
+
+[source,yaml]
+----
+# =============================================================================
+# 1. Global Agent & Generation Defaults
+# =============================================================================
+model: corp-gateway/claude-sonnet-4-5
+max-tokens: 8192
+temperature: 0.2
+stream: true
+max-steps: 25
+thinking-level: off
+tls-skip-verify: false
+
+system-prompt: |
+  You are a Linux system administration agent. Verify state before making 
+  changes, prefer non-destructive diagnostics, and summarize all actions clearly.
+
+# Skill & Subagent Controls
+no-skills: false
+no-agents: false
+skill-disable:
+  - noisy-experimental-skill
+
+# =============================================================================
+# 2. Provider Gateways (providers)
+# =============================================================================
+providers:
+  corp-gateway:
+    name: "Internal Corporate LLM Gateway"
+    wire: anthropic
+    baseUrl: "https://llm.internal.corp/api"
+    apiKeyEnv: ["CORP_LLM_KEY", "FALLBACK_LLM_KEY"]
+    headers:
+      X-Department: "infrastructure"
+
+# =============================================================================
+# 3. Self-Hosted OpenAI-Compatible Models (customModels)
+# =============================================================================
+customModels:
+  local-qwen:
+    name: "Local Qwen Admin Model"
+    baseUrl: "http://127.0.0.1:8000/v1"
+    apiModelName: "Qwen3.8-27B"
+    reasoning: true
+    reasoningLevels: ["low", "medium", "high"]
+    temperature: true
+    limit:
+      context: 131072
+      output: 16384
+
+# =============================================================================
+# 4. Per-Model Settings Overrides (modelSettings)
+# =============================================================================
+modelSettings:
+  corp-gateway/claude-sonnet-4-5:
+    temperature: 0.1
+    maxTokens: 16384
+  custom/local-qwen:
+    temperature: 0.3
+    thinkingLevel: medium
+
+# =============================================================================
+# 5. Model Context Protocol Servers (mcpServers)
+# =============================================================================
+mcpServers:
+  # Local stdio MCP server example
+  local-sysadmin-mcp:
+    type: local
+    command: ["/usr/local/bin/sysadmin-mcp-server", "--config", "/etc/sysadmin-mcp/config.yaml"]
+    environment:
+      LOG_LEVEL: "warn"
+    allowedTools: ["get_service_status", "read_journal_logs", "restart_service"]
+    excludedTools: ["format_disk"]
+
+  # Remote HTTP MCP server example
+  remote-inventory-mcp:
+    type: remote
+    url: "https://mcp.internal.corp/inventory"
+    noOAuth: true
+    tasksMode: auto
+    headers:
+      - "Authorization: Bearer ${env://MCP_INVENTORY_TOKEN}"
+      - "X-Cluster: ${env://CLUSTER_NAME:-prod-eu-1}"
+
+# =============================================================================
+# 6. UI Theme Customization (theme)
+# =============================================================================
+theme:
+  primary:
+    light: "#8839ef"
+    dark: "#cba6f7"
+  error:
+    dark: "#ff5555"
+----

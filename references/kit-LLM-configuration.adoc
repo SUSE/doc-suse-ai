@@ -27,10 +27,27 @@ system-prompt: |
   and outcomes.
 ----
 
+The attribute `system-prompt` is a default system-wide context passed to the LLM. You can define it per model using the `attribute` modelsettings`. For example:
+[source,yaml]
+----
+model: <PROVIDER_NAME>/<MODEL_A>
+
+# Notice: No top-level 'system-prompt' is defined here, allowing per-model prompts to take effect.
+
+modelSettings:
+  <PROVIDER_NAME>/<MODEL_A>:
+    temperature: 0.2
+    systemPrompt: |
+      You are a strict read-only auditing assistant. Inspect logs and metrics, 
+      but never execute state-changing commands.
+
+  <PROVIDER_NAME>/<MODEL_B>:
+    temperature: 0.5
+    systemPrompt: "You are a concise Kubernetes troubleshooting assistant."
+---
+
+
 If an internal gateway is used, then the configuration may looks as follows:
-
-
-You can connect Kit to external LLMs in two ways: using authentication via CLI or through an internal gateway. 
 [source,yaml]
 ----
 # ~/.kit.yml
@@ -46,10 +63,16 @@ providers:
       X-Environment: "sysadmin"
 ----
 
+To connect to the LLM you need credentials, there are the following ways how Kit can pass them to the LLM:
+* using Kit CLI 
+* using environment variables
+* using LLM gateway
 
 
 
-== Environment Variables / CLI Authentication
+
+
+== Kit CLI authentication
 
 Credentials stored via `kit auth login` are written to `$XDG_CONFIG_HOME/.kit/credentials.json` (defaults to `~/.config/.kit/credentials.json` with `0600` permissions) and take precedence over environment variables.
 
@@ -67,18 +90,30 @@ kit auth login <PROVIDER_NAME> --api-key "<LLM_API_KEY>" --set-default
 kit auth status
 ----
 
-Alternatively, export the model and API key via environment variables in the service or shell profile.
+== Using environment variables
 
+Alternatively, if you prefer not to sore credentials on disk, export the model and API key via environment variables in the service or shell profile.
+
+. Set the target model identifier
++
 [source,bash]
 ----
 export KIT_MODEL="<PROVIDER_NAME>/<MODEL_ID>"
+----
+
+. Export the provider API key (using the generic override variable or the provider-specific variable such as `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`):
++
+[source,bash]
+----
 export KIT_PROVIDER_API_KEY="<LLM_API_KEY>"
 ----
 
 == Configuring connection through internal LLM gateway
 
-If your organization routes LLM traffic through an internal proxy/gateway or self-hosted server, declare a provider override in `~/.kit.yml`. Set `wire` to match the API protocol spoken by your endpoint (`openai-compat`, `openai`, `anthropic`, or `google`):
+If your organization routes LLM traffic through an internal proxy/gateway or self-hosted server, declare a provider in `~/.kit.yml`. Set `wire` to match the API protocol of your endpoint:
 
+.Add to the `.kit.yml` the `providers` attribute:
++
 [source,yaml]
 ----
 # ~/.kit.yml
@@ -87,13 +122,20 @@ model: <GATEWAY_NAME>/<MODEL_ID>
 providers:
   <GATEWAY_NAME>:
     name: "Internal LLM Gateway"
-    wire: <WIRE_PROTOCOL>               # openai-compat | openai | anthropic | google
+    wire: <WIRE_PROTOCOL>               
     baseUrl: "https://<LLM_GATEWAY_HOST>/v1"
     apiKeyEnv: ["<LLM_API_KEY_ENV_VAR>"]
     headers:
       X-Environment: "sysadmin"
 ----
 
-== Configuring the used model and context in `.kit.yml`
+.. Export the environment variable referenced in `apiKeyEnv`[cite: 3, 4]:
++
+[source,bash]
+----
+export <LLM_API_KEY_ENV_VAR>="<LLM_API_KEY>"
+----
+
+
 
 
