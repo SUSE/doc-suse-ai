@@ -1,6 +1,11 @@
 [#vllm-installing]
 = Installing {vllm}
 
+[NOTE]
+====
+`vllm-stack` is the new revamped stack for deploying {vllm}. For instructions on deploying the new {helm} chart, see xref:vllm-stack-installing[].
+====
+
 {vllm} is an open-source high-performance inference and serving engine for large language models (LLMs).
 It is designed to maximize throughput and reduce latency by using an efficient memory management system that handles dynamic batching and streaming outputs.
 In short, {vllm} makes running LLMs cheaper and faster in production.
