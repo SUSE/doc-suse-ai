@@ -8,6 +8,9 @@ endif::[]
 
 :override-title!:
 
+This section describes cost estimation by the Extension 2.x Pipelines filter.
+For the native integration, refer to xref:ai-monitoring-native-owui[].
+
 The cost estimation is calculated for every chat interaction between the
 {owui} user and the AI model with the following formula:
 

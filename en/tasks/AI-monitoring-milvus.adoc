@@ -2,7 +2,11 @@
 = Monitoring {milvus}
 
 {milvus} is monitored by scraping its {prometheus}-compatible metrics endpoint.
-The {sobservability} Extension uses these metrics to visualize {milvus}'s status and activity. 
+The {sobservability} Extension uses these metrics to visualize the status and activity of {milvus}.
+
+For the native integration, refer to xref:ai-monitoring-native-inference-vector[].
+The following metrics example uses a chart-managed Collector configuration.
+It does not modify the bundled configuration selected by the native integration.
 
 [#ai-monitoring-milvus-scraping-metrics]
 == Scraping the metrics (recommended)
@@ -48,6 +52,8 @@ extraConfigFiles:
     trace:
       exporter: jaeger
       sampleFraction: 1
-      jaeger: url: "http://opentelemetry-collector.observability.svc.cluster.local:14268/api/traces" <.>
+      jaeger:
+        url: "http://opentelemetry-collector.observability.svc.cluster.local:14268/api/traces" <.>
 ----
 <.> The URL of the {otelemetry} Collector installed by the user.
+    The Collector must have the Jaeger receiver enabled and port `14268` exposed in its {kube} service.
