@@ -1,0 +1,218 @@
+include::../common/generic-attributes.adoc[]
+// overridden title?
+ifdef::override-title[]
+= {override-title}
+endif::[]
+ifndef::override-title[]
+= How do I monitor AI workload deployments on the command line?
+endif::[]
+// overridden abstract?
+ifdef::override-abstract[]
+{override-abstract}
+endif::[]
+ifndef::override-abstract[]
+When you deploy an artificial intelligence (AI) application or blueprint, {productname} creates an `AIWorkload` custom resource. You can track deployment progress and diagnose issues directly from the command line using `kubectl`. Depending on your chosen deployment strategy ({fleeta} bundle, {helm} or GitOps), you can monitor the corresponding orchestrator resources.
+endif::[]
+
+// erase the flag for future overrides
+:override-abstract!:
+:override-title!:
+
+
+[#aif-monitoring-workload-deployments-intro]
+== Introduction
+
+Each deployment initiated from {ailibrary} or a custom blueprint creates an `AIWorkload` custom resource (`ai-platform.suse.com/v1alpha1`).
+The operator tracks the lifecycle of the workload across target clusters and updates its status.
+
+The `AIWorkload` resource specification defines how the application or blueprint is deployed:
+
+* `spec.deployStrategy`: The orchestrator deployment method, which can be `FleetBundle`, `Helm` or `GitOps`.
+* `spec.fleetBundleNames`: The list of {rancherfleet} `Bundle` custom resource names managed for this workload.
+  Workloads sourced from an application have one bundle entry.
+  Workloads sourced from a blueprint have one bundle entry per component.
+* `spec.targetClusters`: The list of target {ranchera} cluster IDs (such as `local` or downstream cluster identifiers).
+* `spec.targetNamespace`: The target namespace where workload pods and services run.
+
+You can query the `AIWorkload` custom resource to determine the deployment strategy and target resources, then query the underlying orchestrator resources to monitor deployment progress or troubleshoot failures.
+
+[#aif-monitoring-workload-deployments-prerequisites]
+== Prerequisites
+
+* An operational {rke2a} {kube} cluster with {productname} installed.
+* Administrative access using the `kubectl` command-line utility.
+* For {helm}-deployed workloads, the `{helm}` CLI installed locally.
+
+[#pro-aif-monitoring-workload-deployments]
+== Procedure
+
+. Query the `AIWorkload` custom resources across all namespaces to view general deployment status:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get aiworkloads -A
+
+NAMESPACE   NAME                 DISPLAY NAME                    STRATEGY      PHASE     AGE
+rag         nvidia-rag-minimal   NVIDIA RAG (minimal, low-GPU)   FleetBundle   Running   6d23h
+----
++
+The output displays the namespace, name, user-friendly display name, deployment strategy (`STRATEGY`), current phase (`PHASE`) and age of each workload.
+
+. Inspect the specific `AIWorkload` custom resource in its namespace:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get aiworkloads -n <NAMESPACE> <WORKLOAD_NAME>
+----
++
+For example, for a workload named `nvidia-rag-minimal` in namespace `rag`:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get aiworkloads -n rag nvidia-rag-minimal
+
+NAME                 DISPLAY NAME                    STRATEGY      PHASE     AGE
+nvidia-rag-minimal   NVIDIA RAG (minimal, low-GPU)   FleetBundle   Running   6d23h
+----
+
+. Retrieve the complete YAML definition of the `AIWorkload` to identify the deployment strategy, target clusters, namespace and managed bundle or release names:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get aiworkloads -n rag nvidia-rag-minimal -o yaml
+
+apiVersion: ai-platform.suse.com/v1alpha1
+kind: AIWorkload
+metadata:
+  creationTimestamp: "2026-06-18T13:18:05Z"
+  finalizers:
+  - ai-platform.suse.com/cleanup
+  generation: 2
+  name: nvidia-rag-minimal
+  namespace: rag
+  resourceVersion: "21912"
+  uid: 11f009b9-5ded-4dc7-91e3-b469eb9b3cf7
+spec:
+  deployStrategy: FleetBundle
+  displayName: NVIDIA RAG (minimal, low-GPU)
+  fleetBundleNames:
+  - nvidia-rag-minimal-k8s-nim-operator
+  - nvidia-rag-minimal-nvidia-blueprint-rag
+  source:
+    blueprint:
+      name: nvidia-rag-minimal
+      version: 2.5.0
+    sourceType: Blueprint
+  targetClusters:
+  - local
+  targetNamespace: rag
+status:
+  clusterStatuses:
+  - clusterId: local
+    phase: Running
+  observedGeneration: 2
+  phase: Running
+----
++
+Review the `spec.deployStrategy` field to determine the next monitoring step:
++
+* If `deployStrategy` is `FleetBundle`, proceed to xref:pro-aif-monitoring-workload-deployments-fleet[].
+* If `deployStrategy` is `Helm`, proceed to xref:pro-aif-monitoring-workload-deployments-helm[].
+* If `deployStrategy` is `GitOps`, proceed to xref:pro-aif-monitoring-workload-deployments-gitops[].
+
+[#pro-aif-monitoring-workload-deployments-fleet]
+== Monitor workloads deployed with the `FleetBundle` strategy
+. List all {fleeta} bundles across namespaces to observe their deployment state:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get bundles -A
+
+NAMESPACE     NAME                                      BUNDLEDEPLOYMENTS-READY   STATUS
+fleet-local   aif-operator                              1/1
+fleet-local   fleet-agent-local                         1/1
+fleet-local   nvidia-rag-minimal-k8s-nim-operator       1/1
+fleet-local   nvidia-rag-minimal-nvidia-blueprint-rag   0/1                       Modified(1) [Cluster fleet-local/local]; ...
+----
++
+Each bundle corresponds to an entry from `spec.fleetBundleNames`.
+The `BUNDLEDEPLOYMENTS-READY` column indicates how many target clusters have successfully applied the bundle.
+The `STATUS` column reports errors or drift, such as `Modified`, `WaitApplied` or `ErrApplied`.
+. Inspect a specific bundle in the `fleet-local` namespace (or the target cluster {fleeta} namespace):
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get bundles -n fleet-local <BUNDLE_NAME>
+----
++
+For example:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get bundles -n fleet-local nvidia-rag-minimal-k8s-nim-operator
+----
+. Check the detailed bundle status and error conditions:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get bundles -n fleet-local nvidia-rag-minimal-k8s-nim-operator -o yaml
+----
++
+Examine the `status.conditions`, `status.summary` and `status.display` fields for readiness status, replica counts and failure messages.
+. Query `BundleDeployment` resources on target clusters to inspect per-cluster deployment progress:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get bundledeployments -A
+----
+
+[#pro-aif-monitoring-workload-deployments-helm]
+== Monitor workloads deployed with the `{helm}` strategy
+. List active {helm} releases in the target namespace specified in `spec.targetNamespace`:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}helm list -n <TARGET_NAMESPACE>
+----
+. Check the deployment status and revision history of the {helm} release:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}helm status <RELEASE_NAME> -n <TARGET_NAMESPACE>
+----
+. Check the readiness of pods belonging to the {helm} release in the target namespace:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get pods -n <TARGET_NAMESPACE>
+----
++
+If any pod is in a `Pending`, `CrashLoopBackOff` or `ImagePullBackOff` state, inspect its events:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl describe pod <POD_NAME> -n <TARGET_NAMESPACE>
+----
+
+[#pro-aif-monitoring-workload-deployments-gitops]
+== Monitor workloads deployed with the `GitOps` strategy
+. Verify that the {fleeta} `GitRepo` custom resource successfully clones and watches the repository:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get gitrepos -A
+----
+. Inspect the detailed synchronization status of the `GitRepo`:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get gitrepo <GITREPO_NAME> -n <GITREPO_NAMESPACE> -o yaml
+----
+. Once the repository synchronizes, {fleeta} creates the corresponding bundles.
+Monitor the generated bundles as described in xref:pro-aif-monitoring-workload-deployments-fleet[]:
++
+[source,console,subs="+attributes"]
+----
+{prompt_user}kubectl get bundles -A
+----
+  
