@@ -81,12 +81,12 @@ nvidia-rag-minimal   NVIDIA RAG (minimal, low-GPU)   FleetBundle   Running   6d2
 ----
 {prompt_user}kubectl get aiworkloads -n rag nvidia-rag-minimal -o yaml
 
-apiVersion: ai-platform.suse.com/v1alpha1
+apiVersion: ai-factory.suse.com/v1alpha1
 kind: AIWorkload
 metadata:
   creationTimestamp: "2026-06-18T13:18:05Z"
   finalizers:
-  - ai-platform.suse.com/cleanup
+  - ai-factory.suse.com/cleanup
   generation: 2
   name: nvidia-rag-minimal
   namespace: rag
@@ -159,7 +159,7 @@ For example:
 ----
 +
 Examine the `status.conditions`, `status.summary` and `status.display` fields for readiness status, replica counts and failure messages.
-. Query `BundleDeployment` resources on target clusters to inspect per-cluster deployment progress:
+. Query `BundleDeployment` resources on the {fleeta} management cluster to inspect per-cluster deployment progress:
 +
 [source,console,subs="+attributes"]
 ----
@@ -168,6 +168,8 @@ Examine the `status.conditions`, `status.summary` and `status.display` fields fo
 
 [#pro-aif-monitoring-workload-deployments-helm]
 == Monitor workloads deployed with the `{helm}` strategy
+. Configure `kubectl` and {helm} to use the kubeconfig context for a target cluster listed in `spec.targetClusters`.
+Repeat the following checks for each target cluster.
 . List active {helm} releases in the target namespace specified in `spec.targetNamespace`:
 +
 [source,console,subs="+attributes"]
@@ -179,6 +181,7 @@ Examine the `status.conditions`, `status.summary` and `status.display` fields fo
 [source,console,subs="+attributes"]
 ----
 {prompt_user}helm status <RELEASE_NAME> -n <TARGET_NAMESPACE>
+{prompt_user}helm history <RELEASE_NAME> -n <TARGET_NAMESPACE>
 ----
 . Check the readiness of pods belonging to the {helm} release in the target namespace:
 +
