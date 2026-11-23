@@ -1161,7 +1161,7 @@ spec:
 ----
 
 Build the image as described in xref:aif-elemental-build[] and boot `mgmt1` first, then `mgmt2` and `mgmt3`.
-When the cluster is ready, open `https://rancher.aif.example.com`.
+When the cluster is ready, open `\https://rancher.aif.example.com`.
 
 [#aif-elemental-example-downstream]
 === Downstream cluster with {nvoperator} and {sstorage}
