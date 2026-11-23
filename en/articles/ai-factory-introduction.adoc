@@ -194,16 +194,12 @@ The workflow is defined by a user role and is different for a user and an admini
   * *Admin Users* install and configure the extension.
   * *Cluster Owners* and *{ranchera} Admin Users* discover, deploy and manage AI applications and blueprints from {suse} image registries, such as {sappco} and {sregistry}, and from the {nvidia} GPU Cloud (NGC) catalog.
 
-[glossary]
-[#ai-factory-glossary]
-include::../references/AI-glossary.adoc[leveloffset=+1]
-
-[appendix]
-include::../common/common_copyright_gfdl.adoc[]
-
-[appendix]
-include::../common/common_license_gfdl1.2.adoc[]
 
 [appendix]
 [#ai-factory-appendix]
 include::../references/AI-Factory-appendix.adoc[leveloffset=+1]
+
+
+[glossary]
+[#ai-factory-glossary]
+include::../references/AI-glossary.adoc[leveloffset=+1]
