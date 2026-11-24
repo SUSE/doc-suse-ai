@@ -58,67 +58,69 @@ rag         nvidia-rag-minimal   NVIDIA RAG (minimal, low-GPU)   FleetBundle   R
 +
 The output displays the namespace, name, user-friendly display name, deployment strategy (`STRATEGY`), current phase (`PHASE`) and age of each workload.
 
-. Inspect the specific `AIWorkload` custom resource in its namespace:
+. Inspect the details of the `AIWorkload` custom resource in its namespace:
 +
 [source,console,subs="+attributes"]
 ----
-{prompt_user}kubectl get aiworkloads -n <NAMESPACE> <WORKLOAD_NAME>
+{prompt_user}kubectl describe aiworkload -n <NAMESPACE> <WORKLOAD_NAME>
 ----
 +
 For example, for a workload named `nvidia-rag-minimal` in namespace `rag`:
 +
 [source,console,subs="+attributes"]
 ----
-{prompt_user}kubectl get aiworkloads -n rag nvidia-rag-minimal
+{prompt_user}kubectl describe aiworkload -n rag nvidia-rag-minimal
 
-NAME                 DISPLAY NAME                    STRATEGY      PHASE     AGE
-nvidia-rag-minimal   NVIDIA RAG (minimal, low-GPU)   FleetBundle   Running   6d23h
+Name:         nvidia-rag-minimal
+Namespace:    rag
+Labels:       <none>
+Annotations:  <none>
+API Version:  ai-factory.suse.com/v1alpha1
+Kind:         AIWorkload
+Metadata:
+  Creation Timestamp:  2026-06-18T13:18:05Z
+  Finalizers:
+    ai-factory.suse.com/cleanup
+  Generation:          2
+  Resource Version:    21912
+  UID:                 11f009b9-5ded-4dc7-91e3-b469eb9b3cf7
+Spec:
+  Deploy Strategy:  FleetBundle
+  Display Name:     NVIDIA RAG (minimal, low-GPU)
+  Fleet Bundle Names:
+    nvidia-rag-minimal-k8s-nim-operator
+    nvidia-rag-minimal-nvidia-blueprint-rag
+  Source:
+    Blueprint:
+      Name:         nvidia-rag-minimal
+      Version:      2.5.0
+    Source Type:    Blueprint
+  Target Clusters:
+    local
+  Target Namespace:  rag
+Status:
+  Cluster Statuses:
+    Cluster Id:  local
+    Phase:       Running
+  Observed Generation:  2
+  Phase:                Running
+Events:                 <none>
 ----
-
-. Retrieve the complete YAML definition of the `AIWorkload` to identify the deployment strategy, target clusters, namespace and managed bundle or release names:
 +
+[TIP]
+====
+To view the raw YAML definition instead, run:
 [source,console,subs="+attributes"]
 ----
-{prompt_user}kubectl get aiworkloads -n rag nvidia-rag-minimal -o yaml
-
-apiVersion: ai-factory.suse.com/v1alpha1
-kind: AIWorkload
-metadata:
-  creationTimestamp: "2026-06-18T13:18:05Z"
-  finalizers:
-  - ai-factory.suse.com/cleanup
-  generation: 2
-  name: nvidia-rag-minimal
-  namespace: rag
-  resourceVersion: "21912"
-  uid: 11f009b9-5ded-4dc7-91e3-b469eb9b3cf7
-spec:
-  deployStrategy: FleetBundle
-  displayName: NVIDIA RAG (minimal, low-GPU)
-  fleetBundleNames:
-  - nvidia-rag-minimal-k8s-nim-operator
-  - nvidia-rag-minimal-nvidia-blueprint-rag
-  source:
-    blueprint:
-      name: nvidia-rag-minimal
-      version: 2.5.0
-    sourceType: Blueprint
-  targetClusters:
-  - local
-  targetNamespace: rag
-status:
-  clusterStatuses:
-  - clusterId: local
-    phase: Running
-  observedGeneration: 2
-  phase: Running
+{prompt_user}kubectl get aiworkload -n <NAMESPACE> <WORKLOAD_NAME> -o yaml
 ----
+====
 +
-Review the `spec.deployStrategy` field to determine the next monitoring step:
+Review the `Deploy Strategy` field to determine the next monitoring step:
 +
-* If `deployStrategy` is `FleetBundle`, proceed to xref:pro-aif-monitoring-workload-deployments-fleet[].
-* If `deployStrategy` is `Helm`, proceed to xref:pro-aif-monitoring-workload-deployments-helm[].
-* If `deployStrategy` is `GitOps`, proceed to xref:pro-aif-monitoring-workload-deployments-gitops[].
+* If `Deploy Strategy` is `FleetBundle`, proceed to xref:pro-aif-monitoring-workload-deployments-fleet[].
+* If `Deploy Strategy` is `Helm`, proceed to xref:pro-aif-monitoring-workload-deployments-helm[].
+* If `Deploy Strategy` is `GitOps`, proceed to xref:pro-aif-monitoring-workload-deployments-gitops[].
 
 [#pro-aif-monitoring-workload-deployments-fleet]
 == Monitor workloads deployed with the `FleetBundle` strategy
@@ -138,27 +140,54 @@ fleet-local   nvidia-rag-minimal-nvidia-blueprint-rag   0/1                     
 Each bundle corresponds to an entry from `spec.fleetBundleNames`.
 The `BUNDLEDEPLOYMENTS-READY` column indicates how many target clusters have successfully applied the bundle.
 The `STATUS` column reports errors or drift, such as `Modified`, `WaitApplied` or `ErrApplied`.
-. Inspect a specific bundle in the `fleet-local` namespace (or the target cluster {fleeta} namespace):
+. Inspect the bundle details, status conditions and deployment events:
 +
 [source,console,subs="+attributes"]
 ----
-{prompt_user}kubectl get bundles -n fleet-local <BUNDLE_NAME>
+{prompt_user}kubectl describe bundle -n fleet-local <BUNDLE_NAME>
 ----
 +
 For example:
 +
 [source,console,subs="+attributes"]
 ----
-{prompt_user}kubectl get bundles -n fleet-local nvidia-rag-minimal-k8s-nim-operator
+{prompt_user}kubectl describe bundle -n fleet-local nvidia-rag-minimal-k8s-nim-operator
+
+Name:         nvidia-rag-minimal-k8s-nim-operator
+Namespace:    fleet-local
+Labels:       fleet.cattle.io/fleet-helm-name=nvidia-rag-minimal-k8s-nim-operator
+Annotations:  <none>
+API Version:  fleet.cattle.io/v1alpha1
+Kind:         Bundle
+Metadata:
+  Creation Timestamp:  2026-06-18T13:18:06Z
+  Finalizers:
+    fleet.cattle.io/bundle-finalizer
+  Generation:  1
+Spec:
+  Default Namespace:  rag
+  Helm:
+    Chart:                k8s-nim-operator
+    Disable Pre Process:  true
+    Release Name:         nvidia-rag-minimal-k8s-nim-operator
+    Repo:                 https://helm.ngc.nvidia.com/nvidia
+    Version:              3.1.1
+  Targets:
+    Cluster Name:  local
+Status:
+  Conditions:
+    Last Update Time:  2026-06-18T13:18:33Z
+    Status:            True
+    Type:              Ready
+  Display:
+    Ready Clusters:  1/1
+  Summary:
+    Desired Ready:  1
+    Ready:          1
+Events:             <none>
 ----
-. Check the detailed bundle status and error conditions:
 +
-[source,console,subs="+attributes"]
-----
-{prompt_user}kubectl get bundles -n fleet-local nvidia-rag-minimal-k8s-nim-operator -o yaml
-----
-+
-Examine the `status.conditions`, `status.summary` and `status.display` fields for readiness status, replica counts and failure messages.
+Examine the `Status.Conditions`, `Status.Summary` and `Status.Display` fields for readiness status, replica counts and failure messages.
 . Query `BundleDeployment` resources on the {fleeta} management cluster to inspect per-cluster deployment progress:
 +
 [source,console,subs="+attributes"]
