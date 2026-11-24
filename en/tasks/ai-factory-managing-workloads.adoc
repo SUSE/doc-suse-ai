@@ -132,7 +132,7 @@ For a workload that targets multiple clusters, select the cluster first.
 The status of an application workload deployed with {helm} is derived from the readiness of its pods:
 
 * `Running`: all workloads of the {helm} release are ready.
-* `Pending`: the pods are still starting, for example while a container image or an AI model is being downloaded.
+* `Pending`: the pods are still starting, for example, while a container image or an AI model is being downloaded.
 The workload remains `Pending` for as long as the startup takes.
 * `Degraded`: a pod reports a failure, such as `CrashLoopBackOff`, `ImagePullBackOff` or an unschedulable pod.
 The status message contains the reason.
@@ -140,6 +140,10 @@ The status message contains the reason.
 A pod that is stuck for a reason reported only as a pod event, such as a volume that cannot be mounted, remains `Pending`.
 If a workload stays `Pending` for an unexpectedly long time, inspect its pods in {ranchera} or with `kubectl describe pod`.
 ====
+
+[#aif-workload-deployment-monitoring]
+:override-title: How do I monitor AI workload deployments?
+include::../tasks/ai-factory-monitoring-workload-deployments.adoc[leveloffset=+1]
 
 [#aif-workloads-delete]
 == How do I delete workloads?
