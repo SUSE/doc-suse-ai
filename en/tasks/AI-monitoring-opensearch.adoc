@@ -1,23 +1,27 @@
 [#ai-monitoring-opensearch]
 = Monitoring {opensearch}
 
-{opensearch} is monitored using the {otelemetry} Collector's `elasticsearch` receiver.
-This configuration allows you to collect metrics such as disk usage, cluster health, and node performance.
+{opensearch} is monitored using the `elasticsearch` receiver of the {otelemetry} Collector.
+This configuration collects metrics such as disk usage, cluster health and node performance.
+
+For the native integration, refer to xref:ai-monitoring-native-search[].
+The following examples use a chart-managed Collector configuration.
+They do not modify the bundled configuration selected by the native integration.
 
 [#ai-monitoring-opensearch-config]
 == Configuring the {otelemetry} Collector
 
 To enable {opensearch} monitoring, update the `otel-values.yaml` file with the following configurations.
 
-. Update the collector image to use the `contrib` version, which includes the `elasticsearch` receiver.
+. Verify that the collector uses the {suseai} {otelemetry} Collector image, which includes the `elasticsearch` receiver.
 +
 [source,yaml]
 ----
 image:
-  registry: docker.io
-  repository: otel/opentelemetry-collector-contrib
-  tag: 0.140.0
-  pullPolicy: Always
+  registry: registry.suse.com
+  repository: ai/containers/suse/suse-ai-opentelemetry-collector
+  tag: 0.165.0
+  pullPolicy: IfNotPresent
 ----
 
 . Add the `elasticsearch` receiver to the `config.receivers` section.

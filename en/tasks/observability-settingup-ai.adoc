@@ -41,6 +41,7 @@ This section provides instructions for both scenarios.
 
 To set up {sobservability} for {productname}, you need to meet the following requirements:
 
+* Use {sobservability} 2.11 or later.
 * Have access to {sappco}
 * Have a valid {productname} subscription
 * Have a valid license for {sobservability} in {scc}
@@ -54,6 +55,8 @@ It includes configurations that are essential for full observability.
 ====
 Applications from the {sappco} are not instrumented by default.
 If you want to monitor your AI applications, you need to follow the instrumentation guidelines that we provide in the document link:https://documentation.suse.com/suse-ai/1.0/html/AI-monitoring/index.html[Monitoring {productname} with {otelemetry} and {sobservability}].
+Some signals require an exporter image, an {owui} Function or application code.
+The {helm} chart of the extension does not install them.
 ====
 
 [#ai-observability-2clusters]
@@ -93,10 +96,12 @@ It means that you can confidently use the internal {kube} DNS.
 Refer to link:https://documentation.suse.com/cloudnative/suse-observability/next/en/setup/install-stackstate/kubernetes_openshift/ingress.html[Exposing {sobservability} outside of the cluster] or link:https://documentation.suse.com/cloudnative/suse-observability/next/en/setup/otel/otlp-apis.html#_self_hosted_suse_observability[Self-hosted {sobservability}] for details about exposing it.
 ** The {sobservability} API.
 Refer to link:https://documentation.suse.com/cloudnative/suse-observability/next/en/setup/install-stackstate/kubernetes_openshift/ingress.html[Exposing {sobservability} outside of the cluster] for details about exposing it.
-** {milvus} metrics and traces can be scraped by the {otelemetry} Collector with simple configurations, provided below.
+** The {otelemetry} Collector scrapes {milvus} metrics with the corresponding product profile.
+Client traces require instrumentation in the calling application.
 The same is true for GPU metrics.
-** To get information from {owui}, {ollama} or {vllm}, you must have a specific instrumentation set.
-It can be an application instrumented with the {openlit} SDK or other form of instrumentation following the same patterns.
+** {vllm} exposes metrics that the Collector scrapes directly.
+{ollama} runtime metrics require the {suseai} {ollama} exporter.
+Calls from {owui} to {ollama} require the {suseai} Observability Function and the bundled {owui} {otelemetry} SDK.
 
 [IMPORTANT]
 ====
@@ -129,6 +134,9 @@ For multi-cluster setups, you must expose the {sobservability} API and collector
 Refer to the guide on link:https://documentation.suse.com/cloudnative/suse-observability/latest/en/setup/install-stackstate/kubernetes_openshift/ingress.html[exposing {sobservability} outside of the cluster].
 ====
 . *Install the {sobservability} extension.*
+This procedure installs the {suseai} Observability Extension chart 3.0.0 and its native StackPack.
+The chart uses the setup image `dp.apps.rancher.io/containers/suse-ai-observability-extension-setup:3.0.0-9.1`.
+Before upgrading from 2.x, follow the link:{dsc}/suse-ai/1.0/html/AI-monitoring/index.html#ai-monitoring-integration-upgrade[upgrade procedure], including exporting your customizations.
 Create a new {helm} values file named `genai_values.yaml`.
 Before creating the file, review the placeholders below.
 +
@@ -213,6 +221,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 ----
 {prompt_user}helm upgrade --install ai-obs \
   oci://dp.apps.rancher.io/charts/suse-ai-observability-extension \
+  --version 3.0.0 \
   -f genai_values.yaml --namespace so-extensions --create-namespace
 ----
 endif::[]
@@ -220,7 +229,7 @@ ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
 [source,bash,subs="+attributes"]
 ----
 {prompt_user}helm upgrade --install ai-obs \
-  charts/suse-ai-observability-extension-2.0.0.tgz \
+  charts/suse-ai-observability-extension-3.0.0.tgz \
   -f genai_values.yaml --namespace so-extensions --create-namespace
 ----
 endif::[]
@@ -236,24 +245,26 @@ Alternatively, consider running the extension in the same cluster as {sobservabi
 [NOTE]
 .{otelemetry} GenAI Semantic Conventions compatibility
 ====
-The {suseai} Observability Extension is compatible with the link:https://opentelemetry.io/docs/specs/semconv/gen-ai/[{otelemetry} Semantic Conventions for Generative AI] as defined in version v1.40.0.
-These conventions are currently in *Development* status within the {otelemetry} specification.
+The {suseai} Observability Extension uses native {otelemetry} service identities and GenAI attributes from application traces and metrics.
 ====
 +
 [IMPORTANT]
-.Upgrading from version 1.5.0 to 2.0.0
+.Upgrading from Extension 2.x to 3.0.0
 ====
-When upgrading the {suseai} Observability Extension from version 1.5.0 to 2.0.0, you must also update the {otelemetry} Collector and the {suseai} Filter (`suse_ai_filter.py`) to their corresponding versions.
-These components are designed to work together, and running mismatched versions may result in missing telemetry data or broken topology views.
+Export customized StackPack settings, monitor overrides and custom views before upgrading.
+The setup Job upgrades the existing instance with `--unlocked-strategy overwrite`, replacing unlocked settings.
+Old synthetic component history, saved links, component-specific monitor overrides and custom views are not migrated automatically.
+Retarget cloned monitors that refer to old components.
+The StackPack upgrade does not update the Collector, exporters or application instrumentation.
+Follow the link:{dsc}/suse-ai/1.0/html/AI-monitoring/index.html#ai-monitoring-integration-upgrade[native integration upgrade procedure] to update these components and verify telemetry.
 ====
 +
-After the installation is complete, a new menu called btn:[GenAI] is added to the Web interface and also a {kube} cron job is created that synchronizes the topology view with the components found in the {productname} cluster.
+After installation, the menu:SUSE AI[] group appears in the Web interface.
+Native mappings extend the {otelemetry} and {kube} integrations.
 
 . *Verify {sobservability} extension.*
-After the installation, you can verify that a new lateral menu appears:
-+
-.New GenAI Observability menu item
-image::ai-observability-genai-menu.png[An image of a new left menu item GenAI Observability,width=30%]
+Verify that menu:SUSE AI[] contains Overview, Applications & agents, Models, Inference, Data services and GPUs.
+Check the installed StackPack version and topology synchronization status.
 --
 
 [#ai-observability-ai-cluster]
@@ -268,15 +279,15 @@ Communication relies on externally exposed endpoints of the {sobservability} clu
 The difference between deployment scenarios affects the *OTEL Collector exporter configuration* and the *{sobservability} Agent URL*.
 Adjust the following values to match your {sobservability} configuration.
 
-SUSE_OBSERVABILITY_API_URL::
-The URL of the {sobservability} API.
+OTLP_ENDPOINT::
+The OTLP gRPC endpoint of {sobservability}, in `host:port` format.
 +
-*Single-cluster example:* \http://suse-observability-otel-collector.suse-observability.svc.cluster.local:4317
+*Single-cluster example:* `suse-observability-otel-collector.suse-observability.svc.cluster.local:4317`
 +
-*Multi-cluster example:* \https://suse-observability-api.your-domain.com
+*Multi-cluster example:* `otlp-observability.example.com:443`
 
-SUSE_OBSERVABILITY_COLLECTOR_ENDPOINT::
-The endpoint of the {sobservability} Collector.
+SUSE_OBSERVABILITY_AGENT_ENDPOINT::
+The endpoint used by the {sobservability} Agent.
 +
 *Single-cluster example:* \http://suse-observability-router.suse-observability.svc.cluster.local:8080/receiver/stsAgent
 +
@@ -285,8 +296,8 @@ The endpoint of the {sobservability} Collector.
 [.procedure]
 . *Install {nvoperator}.*
 Follow the instructions in link:https://documentation.suse.com/cloudnative/rke2/latest/en/advanced.html#_deploy_nvidia_operator[].
-. *Install {otelemetry} collector.*
-Create the namespace for the collector if it does not exist yet.
+. *Install the {otelemetry} Collector.*
+Create the namespace for the Collector if it does not exist yet.
 +
 [source,bash,subs="+attributes"]
 ----
@@ -303,6 +314,7 @@ Retrieve the API key using the Web UI or from the `baseConfig_values.yaml` file 
   --from-literal=API_KEY='<SUSE_OBSERVABILITY_API_KEY>'
 ----
 +
+ifeval::["{PROF_DEPLOYMENT}" == "standard"]
 Create the image pull secret for the {sregistry}.
 The username is `regcode` and the password is the {scca} registration code of your {productname} subscription.
 +
@@ -314,720 +326,24 @@ The username is `regcode` and the password is the {scca} registration code of yo
   --docker-password=<SCC_REG_CODE> \
   -n observability
 ----
-+
-Create a new file named `otel-values.yaml` with the following content.
-+
-ifeval::["{PROF_DEPLOYMENT}" == "standard"]
-[source,yaml]
-----
-global:
-  imagePullSecrets:
-  - suse-ai-registry
-extraEnvs:
-  - name: K8S_CLUSTER_NAME
-    value: "<CLUSTER_NAME>" <.>
-  - name: SAIF_NAMESPACE
-    value: "<SAIF_NAMESPACE>" <.>
-extraEnvsFrom:
-  - secretRef:
-      name: open-telemetry-collector
-mode: deployment
-clusterRole:
-  create: true
-  rules:
-    - apiGroups: [""]
-      resources: ["pods", "nodes", "endpoints", "services"]
-      verbs: ["get", "list", "watch"]
-image:
-  registry: registry.suse.com
-  repository: ai/containers/suse-ai-opentelemetry-collector
-  tag: 0.156.0
-  pullPolicy: IfNotPresent
-ports:
-  metrics:
-    enabled: true
-presets:
-  kubernetesAttributes:
-    enabled: true
-    extractAllPodLabels: true
-config:
-  receivers:
-    elasticsearch:
-      endpoint: "http://opensearch-cluster-master-headless.<OPENSEARCH_NAMESPACE>.svc.cluster.local:9200"
-      # If you have basic auth enabled:
-      username: "admin"
-      password: "MySecurePass123"
-      # If using self-signed certs or internal CAs:
-      tls:
-        insecure_skip_verify: true
-      collection_interval: 10s
-      # Optional: Enable detailed node metrics
-      metrics:
-        elasticsearch.node.fs.disk.total:
-          enabled: true
-        elasticsearch.node.fs.disk.available:
-          enabled: true
-    prometheus:
-      config:
-        scrape_configs:
-          - job_name: 'gpu-metrics'
-            scrape_interval: 10s
-            scheme: http
-            kubernetes_sd_configs:
-              - role: endpoints
-                namespaces:
-                  names:
-                    - gpu-operator
-          - job_name: 'milvus'
-            scrape_interval: 15s
-            metrics_path: '/metrics'
-            static_configs:
-              - targets: ['<MILVUS_SERVICE_NAME>.<SAIF_NAMESPACE>.svc.cluster.local:9091'] <.>
-          - job_name: 'qdrant'
-            scrape_interval: 10s
-            metrics_path: '/metrics'
-            static_configs:
-              - targets: ['<QDRANT_SERVICE_NAME>.<SAIF_NAMESPACE>.svc.cluster.local:6333'] <.>
-          - job_name: 'vllm'
-            scrape_interval: 10s
-            scheme: http
-            kubernetes_sd_configs:
-              - role: service
-            relabel_configs:
-              - source_labels: [__meta_kubernetes_namespace]
-                action: keep
-                regex: '<VLLM_NAMESPACE>' <.>
-
-              - source_labels: [__meta_kubernetes_service_name]
-                action: keep
-                regex: '.*<VLLM_RELEASE_NAME>.*' <.>
-  exporters:
-    topology:
-      endpoint: http://<SUSE_OBSERVABILITY_ROUTER_ENDPOINT>:8080 <.>
-      api_key: ${env:API_KEY}
-      namespace: ${env:SAIF_NAMESPACE}
-      cluster_name: ${env:K8S_CLUSTER_NAME}
-      tls: <.>
-        insecure_skip_verify: true
-    otlp:
-      endpoint: http://<OPEN_TELEMETRY_COLLECTOR_NAME>.suse-observability.svc.cluster.local:4317 <.>
-      headers:
-        Authorization: "SUSEObservability ${env:API_KEY}"
-      tls:
-        insecure: true
-  processors:
-    resource/elasticsearch:
-      attributes:
-        - key: suse.ai.managed
-          value: "true"
-          action: insert
-        - key: suse.ai.component.name
-          value: "opensearch"
-          action: insert
-        - key: suse.ai.component.type
-          value: "search-engine"
-          action: insert
-        - key: service.name
-          value: "opensearch"
-          action: insert
-        - key: service.namespace
-          value: ${env:SAIF_NAMESPACE}
-          action: insert
-        - key: k8s.namespace.name
-          value: ${env:SAIF_NAMESPACE}
-          action: upsert
-        - key: service.instance.id
-          value: "opensearch-cluster"
-          action: insert
-    transform/vllm:
-      error_mode: ignore
-      metric_statements:
-        - context: resource
-          statements:
-            - set(attributes["suse.ai.managed"], "true") where attributes["service.name"] == "vllm"
-            - set(attributes["suse.ai.component.name"], "vllm") where attributes["service.name"] == "vllm"
-            - set(attributes["suse.ai.component.type"], "inference-engine") where attributes["service.name"] == "vllm"
-            - set(attributes["service.instance.id"], "vllm") where attributes["service.name"] == "vllm"
-            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["service.name"] == "vllm"
-    transform/qdrant:
-      error_mode: ignore
-      metric_statements:
-        - context: resource
-          statements:
-            - set(attributes["suse.ai.managed"], "true") where attributes["service.name"] == "qdrant"
-            - set(attributes["suse.ai.component.name"], "qdrant") where attributes["service.name"] == "qdrant"
-            - set(attributes["suse.ai.component.type"], "vectordb") where attributes["service.name"] == "qdrant"
-            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["service.name"] == "qdrant"
-    transform/milvus:
-      error_mode: ignore
-      metric_statements:
-        - context: resource
-          statements:
-            - set(attributes["suse.ai.managed"], "true") where attributes["service.name"] == "milvus"
-            - set(attributes["suse.ai.component.name"], "milvus") where attributes["service.name"] == "milvus"
-            - set(attributes["suse.ai.component.type"], "vectordb") where attributes["service.name"] == "milvus"
-            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["service.name"] == "milvus"
-    tail_sampling:
-      decision_wait: 10s
-      policies:
-      - name: rate-limited-composite
-        type: composite
-        composite:
-          max_total_spans_per_second: 500
-          policy_order: [errors, slow-traces, rest]
-          composite_sub_policy:
-          - name: errors
-            type: status_code
-            status_code:
-              status_codes: [ ERROR ]
-          - name: slow-traces
-            type: latency
-            latency:
-              threshold_ms: 1000
-          - name: rest
-            type: always_sample
-          rate_allocation:
-          - policy: errors
-            percent: 33
-          - policy: slow-traces
-            percent: 33
-          - policy: rest
-            percent: 34
-    resource:
-      attributes:
-      - key: k8s.cluster.name
-        action: insert
-        value: ${env:K8S_CLUSTER_NAME}
-      - key: service.instance.id
-        from_attribute: k8s.pod.uid
-        action: insert
-    # Infer inference engines from GenAI client metrics.
-    filter/genai-metrics-only:
-      error_mode: ignore
-      metrics:
-        metric:
-          - not(IsMatch(name, "gen_ai\\..*"))
-    groupbyattrs/infer-providers:
-      keys:
-        - gen_ai.provider.name
-    transform/infer-providers:
-      error_mode: ignore
-      metric_statements:
-        - context: resource
-          statements:
-            - set(attributes["service.name"], attributes["gen_ai.provider.name"]) where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["service.instance.id"], attributes["gen_ai.provider.name"]) where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["suse.ai.managed"], "true") where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["suse.ai.component.name"], attributes["gen_ai.provider.name"]) where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["suse.ai.component.type"], "inference-engine") where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["gen_ai.provider.name"] != nil
-    # Infer LLM models from GenAI client metrics.
-    groupbyattrs/infer-models:
-      keys:
-        - gen_ai.request.model
-        - gen_ai.provider.name
-    transform/infer-models:
-      error_mode: ignore
-      metric_statements:
-        - context: resource
-          statements:
-            - set(attributes["service.name"], attributes["gen_ai.request.model"]) where attributes["gen_ai.request.model"] != nil
-            - set(attributes["service.instance.id"], attributes["gen_ai.request.model"]) where attributes["gen_ai.request.model"] != nil
-            - set(attributes["suse.ai.managed"], "true") where attributes["gen_ai.request.model"] != nil
-            - set(attributes["suse.ai.component.name"], attributes["gen_ai.request.model"]) where attributes["gen_ai.request.model"] != nil
-            - set(attributes["suse.ai.component.type"], "llm-model") where attributes["gen_ai.request.model"] != nil
-            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["gen_ai.request.model"] != nil
-    # Exclude services that already have suse.ai.component.name set.
-    filter/exclude-already-tagged:
-      error_mode: ignore
-      metrics:
-        resource:
-          - attributes["suse.ai.component.name"] != nil
-    # Infer application components from GenAI client metrics.
-    transform/infer-applications:
-      error_mode: ignore
-      metric_statements:
-        - context: resource
-          statements:
-            - set(attributes["suse.ai.managed"], "true")
-            - set(attributes["suse.ai.component.type"], "application")
-            - set(attributes["suse.ai.component.name"], attributes["service.name"])
-            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}")
-    # Create provider -> model relations from GenAI trace spans.
-    filter/genai-spans:
-      error_mode: ignore
-      traces:
-        span:
-          - attributes["gen_ai.request.model"] == nil
-    groupbyattrs/model-relations:
-      keys:
-        - gen_ai.provider.name
-    transform/model-relations:
-      error_mode: ignore
-      trace_statements:
-        - context: resource
-          statements:
-            - set(attributes["service.name"], attributes["gen_ai.provider.name"]) where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["service.instance.id"], attributes["gen_ai.provider.name"]) where attributes["gen_ai.provider.name"] != nil
-        - context: span
-          statements:
-            - set(attributes["peer.service"], attributes["gen_ai.request.model"]) where attributes["gen_ai.request.model"] != nil
-    # Create application -> provider relations from GenAI trace spans.
-    transform/provider-relations:
-      error_mode: ignore
-      trace_statements:
-        - context: span
-          statements:
-            - set(attributes["peer.service"], resource.attributes["gen_ai.provider.name"]) where resource.attributes["gen_ai.provider.name"] != nil
-    filter/dropMissingK8sAttributes:
-      error_mode: ignore
-      traces:
-        span:
-          - resource.attributes["k8s.node.name"] == nil
-          - resource.attributes["k8s.pod.uid"] == nil
-          - resource.attributes["k8s.namespace.name"] == nil
-          - resource.attributes["k8s.pod.name"] == nil
-  connectors:
-    spanmetrics:
-      metrics_expiration: 5m
-      namespace: otel_span
-    routing/traces:
-      error_mode: ignore
-      table:
-      - statement: route()
-        pipelines: [traces/sampling, traces/spanmetrics, traces/model-relations, traces/provider-relations, traces/topology]
-  service:
-    extensions:
-      - health_check
-    pipelines:
-      traces:
-        receivers: [otlp, jaeger]
-        processors: [filter/dropMissingK8sAttributes, memory_limiter, resource]
-        exporters: [routing/traces]
-      traces/spanmetrics:
-        receivers: [routing/traces]
-        processors: []
-        exporters: [spanmetrics]
-      traces/sampling:
-        receivers: [routing/traces]
-        processors: [tail_sampling, batch]
-        exporters: [debug, otlp]
-      metrics:
-        receivers: [otlp, spanmetrics, prometheus]
-        processors: [memory_limiter, transform/qdrant, transform/milvus, transform/vllm, resource, batch]
-        exporters: [debug, otlp]
-      # Infer inference engines from GenAI client metrics.
-      metrics/infer-providers:
-        receivers: [otlp]
-        processors: [filter/genai-metrics-only, groupbyattrs/infer-providers, transform/infer-providers, resource, batch]
-        exporters: [otlp]
-      # Infer LLM models from GenAI client metrics.
-      metrics/infer-models:
-        receivers: [otlp]
-        processors: [filter/genai-metrics-only, groupbyattrs/infer-models, transform/infer-models, resource, batch]
-        exporters: [otlp]
-      # Infer application components from GenAI client metrics.
-      metrics/infer-applications:
-        receivers: [otlp]
-        processors: [filter/genai-metrics-only, filter/exclude-already-tagged, transform/infer-applications, resource, batch]
-        exporters: [otlp]
-      # Create provider -> model relations from trace spans.
-      traces/model-relations:
-        receivers: [routing/traces]
-        processors: [filter/genai-spans, groupbyattrs/model-relations, transform/model-relations, batch]
-        exporters: [otlp]
-      # Create application -> provider relations from trace spans.
-      traces/provider-relations:
-        receivers: [routing/traces]
-        processors: [filter/genai-spans, transform/provider-relations, batch]
-        exporters: [otlp]
-      # Push product topology to {sobservability}.
-      traces/topology:
-        receivers: [routing/traces]
-        processors: [batch]
-        exporters: [topology]
-      metrics/elasticsearch:
-        receivers: [elasticsearch]
-        processors: [memory_limiter, resource/elasticsearch, resource, batch]
-        exporters: [debug, otlp]
-----
-<.> Replace `<CLUSTER_NAME>` with the cluster's name.
-<.> Replace `<SAIF_NAMESPACE>` with the namespace where {productname} components are installed.
-<.> Configure the {milvus} service and namespace for the {prometheus} scraper.
-Because {milvus} will be installed in subsequent steps, you can return to this step and edit the endpoint if necessary.
-<.> Configure the {qdrant} service and namespace for the {prometheus} scraper.
-<.> Update to match the values in the {vllm} deployment section.
-<.> Update to match the values in the {vllm} deployment section.
-<.> Set the topology exporter to your exposed {sobservability} router.
-For single-cluster deployments, use the internal service URL (for example, `suse-observability-router.suse-observability.svc.cluster.local`).
-For multi-cluster deployments, use the external URL.
-<.> Optional TLS configuration for the topology exporter.
-Set `insecure_skip_verify` to `true` for self-signed certificates.
-<.> Set the exporter to your exposed {sobservability} collector.
-Remember that the value can be distinct, depending on the deployment pattern.
-For production usage, we recommend using TLS communication.
 endif::[]
 ifeval::["{PROF_DEPLOYMENT}" == "airgapped"]
-[source,yaml]
-----
-global:
-  imagePullSecrets:
-  - suse-ai-registry
-extraEnvs:
-  - name: K8S_CLUSTER_NAME
-    value: "<CLUSTER_NAME>" <.>
-  - name: SAIF_NAMESPACE
-    value: "<SAIF_NAMESPACE>" <.>
-extraEnvsFrom:
-  - secretRef:
-      name: open-telemetry-collector
-mode: deployment
-clusterRole:
-  create: true
-  rules:
-    - apiGroups: [""]
-      resources: ["pods", "nodes", "endpoints", "services"]
-      verbs: ["get", "list", "watch"]
-image:
-  registry: <LOCAL_DOCKER_REGISTRY_URL>:5043
-  repository: suse-ai-opentelemetry-collector
-  tag: 0.156.0
-  pullPolicy: IfNotPresent
-ports:
-  metrics:
-    enabled: true
-presets:
-  kubernetesAttributes:
-    enabled: true
-    extractAllPodLabels: true
-config:
-  receivers:
-    elasticsearch:
-      endpoint: "http://opensearch-cluster-master-headless.<OPENSEARCH_NAMESPACE>.svc.cluster.local:9200"
-      # If you have basic auth enabled:
-      username: "admin"
-      password: "MySecurePass123"
-      # If using self-signed certs or internal CAs:
-      tls:
-        insecure_skip_verify: true
-      collection_interval: 10s
-      # Optional: Enable detailed node metrics
-      metrics:
-        elasticsearch.node.fs.disk.total:
-          enabled: true
-        elasticsearch.node.fs.disk.available:
-          enabled: true
-    prometheus:
-      config:
-        scrape_configs:
-          - job_name: 'gpu-metrics'
-            scrape_interval: 10s
-            scheme: http
-            kubernetes_sd_configs:
-              - role: endpoints
-                namespaces:
-                  names:
-                    - gpu-operator
-          - job_name: 'milvus'
-            scrape_interval: 15s
-            metrics_path: '/metrics'
-            static_configs:
-              - targets: ['<MILVUS_SERVICE_NAME>.<SAIF_NAMESPACE>.svc.cluster.local:9091'] <.>
-          - job_name: 'qdrant'
-            scrape_interval: 10s
-            metrics_path: '/metrics'
-            static_configs:
-              - targets: ['<QDRANT_SERVICE_NAME>.<SAIF_NAMESPACE>.svc.cluster.local:6333'] <.>
-          - job_name: 'vllm'
-            scrape_interval: 10s
-            scheme: http
-            kubernetes_sd_configs:
-              - role: service
-            relabel_configs:
-              - source_labels: [__meta_kubernetes_namespace]
-                action: keep
-                regex: '<VLLM_NAMESPACE>' <.>
-
-              - source_labels: [__meta_kubernetes_service_name]
-                action: keep
-                regex: '.*<VLLM_RELEASE_NAME>.*' <.>
-  exporters:
-    topology:
-      endpoint: http://<SUSE_OBSERVABILITY_ROUTER_ENDPOINT>:8080 <.>
-      api_key: ${env:API_KEY}
-      namespace: ${env:SAIF_NAMESPACE}
-      cluster_name: ${env:K8S_CLUSTER_NAME}
-      tls: <.>
-        insecure_skip_verify: true
-    otlp:
-      endpoint: http://<OPEN_TELEMETRY_COLLECTOR_NAME>.suse-observability.svc.cluster.local:4317 <.>
-      headers:
-        Authorization: "SUSEObservability ${env:API_KEY}"
-      tls:
-        insecure: true
-  processors:
-    resource/elasticsearch:
-      attributes:
-        - key: suse.ai.managed
-          value: "true"
-          action: insert
-        - key: suse.ai.component.name
-          value: "opensearch"
-          action: insert
-        - key: suse.ai.component.type
-          value: "search-engine"
-          action: insert
-        - key: service.name
-          value: "opensearch"
-          action: insert
-        - key: service.namespace
-          value: ${env:SAIF_NAMESPACE}
-          action: insert
-        - key: k8s.namespace.name
-          value: ${env:SAIF_NAMESPACE}
-          action: upsert
-        - key: service.instance.id
-          value: "opensearch-cluster"
-          action: insert
-    transform/vllm:
-      error_mode: ignore
-      metric_statements:
-        - context: resource
-          statements:
-            - set(attributes["suse.ai.managed"], "true") where attributes["service.name"] == "vllm"
-            - set(attributes["suse.ai.component.name"], "vllm") where attributes["service.name"] == "vllm"
-            - set(attributes["suse.ai.component.type"], "inference-engine") where attributes["service.name"] == "vllm"
-            - set(attributes["service.instance.id"], "vllm") where attributes["service.name"] == "vllm"
-            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["service.name"] == "vllm"
-    transform/qdrant:
-      error_mode: ignore
-      metric_statements:
-        - context: resource
-          statements:
-            - set(attributes["suse.ai.managed"], "true") where attributes["service.name"] == "qdrant"
-            - set(attributes["suse.ai.component.name"], "qdrant") where attributes["service.name"] == "qdrant"
-            - set(attributes["suse.ai.component.type"], "vectordb") where attributes["service.name"] == "qdrant"
-            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["service.name"] == "qdrant"
-    transform/milvus:
-      error_mode: ignore
-      metric_statements:
-        - context: resource
-          statements:
-            - set(attributes["suse.ai.managed"], "true") where attributes["service.name"] == "milvus"
-            - set(attributes["suse.ai.component.name"], "milvus") where attributes["service.name"] == "milvus"
-            - set(attributes["suse.ai.component.type"], "vectordb") where attributes["service.name"] == "milvus"
-            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["service.name"] == "milvus"
-    tail_sampling:
-      decision_wait: 10s
-      policies:
-      - name: rate-limited-composite
-        type: composite
-        composite:
-          max_total_spans_per_second: 500
-          policy_order: [errors, slow-traces, rest]
-          composite_sub_policy:
-          - name: errors
-            type: status_code
-            status_code:
-              status_codes: [ ERROR ]
-          - name: slow-traces
-            type: latency
-            latency:
-              threshold_ms: 1000
-          - name: rest
-            type: always_sample
-          rate_allocation:
-          - policy: errors
-            percent: 33
-          - policy: slow-traces
-            percent: 33
-          - policy: rest
-            percent: 34
-    resource:
-      attributes:
-      - key: k8s.cluster.name
-        action: insert
-        value: ${env:K8S_CLUSTER_NAME}
-      - key: service.instance.id
-        from_attribute: k8s.pod.uid
-        action: insert
-    # Infer inference engines from GenAI client metrics.
-    filter/genai-metrics-only:
-      error_mode: ignore
-      metrics:
-        metric:
-          - not(IsMatch(name, "gen_ai\\..*"))
-    groupbyattrs/infer-providers:
-      keys:
-        - gen_ai.provider.name
-    transform/infer-providers:
-      error_mode: ignore
-      metric_statements:
-        - context: resource
-          statements:
-            - set(attributes["service.name"], attributes["gen_ai.provider.name"]) where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["service.instance.id"], attributes["gen_ai.provider.name"]) where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["suse.ai.managed"], "true") where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["suse.ai.component.name"], attributes["gen_ai.provider.name"]) where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["suse.ai.component.type"], "inference-engine") where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["gen_ai.provider.name"] != nil
-    # Infer LLM models from GenAI client metrics.
-    groupbyattrs/infer-models:
-      keys:
-        - gen_ai.request.model
-        - gen_ai.provider.name
-    transform/infer-models:
-      error_mode: ignore
-      metric_statements:
-        - context: resource
-          statements:
-            - set(attributes["service.name"], attributes["gen_ai.request.model"]) where attributes["gen_ai.request.model"] != nil
-            - set(attributes["service.instance.id"], attributes["gen_ai.request.model"]) where attributes["gen_ai.request.model"] != nil
-            - set(attributes["suse.ai.managed"], "true") where attributes["gen_ai.request.model"] != nil
-            - set(attributes["suse.ai.component.name"], attributes["gen_ai.request.model"]) where attributes["gen_ai.request.model"] != nil
-            - set(attributes["suse.ai.component.type"], "llm-model") where attributes["gen_ai.request.model"] != nil
-            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}") where attributes["gen_ai.request.model"] != nil
-    # Exclude services that already have suse.ai.component.name set.
-    filter/exclude-already-tagged:
-      error_mode: ignore
-      metrics:
-        resource:
-          - attributes["suse.ai.component.name"] != nil
-    # Infer application components from GenAI client metrics.
-    transform/infer-applications:
-      error_mode: ignore
-      metric_statements:
-        - context: resource
-          statements:
-            - set(attributes["suse.ai.managed"], "true")
-            - set(attributes["suse.ai.component.type"], "application")
-            - set(attributes["suse.ai.component.name"], attributes["service.name"])
-            - set(attributes["k8s.namespace.name"], "${env:SAIF_NAMESPACE}")
-    # Create provider -> model relations from GenAI trace spans.
-    filter/genai-spans:
-      error_mode: ignore
-      traces:
-        span:
-          - attributes["gen_ai.request.model"] == nil
-    groupbyattrs/model-relations:
-      keys:
-        - gen_ai.provider.name
-    transform/model-relations:
-      error_mode: ignore
-      trace_statements:
-        - context: resource
-          statements:
-            - set(attributes["service.name"], attributes["gen_ai.provider.name"]) where attributes["gen_ai.provider.name"] != nil
-            - set(attributes["service.instance.id"], attributes["gen_ai.provider.name"]) where attributes["gen_ai.provider.name"] != nil
-        - context: span
-          statements:
-            - set(attributes["peer.service"], attributes["gen_ai.request.model"]) where attributes["gen_ai.request.model"] != nil
-    # Create application -> provider relations from GenAI trace spans.
-    transform/provider-relations:
-      error_mode: ignore
-      trace_statements:
-        - context: span
-          statements:
-            - set(attributes["peer.service"], resource.attributes["gen_ai.provider.name"]) where resource.attributes["gen_ai.provider.name"] != nil
-    filter/dropMissingK8sAttributes:
-      error_mode: ignore
-      traces:
-        span:
-          - resource.attributes["k8s.node.name"] == nil
-          - resource.attributes["k8s.pod.uid"] == nil
-          - resource.attributes["k8s.namespace.name"] == nil
-          - resource.attributes["k8s.pod.name"] == nil
-  connectors:
-    spanmetrics:
-      metrics_expiration: 5m
-      namespace: otel_span
-    routing/traces:
-      error_mode: ignore
-      table:
-      - statement: route()
-        pipelines: [traces/sampling, traces/spanmetrics, traces/model-relations, traces/provider-relations, traces/topology]
-  service:
-    extensions:
-      - health_check
-    pipelines:
-      traces:
-        receivers: [otlp, jaeger]
-        processors: [filter/dropMissingK8sAttributes, memory_limiter, resource]
-        exporters: [routing/traces]
-      traces/spanmetrics:
-        receivers: [routing/traces]
-        processors: []
-        exporters: [spanmetrics]
-      traces/sampling:
-        receivers: [routing/traces]
-        processors: [tail_sampling, batch]
-        exporters: [debug, otlp]
-      metrics:
-        receivers: [otlp, spanmetrics, prometheus]
-        processors: [memory_limiter, transform/qdrant, transform/milvus, transform/vllm, resource, batch]
-        exporters: [debug, otlp]
-      # Infer inference engines from GenAI client metrics.
-      metrics/infer-providers:
-        receivers: [otlp]
-        processors: [filter/genai-metrics-only, groupbyattrs/infer-providers, transform/infer-providers, resource, batch]
-        exporters: [otlp]
-      # Infer LLM models from GenAI client metrics.
-      metrics/infer-models:
-        receivers: [otlp]
-        processors: [filter/genai-metrics-only, groupbyattrs/infer-models, transform/infer-models, resource, batch]
-        exporters: [otlp]
-      # Infer application components from GenAI client metrics.
-      metrics/infer-applications:
-        receivers: [otlp]
-        processors: [filter/genai-metrics-only, filter/exclude-already-tagged, transform/infer-applications, resource, batch]
-        exporters: [otlp]
-      # Create provider -> model relations from trace spans.
-      traces/model-relations:
-        receivers: [routing/traces]
-        processors: [filter/genai-spans, groupbyattrs/model-relations, transform/model-relations, batch]
-        exporters: [otlp]
-      # Create application -> provider relations from trace spans.
-      traces/provider-relations:
-        receivers: [routing/traces]
-        processors: [filter/genai-spans, transform/provider-relations, batch]
-        exporters: [otlp]
-      # Push product topology to {sobservability}.
-      traces/topology:
-        receivers: [routing/traces]
-        processors: [batch]
-        exporters: [topology]
-      metrics/elasticsearch:
-        receivers: [elasticsearch]
-        processors: [memory_limiter, resource/elasticsearch, resource, batch]
-        exporters: [debug, otlp]
-----
-<.> Replace `<CLUSTER_NAME>` with the cluster's name.
-<.> Replace `<SAIF_NAMESPACE>` with the namespace where {productname} components are installed.
-<.> Configure the {milvus} service and namespace for the {prometheus} scraper.
-Because {milvus} will be installed in subsequent steps, you can return to this step and edit the endpoint if necessary.
-<.> Configure the {qdrant} service and namespace for the {prometheus} scraper.
-<.> Update to match the values in the {vllm} deployment section.
-<.> Update to match the values in the {vllm} deployment section.
-<.> Set the topology exporter to your exposed {sobservability} router.
-For single-cluster deployments, use the internal service URL (for example, `suse-observability-router.suse-observability.svc.cluster.local`).
-For multi-cluster deployments, use the external URL.
-<.> Optional TLS configuration for the topology exporter.
-Set `insecure_skip_verify` to `true` for self-signed certificates.
-<.> Set the exporter to your exposed {sobservability} collector.
-Remember that the value can be distinct, depending on the deployment pattern.
-For production usage, we recommend using TLS communication.
-endif::[]
-+
-Finally, run the installation command.
+Create an image pull secret for your local registry.
 +
 [source,bash,subs="+attributes"]
 ----
-{prompt_user}helm upgrade --install opentelemetry-collector \
-  oci://dp.apps.rancher.io/charts/opentelemetry-collector \
-  -f otel-values.yaml --namespace observability
+{prompt_user}kubectl create secret docker-registry suse-ai-registry \
+  --docker-server=<LOCAL_DOCKER_REGISTRY_URL>:5043 \
+  --docker-username=<REGISTRY_USERNAME> \
+  --docker-password=<REGISTRY_PASSWORD> \
+  -n observability
 ----
+endif::[]
 +
-Verify the installation by checking the existence of a new deployment and service in the observability namespace.
+Create `otel-native-values.yaml` and install the Collector as described in link:{dsc}/suse-ai/1.0/html/AI-monitoring/index.html#ai-monitoring-native-collector-deploy[Installing or upgrading the Collector].
+This values file selects the configuration bundled with the Collector image and provides the credentials, endpoint and permissions required by Extension 3.0.0.
+Enable the product profiles for the applications that you monitor.
+For air-gapped deployments, use the downloaded chart archive and the locally mirrored Collector image.
 . *Install the {sobservability} Agent.*
 +
 --
@@ -1048,8 +364,6 @@ Verify the installation by checking the existence of a new deployment and servic
 . *Install {productname}.*
 Refer to xref:aif-deployment[] for the complete procedure.
 
-include::../snippets/observability-warning-262.adoc[]
-
 [#ai-observability-openlit]
 == Instrument applications
 
@@ -1057,5 +371,6 @@ Instrumentation is the act of configuring your applications for telemetry data a
 Our stack employs {otelemetry} standards as a vendor-neutral and open base for our telemetry.
 For a comprehensive guide on how to set up your instrumentation, please refer to link:https://documentation.suse.com/suse-ai/1.0/html/AI-monitoring/index.html[Monitoring {productname} with {otelemetry} and {sobservability}].
 
-By following the instructions in the document referenced above, you will be able to retrieve all relevant telemetry data from {owui}, {ollama}, {milvus} and {vllm} by simply applying specific configuration to their {helm} chart values.
+Follow the product-specific instructions to enable metrics profiles, deploy exporters and configure the {owui} Function.
+Application-specific signals require instrumentation in your application code.
 You can find links for advanced use cases (auto-instrumentation with the OTEL Operator) at the end of the document.

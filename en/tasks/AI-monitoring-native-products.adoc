@@ -1,0 +1,365 @@
+[#ai-monitoring-native-products]
+= Configuring other products for the native integration
+
+Most products expose metrics that the Collector reads directly.
+They do not need extra {suse} software.
+Operations inside your own applications still require instrumentation in those applications.
+
+[#ai-monitoring-native-product-identity]
+== Product and application identity
+
+The `suse.ai.product` resource attribute identifies the product that sends the telemetry, for example, `vllm`, `milvus` or `open-webui`.
+An application that calls {ollama} sets `gen_ai.provider.name=ollama` on its spans but keeps its own `suse.ai.product` value.
+
+To get metrics for each instance, scrape individual pods and use the pod UID as `service.instance.id`.
+Cluster-wide metrics, such as {opensearch} cluster statistics, do not have a pod UID.
+
+[#ai-monitoring-native-inference-vector]
+== {vllm}, {milvus} and {qdrant}
+
+The base Collector configuration scrapes {vllm}.
+For {milvus} and {qdrant}, enable their profiles.
+Collector {ai-collector-version} provides the following discovery and association settings.
+Set the following variables in `otel-native-values.yaml`.
+
+[cols="1,1,2,2",options="header"]
+|===
+|Product |Metrics endpoint |Profile |Variable
+
+|{vllm} |`8000/metrics` |None (base configuration) |`VLLM_METRICS_PORT`.
+The Collector discovers each {vllm} pod.
+|{milvus} |`9091/metrics` |`/otelcol/milvus.yaml` |`MILVUS_K8S_SERVICE_NAME=milvus`, `MILVUS_METRICS_PORT=9091` and `MILVUS_NAMESPACE`.
+|{qdrant} |`6333/metrics` |`/otelcol/qdrant.yaml` |`QDRANT_K8S_SERVICE_NAME=qdrant`, `QDRANT_METRICS_PORT=6333` and `QDRANT_NAMESPACE`.
+|===
+
+The product namespace defaults to `SUSE_AI_NAMESPACE`.
+The Collector discovers ready pod endpoints behind the specified Service and metrics target port.
+Its service account needs permission to get, list and watch Services, Endpoints and Pods.
+The Collector values in xref:ai-monitoring-native-collector-deploy[] include these permissions.
+
+Each pod has its own `service.instance.id`, equal to its pod UID.
+The metrics also include the pod name, node, namespace and `K8S_CLUSTER_NAME`.
+Set `MILVUS_SERVICE_NAME` or `QDRANT_SERVICE_NAME` to change the logical service name; the defaults are `milvus` and `qdrant`.
+
+For an external target, set `MILVUS_METRICS_ENDPOINT` or `QDRANT_METRICS_ENDPOINT` to its `host:port`.
+A nonempty value selects only the static scrape job, even when the address belongs to a local Service.
+Unset or empty selects pod discovery.
+When upgrading from a configuration with static local endpoints, remove those overrides to collect individual pod instances.
+This selection does not automatically switch modes after a scrape failure.
+
+Static metrics have an endpoint instance ID and no pod UID.
+They receive the local cluster name only for the exact configured Service DNS name and metrics port.
+For a verified local alias or IP, set `MILVUS_TARGET_IN_CLUSTER=true` or `QDRANT_TARGET_IN_CLUSTER=true`.
+Keep these flags disabled for external targets.
+The cluster DNS suffix defaults to `cluster.local`; set `K8S_CLUSTER_DOMAIN` if your cluster uses another suffix.
+
+To verify, run an inference request or a vector search and check the corresponding metrics in {sobservability}.
+To see client requests to these products, instrument the calling application.
+Database client spans need `db.system.name`, `server.address` and `server.port`.
+To join these calls to the native database service, configure xref:ai-monitoring-native-database-association[].
+Verify that the Cluster column shows your cluster and each database instance uses its pod UID.
+
+[#ai-monitoring-native-search]
+== {opensearch}
+
+The `/otelcol/opensearch.yaml` profile uses the `elasticsearch` receiver to collect {opensearch} cluster and node metrics.
+Add the profile to `command.extraArgs` and set the following variables in `otel-native-values.yaml`:
+
+`ELASTICSEARCH_ENDPOINT`::
+URL of {opensearch}, including the scheme.
+Use HTTPS for a secured cluster.
+`ELASTICSEARCH_USERNAME`::
+User name for {opensearch}.
+The password is read from the `ELASTICSEARCH_PASSWORD` key of the Collector secret.
+`ELASTICSEARCH_SERVICE_NAME`::
+Service name shown in {sobservability}.
+The default is `opensearch`.
+`ELASTICSEARCH_K8S_SERVICE_NAME`, `ELASTICSEARCH_NAMESPACE` and `ELASTICSEARCH_PORT`::
+Local Service identity, defaulting to `opensearch-cluster-master-headless`, `SUSE_AI_NAMESPACE` and `9200`.
+The default endpoint uses this Service's full DNS name.
+`ELASTICSEARCH_TARGET_IN_CLUSTER`::
+Set to `true` only after verifying that a custom endpoint belongs to the Collector's cluster.
+The default is `false`.
+
+The Collector adds `K8S_CLUSTER_NAME` and the namespace to aggregate metrics for the exact local Service HTTP or HTTPS URL.
+Other local aliases require the explicit cluster flag.
+External targets do not inherit the Collector's cluster.
+Aggregate metrics do not receive a pod UID, including metrics about individual OpenSearch nodes.
+The OpenSearch workload health probe remains a separate profile.
+
+To verify, index or search a document and check the cluster and node metrics and the Cluster column.
+
+[#ai-monitoring-native-database-association]
+== Joining database client calls to native services
+
+The database profiles can associate client calls with the native service discovered from database metrics.
+This association is disabled by default because a profile can describe an external database or a custom logical service identity.
+Enable it after verifying ownership of the local Service.
+
+. Load the corresponding product profile and set `K8S_CLUSTER_NAME` to the Collector's cluster name.
+. Add the association flag and client port to the complete `extraEnvs` list in `otel-native-values.yaml`.
++
+[cols="1,2,2",options="header"]
+|===
+|Product |Association flag |Client port
+
+|{milvus} |`MILVUS_ASSOCIATE_CLIENT_SPANS=true` |`MILVUS_CLIENT_PORT=19530`
+|{qdrant} |`QDRANT_ASSOCIATE_CLIENT_SPANS=true` |`QDRANT_CLIENT_PORT=6333`; use `6334` for gRPC
+|{opensearch} |`ELASTICSEARCH_ASSOCIATE_CLIENT_SPANS=true` |`ELASTICSEARCH_CLIENT_PORT=9200`, defaulting to `ELASTICSEARCH_PORT`
+|===
++
+For example, use these entries for a {milvus} Service named `milvus`:
++
+[source,yaml]
+----
+extraEnvs:
+  # Keep all existing required entries.
+  - name: K8S_CLUSTER_NAME
+    value: "<CLUSTER_NAME>"
+  - name: MILVUS_NAMESPACE
+    value: "<SAIF_NAMESPACE>"
+  - name: MILVUS_K8S_SERVICE_NAME
+    value: "milvus"
+  - name: MILVUS_SERVICE_NAME
+    value: "milvus"
+  - name: MILVUS_ASSOCIATE_CLIENT_SPANS
+    value: "true"
+  - name: MILVUS_CLIENT_PORT
+    value: "19530"
+----
++
+Remove `MILVUS_METRICS_ENDPOINT` to use pod discovery.
+The Milvus client port is 19530; its metrics port is 9091.
+. Upgrade the Collector as described in xref:ai-monitoring-native-collector-deploy[].
+. Generate database traffic and verify a relation from the calling service to the native database service.
+
+The span must have kind CLIENT, the matching database system and the exact configured Service address and client port.
+The address must be `<SERVICE>.<NAMESPACE>.svc.<K8S_CLUSTER_DOMAIN>`.
+The caller's resource cluster must equal `K8S_CLUSTER_NAME`.
+Matching runs before the Collector's local cluster fallback.
+A caller with a pod UID but no reported cluster remains unresolved.
+The Collector fills `suse.ai.peer.service.name`, `suse.ai.peer.service.namespace` and `suse.ai.peer.cluster` only when all three are absent or empty.
+
+Short names, IP addresses, unknown ports and calls from another or unknown cluster remain unresolved.
+An external profile endpoint also prevents association unless explicitly verified as local.
+Existing peer attributes and caller identity are preserved.
+The flag has no effect unless its product profile is loaded.
+For Elasticsearch, set `ELASTICSEARCH_SYSTEM=elasticsearch` and configure its Service identity.
+
+After enabling the association, the old observed database dependency expires 15 minutes after its last unresolved call.
+Subsequent resolved calls refresh the native service relation.
+Use distinct logical `service.namespace` values for services with the same name that must remain separate across clusters.
+
+[#ai-monitoring-native-litellm]
+== {litellm}
+
+. *Enable {litellm} metrics.*
+Add the following to the {litellm} proxy configuration:
++
+[source,yaml]
+----
+litellm_settings:
+  callbacks: [prometheus]
+  require_auth_for_metrics_endpoint: true
+----
+. *Store the metrics key.*
+Create a secret that contains a {litellm} key authorized to read metrics.
+If `require_auth_for_metrics_endpoint` is `false`, skip this step and use the `/otelcol/litellm-receiver-no-auth.yaml` profile with no volume.
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl -n observability create secret generic litellm-metrics \
+  --from-literal=key='<LITELLM_METRICS_KEY>'
+----
+. *Enable the Collector profile.*
+Add the following to `otel-native-values.yaml`:
++
+[source,yaml]
+----
+command:
+  extraArgs:
+    - --config=/otelcol/collector-config.yaml
+    - --config=/otelcol/litellm-receiver.yaml
+extraEnvs:
+  # Keep the existing entries.
+  - name: LITELLM_NAMESPACE
+    value: "<LITELLM_NAMESPACE>"
+  - name: LITELLM_SERVICE_NAME
+    value: "litellm"
+  - name: LITELLM_K8S_SERVICE_NAME
+    value: "<LITELLM_K8S_SERVICE>"
+  - name: LITELLM_METRICS_PORT
+    value: "4000"
+extraVolumes:
+  - name: litellm-metrics
+    secret:
+      secretName: litellm-metrics
+      defaultMode: 0440
+      items:
+        - key: key
+          path: key
+extraVolumeMounts:
+  - name: litellm-metrics
+    mountPath: /etc/litellm-metrics
+    readOnly: true
+----
++
+The profile reads the key from `/etc/litellm-metrics/key`.
+To use another path, set `LITELLM_METRICS_KEY_FILE`.
+If the key file is missing, the Collector does not start.
+. Upgrade the Collector as described in xref:ai-monitoring-native-collector-deploy[].
+. Send a request through the proxy and check the request and token metrics in {sobservability}.
+
+Guardrail charts require a configured guardrail and traffic that the guardrail allows or blocks.
+For traces, configure the {litellm} `otel` callback separately.
+For authentication options, refer to the https://docs.litellm.ai/docs/proxy/prometheus[{litellm} {prometheus} documentation].
+
+[#ai-monitoring-native-workload-probes]
+== {mlflow}, {mcpo} and Model Registry
+
+The workload probe profile sends an HTTP request to each pod and reports whether the endpoint responds.
+It does not measure application operations.
+
+[cols="1,2,2",options="header"]
+|===
+|Product |Probe |Variables
+
+|{mlflow} |`/health` on port `5000` |`MLFLOW_NAMESPACE`, `MLFLOW_SERVICE_NAME`
+|{mcpo} |`/openapi.json` on port `8000` |`MCPO_NAMESPACE`, `MCPO_SERVICE_NAME`, `MCPO_HEALTH_PATH`
+|Model Registry |`/api/model_registry/v1alpha3/registered_models` on port `8080` |`MODEL_REGISTRY_NAMESPACE`, `MODEL_REGISTRY_SERVICE_NAME`
+|{opensearch} |HTTPS `/` on port `9200` |`OPENSEARCH_NAMESPACE`, `OPENSEARCH_CA_FILE`, `OPENSEARCH_TLS_SERVER_NAME`
+|{ollama} |`/api/tags` on port `11434` |`OLLAMA_NAMESPACE`, `OLLAMA_SERVICE_NAME`
+|===
+
+To enable the profile, add `--config=/otelcol/workload-probes.yaml` to `command.extraArgs` and set the variables for your products.
+Probes for products without matching pods stay inactive.
+The Model Registry probe uses the token of the Collector service account, so grant that account read access to Model Registry.
+
+[#ai-monitoring-native-kubeflow]
+== KServe and {kubeflow} Pipelines
+
+The Collector bundles the `/otelcol/kubeflow.yaml` profile for {kubeflow} Pipelines and KServe.
+It scrapes `/metrics` on running pods and preserves each pod UID as `service.instance.id`.
+
+[cols="2,2,2,1",options="header"]
+|===
+|Component |Namespace variable |Pod label |Port and protocol
+|Pipelines API |`KUBEFLOW_NAMESPACE` |`app=ml-pipeline` |8888, HTTP
+|Workflow Controller |`KUBEFLOW_NAMESPACE` |`app=workflow-controller` |9090, HTTPS
+|KServe Controller |`KUBEFLOW_NAMESPACE` |`control-plane=kserve-controller-manager` |8443, HTTPS
+|KServe model pods |`KSERVE_NAMESPACE` |Nonempty `serving.kserve.io/inferenceservice` |8080, HTTP
+|===
+
+The profile scrapes every 30 seconds with a timeout of 10 seconds.
+Allow access from the Collector to the {kube} API and these ports.
+
+. *Grant access to controller metrics.*
+Keep the base configuration's metadata permissions, including `get`, `list` and `watch` on pods in both configured namespaces.
+The protected Workflow Controller and KServe Controller endpoints also require `get` on the non-resource URL `/metrics`.
+Create `kubeflow-metrics-rbac.yaml` with the following role-based access control (RBAC) resources:
++
+[source,yaml]
+----
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: suse-ai-kubeflow-metrics-reader
+rules:
+  - nonResourceURLs: ["/metrics"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: suse-ai-kubeflow-metrics-reader
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: suse-ai-kubeflow-metrics-reader
+subjects:
+  - kind: ServiceAccount
+    name: opentelemetry-collector
+    namespace: observability
+----
++
+Replace the subject with the service account and namespace of your Collector, then apply the file:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl apply -f kubeflow-metrics-rbac.yaml
+----
++
+Both HTTPS scrapes use the projected service account token.
+Ensure it is mounted and readable by UID `10001`.
+The default path is `/var/run/secrets/kubernetes.io/serviceaccount/token`; set `KUBEFLOW_METRICS_TOKEN_FILE` if you use another path.
+. *Configure certificate verification.*
+By default, both controller scrapes skip server certificate verification because `KUBEFLOW_METRICS_INSECURE_SKIP_VERIFY` defaults to `true`.
+To enable verification, provide a trusted certificate authority (CA) bundle and certificates valid for the discovered pod IPs.
+Create a configuration map containing the CA bundle:
++
+[source,bash,subs="+attributes"]
+----
+{prompt_user}kubectl -n observability create configmap kubeflow-metrics-ca \
+  --from-file=ca.crt=<CA_BUNDLE_FILE>
+----
+. *Enable the profile with verified TLS.*
+Add the following settings to `otel-native-values.yaml`.
+Keep the base configuration first and preserve all existing profile arguments, environment variables and volume entries.
++
+[source,yaml]
+----
+command:
+  extraArgs:
+    - --config=/otelcol/collector-config.yaml
+    # Keep the other product profiles that you use.
+    - --config=/otelcol/kubeflow.yaml
+extraEnvs:
+  # Keep the existing entries, including the actual K8S_CLUSTER_NAME.
+  - name: KUBEFLOW_NAMESPACE
+    value: "kubeflow"
+  - name: KSERVE_NAMESPACE
+    value: "kubeflow-user-example-com"
+  - name: KUBEFLOW_METRICS_CA_FILE
+    value: /etc/kubeflow-metrics/ca.crt
+  - name: KUBEFLOW_METRICS_INSECURE_SKIP_VERIFY
+    value: "false"
+extraVolumes:
+  # Keep the existing volumes.
+  - name: kubeflow-metrics-ca
+    configMap:
+      name: kubeflow-metrics-ca
+extraVolumeMounts:
+  # Keep the existing mounts.
+  - name: kubeflow-metrics-ca
+    mountPath: /etc/kubeflow-metrics
+    readOnly: true
+----
++
+The example uses the default controller and model namespaces; change them to match your deployment.
+`KUBEFLOW_METRICS_CA_FILE` defaults to an empty value and must name the mounted bundle when you configure a private CA.
+If you previously mounted a separate {kubeflow} overlay, replace its `--config` argument and remove its obsolete mount.
+Do not load both the old overlay and the bundled profile.
+. Upgrade the Collector as described in xref:ai-monitoring-native-collector-deploy[].
+. Run an inference request or a pipeline and check the controller, workflow and model server metrics in {sobservability}.
+
+Training loss, epoch progress, RAG retrieval and tool outcomes come from application code.
+To show them in {sobservability}, add an {otelemetry} SDK to the training, serving or pipeline step image and instrument these operations.
+
+[#ai-monitoring-native-gpu]
+== GPU hardware
+
+The base Collector configuration scrapes the {nvidia} DCGM exporter that the {nvoperator} deploys.
+Set `GPU_NAMESPACE` and `GPU_METRICS_PORT` if they differ from the defaults `gpu-operator` and `9400`.
+
+To collect XID error counts, add the following line to the metrics CSV file of the DCGM exporter:
+
+[source,text]
+----
+DCGM_EXP_XID_ERRORS_COUNT, gauge, Number of XID errors in the configured time window.
+----
+
+Then set the `DCGM_EXPORTER_XID_COUNT_WINDOW_SIZE` environment variable of the exporter to `300000`.
+Configure both through the DCGM exporter settings of the {nvoperator}.
+
+GPU metrics describe the hardware, not individual requests.
+Workload GPU views require the {sobservability} Agent on the observed cluster, as described in xref:ai-monitoring-integration-release-gaps[].

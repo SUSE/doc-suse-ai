@@ -14,11 +14,21 @@ The guidance is presented in two paths:
 [#ai-monitoring-otel-operator-prereqs]
 == Prerequisites
 
+Use the {otelemetry} Operator from https://apps.rancher.io/applications/opentelemetry-operator[{sappco}].
+The Operator chart selects {sappco} images for the controller, managed Collectors and Go automatic instrumentation.
+For other languages, configure a compatible instrumentation image as described in xref:ai-monitoring-otel-operator-instrumentation[].
+For air-gapped deployments, mirror the chart and each image that you use, then update their references to the local registry.
+Instrumentation applies only to pods created after you add the annotation.
+Do not inject instrumentation into {owui}, which uses its bundled SDK.
+Automatic instrumentation does not add GenAI, RAG or tool attributes.
+
 Ensure the following are in place before proceeding:
 
 * A {kube} cluster managed with {ranchera}.
 * {certmanager} installed (required for the Operator’s admission webhooks).
 * {sobservability} installed and reachable from the cluster with a valid service token or API key.
+* An `application-collection` image pull secret in the Operator namespace.
+For instructions, refer to the https://docs.apps.rancher.io/get-started/authentication/[{sappco} authentication guide].
 
 [#ai-monitoring-otel-operator-install]
 == Installing the {otelemetry} Operator
@@ -40,21 +50,7 @@ Pin the chart version explicitly to avoid unexpected changes during upgrades.
   --namespace <SUSE_OBSERVABILITY_NAMESPACE> \
   --version <CHART-VERSION> \
   --set manager.autoInstrumentation.go.enabled=true \
-  --set global.imagePullSecrets=\{application-collection}
-----
-+
-[NOTE]
-====
-If the previous command fails with your {helm} version, use the following alternative.
-====
-+
-[source,bash,subs="+attributes"]
-----
-{prompt_user}helm install opentelemetry-operator oci://dp.apps.rancher.io/charts/opentelemetry-operator \
-  --namespace <SUSE_OBSERVABILITY_NAMESPACE> \
-  --version <CHART-VERSION> \
-  --set manager.autoInstrumentation.go.enabled=true \
-  --set global.imagePullSecrets[0].name=application-collection
+  --set 'global.imagePullSecrets[0]=application-collection'
 ----
 +
 The {helm} chart deploys the Operator controller.
@@ -83,6 +79,8 @@ This enables auto-instrumentation without replacing the Collector.
 
 Ensure your Collector is configured to receive OTLP telemetry from instrumented workloads.
 Enable at least one OTLP protocol (gRPC or HTTP).
+The native Collector configuration already enables both protocols.
+If you use that configuration, continue with xref:ai-monitoring-otel-operator-instrumentation[].
 
 The following snippet shows a {productname} example `otel-values.yaml`:
 
@@ -118,6 +116,8 @@ After adding the protocols, update the Collector.
 === Create an Instrumentation custom resource
 
 Create an `Instrumentation` custom resource that defines automatic instrumentation behavior and the OTLP export destination.
+Use {sappco} instrumentation images where available.
+The Operator chart selects the Go image; the following example requires an explicit Python image.
 
 [IMPORTANT]
 ====
@@ -143,6 +143,7 @@ spec:
   defaults:
     useLabelsForResourceAttributes: true
   python:
+    image: <PYTHON_AUTO_INSTRUMENTATION_IMAGE>
     env:
       - name: OTEL_EXPORTER_OTLP_ENDPOINT
         value: http://opentelemetry-collector.observability.svc.cluster.local:4318
@@ -154,6 +155,9 @@ spec:
     type: parentbased_traceidratio
     argument: "1"
 ----
++
+Replace `<PYTHON_AUTO_INSTRUMENTATION_IMAGE>` with a compatible Python automatic instrumentation image available to your cluster.
+For an air-gapped deployment, use its reference in your local registry.
 +
 [NOTE]
 ====
@@ -215,6 +219,10 @@ Annotation values may be:
 * `"other-namespace/my-instrumentation"` for a cross-namespace reference.
 * `"false"` to disable injection.
 
+For instrumentation images from {sappco}, add the `application-collection` pull secret to the workload pod template.
+The secret must exist in the workload namespace.
+For other registries, use the credentials required by the selected image.
+
 When a pod with injection annotations is created, the Operator mutates it via an admission webhook:
 
 * An init container is injected to copy auto-instrumentation binaries.
@@ -273,8 +281,7 @@ Example output:
 
 [source,text,subs="+attributes"]
 ----
-{prompt_user}opentelemetry-auto-instrumentation-python \
-ghcr.io/open-telemetry/opentelemetry-operator/autoinstrumentation-python:0.59b0
+opentelemetry-auto-instrumentation-python <PYTHON_AUTO_INSTRUMENTATION_IMAGE>
 ----
 
 [#ai-monitoring-otel-operator-verify-ui]
@@ -307,6 +314,7 @@ image::ai-observability-monitoring-traces-view.png["Screenshot showing the trace
 == Path B: Use an Operator-managed Collector
 
 If you prefer the Operator to manage the Collector deployment and configuration, use the `OpenTelemetryCollector` custom resource.
+The following example is a custom configuration; it does not load the bundled native integration profiles.
 
 [#ai-monitoring-otel-operator-path-b-imagepull]
 === Configure image pulls from the Application Collection
